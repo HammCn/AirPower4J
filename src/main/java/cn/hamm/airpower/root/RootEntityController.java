@@ -106,7 +106,6 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
         return jsonData(service.getList(queryRequest));
     }
 
-
     /**
      * <h1>查询详情后置方法</h1>
      *
