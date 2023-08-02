@@ -35,10 +35,6 @@ public class DataSourceAspect {
 
     /**
      * <h1>多数据源切面方法</h1>
-     *
-     * @param proceedingJoinPoint
-     * @return
-     * @throws Throwable
      */
     @Around("pointCut()")
     public Object multipleDataSource(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {

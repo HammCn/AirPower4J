@@ -2,6 +2,7 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.interfaces.ITree;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.query.QueryPageRequest;
 import cn.hamm.airpower.query.QueryPageResponse;
@@ -186,17 +187,30 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (Objects.isNull(queryPageRequest.getFilter())) {
             queryPageRequest.setFilter(getNewInstance());
         }
-        return getResponsePageList(repository.findAll(createSpecification(queryPageRequest), createPageable(queryPageRequest)))
+        queryPageRequest = beforeGetPage(queryPageRequest);
+        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest), createPageable(queryPageRequest)))
                 .setSort(queryPageRequest.getSort());
+
+        return afterGetPage(queryPageResponse);
     }
 
     /**
-     * <h1>搜索前置方法</h1>
+     * <h1>分页查询后置方法</h1>
+     *
+     * @param queryPageResponse 查询到的数据
+     * @return 处理后的数据
+     */
+    protected QueryPageResponse<E> afterGetPage(QueryPageResponse<E> queryPageResponse) {
+        return queryPageResponse;
+    }
+
+    /**
+     * <h1>分页查询前置方法</h1>
      *
      * @param sourceRequestData 原始请求的数据
      * @return 处理后的请求数据
      */
-    protected <T extends QueryRequest<E>> T beforeSearch(T sourceRequestData) {
+    protected <T extends QueryRequest<E>> T beforeGetPage(T sourceRequestData) {
         return sourceRequestData;
     }
 
@@ -631,7 +645,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private Specification<E> createSpecification(QueryRequest<E> queryRequest) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 createPredicate(
-                        root, criteriaQuery, criteriaBuilder, beforeSearch(queryRequest).getFilter()
+                        root, criteriaQuery, criteriaBuilder, queryRequest.getFilter()
                 );
     }
 
@@ -651,5 +665,38 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
+    }
+
+    /**
+     * <h1>普通平层树数组按层级转为树结构</h1>
+     *
+     * @param list     普通的平层数组
+     * @param parentId 父级ID
+     * @param <T>      类型
+     * @return 层级结构的树
+     */
+    protected <T extends ITree> List<T> list2TreeList(List<T> list, Long parentId) {
+        List<T> treeList = new ArrayList<>();
+        list.forEach(item -> {
+            if (item.getParentId() == parentId) {
+                treeList.add(item);
+            }
+        });
+        for (int i = 0; i < treeList.size(); i++) {
+            treeList.get(i).setChildren(list2TreeList(list, treeList.get(i).getId()));
+        }
+        return treeList;
+    }
+
+
+    /**
+     * <h1>普通平层树数组按层级转为树结构</h1>
+     *
+     * @param list 普通的平层数组
+     * @param <T>  类型
+     * @return 层级结构的树
+     */
+    protected <T extends ITree> List<T> list2TreeList(List<T> list) {
+        return list2TreeList(list, 0L);
     }
 }

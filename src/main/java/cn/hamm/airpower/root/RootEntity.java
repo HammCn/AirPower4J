@@ -3,6 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Search;
+import cn.hamm.airpower.interfaces.IEntity;
 import cn.hamm.airpower.util.ReflectUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -31,7 +32,7 @@ import java.io.Serializable;
 @DynamicInsert
 @DynamicUpdate
 @Description("")
-public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable {
+public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E> {
     /**
      * <h1>主键ID</h1>
      */
@@ -106,6 +107,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * @param id ID
      * @return 实体
      */
+    @Override
     public E setId(Long id) {
         this.id = id;
         return (E) this;
