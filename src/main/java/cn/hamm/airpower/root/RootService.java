@@ -540,7 +540,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private Sort createSort(QueryRequest<E> queryRequest) {
         String sortField = GlobalConfig.defaultSortField;
-        if (Objects.nonNull(queryRequest.getSort()) && !"".equalsIgnoreCase(queryRequest.getSort().getField())) {
+        if(Objects.isNull(queryRequest.getSort())){
+            queryRequest.setSort(new cn.hamm.airpower.model.Sort());
+        }
+        if (!"".equalsIgnoreCase(queryRequest.getSort().getField())) {
             // 如果传入了Sort和字段
             sortField = queryRequest.getSort().getField();
         }

@@ -21,7 +21,7 @@ public class QueryRequest<M extends RootModel<?>> {
     /**
      * <h1>排序对象</h1>
      */
-    private Sort sort = new Sort();
+    private Sort sort = null;
 
     /**
      * <h1>搜索过滤器</h1>
