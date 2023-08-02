@@ -8,10 +8,7 @@ import cn.hamm.airpower.util.ReflectUtil;
 import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <h1>数据根模型</h1>
@@ -210,14 +207,14 @@ public class RootModel<E extends RootModel<E>> {
                     for (RootModel<?> item : list) {
                         field.set(this, item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
                     }
-                } else if (List.class.equals(fieldClass) || ArrayList.class.equals(fieldClass)) {
-                    List<RootModel<?>> list = (List<RootModel<?>>) fieldValue;
-                    if(Objects.isNull(list)){
-                        list = new ArrayList<>();
+                } else if (Set.class.equals(fieldClass)) {
+                    Set<RootModel<?>> list = (Set<RootModel<?>>) fieldValue;
+                    if (Objects.isNull(list)) {
+                        list = new HashSet<>();
                     }
-                    for (int index = 0; index < list.size(); index++) {
-                        list.set(index, list.get(index).filterResponseDataBy(RootEntity.WhenPayLoad.class));
-                    }
+                    list.forEach(item -> {
+                        item.filterResponseDataBy(RootEntity.WhenPayLoad.class);
+                    });
                     field.set(this, list);
                 } else {
                     field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(RootEntity.WhenPayLoad.class));

@@ -32,7 +32,7 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
     @Autowired
     protected S service;
 
-    @Description("新增数据")
+    @Description("添加")
     @PostMapping("add")
     @ResponseFilter(RootEntity.WhenGetDetail.class)
     public JsonData add(@RequestBody @Validated(RootEntity.WhenAdd.class) E entity) {
@@ -40,7 +40,7 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
         return jsonData(service.add(entity.toEntity()));
     }
 
-    @Description("删除数据")
+    @Description("删除")
     @PostMapping("delete")
     public Json delete(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Delete);
@@ -48,7 +48,7 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
         return json("删除成功");
     }
 
-    @Description("强制删除数据")
+    @Description("强制删除")
     @PostMapping("forceDelete")
     public Json forceDelete(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.ForceDelete);
