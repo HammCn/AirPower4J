@@ -212,6 +212,9 @@ public class RootModel<E extends RootModel<E>> {
                     }
                 } else if (List.class.equals(fieldClass) || ArrayList.class.equals(fieldClass)) {
                     List<RootModel<?>> list = (List<RootModel<?>>) fieldValue;
+                    if(Objects.isNull(list)){
+                        list = new ArrayList<>();
+                    }
                     for (int index = 0; index < list.size(); index++) {
                         list.set(index, list.get(index).filterResponseDataBy(RootEntity.WhenPayLoad.class));
                     }

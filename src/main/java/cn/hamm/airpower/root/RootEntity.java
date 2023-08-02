@@ -43,7 +43,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @Min(value = 0, message = "ID必须大于0")
     @NotNull(groups = {WhenUpdate.class, WhenIdRequired.class}, message = "ID不能为空")
     private Long id;
-    
+
     /**
      * <h1>备注信息</h1>
      */
@@ -63,7 +63,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @Column(columnDefinition = "tinyint UNSIGNED default 0 comment '是否禁用'")
     @Exclude(filters = {WhenPayLoad.class})
     private Boolean isDisabled;
-    
+
     /**
      * <h1>创建时间</h1>
      */
