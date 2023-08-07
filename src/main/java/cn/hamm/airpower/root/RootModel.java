@@ -208,13 +208,11 @@ public class RootModel<E extends RootModel<E>> {
                         field.set(this, item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
                     }
                 } else if (Set.class.equals(fieldClass)) {
-                    Set<RootModel<?>> list = (Set<RootModel<?>>) fieldValue;
+                    @SuppressWarnings("MapOrSetKeyShouldOverrideHashCodeEquals") Set<RootModel<?>> list = (Set<RootModel<?>>) fieldValue;
                     if (Objects.isNull(list)) {
                         list = new HashSet<>();
                     }
-                    list.forEach(item -> {
-                        item.filterResponseDataBy(RootEntity.WhenPayLoad.class);
-                    });
+                    list.forEach(item -> item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
                     field.set(this, list);
                 } else {
                     field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(RootEntity.WhenPayLoad.class));

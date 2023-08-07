@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author hamm
  */
-public interface ITree<E extends RootEntity<E>> extends IEntity<E>{
+public interface ITree<E extends RootEntity<E>> extends IEntity<E> {
     /**
      * <h1>获取树的名称</h1>
      *
