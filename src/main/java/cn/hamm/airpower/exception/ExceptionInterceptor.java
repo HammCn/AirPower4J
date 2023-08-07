@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,10 +49,11 @@ public class ExceptionInterceptor {
         BindingResult result = exception.getBindingResult();
         StringBuilder stringBuilder = new StringBuilder();
         if (result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
-            for (ObjectError error : errors) {
+            List<FieldError> errors = result.getFieldErrors();
+            for (FieldError error : errors) {
                 stringBuilder
                         .append("验证失败，")
+                        .append(error.getField())
                         .append(error.getDefaultMessage());
                 break;
             }
