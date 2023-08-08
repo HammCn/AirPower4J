@@ -124,7 +124,6 @@ public class ValidateUtil {
         return validRegex(value, "^[0-9a-zA-Z]+$");
     }
 
-
     /**
      * <h1>是否是自然数</h1>
      *

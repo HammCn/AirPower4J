@@ -70,4 +70,14 @@ public class GlobalConfig {
      * <h1>身份令牌header的key</h1>
      */
     public static String authorizeHeader = "authorization";
+
+    /**
+     * <h1>密码最大长度</h1>
+     */
+    public static int passwordMaxLength = 16;
+
+    /**
+     * <h1>密码最小长度</h1>
+     */
+    public static int passwordMinLength = 6;
 }
