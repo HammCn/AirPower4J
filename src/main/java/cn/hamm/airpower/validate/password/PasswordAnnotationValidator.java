@@ -1,6 +1,7 @@
 package cn.hamm.airpower.validate.password;
 
 import cn.hamm.airpower.config.GlobalConfig;
+import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -16,7 +17,7 @@ public class PasswordAnnotationValidator implements ConstraintValidator<Password
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (!StringUtils.hasLength(value)) {
             return true;
         }
 

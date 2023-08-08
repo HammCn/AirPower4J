@@ -1,6 +1,7 @@
 package cn.hamm.airpower.validate.phone;
 
 import cn.hamm.airpower.request.ValidateUtil;
+import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -13,7 +14,7 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (!StringUtils.hasLength(value)) {
             return true;
         }
         return ValidateUtil.isMobilePhone(value) || ValidateUtil.isTelPhone(value);
