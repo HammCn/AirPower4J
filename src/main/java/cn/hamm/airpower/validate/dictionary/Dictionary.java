@@ -20,7 +20,7 @@ public @interface Dictionary {
     /**
      * <h1>错误信息</h1>
      */
-    String message() default "传入的字典值不在允许的范围内";
+    String message() default "不允许的枚举字典值";
 
     /**
      * <h1>使用的枚举类</h1>

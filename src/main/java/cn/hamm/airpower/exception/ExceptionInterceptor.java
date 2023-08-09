@@ -72,7 +72,7 @@ public class ExceptionInterceptor {
         for (ConstraintViolation<?> error : errors) {
             stringBuilder.append(error.getMessage());
             stringBuilder.append("(");
-            stringBuilder.append(error.getPropertyPath().toString());
+            stringBuilder.append(error.getInvalidValue());
             stringBuilder.append(")");
             break;
         }
