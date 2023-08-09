@@ -40,32 +40,30 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>参数验证失败</h1>
-     *
-     * @param exception 异常
-     * @return JSON
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Json badRequestHandle(MethodArgumentNotValidException exception) {
         BindingResult result = exception.getBindingResult();
         StringBuilder stringBuilder = new StringBuilder();
-        if (result.hasErrors()) {
-            List<FieldError> errors = result.getFieldErrors();
-            for (FieldError error : errors) {
-                stringBuilder
-                        .append("验证失败，")
-                        .append(error.getField())
-                        .append(error.getDefaultMessage());
-                break;
-            }
+        if (!result.hasErrors()) {
+            return new Json(Result.PARAM_INVALID);
+        }
+        if (!result.hasFieldErrors()) {
+            return new Json(Result.PARAM_INVALID);
+        }
+        List<FieldError> errors = result.getFieldErrors();
+        for (FieldError error : errors) {
+            stringBuilder
+                    .append("验证失败，")
+                    .append(error.getField())
+                    .append(error.getDefaultMessage());
+            break;
         }
         return new Json(Result.PARAM_INVALID, stringBuilder.toString());
     }
 
     /**
      * <h1>参数校验失败</h1>
-     *
-     * @param exception 异常
-     * @return JSON
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Json badRequestHandle(ConstraintViolationException exception) {
@@ -73,14 +71,16 @@ public class ExceptionInterceptor {
         Set<ConstraintViolation<?>> errors = exception.getConstraintViolations();
         for (ConstraintViolation<?> error : errors) {
             stringBuilder.append(error.getMessage());
+            stringBuilder.append("(");
+            stringBuilder.append(error.getPropertyPath().toString());
+            stringBuilder.append(")");
+            break;
         }
         return new Json(Result.PARAM_INVALID, stringBuilder.toString());
     }
 
     /**
      * <h1>删除时的数据关联校验异常</h1>
-     *
-     * @return JSON
      */
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
     public Json deleteUsingDataException() {
@@ -89,8 +89,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>访问的接口没有实现</h1>
-     *
-     * @return JSON
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public Json notFoundHandle() {
@@ -99,8 +97,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>请求的数据不是标准JSON</h1>
-     *
-     * @return JSON
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Json dataExceptionHandle() {
@@ -109,9 +105,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>不支持的请求方法</h1>
-     *
-     * @param exception 异常
-     * @return JSON
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Json methodExceptionHandle(HttpRequestMethodNotSupportedException exception) {
@@ -123,9 +116,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>不支持的数据类型</h1>
-     *
-     * @param exception 异常
-     * @return JSON
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Json httpMediaTypeNotSupportedExceptionHandle(HttpMediaTypeNotSupportedException exception) {
@@ -136,8 +126,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>数据库连接发生错误</h1>
-     *
-     * @return JSON
      */
     @ExceptionHandler(CannotCreateTransactionException.class)
     public Json databaseExceptionHandle() {
@@ -146,8 +134,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>REDIS连接发生错误</h1>
-     *
-     * @return JSON
      */
     @ExceptionHandler(RedisConnectionFailureException.class)
     public Json redisExceptionHandle() {
@@ -156,9 +142,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>自定义业务异常</h1>
-     *
-     * @param result 异常
-     * @return JSON
      */
     @ExceptionHandler(ResultException.class)
     public Json customExceptionHandle(ResultException result) {
@@ -167,8 +150,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>JWT校验失败错误</h1>
-     *
-     * @return JSON
      */
     @ExceptionHandler(value = {cn.hutool.jwt.JWTException.class})
     public Json jwtExceptionHandle() {
@@ -177,9 +158,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>数据字段不存在</h1>
-     *
-     * @param exception 异常
-     * @return JSON
      */
     @ExceptionHandler(value = PropertyReferenceException.class)
     public Json propertyReferenceExceptionHandle(PropertyReferenceException exception) {
@@ -188,8 +166,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>数据表或字段异常</h1>
-     *
-     * @return JSON
      */
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
     public Json invalidDataAccessResourceUsageExceptionHandle() {
@@ -198,9 +174,6 @@ public class ExceptionInterceptor {
 
     /**
      * <h1>其他异常</h1>
-     *
-     * @param exception 异常
-     * @return JSON
      */
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public Object otherExceptionHandle(Exception exception) {
