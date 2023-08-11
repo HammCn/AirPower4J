@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * @author Hamm
  */
 @Constraint(validatedBy = PasswordAnnotationValidator.class)
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Password {
     /**

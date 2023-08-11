@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * @author Hamm
  */
 @Constraint(validatedBy = PhoneAnnotationValidator.class)
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Phone {
     /**
@@ -28,4 +28,14 @@ public @interface Phone {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    /**
+     * <h1>是否允许手机号格式</h1>
+     */
+    boolean mobile() default true;
+
+    /**
+     * <h1>是否允许座机电话格式</h1>
+     */
+    boolean tel() default true;
 }
