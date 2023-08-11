@@ -91,8 +91,7 @@ public class ResponseAspect {
                     filterResponseBy(responseFilter, (RootModel<?>) item);
                 }
             }
-        } catch (Exception exception) {
-            return list;
+        } catch (Exception ignored) {
         }
         return list;
     }
