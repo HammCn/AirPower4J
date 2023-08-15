@@ -80,4 +80,9 @@ public class GlobalConfig {
      * <h1>密码最小长度</h1>
      */
     public static int passwordMinLength = 6;
+
+    /**
+     * <h1>统一登录的路径</h1>
+     */
+    public static String loginPath = "http://127.0.0.1:3000/auth";
 }
