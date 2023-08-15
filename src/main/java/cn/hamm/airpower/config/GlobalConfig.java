@@ -84,5 +84,5 @@ public class GlobalConfig {
     /**
      * <h1>统一登录的路径</h1>
      */
-    public static String loginPath = "http://127.0.0.1:3000/auth";
+    public static String loginPath = "http://localhost:3000/login";
 }

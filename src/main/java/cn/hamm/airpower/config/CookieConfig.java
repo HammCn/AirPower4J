@@ -6,11 +6,6 @@ package cn.hamm.airpower.config;
 public class CookieConfig {
 
     /**
-     * <h1>Cookie的域名</h1>
-     */
-    public static String cookieDomain = "localhost";
-
-    /**
      * <h1>Cookie的路径</h1>
      */
     public static String cookiePath = "/";
@@ -33,5 +28,5 @@ public class CookieConfig {
     /**
      * <h1>使用Https方式的安全Cookie</h1>
      */
-    public static boolean isCookieSecurity = false;
+    public static boolean isCookieSecurity = true;
 }

@@ -19,7 +19,6 @@ public class CookieUtil {
      */
     public static Cookie getCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
-        cookie.setDomain(CookieConfig.cookieDomain);
         cookie.setHttpOnly(CookieConfig.isCookieHttpOnly);
         cookie.setMaxAge(CookieConfig.cookieMaxAge);
         cookie.setSecure(CookieConfig.isCookieSecurity);
