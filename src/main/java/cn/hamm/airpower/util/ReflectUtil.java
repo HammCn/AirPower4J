@@ -2,25 +2,15 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.root.RootEntity;
-import cn.hamm.airpower.root.RootEntityController;
 import cn.hamm.airpower.root.RootModel;
-import cn.hamm.airpower.security.AccessConfig;
-import cn.hamm.airpower.security.AccessUtil;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReader;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.util.ClassUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <h1>反射工具类</h1>
@@ -62,83 +52,6 @@ public class ReflectUtil {
     public static String getDescription(Field field) {
         Description description = field.getAnnotation(Description.class);
         return Objects.isNull(description) ? field.getName() : description.value();
-    }
-
-    /**
-     * <h1>获取所有模块和接口</h1>
-     *
-     * @param packageName 包名称
-     * @return 模块和接口树
-     */
-    public static List<Map<String, Object>> getApiTreeList(String packageName) {
-        // 遍历所有接口
-        List<Map<String, Object>> moduleList = new ArrayList<>();
-        try {
-            ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-            String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-                    ClassUtils.convertClassNameToResourcePath(packageName) + "/**/*.class";
-            Resource[] resources = resourcePatternResolver.getResources(pattern);
-            MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
-
-            for (Resource resource : resources) {
-                // 用于读取类信息
-                MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
-                // 扫描到的class
-                String className = metadataReader.getClassMetadata().getClassName();
-                Class<?> clazz = Class.forName(className);
-
-                RestController restController = clazz.getAnnotation(RestController.class);
-                if (Objects.isNull(restController) || RootEntityController.class.getSimpleName().equals(clazz.getSimpleName())) {
-                    // 不是rest控制器或者是指定的几个白名单控制器
-                    continue;
-                }
-
-                String customClassName = ReflectUtil.getDescription(clazz);
-
-                // 读取类的RequestMapping
-                RequestMapping requestMappingClass = clazz.getAnnotation(RequestMapping.class);
-                String pathClass = "";
-                if (Objects.nonNull(requestMappingClass) && requestMappingClass.value().length > 0) {
-                    // 标了RequestMapping
-                    pathClass = requestMappingClass.value()[0];
-                }
-                // 取出所有控制器方法
-                Method[] methods = clazz.getMethods();
-                List<Map<String, String>> apiList = new ArrayList<>();
-                for (Method method : methods) {
-                    String customMethodName = ReflectUtil.getDescription(method);
-                    System.out.println(clazz.getSimpleName() + ":" + method.getName());
-                    PostMapping postMappingMethod = method.getAnnotation(PostMapping.class);
-
-                    AccessConfig accessConfig = AccessUtil.getWhatNeedAccess(clazz, method);
-
-                    if (Objects.nonNull(postMappingMethod) && postMappingMethod.value().length > 0) {
-                        // 内部类复制final变量
-                        final boolean finalMethodNeedLogin = accessConfig.login;
-                        final boolean finalMethodNeedRbac = accessConfig.authorize;
-                        String finalPathClass = pathClass;
-                        apiList.add(new HashMap<>(4) {{
-                            put("name", customMethodName);
-                            put("path", (!"".equalsIgnoreCase(finalPathClass) ? (finalPathClass + "/") : "") + postMappingMethod.value()[0]);
-                            put("needLogin", finalMethodNeedLogin ? "是" : "否");
-                            put("needRbac", finalMethodNeedLogin ? (finalMethodNeedRbac ? "是" : "否") : "否");
-                        }});
-                    }
-                }
-                if (apiList.size() > 0) {
-                    moduleList.add(new HashMap<>(3) {
-                        {
-                            put("name", customClassName);
-                            put("module", clazz.getSimpleName());
-                            put("apis", apiList);
-                        }
-                    });
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return moduleList;
     }
 
     /**
