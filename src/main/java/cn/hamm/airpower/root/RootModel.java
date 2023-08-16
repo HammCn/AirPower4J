@@ -132,29 +132,30 @@ public class RootModel<E extends RootModel<E>> {
      */
     private void excludeBy(Class<?> filter, Field field) {
         Exclude fieldExclude = field.getAnnotation(Exclude.class);
+        if (Objects.isNull(fieldExclude)) {
+            filterFieldPayload(field);
+            return;
+        }
         boolean isExclude = false;
-        if (Objects.nonNull(fieldExclude)) {
-            Class<?>[] excludeClasses = fieldExclude.filters();
-            if (excludeClasses.length == 0) {
-                // 字段标记排除 但没有指定场景 则所有场景都排除
-                isExclude = true;
-            } else {
-                // 标了指定场景排除
-                for (Class<?> excludeClass : excludeClasses) {
-                    if (!Void.class.equals(filter) && filter.equals(excludeClass)) {
-                        // 响应场景也被标在排除场景列表中
-                        isExclude = true;
-                        break;
-                    }
+        Class<?>[] excludeClasses = fieldExclude.filters();
+        if (excludeClasses.length == 0) {
+            // 字段标记排除 但没有指定场景 则所有场景都排除
+            isExclude = true;
+        } else {
+            // 标了指定场景排除
+            for (Class<?> excludeClass : excludeClasses) {
+                if (!Void.class.equals(filter) && filter.equals(excludeClass)) {
+                    // 响应场景也被标在排除场景列表中
+                    isExclude = true;
+                    break;
                 }
             }
         }
         if (isExclude) {
             clearField(field);
         }
-
         //如果是挂载数据
-        excludeFieldPayload(field);
+        filterFieldPayload(field);
     }
 
     /**
@@ -165,29 +166,31 @@ public class RootModel<E extends RootModel<E>> {
      */
     private void exposeBy(Class<?> filter, Field field) {
         Expose fieldExpose = field.getAnnotation(Expose.class);
+        if (Objects.isNull(fieldExpose)) {
+            // 没有标记 则直接移除掉
+            clearField(field);
+            filterFieldPayload(field);
+            return;
+        }
         boolean isExpose = false;
-        if (Objects.nonNull(fieldExpose)) {
-            // 字段标了暴露
-            Class<?>[] exposeClasses = fieldExpose.filters();
-            if (exposeClasses.length > 0) {
-                // 标了指定场景暴露
-                for (Class<?> exposeClass : exposeClasses) {
-                    if (Void.class.equals(filter) || filter.equals(exposeClass)) {
-                        // 响应场景也被标在暴露场景列表中
-                        isExpose = true;
-                        break;
-                    }
+        Class<?>[] exposeClasses = fieldExpose.filters();
+        if (exposeClasses.length > 0) {
+            // 标了指定场景暴露
+            for (Class<?> exposeClass : exposeClasses) {
+                if (Void.class.equals(filter) || filter.equals(exposeClass)) {
+                    // 响应场景也被标在暴露场景列表中
+                    isExpose = true;
+                    break;
                 }
-            } else {
-                // 标了暴露 没指定场景 则所有场景都暴露
-                isExpose = true;
             }
+        } else {
+            // 标了暴露 没指定场景 则所有场景都暴露
+            isExpose = true;
         }
         if (!isExpose) {
             clearField(field);
         }
-        //如果是挂载数据
-        excludeFieldPayload(field);
+        filterFieldPayload(field);
     }
 
     /**
@@ -195,31 +198,39 @@ public class RootModel<E extends RootModel<E>> {
      *
      * @param field 字段
      */
-    private void excludeFieldPayload(Field field) {
+    private void filterFieldPayload(Field field) {
         Payload payload = field.getAnnotation(Payload.class);
-        if (Objects.nonNull(payload)) {
-            try {
-                field.setAccessible(true);
-                Object fieldValue = field.get(this);
-                Class<?> fieldClass = field.getType();
-                if (fieldClass.isArray()) {
-                    RootModel<?>[] list = (RootModel<?>[]) fieldValue;
-                    for (RootModel<?> item : list) {
-                        field.set(this, item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
-                    }
-                } else if (Set.class.equals(fieldClass)) {
-                    @SuppressWarnings("MapOrSetKeyShouldOverrideHashCodeEquals") Set<RootModel<?>> list = (Set<RootModel<?>>) fieldValue;
-                    if (Objects.isNull(list)) {
-                        list = new HashSet<>();
-                    }
-                    list.forEach(item -> item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
-                    field.set(this, list);
-                } else {
-                    field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(RootEntity.WhenPayLoad.class));
+        if (Objects.isNull(payload)) {
+            return;
+        }
+        try {
+            field.setAccessible(true);
+            Object fieldValue = field.get(this);
+            Class<?> fieldClass = field.getType();
+
+            // 如果字段类型是数组
+            if (fieldClass.isArray()) {
+                RootModel<?>[] list = (RootModel<?>[]) fieldValue;
+                for (RootModel<?> item : list) {
+                    field.set(this, item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
                 }
-            } catch (IllegalAccessException | ClassCastException e) {
-                // 发生了点小问题
+                return;
             }
+
+            // 如果字段类型是 Set
+            if (Set.class.equals(fieldClass)) {
+                @SuppressWarnings("MapOrSetKeyShouldOverrideHashCodeEquals")
+                Set<RootModel<?>> list = (Set<RootModel<?>>) fieldValue;
+                if (Objects.isNull(list)) {
+                    list = new HashSet<>();
+                }
+                list.forEach(item -> item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
+                field.set(this, list);
+                return;
+            }
+            field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(RootEntity.WhenPayLoad.class));
+        } catch (IllegalAccessException | ClassCastException e) {
+            // 发生点小问题...
         }
     }
 
