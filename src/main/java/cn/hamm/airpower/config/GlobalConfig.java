@@ -83,7 +83,7 @@ public class GlobalConfig {
 
     /**
      * <h2>统一登录的路径</h2>
-     *
+     * <p>
      * 如果需要Oauth2登录,则请将前后端部署到一个站点下, 且按下面的流程反向代理
      * <li>反向代理 oauth2 路径到后端项目</li>
      * <li>反向代理 api   路径到后端项目,且去除 api</li>

@@ -24,7 +24,7 @@ import java.util.Objects;
  * @param <S> Service
  * @param <E> 实体或实体的子类
  * @author Hamm
- * @noinspection SpringJavaInjectionPointsAutowiringInspection, SpringJavaInjectionPointsAutowiringInspection
+ * @noinspection SpringJavaInjectionPointsAutowiringInspection
  */
 @SuppressWarnings("rawtypes")
 @Permission

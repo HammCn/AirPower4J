@@ -24,7 +24,7 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
             //取出所有枚举类型
             Object[] objs = enumClazz.getEnumConstants();
             for (Object obj : objs) {
-                if(value.equals(getValue.invoke(obj))){
+                if (value.equals(getValue.invoke(obj))) {
                     isValidated = true;
                     break;
                 }

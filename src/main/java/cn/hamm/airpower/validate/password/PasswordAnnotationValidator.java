@@ -25,7 +25,6 @@ public class PasswordAnnotationValidator implements ConstraintValidator<Password
             return false;
         }
 
-        //noinspection AlibabaUndefineMagicConstant
         if (value.length() > GlobalConfig.passwordMaxLength) {
             return contain(value, ".*[a-zA-Z]+.*") &&
                     contain(value, ".*[0-9]+.*");
