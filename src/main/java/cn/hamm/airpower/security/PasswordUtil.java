@@ -10,7 +10,7 @@ import cn.hutool.crypto.SecureUtil;
  */
 public class PasswordUtil {
     /**
-     * <h1>密码和盐获取密码的散列摘要</h1>
+     * <h2>密码和盐获取密码的散列摘要</h2>
      *
      * @param password 明文密码
      * @param salt     盐

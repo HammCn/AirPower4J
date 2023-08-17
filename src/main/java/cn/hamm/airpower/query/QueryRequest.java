@@ -19,17 +19,17 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class QueryRequest<M extends RootModel<?>> {
     /**
-     * <h1>排序对象</h1>
+     * <h2>排序对象</h2>
      */
     private Sort sort = null;
 
     /**
-     * <h1>搜索过滤器</h1>
+     * <h2>搜索过滤器</h2>
      */
     private M filter = null;
 
     /**
-     * <h1>关键词搜索</h1>
+     * <h2>关键词搜索</h2>
      */
     private String keyword;
 }

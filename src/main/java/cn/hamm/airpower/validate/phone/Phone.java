@@ -18,24 +18,24 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Phone {
     /**
-     * <h1>错误信息</h1>
+     * <h2>错误信息</h2>
      */
     String message() default "不是有效的电话号码";
 
     /**
-     * <h1>验证组</h1>
+     * <h2>验证组</h2>
      */
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * <h1>是否允许手机号格式</h1>
+     * <h2>是否允许手机号格式</h2>
      */
     boolean mobile() default true;
 
     /**
-     * <h1>是否允许座机电话格式</h1>
+     * <h2>是否允许座机电话格式</h2>
      */
     boolean tel() default true;
 }

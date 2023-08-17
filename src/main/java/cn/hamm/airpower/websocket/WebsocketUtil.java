@@ -15,7 +15,7 @@ public class WebsocketUtil {
     RedisUtil<?> redisUtil;
 
     /**
-     * <h1>给所有人发消息</h1>
+     * <h2>给所有人发消息</h2>
      *
      * @param message 消息内容
      */
@@ -24,7 +24,7 @@ public class WebsocketUtil {
     }
 
     /**
-     * <h1>给指定用户发消息</h1>
+     * <h2>给指定用户发消息</h2>
      *
      * @param userId  用户ID
      * @param message 消息内容

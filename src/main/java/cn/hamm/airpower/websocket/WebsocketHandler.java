@@ -77,10 +77,6 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
     @Override
     public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) throws Exception {
         session.close();
-        redisTemplate.execute((connection) -> {
-            connection.subscribe(new WebsocketHandler(session));
-            return null;
-        }, false);
     }
 
     @Override

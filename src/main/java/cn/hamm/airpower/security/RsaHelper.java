@@ -20,11 +20,11 @@ import java.security.spec.X509EncodedKeySpec;
  */
 public class RsaHelper {
     /**
-     * <h1>加密算法KEY长度</h1>
+     * <h2>加密算法KEY长度</h2>
      */
     private final int CRYPT_KEY_SIZE = 2048;
     /**
-     * <h1>加密方式</h1>
+     * <h2>加密方式</h2>
      */
     private final String CRYPT_METHOD = "RSA";
     /**
@@ -34,7 +34,7 @@ public class RsaHelper {
     String privateKey;
 
     /**
-     * <h1>初始化RSA Helper</h1>
+     * <h2>初始化RSA Helper</h2>
      *
      * @param publicKey  公钥字符串
      * @param privateKey 私钥字符串
@@ -45,7 +45,7 @@ public class RsaHelper {
     }
 
     /**
-     * <h1>私钥解密</h1>
+     * <h2>私钥解密</h2>
      *
      * @param encryptedContent 密文
      * @return 原文
@@ -67,7 +67,7 @@ public class RsaHelper {
     }
 
     /**
-     * <h1>私钥加密</h1>
+     * <h2>私钥加密</h2>
      *
      * @param sourceContent 原文
      * @return 密文
@@ -89,7 +89,7 @@ public class RsaHelper {
     }
 
     /**
-     * <h1>公钥加密</h1>
+     * <h2>公钥加密</h2>
      *
      * @param sourceContent 原文
      * @return 密文
@@ -111,7 +111,7 @@ public class RsaHelper {
     }
 
     /**
-     * <h1>公钥解密</h1>
+     * <h2>公钥解密</h2>
      *
      * @param encryptedContent 密文
      * @return 原文
@@ -133,7 +133,7 @@ public class RsaHelper {
     }
 
     /**
-     * <h1>获取一个公钥</h1>
+     * <h2>获取一个公钥</h2>
      *
      * @param publicKeyString 公钥字符串
      * @return 公钥
@@ -146,7 +146,7 @@ public class RsaHelper {
     }
 
     /**
-     * <h1>获取一个私钥</h1>
+     * <h2>获取一个私钥</h2>
      *
      * @param privateKeyString 私钥字符串
      * @return 私钥
@@ -160,7 +160,7 @@ public class RsaHelper {
     }
 
     /**
-     * <h1>RSA处理方法</h1>
+     * <h2>RSA处理方法</h2>
      *
      * @param cipher      RSA实例
      * @param sourceBytes 加解密原始数据

@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class QueryPageRequest<M extends RootEntity<?>> extends QueryRequest<M> {
     /**
-     * <h1>分页</h1>
+     * <h2>分页</h2>
      */
     private Page page = new Page();
 }

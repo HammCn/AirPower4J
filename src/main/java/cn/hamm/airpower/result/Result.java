@@ -54,12 +54,12 @@ public enum Result implements IResult {
 
 
     /**
-     * <h1>错误代码</h1>
+     * <h2>错误代码</h2>
      */
     private final Double code;
 
     /**
-     * <h1>错误信息</h1>
+     * <h2>错误信息</h2>
      */
     @Getter
     private final String message;

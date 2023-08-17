@@ -7,14 +7,14 @@ package cn.hamm.airpower.interfaces;
  */
 public interface IEnum {
     /**
-     * <h1>获取枚举的key</h1>
+     * <h2>获取枚举的key</h2>
      *
      * @return key
      */
     int getValue();
 
     /**
-     * <h1>获取枚举的描述</h1>
+     * <h2>获取枚举的描述</h2>
      *
      * @return 描述
      */

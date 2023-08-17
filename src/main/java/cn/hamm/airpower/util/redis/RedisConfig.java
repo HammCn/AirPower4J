@@ -21,7 +21,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
     /**
-     * <h1>Redis相关配置</h1>
+     * <h2>Redis相关配置</h2>
      *
      * @param factory RedisConnectionFactory
      * @return RedisTemplate
@@ -59,7 +59,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
     /**
-     * <h1>对hash类型的数据操作</h1>
+     * <h2>对hash类型的数据操作</h2>
      *
      * @param redisTemplate RedisTemplate
      * @return HashOperations
@@ -70,7 +70,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
     /**
-     * <h1>对redis字符串类型数据操作</h1>
+     * <h2>对redis字符串类型数据操作</h2>
      *
      * @param redisTemplate RedisTemplate
      * @return ValueOperations
@@ -81,7 +81,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
     /**
-     * <h1>对链表类型的数据操作</h1>
+     * <h2>对链表类型的数据操作</h2>
      *
      * @param redisTemplate RedisTemplate
      * @return ListOperations
@@ -92,7 +92,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
     /**
-     * <h1>对无序集合类型的数据操作</h1>
+     * <h2>对无序集合类型的数据操作</h2>
      *
      * @param redisTemplate RedisTemplate
      * @return SetOperations
@@ -103,7 +103,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
     /**
-     * <h1>对有序集合类型的数据操作</h1>
+     * <h2>对有序集合类型的数据操作</h2>
      *
      * @param redisTemplate RedisTemplate
      * @return ZSetOperations

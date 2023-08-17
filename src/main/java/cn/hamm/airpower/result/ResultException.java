@@ -18,17 +18,17 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ResultException extends RuntimeException implements IResult {
     /**
-     * <h1>错误代码</h1>
+     * <h2>错误代码</h2>
      */
     private int code = Result.ERROR.getCode();
 
     /**
-     * <h1>错误信息</h1>
+     * <h2>错误信息</h2>
      */
     private String message = Result.ERROR.getMessage();
 
     /**
-     * <h1>抛出一个自定义错误信息的默认异常</h1>
+     * <h2>抛出一个自定义错误信息的默认异常</h2>
      *
      * @param message 错误信息
      */
@@ -37,7 +37,7 @@ public class ResultException extends RuntimeException implements IResult {
     }
 
     /**
-     * <h1>直接抛出一个异常</h1>
+     * <h2>直接抛出一个异常</h2>
      *
      * @param error 异常
      */
@@ -46,7 +46,7 @@ public class ResultException extends RuntimeException implements IResult {
     }
 
     /**
-     * <h1>直接抛出一个异常</h1>
+     * <h2>直接抛出一个异常</h2>
      *
      * @param error   异常
      * @param message 错误信息

@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Expose {
     /**
-     * <h1>分组</h1>
+     * <h2>分组</h2>
      */
     Class<?>[] filters() default {};
 }

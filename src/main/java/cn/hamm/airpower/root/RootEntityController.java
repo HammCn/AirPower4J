@@ -107,7 +107,7 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
     }
 
     /**
-     * <h1>查询详情后置方法</h1>
+     * <h2>查询详情后置方法</h2>
      *
      * @param entity 实体
      * @return 实体
@@ -117,7 +117,7 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
     }
 
     /**
-     * <h1>强制删除前删除关联的数据</h1>
+     * <h2>强制删除前删除关联的数据</h2>
      *
      * @param id ID
      */
@@ -127,7 +127,7 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
     }
 
     /**
-     * <h1>检查Api可用状态</h1>
+     * <h2>检查Api可用状态</h2>
      */
     private void checkApiAvailableStatus(Api api) {
         Extends extendsApi = this.getClass().getAnnotation(Extends.class);

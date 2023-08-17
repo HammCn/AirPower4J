@@ -7,47 +7,47 @@ package cn.hamm.airpower.api;
  */
 public enum Api {
     /**
-     * <h1>添加</h1>
+     * <h2>添加</h2>
      */
     Add,
 
     /**
-     * <h1>删除</h1>
+     * <h2>删除</h2>
      */
     Delete,
 
     /**
-     * <h1>禁用</h1>
+     * <h2>禁用</h2>
      */
     Disable,
 
     /**
-     * <h1>启用</h1>
+     * <h2>启用</h2>
      */
     Enable,
 
     /**
-     * <h1>强制删除</h1>
+     * <h2>强制删除</h2>
      */
     ForceDelete,
 
     /**
-     * <h1>查询详情</h1>
+     * <h2>查询详情</h2>
      */
     GetDetail,
 
     /**
-     * <h1>列表查询</h1>
+     * <h2>列表查询</h2>
      */
     GetList,
 
     /**
-     * <h1>分页查询</h1>
+     * <h2>分页查询</h2>
      */
     GetPage,
 
     /**
-     * <h1>修改</h1>
+     * <h2>修改</h2>
      */
     Update,
 }

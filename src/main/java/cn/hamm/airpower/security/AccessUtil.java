@@ -11,7 +11,7 @@ import java.util.Objects;
 public class AccessUtil {
 
     /**
-     * <h1>获取需要被授权的类型</h1>
+     * <h2>获取需要被授权的类型</h2>
      *
      * @param clazz  类
      * @param method 方法

@@ -17,13 +17,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class JsonData extends Json {
     /**
-     * <h1>返回数据</h1>
+     * <h2>返回数据</h2>
      */
     @Description("返回数据")
     private Object data;
 
     /**
-     * <h1>实例化JSON</h1>
+     * <h2>实例化JSON</h2>
      *
      * @param data 数据
      */
@@ -33,7 +33,7 @@ public class JsonData extends Json {
     }
 
     /**
-     * <h1>实例化JSON</h1>
+     * <h2>实例化JSON</h2>
      *
      * @param data    数据
      * @param message 错误信息

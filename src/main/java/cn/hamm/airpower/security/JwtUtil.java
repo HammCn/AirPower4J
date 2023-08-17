@@ -16,7 +16,7 @@ public class JwtUtil {
     public static final String KEY_OF_TIME = "time";
 
     /**
-     * <h1>获取AccessToken</h1>
+     * <h2>获取AccessToken</h2>
      *
      * @param userId       用户ID
      * @param userPassword 用户密码
@@ -27,7 +27,7 @@ public class JwtUtil {
     }
 
     /**
-     * <h1>获取一个TOKEN</h1>
+     * <h2>获取一个TOKEN</h2>
      *
      * @param userId       用户ID
      * @param userPassword 用户密码
@@ -43,7 +43,7 @@ public class JwtUtil {
     }
 
     /**
-     * <h1>校验用户AccessToken是否正确</h1>
+     * <h2>校验用户AccessToken是否正确</h2>
      *
      * @param password    密码
      * @param accessToken AccessToken
@@ -55,7 +55,7 @@ public class JwtUtil {
     }
 
     /**
-     * <h1>从AccessToken中获取用户ID</h1>
+     * <h2>从AccessToken中获取用户ID</h2>
      *
      * @param accessToken 身份令牌
      * @return 用户ID
@@ -67,7 +67,7 @@ public class JwtUtil {
     }
 
     /**
-     * <h1>获取参数</h1>
+     * <h2>获取参数</h2>
      *
      * @param accessToken AccessToken
      * @param payload     索引

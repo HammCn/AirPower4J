@@ -52,7 +52,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * <h1>获取用户的密码</h1>
+     * <h2>获取用户的密码</h2>
      *
      * @param userId 用户ID
      * @return 密码
@@ -60,7 +60,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     public abstract String getUserPassword(Long userId);
 
     /**
-     * <h1>验证指定的用户是否有指定权限标识的权限</h1>
+     * <h2>验证指定的用户是否有指定权限标识的权限</h2>
      *
      * @param userId             用户ID
      * @param permissionIdentity 权限标识
@@ -70,7 +70,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
 
 
     /**
-     * <h1>验证指定用户是否有指定方法的访问权限</h1>
+     * <h2>验证指定用户是否有指定方法的访问权限</h2>
      *
      * @param userId 用户ID
      * @param method 方法
@@ -83,7 +83,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
 
 
     /**
-     * <h1>设置允许跨域的头</h1>
+     * <h2>设置允许跨域的头</h2>
      *
      * @param httpServletResponse response对象
      */

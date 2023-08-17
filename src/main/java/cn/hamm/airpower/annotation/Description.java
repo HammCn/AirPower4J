@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Description {
     /**
-     * <h1>描述信息</h1>
+     * <h2>描述信息</h2>
      */
     String value();
 }

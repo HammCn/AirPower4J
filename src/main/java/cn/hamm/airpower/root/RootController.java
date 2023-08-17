@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("")
 public class RootController {
     /**
-     * <h1>响应一个JSON</h1>
+     * <h2>响应一个JSON</h2>
      *
      * @param message 消息
      * @return JSON
@@ -26,7 +26,7 @@ public class RootController {
     }
 
     /**
-     * <h1>响应一个JsonData</h1>
+     * <h2>响应一个JsonData</h2>
      *
      * @param data 数据
      * @return JsonData
@@ -36,7 +36,7 @@ public class RootController {
     }
 
     /**
-     * <h1>响应一个JsonData</h1>
+     * <h2>响应一个JsonData</h2>
      *
      * @param data    数据
      * @param message 消息

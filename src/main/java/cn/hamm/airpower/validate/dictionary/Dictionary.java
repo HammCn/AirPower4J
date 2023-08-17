@@ -18,17 +18,17 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Dictionary {
     /**
-     * <h1>错误信息</h1>
+     * <h2>错误信息</h2>
      */
     String message() default "不允许的枚举字典值";
 
     /**
-     * <h1>使用的枚举类</h1>
+     * <h2>使用的枚举类</h2>
      */
     Class<?> value() default Void.class;
 
     /**
-     * <h1>验证组</h1>
+     * <h2>验证组</h2>
      */
     Class<?>[] groups() default {};
 

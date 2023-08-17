@@ -12,12 +12,12 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Permission {
     /**
-     * <h1>需要登录</h1>
+     * <h2>需要登录</h2>
      */
     boolean login() default true;
 
     /**
-     * <h1>需要授权</h1>
+     * <h2>需要授权</h2>
      */
     boolean authorize() default true;
 }

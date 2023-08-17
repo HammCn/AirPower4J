@@ -14,26 +14,26 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Search {
     /**
-     * <h1>搜索方式</h1>
+     * <h2>搜索方式</h2>
      */
     Mode value() default Mode.LIKE;
 
     /**
-     * <h1>搜索类型</h1>
+     * <h2>搜索类型</h2>
      */
     enum Mode {
         /**
-         * <h1>相等</h1>
+         * <h2>相等</h2>
          */
         EQUALS,
 
         /**
-         * <h1>字符串模糊匹配</h1>
+         * <h2>字符串模糊匹配</h2>
          */
         LIKE,
 
         /**
-         * <h1>JOIN查询</h1>
+         * <h2>JOIN查询</h2>
          */
         JOIN,
     }

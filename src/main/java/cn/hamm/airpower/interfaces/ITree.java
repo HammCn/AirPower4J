@@ -11,14 +11,14 @@ import java.util.List;
  */
 public interface ITree<E extends RootEntity<E>> extends IEntity<E> {
     /**
-     * <h1>获取树的名称</h1>
+     * <h2>获取树的名称</h2>
      *
      * @return 树名称
      */
     String getName();
 
     /**
-     * <h1>设置树名称</h1>
+     * <h2>设置树名称</h2>
      *
      * @param name 树名称
      * @return 树实体
@@ -26,7 +26,7 @@ public interface ITree<E extends RootEntity<E>> extends IEntity<E> {
     E setName(String name);
 
     /**
-     * <h1>设置父级ID</h1>
+     * <h2>设置父级ID</h2>
      *
      * @param parentId 设置父级ID
      * @return 树实体
@@ -34,14 +34,14 @@ public interface ITree<E extends RootEntity<E>> extends IEntity<E> {
     E setParentId(Long parentId);
 
     /**
-     * <h1>获取树的父级ID</h1>
+     * <h2>获取树的父级ID</h2>
      *
      * @return 父级ID
      */
     Long getParentId();
 
     /**
-     * <h1>设置树的子集列表</h1>
+     * <h2>设置树的子集列表</h2>
      *
      * @param children 子集
      * @return 树实体
@@ -49,7 +49,7 @@ public interface ITree<E extends RootEntity<E>> extends IEntity<E> {
     E setChildren(List<E> children);
 
     /**
-     * <h1>获取树的子集列表</h1>
+     * <h2>获取树的子集列表</h2>
      *
      * @return 树的子集
      */

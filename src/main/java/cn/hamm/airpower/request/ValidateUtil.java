@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class ValidateUtil {
     /**
-     * <h1>是否是数字</h1>
+     * <h2>是否是数字</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -21,7 +21,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是整数</h1>
+     * <h2>是否是整数</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -31,7 +31,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是邮箱</h1>
+     * <h2>是否是邮箱</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -41,7 +41,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是字母</h1>
+     * <h2>是否是字母</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -51,7 +51,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是字母+数字</h1>
+     * <h2>是否是字母+数字</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -61,7 +61,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是中文汉字</h1>
+     * <h2>是否是中文汉字</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -71,7 +71,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是手机号</h1>
+     * <h2>是否是手机号</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -81,7 +81,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是座机电话</h1>
+     * <h2>是否是座机电话</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -91,7 +91,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是普通字符</h1>
+     * <h2>是否是普通字符</h2>
      * 允许字符:
      * <p>
      * > @ # % a-z A-Z 0-9 汉字 _ + /
@@ -105,7 +105,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是纯字母</h1>
+     * <h2>是否是纯字母</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -115,7 +115,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是纯字母和数字</h1>
+     * <h2>是否是纯字母和数字</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -125,7 +125,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是自然数</h1>
+     * <h2>是否是自然数</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -135,7 +135,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>是否是自然整数</h1>
+     * <h2>是否是自然整数</h2>
      *
      * @param value 参数
      * @return 验证结果
@@ -145,7 +145,7 @@ public class ValidateUtil {
     }
 
     /**
-     * <h1>正则校验</h1>
+     * <h2>正则校验</h2>
      *
      * @param value 参数
      * @param regex 正则

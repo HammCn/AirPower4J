@@ -18,12 +18,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Password {
     /**
-     * <h1>错误信息</h1>
+     * <h2>错误信息</h2>
      */
     String message() default "不是规范的密码格式";
 
     /**
-     * <h1>验证组</h1>
+     * <h2>验证组</h2>
      */
     Class<?>[] groups() default {};
 

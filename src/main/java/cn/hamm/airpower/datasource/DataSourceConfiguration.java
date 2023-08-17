@@ -19,7 +19,7 @@ public class DataSourceConfiguration {
     private DataSourceProperties dataSourceProperties;
 
     /**
-     * <h1>设置主要的数据源</h1>
+     * <h2>设置主要的数据源</h2>
      *
      * @return 数据源对应操作对象
      */

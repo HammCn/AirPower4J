@@ -20,36 +20,36 @@ import java.util.Map;
 @Service
 public class DataSourceResolver extends AbstractRoutingDataSource {
     /**
-     * <h1>数据库驱动协议</h1>
+     * <h2>数据库驱动协议</h2>
      */
     private static final String DATASOURCE_SCHEME = "jdbc:mysql://";
 
     /**
-     * <h1>驱动类名称</h1>
+     * <h2>驱动类名称</h2>
      */
     private static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
 
     /**
-     * <h1>其他信息配置</h1>
+     * <h2>其他信息配置</h2>
      */
     private static final String DATASOURCE_CONFIG = "?allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false";
 
     private static final ThreadLocal<String> THREAD_LOCAL = new ThreadLocal<>();
 
     /**
-     * <h1>数据源列表</h1>
+     * <h2>数据源列表</h2>
      */
     public static Map<Object, Object> dataSourceList = new HashMap<>();
 
     /**
-     * <h1>初始化空列表</h1>
+     * <h2>初始化空列表</h2>
      */
     public DataSourceResolver() {
         super.setTargetDataSources(dataSourceList);
     }
 
     /**
-     * <h1>获取数据源参数</h1>
+     * <h2>获取数据源参数</h2>
      *
      * @return 数据源参数
      */
@@ -58,7 +58,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h1>设置数据源参数</h1>
+     * <h2>设置数据源参数</h2>
      *
      * @param param 参数
      */
@@ -67,14 +67,14 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h1>清空数据源参数</h1>
+     * <h2>清空数据源参数</h2>
      */
     public static void clearDataSourceParam() {
         THREAD_LOCAL.remove();
     }
 
     /**
-     * <h1>获取数据源包含数据库的地址</h1>
+     * <h2>获取数据源包含数据库的地址</h2>
      *
      * @param dataSource 数据源
      * @return 数据源地址
@@ -84,7 +84,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h1>获取数据源不包含数据库的地址</h1>
+     * <h2>获取数据源不包含数据库的地址</h2>
      *
      * @param dataSource 数据源
      * @return 数据源地址
@@ -94,7 +94,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h1>创建数据库</h1>
+     * <h2>创建数据库</h2>
      *
      * @param dataSource 数据源信息
      */
@@ -129,7 +129,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h1>创建数据源</h1>
+     * <h2>创建数据源</h2>
      *
      * @param dataSourceInfo 数据源
      */
