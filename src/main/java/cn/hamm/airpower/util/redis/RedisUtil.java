@@ -208,4 +208,7 @@ public class RedisUtil<E extends RootEntity<E>> {
         }
     }
 
+    public void publish(String channel, String message) {
+        redisTemplate.convertAndSend(channel, message);
+    }
 }
