@@ -22,6 +22,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     @Autowired
     private final RedisTemplate<String, Object> redisTemplate;
 
+
     public RedisUtil(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }

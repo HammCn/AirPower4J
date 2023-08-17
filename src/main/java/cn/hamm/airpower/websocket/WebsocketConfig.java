@@ -7,7 +7,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
- * WebSocket Config
+ * <h1>WebSocket配置</h1>
  *
  * @author hamm
  */
@@ -28,9 +28,19 @@ public class WebsocketConfig implements WebSocketConfigurer {
      */
     static String path = "/websocket";
 
+    /**
+     * 订阅全频道
+     */
+    static String channelAll = "ALL";
+
+    /**
+     * 订阅用户频道前缀
+     */
+    static String channelUserPrefix = "USER_";
+
     @Bean
     public TextWebSocketHandler getWebSocketHandler() {
-        return new WebsocketHandler();
+        return new WebsocketHandler(null);
     }
 
     @Override
