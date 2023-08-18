@@ -1,12 +1,11 @@
 package cn.hamm.airpower.config;
 
 /**
- * <h1>CookieConfig</h1>
+ * <h1>Cookie相关配置</h1>
  *
  * @author Hamm
  */
 public class CookieConfig {
-
     /**
      * <h2>Cookie的路径</h2>
      */
