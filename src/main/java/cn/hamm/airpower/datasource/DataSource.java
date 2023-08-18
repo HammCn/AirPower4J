@@ -1,6 +1,5 @@
 package cn.hamm.airpower.datasource;
 
-import cn.hamm.airpower.config.GlobalConfig;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -15,17 +14,17 @@ public class DataSource {
     /**
      * <h2>数据库名称(租户的key)</h2>
      */
-    private String database = GlobalConfig.primaryDataBase;
+    private String database;
 
     /**
      * <h2>数据库地址</h2>
      */
-    private String host = GlobalConfig.defaultDatabaseHost = "127.0.0.1";
+    private String host = "127.0.0.1";
 
     /**
      * <h2>数据库端口</h2>
      */
-    private int port = GlobalConfig.defaultDatabasePort = 3306;
+    private int port = 3306;
 
     /**
      * <h2>数据库用户名</h2>

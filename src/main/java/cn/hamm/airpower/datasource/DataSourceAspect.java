@@ -1,6 +1,7 @@
 package cn.hamm.airpower.datasource;
 
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hutool.core.util.StrUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,9 +12,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * <h1>数据源切面</h1>
@@ -38,23 +36,12 @@ public class DataSourceAspect {
      */
     @Around("pointCut()")
     public Object multipleDataSource(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        String database = null;
-        try {
-            HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
-            String serverName = request.getServerName();
-            if ("".equalsIgnoreCase(GlobalConfig.apiRootDomain)) {
-                Pattern pattern = Pattern.compile("(.*?)" + GlobalConfig.apiRootDomain);
-                Matcher matcher = pattern.matcher(serverName);
-                if (matcher.find()) {
-                    database = GlobalConfig.databasePrefix + matcher.group().replaceAll("." + GlobalConfig.apiRootDomain, "");
-                }
-            }
-        } catch (Exception exception) {
+        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+        String database = request.getHeader(GlobalConfig.tenantHeader);
+        if (StrUtil.isAllBlank(database)) {
             return proceedingJoinPoint.proceed();
         }
-        if (Objects.nonNull(database)) {
-            DataSourceResolver.setDataSourceParam(database);
-        }
+        DataSourceResolver.setDataSourceParam(database);
         try {
             return proceedingJoinPoint.proceed();
         } finally {

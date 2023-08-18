@@ -7,36 +7,6 @@ package cn.hamm.airpower.config;
  */
 public class GlobalConfig {
     /**
-     * <h2>主数据源</h2>
-     * <p>
-     * 启动多数据源时, 此项将自动作为主数据源
-     * </p>
-     */
-    public static String primaryDataBase = "service";
-
-    /**
-     * <h2>数据库默认地址</h2>
-     */
-    public static String defaultDatabaseHost = "127.0.0.1";
-
-    /**
-     * <h2>数据库默认端口</h2>
-     */
-    public static int defaultDatabasePort = 3306;
-
-    /**
-     * <h2>部署API主域名</h2>
-     *
-     * <p>
-     * 如配置了非空字符串, 如 <code>hamm.cn</code>, 则自动启动多数据源：
-     * </p>
-     * <p>
-     * 访问 <code>test.hamm.cn</code> 时, 则自动切到数据源 <code>test</code> 上
-     * </p>
-     */
-    public static String apiRootDomain = "";
-
-    /**
      * <h2>数据库前缀</h2>
      */
     public static String databasePrefix = "tenant_";
@@ -70,6 +40,11 @@ public class GlobalConfig {
      * <h2>身份令牌header的key</h2>
      */
     public static String authorizeHeader = "authorization";
+
+    /**
+     * <h2>多租户的header的key</h2>
+     */
+    public static String tenantHeader = "tenant-code";
 
     /**
      * <h2>密码最大长度</h2>
