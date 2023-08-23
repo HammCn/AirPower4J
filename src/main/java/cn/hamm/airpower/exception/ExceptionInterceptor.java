@@ -54,9 +54,10 @@ public class ExceptionInterceptor {
         List<FieldError> errors = result.getFieldErrors();
         for (FieldError error : errors) {
             stringBuilder
-                    .append("验证失败，")
+                    .append(error.getDefaultMessage())
+                    .append("(")
                     .append(error.getField())
-                    .append(error.getDefaultMessage());
+                    .append(")");
             break;
         }
         return new Json(Result.PARAM_INVALID, stringBuilder.toString());
@@ -70,10 +71,11 @@ public class ExceptionInterceptor {
         StringBuilder stringBuilder = new StringBuilder();
         Set<ConstraintViolation<?>> errors = exception.getConstraintViolations();
         for (ConstraintViolation<?> error : errors) {
-            stringBuilder.append(error.getMessage());
-            stringBuilder.append("(");
-            stringBuilder.append(error.getInvalidValue());
-            stringBuilder.append(")");
+            stringBuilder
+                    .append(error.getMessage())
+                    .append("(")
+                    .append(error.getInvalidValue())
+                    .append(")");
             break;
         }
         return new Json(Result.PARAM_INVALID, stringBuilder.toString());
