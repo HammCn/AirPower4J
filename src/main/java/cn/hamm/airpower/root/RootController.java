@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author hamm
  */
-@Permission(login = false, authorize = false)
+@Permission(login = false)
 @RestController
 @RequestMapping("")
 public class RootController {
