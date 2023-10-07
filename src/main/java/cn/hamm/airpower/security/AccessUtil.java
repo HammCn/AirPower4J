@@ -49,7 +49,7 @@ public class AccessUtil {
      */
     public static String getPermissionIdentity(Class<?> clazz, Method method) {
         return clazz.getSimpleName().replaceAll("Controller", "").toLowerCase() +
-                "-" +
+                "_" +
                 method.getName();
     }
 }
