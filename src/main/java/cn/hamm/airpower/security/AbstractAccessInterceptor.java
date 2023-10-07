@@ -27,14 +27,14 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
         if (setCrossOriginHeaders(httpServletRequest, httpServletResponse)) {
             return false;
         }
-
+        beforeRequestHandle(httpServletRequest);
         HandlerMethod handlerMethod = (HandlerMethod) object;
-
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBean().getClass();
         Method method = handlerMethod.getMethod();
         AccessConfig accessConfig = AccessUtil.getWhatNeedAccess(clazz, method);
         if (!accessConfig.login) {
+            saveRequestLog(httpServletRequest, clazz, method, null);
             // 不需要登录 直接返回有权限
             return true;
         }
@@ -43,12 +43,24 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
         Result.UNAUTHORIZED.whenEmpty(accessToken);
         Long userId = JwtUtil.getUserId(accessToken);
         JwtUtil.verify(getUserPassword(userId), accessToken);
+        saveRequestLog(httpServletRequest, clazz, method, userId);
         //需要RBAC
         if (accessConfig.authorize) {
             //验证用户是否有接口的访问权限
-            return checkAccess(userId, handlerMethod);
+            return checkPermissionAccess(userId, AccessUtil.getPermissionIdentity(clazz, method));
         }
         return true;
+    }
+
+    /**
+     * <h2>保存请求日志</h2>
+     *
+     * @param request 请求体
+     * @param clazz   调用类
+     * @param method  调用方法
+     * @param userId  用户ID
+     */
+    public void saveRequestLog(HttpServletRequest request, Class<?> clazz, Method method, Long userId) {
     }
 
     /**
@@ -60,27 +72,21 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     public abstract String getUserPassword(Long userId);
 
     /**
+     * <h2>请求初始化前置处理方法</h2>
+     *
+     * @param httpServletRequest 请求
+     */
+    public void beforeRequestHandle(HttpServletRequest httpServletRequest) {
+    }
+
+    /**
      * <h2>验证指定的用户是否有指定权限标识的权限</h2>
      *
      * @param userId             用户ID
      * @param permissionIdentity 权限标识
      * @return 验证结果
      */
-    public abstract boolean checkAccess(Long userId, String permissionIdentity);
-
-
-    /**
-     * <h2>验证指定用户是否有指定方法的访问权限</h2>
-     *
-     * @param userId 用户ID
-     * @param method 方法
-     * @return 是否有权限
-     */
-    private boolean checkAccess(Long userId, HandlerMethod method) {
-        String permissionIdentity = method.getBeanType().getSimpleName().replaceAll("Controller", "").toLowerCase() + "_" + method.getMethod().getName();
-        return checkAccess(userId, permissionIdentity);
-    }
-
+    public abstract boolean checkPermissionAccess(Long userId, String permissionIdentity);
 
     /**
      * <h2>设置允许跨域的头</h2>

@@ -39,4 +39,17 @@ public class AccessUtil {
         }
         return accessConfig;
     }
+
+    /**
+     * <h2>获取权限标识</h2>
+     *
+     * @param clazz  类
+     * @param method 方法
+     * @return 权限标识
+     */
+    public static String getPermissionIdentity(Class<?> clazz, Method method) {
+        return clazz.getSimpleName().replaceAll("Controller", "").toLowerCase() +
+                "-" +
+                method.getName();
+    }
 }

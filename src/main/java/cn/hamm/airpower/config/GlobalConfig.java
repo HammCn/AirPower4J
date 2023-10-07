@@ -47,6 +47,11 @@ public class GlobalConfig {
     public static String tenantHeader = "tenant-code";
 
     /**
+     * <h2>应用版本号header的key</h2>
+     */
+    public static String appVersionHeader = "app-version";
+
+    /**
      * <h2>密码最大长度</h2>
      */
     public static int passwordMaxLength = 16;
