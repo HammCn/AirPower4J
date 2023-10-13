@@ -62,12 +62,17 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             //如果打开了缓存，优先读取缓存
             E cacheEntity = redisUtil.getEntity(getNewInstance().setId(id));
             if (Objects.nonNull(cacheEntity)) {
+                // 查到了缓存 更新缓存
+                saveToCache(cacheEntity);
                 return cacheEntity;
             }
         }
         Optional<E> optional = repository.findById(id);
         if (optional.isPresent()) {
-            return optional.get();
+            E entity = optional.get();
+            // 更新缓存
+            saveToCache(entity);
+            return entity;
         }
         Result.NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
         return getNewInstance();
@@ -394,7 +399,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
         entity = repository.saveAndFlush(target);
-        saveToCache(entity);
+        redisUtil.deleteEntity(entity);
         return getById(entity.getId());
     }
 
