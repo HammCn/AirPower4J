@@ -42,6 +42,11 @@ public class GlobalConfig {
     public static String authorizeHeader = "authorization";
 
     /**
+     * <h2>身份令牌有效期</h2>
+     */
+    public static int authorizeExpTime = 86400;
+
+    /**
      * <h2>多租户的header的key</h2>
      */
     public static String tenantHeader = "tenant-code";

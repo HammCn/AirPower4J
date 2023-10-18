@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class DataSourceAspect {
     @Autowired
-    DataSourceResolver dataSourceResolver;
+    private DataSourceResolver dataSourceResolver;
 
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.GetMapping)||" +

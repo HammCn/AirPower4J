@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebsocketUtil {
     @Autowired
-    RedisUtil<?> redisUtil;
+    private RedisUtil<?> redisUtil;
 
     /**
      * <h2>给所有人发消息</h2>

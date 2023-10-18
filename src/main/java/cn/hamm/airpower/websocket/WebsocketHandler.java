@@ -1,7 +1,6 @@
 package cn.hamm.airpower.websocket;
 
-import cn.hamm.airpower.security.JwtUtil;
-import cn.hamm.airpower.util.redis.RedisUtil;
+import cn.hamm.airpower.security.SecurityUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
@@ -25,12 +24,13 @@ import java.util.Objects;
  */
 @Component
 public class WebsocketHandler extends TextWebSocketHandler implements MessageListener {
-    @Autowired
-    RedisUtil<?> redisUtil;
 
     @SuppressWarnings("rawtypes")
     @Autowired
-    RedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private SecurityUtil securityUtil;
 
     private WebSocketSession currentSession;
 
@@ -60,7 +60,7 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
                 session.close();
                 return;
             }
-            Long userId = JwtUtil.getUserId(accessToken);
+            Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
             redisTemplate.execute((connection) -> {
                 connection.subscribe(new WebsocketHandler(session),
                         WebsocketConfig.channelAll.getBytes(StandardCharsets.UTF_8),

@@ -2,6 +2,7 @@ package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -18,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class AccessResolver implements HandlerMethodArgumentResolver {
+    @Autowired
+    private SecurityUtil securityUtil;
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         Class<?> clazz = parameter.getParameterType();
@@ -34,6 +38,6 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
         if (request != null) {
             accessToken = request.getHeader(GlobalConfig.authorizeHeader);
         }
-        return JwtUtil.getUserId(accessToken);
+        return securityUtil.getUserIdFromAccessToken(accessToken);
     }
 }

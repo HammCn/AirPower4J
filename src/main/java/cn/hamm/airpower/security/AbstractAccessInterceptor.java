@@ -3,8 +3,10 @@ package cn.hamm.airpower.security;
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -19,7 +21,11 @@ import java.lang.reflect.Method;
  *
  * @author Hamm
  */
+@Component
 public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
+
+    @Autowired
+    private SecurityUtil securityUtil;
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object object) {
@@ -39,8 +45,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
         //需要登录
         String accessToken = request.getHeader(GlobalConfig.authorizeHeader);
         Result.UNAUTHORIZED.whenEmpty(accessToken);
-        Long userId = JwtUtil.getUserId(accessToken);
-        JwtUtil.verify(getUserPassword(userId), accessToken);
+        Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
         //需要RBAC
         if (accessConfig.authorize) {
             //验证用户是否有接口的访问权限
@@ -48,14 +53,6 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
         }
         return true;
     }
-
-    /**
-     * <h2>获取用户的密码</h2>
-     *
-     * @param userId 用户ID
-     * @return 密码
-     */
-    public abstract String getUserPassword(Long userId);
 
     /**
      * <h2>验证指定的用户是否有指定权限标识的权限</h2>

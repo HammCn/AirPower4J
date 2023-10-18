@@ -9,7 +9,7 @@ import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.query.QueryRequest;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
-import cn.hamm.airpower.security.JwtUtil;
+import cn.hamm.airpower.security.SecurityUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.redis.RedisUtil;
 import cn.hutool.core.date.DateUtil;
@@ -49,6 +49,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
     @Autowired
     protected RedisUtil<E> redisUtil;
+
+    @Autowired
+    protected SecurityUtil secureUtil;
 
     /**
      * <h2>根据ID查询对应的实体</h2>
@@ -352,10 +355,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected Long getCurrentUserId() {
         try {
             String accessToken = request.getHeader(GlobalConfig.authorizeHeader);
-            return JwtUtil.getUserId(accessToken);
-        } catch (Exception e) {
-            return 0L;
+            Long userId = secureUtil.getUserIdFromAccessToken(accessToken);
+            return userId;
+        } catch (Exception ignored) {
         }
+        return 0L;
     }
 
     /**
