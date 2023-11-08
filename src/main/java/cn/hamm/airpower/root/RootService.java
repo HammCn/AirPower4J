@@ -63,11 +63,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         if (GlobalConfig.isCacheEnabled) {
             //如果打开了缓存，优先读取缓存
-            E cacheEntity = redisUtil.getEntity(getNewInstance().setId(id));
-            if (Objects.nonNull(cacheEntity)) {
+            E entity = redisUtil.getEntity(getNewInstance().setId(id));
+            if (Objects.nonNull(entity)) {
                 // 查到了缓存 更新缓存
-                saveToCache(cacheEntity);
-                return cacheEntity;
+                saveToCache(entity);
+                entity = afterGetById(entity);
+                return entity;
             }
         }
         Optional<E> optional = repository.findById(id);
@@ -75,10 +76,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             E entity = optional.get();
             // 更新缓存
             saveToCache(entity);
+            entity = afterGetById(entity);
             return entity;
         }
         Result.NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
-        return getNewInstance();
+        E entity = getNewInstance();
+        entity = afterGetById(entity);
+        return entity;
     }
 
     /**
@@ -155,13 +159,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param id ID
      */
     public void deleteById(Long id) {
-        E entity = getById(id);
-        beforeDelete(entity);
-        repository.deleteById(entity.getId());
+        beforeDelete(id);
+        repository.deleteById(id);
         if (GlobalConfig.isCacheEnabled) {
-            redisUtil.deleteEntity(entity);
+            redisUtil.deleteEntity(getNewInstance().setId(id));
         }
-        afterDelete(entity);
+        afterDelete(id);
     }
 
     /**
@@ -243,6 +246,15 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
+     * 查到一条数据后置方法
+     * @param entity 查到的数据
+     * @return 实体
+     */
+    protected E afterGetById(E entity){
+        return entity;
+    }
+
+    /**
      * <h2>添加前置方法</h2>
      *
      * @param entity 实体
@@ -278,6 +290,15 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 当前实体
      */
     protected E beforeSaveToDatabase(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>保存到数据库成功后</h2>
+     * @param entity 保存的实体
+     * @return 实体
+     */
+    protected E afterSaveToDatabase(E entity){
         return entity;
     }
 
@@ -334,17 +355,17 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>删除前置方法</h2>
      *
-     * @param entity 实体
+     * @param id ID
      */
-    protected void beforeDelete(E entity) {
+    protected void beforeDelete(Long id) {
     }
 
     /**
      * <h2>删除后置方法</h2>
      *
-     * @param entity 实体
+     * @param id ID
      */
-    protected void afterDelete(E entity) {
+    protected void afterDelete(Long id) {
     }
 
     /**
@@ -404,6 +425,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         target = beforeSaveToDatabase(target);
         entity = repository.saveAndFlush(target);
         redisUtil.deleteEntity(entity);
+        entity = afterSaveToDatabase(entity);
         return getById(entity.getId());
     }
 

@@ -228,7 +228,9 @@ public class RootModel<E extends RootModel<E>> {
                 field.set(this, list);
                 return;
             }
-            field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(RootEntity.WhenPayLoad.class));
+            if(Objects.nonNull(fieldValue)) {
+                field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(RootEntity.WhenPayLoad.class));
+            }
         } catch (IllegalAccessException | ClassCastException e) {
             // 发生点小问题...
         }
