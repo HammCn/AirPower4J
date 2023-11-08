@@ -107,9 +107,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 实体
      */
     public E add(E entity) {
-        entity.setId(null);
-        checkUnique(entity);
-        return afterAdd(addToDatabase(beforeAdd(entity)));
+        return addToDatabase(entity);
     }
 
     /**
@@ -119,12 +117,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 实体
      */
     public E update(E entity) {
-        Result.PARAM_MISSING.whenNull(entity.getId(),
-                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        E existEntity = getById(entity.getId());
-        checkUnique(entity);
-        entity.setIsDisabled(null);
-        return afterUpdate(saveToDatabase(beforeUpdate(entity)));
+        return saveToDatabase(entity);
     }
 
     /**
@@ -164,7 +157,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (GlobalConfig.isCacheEnabled) {
             redisUtil.deleteEntity(getNewInstance().setId(id));
         }
-        afterDelete(id);
     }
 
     /**
@@ -247,40 +239,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
     /**
      * 查到一条数据后置方法
+     *
      * @param entity 查到的数据
      * @return 实体
      */
-    protected E afterGetById(E entity){
-        return entity;
-    }
-
-    /**
-     * <h2>添加前置方法</h2>
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E beforeAdd(E entity) {
-        return entity;
-    }
-
-    /**
-     * <h2>添加后置方法</h2>
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E afterAdd(E entity) {
-        return entity;
-    }
-
-    /**
-     * <h2>更新前置方法</h2>
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E beforeUpdate(E entity) {
+    protected E afterGetById(E entity) {
         return entity;
     }
 
@@ -290,15 +253,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 当前实体
      */
     protected E beforeSaveToDatabase(E entity) {
-        return entity;
-    }
-
-    /**
-     * <h2>保存到数据库成功后</h2>
-     * @param entity 保存的实体
-     * @return 实体
-     */
-    protected E afterSaveToDatabase(E entity){
         return entity;
     }
 
@@ -361,14 +315,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>删除后置方法</h2>
-     *
-     * @param id ID
-     */
-    protected void afterDelete(Long id) {
-    }
-
-    /**
      * <h2>获取当前登录用户的信息</h2>
      *
      * @return 用户ID
@@ -389,7 +335,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param entity 实体
      * @return 实体
      */
-    private E addToDatabase(E entity) {
+    protected final E addToDatabase(E entity) {
         entity.setId(null)
                 .setIsDisabled(false)
                 .setCreateTime(DateUtil.current())
@@ -402,12 +348,26 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
+     * <h2>更新到数据库</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected final E updateToDatabase(E entity) {
+        Result.PARAM_MISSING.whenNull(entity.getId(),
+                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        entity.setIsDisabled(null);
+        return saveToDatabase(entity);
+    }
+
+    /**
      * <h2>保存到数据库</h2>
      *
      * @param entity 实体
      * @return 实体
      */
     private E saveToDatabase(E entity) {
+        checkUnique(entity);
         entity.setUpdateTime(DateUtil.current());
         entity.setUpdateUserId(getCurrentUserId());
         if (Objects.nonNull(entity.getId())) {
@@ -420,13 +380,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
             entity = getEntityForSave(entity, existEntity);
         }
-        E target = getNewInstance();
-        BeanUtils.copyProperties(entity, target);
-        target = beforeSaveToDatabase(target);
-        entity = repository.saveAndFlush(target);
+        entity = beforeSaveToDatabase(entity);
+        entity = repository.saveAndFlush(entity);
         redisUtil.deleteEntity(entity);
-        entity = afterSaveToDatabase(entity);
-        return getById(entity.getId());
+        return entity;
     }
 
     /**
