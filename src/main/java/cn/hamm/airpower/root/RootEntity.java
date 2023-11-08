@@ -4,7 +4,6 @@ import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.interfaces.IEntity;
-import cn.hamm.airpower.util.ReflectUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -188,8 +187,8 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * @return 简单对象
      * @noinspection unused
      */
-    protected E getBaseData() {
-        return this.exclude(ReflectUtil.getFieldNameList(RootEntity.class));
+    public E excludeBaseData() {
+        return this.setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
     }
 
     /**
