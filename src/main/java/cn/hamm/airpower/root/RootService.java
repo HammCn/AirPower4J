@@ -356,7 +356,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected final E updateToDatabase(E entity) {
         Result.PARAM_MISSING.whenNull(entity.getId(),
                 "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        entity.setIsDisabled(null);
         return saveToDatabase(entity);
     }
 
@@ -372,7 +371,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         entity.setUpdateUserId(getCurrentUserId());
         if (Objects.nonNull(entity.getId())) {
             //有ID 走修改 且不允许修改下列字段
-            entity.setCreateTime(null);
             E existEntity = getById(entity.getId());
             if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
                 // 如果数据库是null 且 传入的也是null 签名给空字符串
