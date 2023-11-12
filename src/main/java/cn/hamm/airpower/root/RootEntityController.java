@@ -26,9 +26,8 @@ import java.util.Objects;
  * @author Hamm
  * @noinspection SpringJavaInjectionPointsAutowiringInspection
  */
-@SuppressWarnings("rawtypes")
 @Permission
-public class RootEntityController<S extends RootService, E extends RootEntity<?>> extends RootController {
+public class RootEntityController<E extends RootEntity<E>, S extends RootService<E, R>, R extends RootRepository<E>> extends RootController {
     @Autowired
     protected S service;
 
@@ -37,7 +36,10 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
     @ResponseFilter(RootEntity.WhenGetDetail.class)
     public JsonData add(@RequestBody @Validated(RootEntity.WhenAdd.class) E entity) {
         checkApiAvailableStatus(Api.Add);
-        return jsonData(service.add(entity.toEntity()));
+        entity = beforeAdd(entity.toEntity());
+        entity = service.add(entity);
+        entity = afterAdd(entity);
+        return jsonData(entity, "创建成功");
     }
 
     @Description("删除")
@@ -62,7 +64,10 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
     @ResponseFilter(RootEntity.WhenGetDetail.class)
     public JsonData update(@RequestBody @Validated(RootEntity.WhenUpdate.class) E entity) {
         checkApiAvailableStatus(Api.Update);
-        return jsonData(service.update(entity.toEntity()), "修改成功");
+        entity = beforeUpdate(entity.toEntity());
+        entity = service.update(entity);
+        entity = afterUpdate(entity);
+        return jsonData(entity, "修改成功");
     }
 
     @Description("查询详情")
@@ -70,7 +75,7 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
     @ResponseFilter(RootEntity.WhenGetDetail.class)
     public JsonData getDetail(@RequestBody @Validated(RootEntity.WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.GetDetail);
-        E existEntity = (E) service.getById(entity.getId());
+        E existEntity = service.getById(entity.getId());
         return jsonData(afterGetDetail(existEntity));
     }
 
@@ -124,6 +129,46 @@ public class RootEntityController<S extends RootService, E extends RootEntity<?>
     @SuppressWarnings("unused")
     protected void deleteRelationData(Long id) {
         Result.SERVICE_NOT_FOUND.show();
+    }
+
+    /**
+     * <h2>新增前置方法</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E beforeAdd(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>新增后置方法</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E afterAdd(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>修改前置方法</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E beforeUpdate(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>修改后置方法</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E afterUpdate(E entity) {
+        return entity;
     }
 
     /**

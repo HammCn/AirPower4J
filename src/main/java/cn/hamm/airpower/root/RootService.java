@@ -257,16 +257,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>更新后置方法</h2>
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E afterUpdate(E entity) {
-        return entity;
-    }
-
-    /**
      * <h2>禁用前置方法</h2>
      *
      * @param entity 实体
@@ -303,6 +293,46 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 实体
      */
     protected E afterEnable(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>新增前置方法</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E beforeAdd(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>新增后置方法</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E afterAdd(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>修改前置方法</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E beforeUpdate(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>修改后置方法</h2>
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E afterUpdate(E entity) {
         return entity;
     }
 
@@ -344,7 +374,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             entity.setRemark("");
         }
         entity.setCreateUserId(getCurrentUserId());
-        return saveToDatabase(entity);
+        entity = beforeAdd(entity);
+        entity = saveToDatabase(entity);
+        return afterAdd(entity);
     }
 
     /**
@@ -356,7 +388,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected final E updateToDatabase(E entity) {
         Result.PARAM_MISSING.whenNull(entity.getId(),
                 "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        return saveToDatabase(entity);
+        entity = beforeUpdate(entity);
+        entity = saveToDatabase(entity);
+        return afterUpdate(entity);
     }
 
     /**
@@ -378,10 +412,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
             entity = getEntityForSave(entity, existEntity);
         }
-        entity = beforeSaveToDatabase(entity);
-        entity = repository.saveAndFlush(entity);
-        redisUtil.deleteEntity(entity);
-        return entity;
+        E target = getNewInstance();
+        BeanUtils.copyProperties(entity, target);
+        target = beforeSaveToDatabase(target);
+        target = repository.saveAndFlush(target);
+        redisUtil.deleteEntity(target);
+        return target;
     }
 
     /**
@@ -443,7 +479,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     continue;
                 }
                 Result.FORBIDDEN_EXIST.show(fieldName + "(" + field.get(entity).toString() + ")已经存在！");
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 Result.ERROR.show();
             }
         }
