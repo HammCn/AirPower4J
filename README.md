@@ -9,7 +9,7 @@
   <img src="https://svg.hamm.cn?key=DB&value=MySQL"/>
 </p>
 
-[Gitee](https://gitee.com/air-power/AirPower4J) / [Github](https://github.com/HammCn/AirPower4J/issues) / [CHANGELOG](./CHANGELOG.md)
+[Gitee](https://gitee.com/air-power/AirPower4J) / [Github](https://github.com/HammCn/AirPower4J) / [CHANGELOG](./CHANGELOG.md)
 
 
 ## 📖 这是个什么项目
