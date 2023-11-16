@@ -2,8 +2,8 @@ package cn.hamm.airpower.request;
 
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;

@@ -1,8 +1,8 @@
 package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.config.CookieConfig;
+import jakarta.servlet.http.Cookie;
 
-import javax.servlet.http.Cookie;
 
 /**
  * <h1>Cookie助手</h1>

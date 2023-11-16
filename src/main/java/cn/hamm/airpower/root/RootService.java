@@ -14,6 +14,9 @@ import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.redis.RedisUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import jakarta.persistence.Column;
+import jakarta.persistence.criteria.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -24,9 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.Column;
-import javax.persistence.criteria.*;
-import javax.servlet.http.HttpServletRequest;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
