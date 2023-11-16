@@ -1,10 +1,11 @@
 package cn.hamm.airpower.validate.password;
 
 import cn.hamm.airpower.config.GlobalConfig;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.util.StringUtils;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

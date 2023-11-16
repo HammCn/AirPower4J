@@ -1,10 +1,11 @@
 package cn.hamm.airpower.validate.phone;
 
 import cn.hamm.airpower.request.ValidateUtil;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.util.StringUtils;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+
 
 /**
  * <h1>电话验证实现类</h1>

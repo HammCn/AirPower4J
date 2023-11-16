@@ -1,7 +1,7 @@
 package cn.hamm.airpower.response;
 
-import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.result.json.JsonData;
+import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.root.RootModel;
 import cn.hamm.airpower.util.ReflectUtil;
 import org.aspectj.lang.ProceedingJoinPoint;

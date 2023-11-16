@@ -10,8 +10,8 @@ import cn.hamm.airpower.query.QueryRequest;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.security.SecurityUtil;
-import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.redis.RedisUtil;
+import cn.hamm.airpower.util.ReflectUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.persistence.Column;
@@ -564,7 +564,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private Sort createSort(QueryRequest<E> queryRequest) {
         String sortField = GlobalConfig.defaultSortField;
         if (Objects.isNull(queryRequest.getSort())) {
-            queryRequest.setSort(new cn.hamm.airpower.model.Sort());
+            queryRequest.setSort(new cn.hamm.airpower.model.Sort ());
         }
         if (!"".equalsIgnoreCase(queryRequest.getSort().getField())) {
             // 如果传入了Sort和字段
