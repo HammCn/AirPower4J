@@ -1,6 +1,6 @@
 <p align="center">
   <!--suppress HtmlRequiredAltAttribute -->
-<img width="300" src="airpower-docs/img/airpower.png"/>
+<img width="300" src="docs/img/airpower.png"/>
 </p>
 
 <p align="center">
