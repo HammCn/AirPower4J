@@ -39,7 +39,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @Description("ID")
     @Id
     @Search(Search.Mode.EQUALS)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint UNSIGNED comment 'ID'")
     @Min(value = 0, message = "ID必须大于{value}")
     @NotNull(groups = {WhenUpdate.class, WhenIdRequired.class}, message = "ID不能为空")
