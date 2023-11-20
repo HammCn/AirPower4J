@@ -101,7 +101,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>添加一条数据</h2>
+     * <h2>添加一条数据(可能被重写)</h2>
      *
      * @param entity 保存的实体
      * @return 实体
@@ -111,7 +111,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>修改一条已经存在的数据</h2>
+     * <h2>修改一条已经存在的数据(可能被重写)</h2>
      *
      * @param entity 保存的实体
      * @return 实体
@@ -360,7 +360,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>添加到数据库</h2>
+     * <h2>添加到数据库(直接保存)</h2>
      *
      * @param entity 实体
      * @return 实体
@@ -380,7 +380,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>更新到数据库</h2>
+     * <h2>更新到数据库(直接保存)</h2>
      *
      * @param entity 实体
      * @return 实体
