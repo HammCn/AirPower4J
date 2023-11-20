@@ -2,22 +2,19 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>cn.hamm</groupId>
     <artifactId>airpower</artifactId>
     <version>1.0.0</version>
-    <name>airpower-dependence</name>
-    <description>airpower-dependence</description>
+    <name>airpower</name>
+    <description>airpower</description>
     <properties>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <!--        spring boot版本-->
         <springboot.version>3.1.2</springboot.version>
         <mysql.version>8.0.27</mysql.version>
-        <!--        hutool工具类版本-->
         <hutool.version>5.8.11</hutool.version>
         <fastjon.version>1.2.76</fastjon.version>
         <druid.springboot.version>1.2.11</druid.springboot.version>
@@ -27,54 +24,44 @@
         <airpower.version>1.0.0</airpower.version>
     </properties>
     <packaging>pom</packaging>
-
     <modules>
-        <module>airpower-support</module>
+        <module>airpower-core</module>
+        <module>airpower-docs</module>
     </modules>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <!--            mysql驱动-->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
                 <scope>runtime</scope>
             </dependency>
-
-            <!--            hutool工具类-->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjon.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.springboot.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${jetbrains.annotations.version}</version>
-
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
@@ -88,7 +75,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -96,7 +82,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${springboot.version}</version>
             </plugin>
-            <!--发布源码插件-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
