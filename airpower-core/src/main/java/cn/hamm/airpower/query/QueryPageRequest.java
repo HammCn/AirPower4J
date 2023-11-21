@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class QueryPageRequest<M extends RootEntity<?>> extends QueryRequest<M> {
+public class QueryPageRequest<M extends RootEntity<M>> extends QueryRequest<M> {
     /**
      * <h2>分页</h2>
      */

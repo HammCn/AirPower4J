@@ -5,7 +5,6 @@ import cn.hamm.airpower.root.RootModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
  * <h1>查询请求</h1>
@@ -16,8 +15,7 @@ import lombok.experimental.Accessors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Accessors(chain = true)
-public class QueryRequest<M extends RootModel<?>> {
+public class QueryRequest<M extends RootModel<M>> {
     /**
      * <h2>排序对象</h2>
      */
@@ -32,4 +30,37 @@ public class QueryRequest<M extends RootModel<?>> {
      * <h2>关键词搜索</h2>
      */
     private String keyword;
+
+    /**
+     * <h2>设置过滤器</h2>
+     *
+     * @param filter 过滤器
+     * @return 请求
+     */
+    public QueryRequest<M> setFilter(M filter) {
+        this.filter = filter;
+        return this;
+    }
+
+    /**
+     * <h2>设置排序</h2>
+     *
+     * @param sort 排序
+     * @return 请求
+     */
+    public QueryRequest<M> setSort(Sort sort) {
+        this.sort = sort;
+        return this;
+    }
+
+    /**
+     * <h2>设置查询关键词</h2>
+     *
+     * @param keyword 关键词
+     * @return 请求
+     */
+    public QueryRequest<M> setKeyword(String keyword) {
+        this.keyword = keyword;
+        return this;
+    }
 }
