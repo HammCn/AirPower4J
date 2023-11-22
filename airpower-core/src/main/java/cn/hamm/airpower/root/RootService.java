@@ -652,7 +652,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     } else {
                         predicateList.add(builder.equal(((Join<?, ?>) root).get(field.getName()), searchValue));
                     }
-                    return predicateList;
                 }
             } catch (IllegalAccessException exception) {
                 exception.printStackTrace();
