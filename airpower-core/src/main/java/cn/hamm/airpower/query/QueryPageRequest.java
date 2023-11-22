@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 /**
  * <h1>查询分页请求</h1>
  *
- * @param <M> 数据模型
+ * @param <E> 数据模型
  * @author Hamm
  */
 @EqualsAndHashCode(callSuper = true)
@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class QueryPageRequest<M extends RootEntity<M>> extends QueryRequest<M> {
+public class QueryPageRequest<E extends RootEntity<E>> extends QueryRequest<E> {
     /**
      * <h2>分页</h2>
      */

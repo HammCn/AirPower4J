@@ -1,21 +1,21 @@
 package cn.hamm.airpower.query;
 
 import cn.hamm.airpower.model.Sort;
-import cn.hamm.airpower.root.RootModel;
+import cn.hamm.airpower.root.RootEntity;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
  * <h1>查询请求</h1>
  *
- * @param <M> 数据模型
+ * @param <E> 数据模型
  * @author Hamm
  */
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueryRequest<M extends RootModel<M>> {
+public class QueryRequest<E extends RootEntity<E>> {
     /**
      * <h2>排序对象</h2>
      */
@@ -24,7 +24,7 @@ public class QueryRequest<M extends RootModel<M>> {
     /**
      * <h2>搜索过滤器</h2>
      */
-    private M filter = null;
+    private E filter = null;
 
     /**
      * <h2>关键词搜索</h2>
@@ -37,7 +37,7 @@ public class QueryRequest<M extends RootModel<M>> {
      * @param filter 过滤器
      * @return 请求
      */
-    public QueryRequest<M> setFilter(M filter) {
+    public QueryRequest<E> setFilter(E filter) {
         this.filter = filter;
         return this;
     }
@@ -48,7 +48,7 @@ public class QueryRequest<M extends RootModel<M>> {
      * @param sort 排序
      * @return 请求
      */
-    public QueryRequest<M> setSort(Sort sort) {
+    public QueryRequest<E> setSort(Sort sort) {
         this.sort = sort;
         return this;
     }
@@ -59,7 +59,7 @@ public class QueryRequest<M extends RootModel<M>> {
      * @param keyword 关键词
      * @return 请求
      */
-    public QueryRequest<M> setKeyword(String keyword) {
+    public QueryRequest<E> setKeyword(String keyword) {
         this.keyword = keyword;
         return this;
     }
