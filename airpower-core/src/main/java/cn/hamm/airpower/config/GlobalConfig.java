@@ -7,6 +7,11 @@ package cn.hamm.airpower.config;
  */
 public class GlobalConfig {
     /**
+     * <h2>服务全局拦截</h2>
+     */
+    public static boolean isServiceRunning = true;
+
+    /**
      * <h2>数据库前缀</h2>
      */
     public static String databasePrefix = "tenant_";
