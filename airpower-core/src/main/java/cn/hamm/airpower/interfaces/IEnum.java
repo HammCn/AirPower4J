@@ -18,6 +18,5 @@ public interface IEnum {
      *
      * @return 描述
      */
-    @SuppressWarnings("unused")
     String getLabel();
 }

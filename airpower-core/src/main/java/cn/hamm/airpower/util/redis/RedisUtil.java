@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
  * <h1>Redis封装类</h1>
  *
  * @author Hamm
- * @noinspection unused
  */
 @Component
 public class RedisUtil<E extends RootEntity<E>> {
@@ -79,8 +78,8 @@ public class RedisUtil<E extends RootEntity<E>> {
      *
      * @param key  键
      * @param time 时间(秒)
-     * @noinspection unused
      */
+    @SuppressWarnings("unused")
     public void expire(String key, long time) {
         try {
             if (time > 0) {
@@ -110,6 +109,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     /**
      * <h2>删除所有数据</h2>
      */
+    @SuppressWarnings("unused")
     public void clearAll() {
         clearAll("*");
     }
@@ -119,8 +119,8 @@ public class RedisUtil<E extends RootEntity<E>> {
      *
      * @param key 键 不能为null
      * @return 时间(秒) 返回0代表为永久有效
-     * @noinspection unused
      */
+    @SuppressWarnings("unused")
     public long getExpire(String key) {
         try {
             //noinspection ConstantConditions

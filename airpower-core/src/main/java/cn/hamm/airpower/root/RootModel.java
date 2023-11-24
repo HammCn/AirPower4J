@@ -14,8 +14,8 @@ import java.util.*;
  * <h1>数据根模型</h1>
  *
  * @author Hamm
- * @noinspection unchecked
  */
+@SuppressWarnings("unchecked")
 public class RootModel<E extends RootModel<E>> {
     /**
      * <h2>复制实例到新的实例</h2>
@@ -24,6 +24,7 @@ public class RootModel<E extends RootModel<E>> {
      * @param <R>   返回类型
      * @return 返回实例
      */
+    @SuppressWarnings("unused")
     public <R> R copyTo(Class<R> clazz) {
         try {
             R target = clazz.getDeclaredConstructor().newInstance();
@@ -48,7 +49,6 @@ public class RootModel<E extends RootModel<E>> {
      *
      * @param fieldNames 字段列表
      * @return 实体
-     * @noinspection unused
      */
     public E exclude(String... fieldNames) {
         List<String> list = new ArrayList<>(fieldNames.length);
@@ -80,8 +80,8 @@ public class RootModel<E extends RootModel<E>> {
      *
      * @param fieldNames 字段列表
      * @return 实体
-     * @noinspection unused
      */
+    @SuppressWarnings("unused")
     public E expose(String... fieldNames) {
         List<Field> fieldList = ReflectUtil.getFieldList(this.getClass());
         for (Field field : fieldList) {

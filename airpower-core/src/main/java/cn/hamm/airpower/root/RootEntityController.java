@@ -24,9 +24,9 @@ import java.util.Objects;
  * @param <S> Service
  * @param <E> 实体或实体的子类
  * @author Hamm
- * @noinspection SpringJavaInjectionPointsAutowiringInspection
  */
 @Permission
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class RootEntityController<E extends RootEntity<E>, S extends RootService<E, R>, R extends RootRepository<E>> extends RootController {
     @Autowired
     protected S service;

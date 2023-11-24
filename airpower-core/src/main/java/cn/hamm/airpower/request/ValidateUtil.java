@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
  * <h1>验证器工具类</h1>
  *
  * @author Hamm
- * @noinspection unused
  */
+@SuppressWarnings("unused")
 public class ValidateUtil {
     /**
      * <h2>是否是数字</h2>

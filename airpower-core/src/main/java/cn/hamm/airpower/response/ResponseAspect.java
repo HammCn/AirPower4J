@@ -20,7 +20,6 @@ import java.util.Objects;
  * <h1>API请求的响应拦截器</h1>
  *
  * @author Hamm
- * @noinspection unchecked
  */
 @Aspect
 @Component
@@ -45,6 +44,7 @@ public class ResponseAspect {
 
         if (ArrayList.class.equals(dataCls)) {
             // 如果JsonData是数组
+            //noinspection unchecked
             List<RootModel<?>> list = (List<RootModel<?>>) (jsonData.getData());
             jsonData.setData(filterResponseListBy(responseFilter, list));
             return jsonData;
@@ -55,6 +55,7 @@ public class ResponseAspect {
             QueryPageResponse queryPageResponse = (QueryPageResponse) jsonData.getData();
             List<?> list = queryPageResponse.getList();
             filterResponseListBy(responseFilter, list);
+            //noinspection unchecked
             jsonData.setData(queryPageResponse.setList(list));
             return jsonData;
         }

@@ -58,6 +58,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 布尔
      */
+    @SuppressWarnings("unused")
     public static boolean isEntity(Class<?> clazz) {
         if (Objects.isNull(clazz)) {
             return false;
@@ -117,6 +118,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 属性名数组
      */
+    @SuppressWarnings("unused")
     public static List<String> getFieldNameList(Class<?> clazz) {
         Field[] fields = clazz.getDeclaredFields();
         List<String> fieldNames = new ArrayList<>();

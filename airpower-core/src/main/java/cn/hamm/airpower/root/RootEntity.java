@@ -22,7 +22,6 @@ import java.io.Serializable;
  * <h1>实体根类</h1>
  *
  * @author Hamm
- * @noinspection unchecked
  */
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -32,6 +31,7 @@ import java.io.Serializable;
 @DynamicInsert
 @DynamicUpdate
 @Description("")
+@SuppressWarnings("unchecked")
 public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E> {
     /**
      * <h2>主键ID</h2>
@@ -186,8 +186,8 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * </p>
      *
      * @return 简单对象
-     * @noinspection unused
      */
+    @SuppressWarnings("UnusedReturnValue")
     public E excludeBaseData() {
         return this.setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
     }

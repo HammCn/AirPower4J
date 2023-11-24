@@ -38,8 +38,8 @@ import java.util.*;
  * @param <E> 实体
  * @param <R> 数据源
  * @author Hamm
- * @noinspection ALL
  */
+@SuppressWarnings("ALL")
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     @Autowired
     protected R repository;
@@ -126,6 +126,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param id ID
      * @return 实体
      */
+    @SuppressWarnings("UnusedReturnValue")
     public E disableById(Long id) {
         E entity = getById(id);
         entity = beforeDisable(entity);
@@ -139,6 +140,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param id ID
      * @return 实体
      */
+    @SuppressWarnings("UnusedReturnValue")
     public E enableById(Long id) {
         E entity = getById(id);
         entity = beforeEnable(entity);
@@ -352,8 +354,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected Long getCurrentUserId() {
         try {
             String accessToken = request.getHeader(GlobalConfig.authorizeHeader);
-            Long userId = secureUtil.getUserIdFromAccessToken(accessToken);
-            return userId;
+            return secureUtil.getUserIdFromAccessToken(accessToken);
         } catch (Exception ignored) {
         }
         return 0L;
@@ -702,12 +703,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected <T extends ITree> List<T> list2TreeList(List<T> list, Long parentId) {
         List<T> treeList = new ArrayList<>();
         list.forEach(item -> {
-            if (item.getParentId() == parentId) {
+            if (parentId.equals(item.getParentId())) {
                 treeList.add(item);
             }
         });
-        for (int i = 0; i < treeList.size(); i++) {
-            treeList.get(i).setChildren(list2TreeList(list, treeList.get(i).getId()));
+        for (T t : treeList) {
+            t.setChildren(list2TreeList(list, t.getId()));
         }
         return treeList;
     }

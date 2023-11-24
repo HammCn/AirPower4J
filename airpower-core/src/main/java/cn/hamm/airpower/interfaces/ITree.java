@@ -46,6 +46,7 @@ public interface ITree<E extends RootEntity<E>> extends IEntity<E> {
      * @param children 子集
      * @return 树实体
      */
+    @SuppressWarnings("UnusedReturnValue")
     E setChildren(List<E> children);
 
     /**
@@ -53,5 +54,6 @@ public interface ITree<E extends RootEntity<E>> extends IEntity<E> {
      *
      * @return 树的子集
      */
+    @SuppressWarnings("unused")
     List<E> getChildren();
 }

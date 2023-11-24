@@ -16,8 +16,8 @@ import java.util.Base64;
  * <h1>RSA加解密助手类</h1>
  *
  * @author Hamm
- * @noinspection unused
  */
+@SuppressWarnings("unused")
 public class RsaHelper {
     /**
      * <h2>加密算法KEY长度</h2>
