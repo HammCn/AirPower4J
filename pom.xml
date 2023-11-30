@@ -13,15 +13,17 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <springboot.version>3.1.2</springboot.version>
-        <mysql.version>8.0.27</mysql.version>
-        <hutool.version>5.8.11</hutool.version>
-        <fastjon.version>1.2.76</fastjon.version>
+        <springboot.version>3.2.0</springboot.version>
+        <mysql.version>8.0.33</mysql.version>
+        <hutool.version>5.8.23</hutool.version>
+        <fastjon.version>1.2.83</fastjon.version>
         <druid.springboot.version>1.2.11</druid.springboot.version>
         <jetbrains.annotations.version>23.0.0</jetbrains.annotations.version>
-        <codec.version>1.9</codec.version>
+        <codec.version>1.13</codec.version>
         <sun.mail.veriosn>1.5.6</sun.mail.veriosn>
         <airpower.version>1.0.0</airpower.version>
+        <integration.mqtt.version>6.0.0</integration.mqtt.version>
+        <integration.version>3.2.0</integration.version>
     </properties>
     <packaging>pom</packaging>
     <modules>
@@ -35,6 +37,11 @@
                 <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+                <version>${springboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
@@ -71,6 +78,16 @@
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
                 <version>${sun.mail.veriosn}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.integration</groupId>
+                <artifactId>spring-integration-mqtt</artifactId>
+                <version>${integration.mqtt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-integration</artifactId>
+                <version>${integration.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

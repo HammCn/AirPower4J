@@ -1,12 +1,16 @@
 package cn.hamm.airpower.websocket;
 
+import cn.hamm.airpower.mqtt.MqttHelper;
 import cn.hamm.airpower.security.SecurityUtil;
-import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -14,8 +18,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
@@ -23,31 +25,36 @@ import java.util.Objects;
  *
  * @author hamm
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Component
 public class WebsocketHandler extends TextWebSocketHandler implements MessageListener {
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
-
     @Autowired
     private SecurityUtil securityUtil;
 
-    private WebSocketSession currentSession;
+    @Autowired
+    private MqttHelper mqttHelper;
 
-    WebsocketHandler() {
-    }
-
-    WebsocketHandler(WebSocketSession session) {
-        currentSession = session;
-    }
-
+    /**
+     * <h2>收到Websocket消息时</h2>
+     *
+     * @param session     会话
+     * @param textMessage 文本消息
+     * @throws Exception 异常
+     */
     @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage textMessage) throws Exception {
+    protected void handleTextMessage(@NonNull WebSocketSession session, @NotNull TextMessage textMessage) throws Exception {
         String message = textMessage.getPayload();
         if (WebsocketConfig.ping.equals(message)) {
             session.sendMessage(new TextMessage(WebsocketConfig.pong));
         }
     }
 
+    /**
+     * <h2>连接就绪后监听队列</h2>
+     *
+     * @param session 会话
+     * @throws Exception 异常
+     */
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         if (Objects.isNull(session.getUri())) {
@@ -60,15 +67,30 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
                 return;
             }
             Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
-            redisTemplate.execute((connection) -> {
-                connection.subscribe(new WebsocketHandler(session),
-                        WebsocketConfig.channelAll.getBytes(StandardCharsets.UTF_8),
-                        (WebsocketConfig.channelUserPrefix + userId.toString()).getBytes(StandardCharsets.UTF_8)
-                );
-                return null;
-            }, false);
+            MqttClient mqttClient = mqttHelper.createClient();
+            mqttClient.setCallback(new MqttCallback() {
+                @SneakyThrows
+                @Override
+                public void connectionLost(Throwable throwable) {
+                    mqttClient.close();
+                }
+
+                @Override
+                public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+                    synchronized (session) {
+                        session.sendMessage(new TextMessage(mqttMessage.getPayload()));
+                    }
+                }
+
+                @Override
+                public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+
+                }
+            });
+            mqttClient.connect(mqttHelper.createOption());
+            String[] topics = {WebsocketConfig.channelAll, WebsocketConfig.channelUserPrefix + userId};
+            mqttClient.subscribe(topics);
         } catch (Exception e) {
-            e.printStackTrace();
             session.close();
         }
     }
@@ -80,11 +102,5 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
 
     @Override
     public void onMessage(@NotNull Message message, byte[] pattern) {
-        try {
-            if (currentSession.isOpen()) {
-                currentSession.sendMessage(new TextMessage(message.getBody()));
-            }
-        } catch (IOException ignored) {
-        }
     }
 }

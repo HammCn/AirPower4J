@@ -31,16 +31,16 @@ public class WebsocketConfig implements WebSocketConfigurer {
     /**
      * <h2>订阅全频道</h2>
      */
-    static String channelAll = "ALL";
+    static String channelAll = "WEBSOCKET_ALL";
 
     /**
      * <h2>订阅用户频道前缀</h2>
      */
-    static String channelUserPrefix = "USER_";
+    static String channelUserPrefix = "WEBSOCKET_USER_";
 
     @Bean
     public TextWebSocketHandler getWebSocketHandler() {
-        return new WebsocketHandler(null);
+        return new WebsocketHandler();
     }
 
     @Override
