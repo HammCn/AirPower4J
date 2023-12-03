@@ -72,7 +72,6 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
                 @SneakyThrows
                 @Override
                 public void connectionLost(Throwable throwable) {
-                    mqttClient.close();
                 }
 
                 @Override
