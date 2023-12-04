@@ -29,7 +29,19 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @return 实体
      */
     public E getEntity(E entity) {
-        Object object = get(getCacheKey(entity));
+        return getEntity(getCacheKey(entity), entity);
+    }
+
+
+    /**
+     * <h2>从缓存中获取实体</h2>
+     *
+     * @param key    指定的Key
+     * @param entity 实体
+     * @return 实体
+     */
+    public E getEntity(String key, E entity) {
+        Object object = get(key);
         if (Objects.isNull(object)) {
             return null;
         }
@@ -66,10 +78,20 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      */
     public void saveEntityCacheData(E entity) {
+        saveEntityCacheData(getCacheKey(entity), entity);
+    }
+
+    /**
+     * <h2>缓存实体</h2>
+     *
+     * @param key    缓存的Key
+     * @param entity 实体
+     */
+    public void saveEntityCacheData(String key, E entity) {
         if (GlobalConfig.cacheExpTime > 0) {
-            set(getCacheKey(entity), JSON.toJSONString(entity), GlobalConfig.cacheExpTime);
+            set(key, JSON.toJSONString(entity), GlobalConfig.cacheExpTime);
         } else {
-            set(getCacheKey(entity), JSON.toJSONString(entity));
+            set(key, JSON.toJSONString(entity));
         }
     }
 
@@ -206,6 +228,13 @@ public class RedisUtil<E extends RootEntity<E>> {
         }
     }
 
+    /**
+     * 发布到channel的消息
+     *
+     * @param channel 频道
+     * @param message 消息
+     */
+    @SuppressWarnings("unused")
     public void publish(String channel, String message) {
         redisTemplate.convertAndSend(channel, message);
     }
