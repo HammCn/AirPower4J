@@ -2,11 +2,11 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.annotation.Exclude;
+import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.interfaces.IEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -59,7 +59,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * 是否禁用
      */
     @Description("是否禁用")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnly
     @Search(Search.Mode.EQUALS)
     @Column(columnDefinition = "tinyint UNSIGNED default 0 comment '是否禁用'")
     @Exclude(filters = {WhenPayLoad.class})
@@ -69,7 +69,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * 创建时间
      */
     @Description("创建时间")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建时间'")
     @Exclude(filters = {WhenPayLoad.class})
     private Long createTime;
@@ -78,7 +78,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * 创建人ID
      */
     @Description("创建人ID")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建人ID'")
     @Exclude(filters = {WhenPayLoad.class})
     private Long createUserId;
@@ -87,7 +87,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * 修改人ID
      */
     @Description("修改人ID")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改人ID'")
     @Exclude(filters = {WhenPayLoad.class})
     private Long updateUserId;
@@ -96,7 +96,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * 修改时间
      */
     @Description("修改时间")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改时间'")
     @Exclude(filters = {WhenPayLoad.class})
     private Long updateTime;

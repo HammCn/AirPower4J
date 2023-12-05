@@ -23,8 +23,9 @@ public enum Result implements IResult {
     // 403 无权限代码
     FORBIDDEN(0.403, "无权限"),
     FORBIDDEN_EXIST(0.4031, "唯一约束,无权重复"),
-    FORBIDDEN_DELETE(0.4032, "无权删除"),
-    FORBIDDEN_DELETE_USED(0.4033, "无权删除被使用中的数据"),
+    FORBIDDEN_EDIT(0.4032, "无权修改"),
+    FORBIDDEN_DELETE(0.4033, "无权删除"),
+    FORBIDDEN_DELETE_USED(0.4034, "无权删除被使用中的数据"),
 
     // 404 没有查到数据代码
     NOT_FOUND(0.404, "没有查到相关的数据"),

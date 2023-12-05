@@ -44,6 +44,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @PostMapping("delete")
     public Json delete(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Delete);
+        entity = beforeDelete(entity.toEntity());
         service.deleteById(entity.getId());
         return json("删除成功");
     }
@@ -164,6 +165,16 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @return 实体
      */
     protected E afterUpdate(E entity) {
+        return entity;
+    }
+
+    /**
+     * 删除前置方法
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected E beforeDelete(E entity) {
         return entity;
     }
 
