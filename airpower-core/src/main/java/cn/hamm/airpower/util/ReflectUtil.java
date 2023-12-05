@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class ReflectUtil {
     /**
-     * <h2>获取描述</h2>
+     * 获取描述
      * <code>Description("用户")</code>
      *
      * @param clazz 类
@@ -29,7 +29,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取描述</h2>
+     * 获取描述
      * <code>Description("用户接口")</code>
      *
      * @param method 方法
@@ -41,7 +41,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取描述</h2>
+     * 获取描述
      * <code>Description("昵称")</code>
      *
      * @param field 字段
@@ -53,7 +53,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>是否是继承自BaseEntity</h2>
+     * 是否是继承自BaseEntity
      *
      * @param clazz 类
      * @return 布尔
@@ -70,7 +70,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>是否是继承自BaseModel</h2>
+     * 是否是继承自BaseModel
      *
      * @param clazz 类
      * @return 布尔
@@ -86,7 +86,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取指定类的字段列表</h2>
+     * 获取指定类的字段列表
      *
      * @param clazz 类
      * @return 字段数组
@@ -113,7 +113,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取类的所有公开属性名称列表</h2>
+     * 获取类的所有公开属性名称列表
      *
      * @param clazz 类
      * @return 属性名数组
@@ -129,7 +129,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取指定枚举类的Map数据</h2>
+     * 获取指定枚举类的Map数据
      *
      * @param clazz  枚举类
      * @param params 参数列表
@@ -154,7 +154,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取指定枚举类的Map数据</h2>
+     * 获取指定枚举类的Map数据
      *
      * @param clazz 枚举类
      * @return 返回结果

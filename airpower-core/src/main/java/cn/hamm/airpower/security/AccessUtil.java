@@ -13,7 +13,7 @@ import java.util.Objects;
 public class AccessUtil {
 
     /**
-     * <h2>获取需要被授权的类型</h2>
+     * 获取需要被授权的类型
      *
      * @param clazz  类
      * @param method 方法
@@ -43,7 +43,7 @@ public class AccessUtil {
     }
 
     /**
-     * <h2>获取权限标识</h2>
+     * 获取权限标识
      *
      * @param clazz  类
      * @param method 方法

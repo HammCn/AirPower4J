@@ -17,12 +17,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Sort {
     /**
-     * <h2>排序字段</h2>
+     * 排序字段
      */
     private String field = GlobalConfig.defaultSortField;
 
     /**
-     * <h2>排序方法</h2>
+     * 排序方法
      */
     private String direction = GlobalConfig.defaultSortDirection;
 }

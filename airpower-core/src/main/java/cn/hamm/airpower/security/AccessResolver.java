@@ -29,7 +29,7 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
     }
 
     /**
-     * <h2>ACCESS_TOKEN换用户ID</h2>
+     * ACCESS_TOKEN换用户ID
      */
     @Override
     public Object resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {

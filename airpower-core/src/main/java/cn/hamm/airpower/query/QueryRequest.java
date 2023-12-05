@@ -17,22 +17,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QueryRequest<E extends RootEntity<E>> {
     /**
-     * <h2>排序对象</h2>
+     * 排序对象
      */
     private Sort sort = null;
 
     /**
-     * <h2>搜索过滤器</h2>
+     * 搜索过滤器
      */
     private E filter = null;
 
     /**
-     * <h2>关键词搜索</h2>
+     * 关键词搜索
      */
     private String keyword;
 
     /**
-     * <h2>设置过滤器</h2>
+     * 设置过滤器
      *
      * @param filter 过滤器
      * @return 请求
@@ -43,7 +43,7 @@ public class QueryRequest<E extends RootEntity<E>> {
     }
 
     /**
-     * <h2>设置排序</h2>
+     * 设置排序
      *
      * @param sort 排序
      * @return 请求
@@ -54,7 +54,7 @@ public class QueryRequest<E extends RootEntity<E>> {
     }
 
     /**
-     * <h2>设置查询关键词</h2>
+     * 设置查询关键词
      *
      * @param keyword 关键词
      * @return 请求

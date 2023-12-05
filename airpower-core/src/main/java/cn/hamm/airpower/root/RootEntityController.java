@@ -36,9 +36,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @ResponseFilter(RootEntity.WhenGetDetail.class)
     public JsonData add(@RequestBody @Validated(RootEntity.WhenAdd.class) E entity) {
         checkApiAvailableStatus(Api.Add);
-        entity = beforeAdd(entity.toEntity());
-        entity = service.add(entity);
-        entity = afterAdd(entity);
+        entity = serviceAdd(entity);
         return jsonData(entity, "创建成功");
     }
 
@@ -64,9 +62,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @ResponseFilter(RootEntity.WhenGetDetail.class)
     public JsonData update(@RequestBody @Validated(RootEntity.WhenUpdate.class) E entity) {
         checkApiAvailableStatus(Api.Update);
-        entity = beforeUpdate(entity.toEntity());
-        entity = service.update(entity);
-        entity = afterUpdate(entity);
+        serviceUpdate(entity);
         return jsonData(entity, "修改成功");
     }
 
@@ -112,7 +108,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * <h2>查询详情后置方法</h2>
+     * 查询详情后置方法
      *
      * @param entity 实体
      * @return 实体
@@ -122,7 +118,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * <h2>强制删除前删除关联的数据</h2>
+     * 强制删除前删除关联的数据
      *
      * @param id ID
      */
@@ -132,7 +128,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * <h2>新增前置方法</h2>
+     * 新增前置方法
      *
      * @param entity 实体
      * @return 实体
@@ -142,7 +138,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * <h2>新增后置方法</h2>
+     * 新增后置方法
      *
      * @param entity 实体
      * @return 实体
@@ -152,7 +148,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * <h2>修改前置方法</h2>
+     * 修改前置方法
      *
      * @param entity 实体
      * @return 实体
@@ -162,7 +158,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * <h2>修改后置方法</h2>
+     * 修改后置方法
      *
      * @param entity 实体
      * @return 实体
@@ -172,7 +168,33 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * <h2>检查Api可用状态</h2>
+     * 调用Service创建数据
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected final E serviceAdd(E entity) {
+        entity = beforeAdd(entity.toEntity());
+        entity = service.ignoreReadOnlyFields(entity);
+        entity = service.add(entity);
+        return afterAdd(entity);
+    }
+
+    /**
+     * 调用Service更新数据
+     *
+     * @param entity 实体
+     * @return 实体
+     */
+    protected final E serviceUpdate(E entity) {
+        entity = beforeUpdate(entity.toEntity());
+        entity = service.ignoreReadOnlyFields(entity);
+        entity = service.update(entity);
+        return afterUpdate(entity);
+    }
+
+    /**
+     * 检查Api可用状态
      */
     private void checkApiAvailableStatus(Api api) {
         Extends extendsApi = this.getClass().getAnnotation(Extends.class);

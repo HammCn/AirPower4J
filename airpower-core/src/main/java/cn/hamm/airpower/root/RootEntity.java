@@ -34,7 +34,7 @@ import java.io.Serializable;
 @SuppressWarnings("unchecked")
 public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E> {
     /**
-     * <h2>主键ID</h2>
+     * 主键ID
      */
     @Description("ID")
     @Id
@@ -46,7 +46,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private Long id;
 
     /**
-     * <h2>备注信息</h2>
+     * 备注信息
      */
     @Description("备注")
     @Search(Search.Mode.LIKE)
@@ -56,7 +56,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private String remark;
 
     /**
-     * <h2>是否禁用</h2>
+     * 是否禁用
      */
     @Description("是否禁用")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -66,7 +66,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private Boolean isDisabled;
 
     /**
-     * <h2>创建时间</h2>
+     * 创建时间
      */
     @Description("创建时间")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -75,7 +75,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private Long createTime;
 
     /**
-     * <h2>创建人ID</h2>
+     * 创建人ID
      */
     @Description("创建人ID")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -84,7 +84,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private Long createUserId;
 
     /**
-     * <h2>修改人ID</h2>
+     * 修改人ID
      */
     @Description("修改人ID")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -93,7 +93,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private Long updateUserId;
 
     /**
-     * <h2>修改时间</h2>
+     * 修改时间
      */
     @Description("修改时间")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -102,7 +102,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private Long updateTime;
 
     /**
-     * <h2>设置ID</h2>
+     * 设置ID
      *
      * @param id ID
      * @return 实体
@@ -114,7 +114,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * <h2>设置备注</h2>
+     * 设置备注
      *
      * @param remark 备注
      * @return 备注
@@ -125,7 +125,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * <h2>设置是否禁用</h2>
+     * 设置是否禁用
      *
      * @param isDisabled 禁用
      * @return 实体
@@ -136,7 +136,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * <h2>设置创建时间</h2>
+     * 设置创建时间
      *
      * @param createTime 创建时间
      * @return 实体
@@ -147,7 +147,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * <h2>设置创建人ID</h2>
+     * 设置创建人ID
      *
      * @param createUserId 创建人ID
      * @return 实体
@@ -158,7 +158,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * <h2>设置修改人ID</h2>
+     * 设置修改人ID
      *
      * @param updateUserId 修改人ID
      * @return 实体
@@ -169,7 +169,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * <h2>设置更新时间</h2>
+     * 设置更新时间
      *
      * @param updateTime 更新时间
      * @return 实体
@@ -180,7 +180,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * <h2>获取简单实体对象</h2>
+     * 获取简单实体对象
      * <p>
      * 一般来说会舍弃一些基础数据
      * </p>
@@ -193,43 +193,43 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * <h2>当添加时</h2>
+     * 当添加时
      */
     public interface WhenAdd {
     }
 
     /**
-     * <h2>当更新时</h2>
+     * 当更新时
      */
     public interface WhenUpdate {
     }
 
     /**
-     * <h2>ID必须传入的场景</h2>
+     * ID必须传入的场景
      */
     public interface WhenIdRequired {
     }
 
     /**
-     * <h2>当查询详情时</h2>
+     * 当查询详情时
      */
     public interface WhenGetDetail {
     }
 
     /**
-     * <h2>作为负载时</h2>
+     * 作为负载时
      */
     public interface WhenPayLoad {
     }
 
     /**
-     * <h2>分页查询</h2>
+     * 分页查询
      */
     public interface WhenGetPage {
     }
 
     /**
-     * <h2>不分页查询</h2>
+     * 不分页查询
      */
     public interface WhenGetList {
     }

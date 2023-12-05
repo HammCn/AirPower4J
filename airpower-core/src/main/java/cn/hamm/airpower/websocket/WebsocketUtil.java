@@ -16,7 +16,7 @@ public class WebsocketUtil {
     private MqttHelper mqttHelper;
 
     /**
-     * <h2>给所有人发消息</h2>
+     * 给所有人发消息
      *
      * @param message 消息内容
      * @throws MqttException 异常
@@ -26,7 +26,7 @@ public class WebsocketUtil {
     }
 
     /**
-     * <h2>给指定用户发消息</h2>
+     * 给指定用户发消息
      *
      * @param userId  用户ID
      * @param message 消息内容

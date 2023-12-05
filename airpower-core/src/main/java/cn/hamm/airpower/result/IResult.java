@@ -10,21 +10,21 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public interface IResult {
     /**
-     * <h2>获取错误代码</h2>
+     * 获取错误代码
      *
      * @return 错误代码
      */
     int getCode();
 
     /**
-     * <h2>获取返回信息</h2>
+     * 获取返回信息
      *
      * @return 返回信息
      */
     String getMessage();
 
     /**
-     * <h2>创建一个自定义异常</h2>
+     * 创建一个自定义异常
      *
      * @return 异常
      */
@@ -33,14 +33,14 @@ public interface IResult {
     }
 
     /**
-     * <h2>返回结果</h2>
+     * 返回结果
      */
     default void show() {
         show(getMessage());
     }
 
     /**
-     * <h2>返回结果</h2>
+     * 返回结果
      *
      * @param message 返回信息
      */
@@ -49,7 +49,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当满足条件时返回结果</h2>
+     * 当满足条件时返回结果
      *
      * @param condition 条件
      */
@@ -58,7 +58,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当满足条件时返回结果</h2>
+     * 当满足条件时返回结果
      *
      * @param condition 条件
      * @param message   返回信息
@@ -70,7 +70,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当为null时返回结果</h2>
+     * 当为null时返回结果
      *
      * @param obj 被验证的数据
      */
@@ -79,7 +79,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当为null时返回结果</h2>
+     * 当为null时返回结果
      *
      * @param obj     被验证的数据
      * @param message 返回信息
@@ -89,7 +89,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两者相同时返回结果</h2>
+     * 当两者相同时返回结果
      *
      * @param obj1 被验证的数据
      * @param obj2 被验证的数据
@@ -99,7 +99,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两者相同时返回结果</h2>
+     * 当两者相同时返回结果
      *
      * @param obj1    被验证的数据
      * @param obj2    被验证的数据
@@ -110,7 +110,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两个字符串相同时返回结果</h2>
+     * 当两个字符串相同时返回结果
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -120,7 +120,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两个字符串相同时返回结果</h2>
+     * 当两个字符串相同时返回结果
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -131,7 +131,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两个字符串忽略大小写相同时返回结果</h2>
+     * 当两个字符串忽略大小写相同时返回结果
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -141,7 +141,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两个字符串忽略大小写相同时返回结果</h2>
+     * 当两个字符串忽略大小写相同时返回结果
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -152,7 +152,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两者不相同时返回结果</h2>
+     * 当两者不相同时返回结果
      *
      * @param obj1 被验证的数据
      * @param obj2 被验证的数据
@@ -162,7 +162,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两者不相同时返回结果</h2>
+     * 当两者不相同时返回结果
      *
      * @param obj1    被验证的数据
      * @param obj2    被验证的数据
@@ -173,7 +173,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两个字符串不相同时返回结果</h2>
+     * 当两个字符串不相同时返回结果
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -183,7 +183,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两个字符串不相同时返回结果</h2>
+     * 当两个字符串不相同时返回结果
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -194,7 +194,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两个字符串忽略大小写还不相同时返回结果</h2>
+     * 当两个字符串忽略大小写还不相同时返回结果
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -204,7 +204,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当两个字符串忽略大小写还不相同时返回结果</h2>
+     * 当两个字符串忽略大小写还不相同时返回结果
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -215,7 +215,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当为null或空字符串时返回结果</h2>
+     * 当为null或空字符串时返回结果
      *
      * @param obj 被验证的数据
      */
@@ -224,7 +224,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当为null或空字符串时返回结果</h2>
+     * 当为null或空字符串时返回结果
      *
      * @param obj     被验证的数据
      * @param message 返回信息
@@ -234,7 +234,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当不为null时返回结果</h2>
+     * 当不为null时返回结果
      *
      * @param obj 被验证的数据
      */
@@ -243,7 +243,7 @@ public interface IResult {
     }
 
     /**
-     * <h2>当不为null时返回结果</h2>
+     * 当不为null时返回结果
      *
      * @param obj     被验证的数据
      * @param message 返回信息

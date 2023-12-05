@@ -1,5 +1,6 @@
 package cn.hamm.airpower.root;
 
+import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.interfaces.ITree;
@@ -54,7 +55,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected SecurityUtil secureUtil;
 
     /**
-     * <h2>根据ID查询对应的实体</h2>
+     * 根据ID查询对应的实体
      *
      * @param id ID
      * @return 实体
@@ -86,7 +87,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>根据ID查询对应的实体</h2>
+     * 根据ID查询对应的实体
      *
      * @param id ID
      * @return 实体
@@ -101,7 +102,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>添加一条数据(可能被重写)</h2>
+     * 添加一条数据(可能被重写)
      *
      * @param entity 保存的实体
      * @return 实体
@@ -111,7 +112,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>修改一条已经存在的数据(可能被重写)</h2>
+     * 修改一条已经存在的数据(可能被重写)
      *
      * @param entity 保存的实体
      * @return 实体
@@ -121,7 +122,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>禁用指定的数据</h2>
+     * 禁用指定的数据
      *
      * @param id ID
      * @return 实体
@@ -135,7 +136,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>启用指定的数据</h2>
+     * 启用指定的数据
      *
      * @param id ID
      * @return 实体
@@ -149,7 +150,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>删除指定的数据</h2>
+     * 删除指定的数据
      *
      * @param id ID
      */
@@ -162,7 +163,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>不分页查询数据</h2>
+     * 不分页查询数据
      *
      * @param queryRequest 请求的request
      * @return List数据
@@ -180,7 +181,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>分页查询数据</h2>
+     * 分页查询数据
      *
      * @param queryPageRequest 请求的request对象
      * @return 分页查询列表
@@ -200,7 +201,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>分页查询后置方法</h2>
+     * 分页查询后置方法
      *
      * @param queryPageResponse 查询到的数据
      * @return 处理后的数据
@@ -210,7 +211,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>分页查询前置方法</h2>
+     * 分页查询前置方法
      *
      * @param sourceRequestData 原始请求的数据
      * @return 处理后的请求数据
@@ -220,7 +221,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>不分页查询后置方法</h2>
+     * 不分页查询后置方法
      *
      * @param list 查询到的数据
      * @return 处理后的数据
@@ -230,7 +231,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>不分页查询前置方法</h2>
+     * 不分页查询前置方法
      *
      * @param queryRequest 查询条件
      * @return 处理后的查询条件
@@ -250,7 +251,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>数据库操作前的最后一次确认</h2>
+     * 数据库操作前的最后一次确认
      *
      * @return 当前实体
      */
@@ -259,7 +260,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>禁用前置方法</h2>
+     * 禁用前置方法
      *
      * @param entity 实体
      * @return 实体
@@ -269,7 +270,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>禁用后置方法</h2>
+     * 禁用后置方法
      *
      * @param entity 实体
      * @return 实体
@@ -279,7 +280,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>启用前置方法</h2>
+     * 启用前置方法
      *
      * @param entity 实体
      * @return 实体
@@ -289,7 +290,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>启用后置方法</h2>
+     * 启用后置方法
      *
      * @param entity 实体
      * @return 实体
@@ -299,7 +300,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>新增前置方法</h2>
+     * 新增前置方法
      *
      * @param entity 实体
      * @return 实体
@@ -309,7 +310,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>新增后置方法</h2>
+     * 新增后置方法
      *
      * @param entity 实体
      * @return 实体
@@ -319,7 +320,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>修改前置方法</h2>
+     * 修改前置方法
      *
      * @param entity 实体
      * @return 实体
@@ -329,7 +330,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>修改后置方法</h2>
+     * 修改后置方法
      *
      * @param entity 实体
      * @return 实体
@@ -339,7 +340,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>删除前置方法</h2>
+     * 删除前置方法
      *
      * @param id ID
      */
@@ -347,7 +348,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>获取当前登录用户的信息</h2>
+     * 获取当前登录用户的信息
      *
      * @return 用户ID
      */
@@ -361,7 +362,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>添加到数据库(直接保存)</h2>
+     * 添加到数据库(直接保存)
      *
      * @param entity 实体
      * @return 实体
@@ -381,7 +382,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>更新到数据库(直接保存)</h2>
+     * 更新到数据库(直接保存)
      *
      * @param entity 实体
      * @return 实体
@@ -395,7 +396,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>保存到数据库</h2>
+     * 保存到数据库
      *
      * @param entity 实体
      * @return 实体
@@ -422,7 +423,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>保存实体到缓存</h2>
+     * 保存实体到缓存
      *
      * @param entity 实体
      */
@@ -434,7 +435,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>获取用于更新的实体</h2>
+     * 获取用于更新的实体
      *
      * @param sourceEntity 来源实体
      * @param targetEntity 已存在实体
@@ -447,7 +448,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>判断是否唯一</h2>
+     * 判断是否唯一
      *
      * @param entity 实体
      */
@@ -487,7 +488,30 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>获取一个空实体</h2>
+     * 忽略只读字段
+     *
+     * @param entity 实体
+     * @return 忽略只读字段之后的实体
+     */
+    protected E ignoreReadOnlyFields(E entity) {
+        List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
+        for (Field field : fields) {
+            ReadOnly annotation = field.getAnnotation(ReadOnly.class);
+            if (Objects.isNull(annotation)) {
+                continue;
+            }
+            try {
+                field.setAccessible(true);
+                field.set(entity, null);
+            } catch (Exception e) {
+                Result.ERROR.show();
+            }
+        }
+        return entity;
+    }
+
+    /**
+     * 获取一个空实体
      *
      * @return 实体
      */
@@ -500,7 +524,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>获取实体类</h2>
+     * 获取实体类
      *
      * @return 类
      */
@@ -509,7 +533,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>获取null属性</h2>
+     * 获取null属性
      *
      * @param src 来源对象
      * @return 非空属性列表
@@ -533,7 +557,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>获取响应的分页数据</h2>
+     * 获取响应的分页数据
      *
      * @param data 分页数据
      * @return 输出分页对象
@@ -556,7 +580,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>创建Sort</h2>
+     * 创建Sort
      *
      * @param queryRequest 请求的request
      * @return Sort
@@ -577,7 +601,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>创建Pageable</h2>
+     * 创建Pageable
      *
      * @param queryPageData 查询请求
      * @return Pageable
@@ -596,7 +620,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>PredicateList</h2>
+     * PredicateList
      *
      * @param root    root
      * @param builder builder
@@ -662,7 +686,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>创建Specification</h2>
+     * 创建Specification
      *
      * @param queryRequest 查询请求
      * @return Specification
@@ -675,7 +699,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>创建Predicate</h2>
+     * 创建Predicate
      *
      * @param root          root
      * @param criteriaQuery query
@@ -693,7 +717,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>普通平层树数组按层级转为树结构</h2>
+     * 普通平层树数组按层级转为树结构
      *
      * @param list     普通的平层数组
      * @param parentId 父级ID
@@ -715,7 +739,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
 
     /**
-     * <h2>普通平层树数组按层级转为树结构</h2>
+     * 普通平层树数组按层级转为树结构
      *
      * @param list 普通的平层数组
      * @param <T>  类型

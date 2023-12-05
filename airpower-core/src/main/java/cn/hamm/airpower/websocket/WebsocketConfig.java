@@ -14,27 +14,27 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Configuration
 public class WebsocketConfig implements WebSocketConfigurer {
     /**
-     * <h2>Websocket ping消息</h2>
+     * Websocket ping消息
      */
     static String ping = "ping";
 
     /**
-     * <h2>Websocket pong消息</h2>
+     * Websocket pong消息
      */
     static String pong = "pong";
 
     /**
-     * <h2>Websocket 路径</h2>
+     * Websocket 路径
      */
     static String path = "/websocket";
 
     /**
-     * <h2>订阅全频道</h2>
+     * 订阅全频道
      */
     static String channelAll = "WEBSOCKET_ALL";
 
     /**
-     * <h2>订阅用户频道前缀</h2>
+     * 订阅用户频道前缀
      */
     static String channelUserPrefix = "WEBSOCKET_USER_";
 

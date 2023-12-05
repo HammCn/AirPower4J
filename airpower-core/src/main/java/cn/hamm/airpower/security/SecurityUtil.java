@@ -21,7 +21,7 @@ public class SecurityUtil {
     private RedisUtil<?> redisUtil;
 
     /**
-     * <h2>从AccessToken中获取用户ID</h2>
+     * 从AccessToken中获取用户ID
      *
      * @param accessToken accessToken
      */
@@ -35,7 +35,7 @@ public class SecurityUtil {
     }
 
     /**
-     * <h2>创建一个AccessToken</h2>
+     * 创建一个AccessToken
      *
      * @param userId 用户ID
      * @return AccessToken

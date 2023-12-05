@@ -7,67 +7,67 @@ package cn.hamm.airpower.config;
  */
 public class GlobalConfig {
     /**
-     * <h2>服务全局拦截</h2>
+     * 服务全局拦截
      */
     public static boolean isServiceRunning = true;
 
     /**
-     * <h2>数据库前缀</h2>
+     * 数据库前缀
      */
     public static String databasePrefix = "tenant_";
 
     /**
-     * <h2>是否开启缓存</h2>
+     * 是否开启缓存
      */
     public static boolean isCacheEnabled = true;
 
     /**
-     * <h2>缓存过期时间</h2>
+     * 缓存过期时间
      */
     public static int cacheExpTime = 3600;
 
     /**
-     * <h2>默认分页条数</h2>
+     * 默认分页条数
      */
     public static int defaultPageSize = 20;
 
     /**
-     * <h2>默认排序字段</h2>
+     * 默认排序字段
      */
     public static String defaultSortField = "id";
 
     /**
-     * <h2>默认排序方向</h2>
+     * 默认排序方向
      */
     public static String defaultSortDirection = "desc";
 
     /**
-     * <h2>身份令牌header的key</h2>
+     * 身份令牌header的key
      */
     public static String authorizeHeader = "authorization";
 
     /**
-     * <h2>身份令牌有效期</h2>
+     * 身份令牌有效期
      */
     public static int authorizeExpTime = 86400;
 
     /**
-     * <h2>多租户的header的key</h2>
+     * 多租户的header的key
      */
     public static String tenantHeader = "tenant-code";
 
     /**
-     * <h2>应用版本号header的key</h2>
+     * 应用版本号header的key
      */
     public static String appVersionHeader = "app-version";
 
     /**
-     * <h2>密码最大长度</h2>
+     * 密码最大长度
      */
     public static int passwordMaxLength = 16;
 
     /**
-     * <h2>密码最小长度</h2>
+     * 密码最小长度
      */
     public static int passwordMinLength = 6;
 }

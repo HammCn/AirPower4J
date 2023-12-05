@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Exclude {
     /**
-     * <h2>分组</h2>
+     * 分组
      */
     Class<?>[] filters() default {};
 }

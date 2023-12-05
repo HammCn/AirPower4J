@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResponseFilter {
     /**
-     * <h2>过滤器声明类 When***</h2>
+     * 过滤器声明类 When***
      */
     Class<?> value();
 }

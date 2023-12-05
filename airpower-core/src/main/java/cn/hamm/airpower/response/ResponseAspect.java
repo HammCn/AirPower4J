@@ -67,7 +67,7 @@ public class ResponseAspect {
     }
 
     /**
-     * <h2>使用指定的过滤器过滤数据</h2>
+     * 使用指定的过滤器过滤数据
      *
      * @param responseFilter 过滤器
      * @param data           数据
@@ -79,7 +79,7 @@ public class ResponseAspect {
     }
 
     /**
-     * <h2>使用指定的过滤器过滤数据列表</h2>
+     * 使用指定的过滤器过滤数据列表
      *
      * @param responseFilter 过滤器
      * @param list           数据列表

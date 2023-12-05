@@ -22,27 +22,27 @@ import java.util.List;
 @Accessors(chain = true)
 public class QueryPageResponse<M extends RootModel<?>> {
     /**
-     * <h2>总数量</h2>
+     * 总数量
      */
     private int total = 0;
 
     /**
-     * <h2>总页数</h2>
+     * 总页数
      */
     private int pageCount = 0;
 
     /**
-     * <h2>数据信息</h2>
+     * 数据信息
      */
     private List<M> list = new ArrayList<>();
 
     /**
-     * <h2>分页信息</h2>
+     * 分页信息
      */
     private Page page = new Page();
 
     /**
-     * <h2>排序信息</h2>
+     * 排序信息
      */
     private Sort sort = new Sort();
 }

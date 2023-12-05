@@ -55,7 +55,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * <h2>验证指定的用户是否有指定权限标识的权限</h2>
+     * 验证指定的用户是否有指定权限标识的权限
      *
      * @param userId             用户ID
      * @param permissionIdentity 权限标识
@@ -64,7 +64,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     public abstract boolean checkPermissionAccess(Long userId, String permissionIdentity);
 
     /**
-     * <h2>设置允许跨域的头</h2>
+     * 设置允许跨域的头
      *
      * @param httpServletResponse response对象
      */

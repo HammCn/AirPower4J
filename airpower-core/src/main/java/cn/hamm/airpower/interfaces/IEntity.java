@@ -9,14 +9,14 @@ import cn.hamm.airpower.root.RootModel;
  */
 public interface IEntity<E extends RootModel<E>> {
     /**
-     * <h2>获取主键ID</h2>
+     * 获取主键ID
      *
      * @return 主键ID
      */
     Long getId();
 
     /**
-     * <h2>设置实体主键ID</h2>
+     * 设置实体主键ID
      *
      * @param id 主键ID
      * @return 实体

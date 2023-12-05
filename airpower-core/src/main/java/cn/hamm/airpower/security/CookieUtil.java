@@ -11,7 +11,7 @@ import jakarta.servlet.http.Cookie;
  */
 public class CookieUtil {
     /**
-     * <h2>获取一个Cookie</h2>
+     * 获取一个Cookie
      *
      * @param key   Key
      * @param value Value
@@ -27,7 +27,7 @@ public class CookieUtil {
     }
 
     /**
-     * <h2>获取一个身份验证的Cookie</h2>
+     * 获取一个身份验证的Cookie
      *
      * @param value 身份串的值
      * @return Cookie

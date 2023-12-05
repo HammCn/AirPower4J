@@ -35,7 +35,7 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
     private MqttHelper mqttHelper;
 
     /**
-     * <h2>收到Websocket消息时</h2>
+     * 收到Websocket消息时
      *
      * @param session     会话
      * @param textMessage 文本消息
@@ -50,7 +50,7 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>连接就绪后监听队列</h2>
+     * 连接就绪后监听队列
      *
      * @param session 会话
      * @throws Exception 异常

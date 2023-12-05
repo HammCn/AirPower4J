@@ -20,17 +20,17 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Dictionary {
     /**
-     * <h2>错误信息</h2>
+     * 错误信息
      */
     String message() default "不允许的枚举字典值";
 
     /**
-     * <h2>使用的枚举类</h2>
+     * 使用的枚举类
      */
     Class<?> value() default Void.class;
 
     /**
-     * <h2>验证组</h2>
+     * 验证组
      */
     Class<?>[] groups() default {};
 
