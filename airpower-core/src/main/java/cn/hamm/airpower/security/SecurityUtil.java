@@ -16,7 +16,11 @@ import java.util.Objects;
  */
 @Component
 public class SecurityUtil {
+    /**
+     * AccessToken在Redis的存储前缀
+     */
     private final String ACCESS_TOKEN_PREFIX = "access_token_";
+
     @Autowired
     private RedisUtil<?> redisUtil;
 
