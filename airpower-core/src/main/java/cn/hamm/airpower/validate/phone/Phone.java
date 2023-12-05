@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
 
 /**
  * <h1>标记电话验证 座机或手机</h1>
- * 请注意，请自行做非空验证
  *
  * @author Hamm
+ * @apiNote 请注意，请自行做非空验证
  */
 @Constraint(validatedBy = PhoneAnnotationValidator.class)
 @Target({ElementType.FIELD, ElementType.METHOD})

@@ -1,5 +1,8 @@
 package cn.hamm.airpower.config;
 
+import cn.hamm.airpower.validate.password.Password;
+import cn.hamm.airpower.validate.password.PasswordAnnotationValidator;
+
 /**
  * <h1>全局默认配置文件</h1>
  *
@@ -12,7 +15,7 @@ public class GlobalConfig {
     public static boolean isServiceRunning = true;
 
     /**
-     * 数据库前缀
+     * 多数据源数据库前缀
      */
     public static String databasePrefix = "tenant_";
 
@@ -49,7 +52,7 @@ public class GlobalConfig {
     /**
      * 身份令牌有效期
      */
-    public static int authorizeExpTime = 86400;
+    public static int authorizeExpireTime = 86400;
 
     /**
      * 多租户的header的key
@@ -63,11 +66,17 @@ public class GlobalConfig {
 
     /**
      * 密码最大长度
+     *
+     * @see PasswordAnnotationValidator
+     * @see Password
      */
     public static int passwordMaxLength = 16;
 
     /**
      * 密码最小长度
+     *
+     * @see PasswordAnnotationValidator
+     * @see Password
      */
     public static int passwordMinLength = 6;
 }

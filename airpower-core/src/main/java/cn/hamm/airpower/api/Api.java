@@ -1,9 +1,10 @@
 package cn.hamm.airpower.api;
 
 /**
- * <h1>通用接口枚举</h1>
+ * <h1>父类接口枚举</h1>
  *
  * @author hamm
+ * @apiNote 可通过 {@link Extends} 注解为子控制器的类标记需要继承或过滤父类控制器提供的这些方法
  */
 public enum Api {
     /**
@@ -25,11 +26,6 @@ public enum Api {
      * 启用
      */
     Enable,
-
-    /**
-     * 强制删除
-     */
-    ForceDelete,
 
     /**
      * 查询详情

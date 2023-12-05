@@ -187,7 +187,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      *
      * @return 简单对象
      */
-    @SuppressWarnings("UnusedReturnValue")
     public E excludeBaseData() {
         return this.setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
     }
@@ -217,7 +216,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 作为负载时
+     * 当需要过滤挂载数据时
      */
     public interface WhenPayLoad {
     }

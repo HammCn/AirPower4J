@@ -38,7 +38,7 @@ public class ResponseAspect {
             // 返回不是JsonData 原样返回
             return result;
         }
-        ResponseFilter responseFilter = method.getAnnotation(ResponseFilter.class);
+        Filter filter = method.getAnnotation(Filter.class);
         JsonData jsonData = (JsonData) result;
         Class<?> dataCls = jsonData.getData().getClass();
 
@@ -46,7 +46,7 @@ public class ResponseAspect {
             // 如果JsonData是数组
             //noinspection unchecked
             List<RootModel<?>> list = (List<RootModel<?>>) (jsonData.getData());
-            jsonData.setData(filterResponseListBy(responseFilter, list));
+            jsonData.setData(filterResponseListBy(filter, list));
             return jsonData;
         }
         if (QueryPageResponse.class.equals(dataCls)) {
@@ -54,14 +54,14 @@ public class ResponseAspect {
             @SuppressWarnings("rawtypes")
             QueryPageResponse queryPageResponse = (QueryPageResponse) jsonData.getData();
             List<?> list = queryPageResponse.getList();
-            filterResponseListBy(responseFilter, list);
+            filterResponseListBy(filter, list);
             //noinspection unchecked
             jsonData.setData(queryPageResponse.setList(list));
             return jsonData;
         }
         if (ReflectUtil.isModel(dataCls)) {
             // 其他 默认是模型对象 转换
-            jsonData.setData(filterResponseBy(responseFilter, (RootModel<?>) jsonData.getData()));
+            jsonData.setData(filterResponseBy(filter, (RootModel<?>) jsonData.getData()));
         }
         return jsonData;
     }
@@ -69,28 +69,28 @@ public class ResponseAspect {
     /**
      * 使用指定的过滤器过滤数据
      *
-     * @param responseFilter 过滤器
-     * @param data           数据
+     * @param filter 过滤器
+     * @param data   数据
      * @return 过滤后的数据
      */
-    private RootModel<?> filterResponseBy(ResponseFilter responseFilter, RootModel<?> data) {
+    private RootModel<?> filterResponseBy(Filter filter, RootModel<?> data) {
         // 如果 responseFilter 是空 使用Void类进行转换
-        return data.filterResponseDataBy(Objects.isNull(responseFilter) ? Void.class : responseFilter.value());
+        return data.filterResponseDataBy(Objects.isNull(filter) ? Void.class : filter.value());
     }
 
     /**
      * 使用指定的过滤器过滤数据列表
      *
-     * @param responseFilter 过滤器
+     * @param filter 过滤器
      * @param list           数据列表
      * @return 列表
      */
-    private List<?> filterResponseListBy(ResponseFilter responseFilter, List<?> list) {
+    private List<?> filterResponseListBy(Filter filter, List<?> list) {
         try {
             for (Object item : list) {
                 Class<?> clazz = item.getClass();
                 if (ReflectUtil.isModel(clazz)) {
-                    filterResponseBy(responseFilter, (RootModel<?>) item);
+                    filterResponseBy(filter, (RootModel<?>) item);
                 }
             }
         } catch (Exception ignored) {

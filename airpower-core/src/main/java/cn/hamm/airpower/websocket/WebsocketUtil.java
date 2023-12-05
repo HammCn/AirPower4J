@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
  * @author Hamm
  */
 @Component
+@SuppressWarnings("unused")
 public class WebsocketUtil {
     @Autowired
     private MqttHelper mqttHelper;

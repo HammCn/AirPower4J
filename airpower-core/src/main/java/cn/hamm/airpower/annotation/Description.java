@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <h1>描述信息配置</h1>
+ * <h1>类或属性的文案</h1>
  *
  * @author Hamm
  */
@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Description {
     /**
-     * 描述信息
+     * 文案
      */
     String value();
 }

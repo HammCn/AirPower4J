@@ -40,11 +40,14 @@ import java.util.*;
  * @param <R> 数据源
  * @author Hamm
  */
-@SuppressWarnings("ALL")
+@SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     @Autowired
     protected R repository;
 
+    /**
+     * 当前请求的实例
+     */
     @Autowired
     protected HttpServletRequest request;
 
@@ -55,12 +58,188 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected SecurityUtil secureUtil;
 
     /**
-     * 根据ID查询对应的实体
+     * 添加一条数据(自定义请重写)
+     *
+     * @param entity 保存的实体
+     * @return 保存后的实体
+     * @see #beforeSaveToDatabase(RootEntity)
+     */
+    public E add(E entity) {
+        return addToDatabase(entity);
+    }
+
+    /**
+     * 修改一条已经存在的数据(自定义请重写)
+     *
+     * @param entity 保存的实体
+     * @return 更新后的实体
+     * @see #beforeSaveToDatabase(RootEntity)
+     */
+    public E update(E entity) {
+        return saveToDatabase(entity);
+    }
+
+    /**
+     * 不分页查询数据(自定义请重写)
+     *
+     * @param queryRequest 请求的request
+     * @return List数据
+     * @see #afterGetList(List)
+     * @see #beforeGetList(QueryRequest)
+     */
+    public List<E> getList(QueryRequest<E> queryRequest) {
+        if (Objects.isNull(queryRequest)) {
+            queryRequest = new QueryRequest<>();
+        }
+        if (Objects.isNull(queryRequest.getFilter())) {
+            queryRequest.setFilter(getNewInstance());
+        }
+        queryRequest = beforeGetList(queryRequest);
+        List<E> list = repository.findAll(createSpecification(queryRequest), createSort(queryRequest));
+        return afterGetList(list);
+    }
+
+    /**
+     * 分页查询数据(自定义请重写)
+     *
+     * @param queryPageRequest 请求的request对象
+     * @return 分页查询列表
+     * @see #afterGetPage(QueryPageResponse)
+     * @see #beforeGetPage(QueryRequest)
+     */
+    public QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
+        if (Objects.isNull(queryPageRequest)) {
+            queryPageRequest = new QueryPageRequest<>();
+        }
+        if (Objects.isNull(queryPageRequest.getFilter())) {
+            queryPageRequest.setFilter(getNewInstance());
+        }
+        queryPageRequest = beforeGetPage(queryPageRequest);
+
+        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest), createPageable(queryPageRequest)))
+                .setSort(queryPageRequest.getSort());
+        return afterGetPage(queryPageResponse);
+    }
+
+    /**
+     * 分页查询前置方法
+     *
+     * @param sourceRequestData 原始请求的数据
+     * @return 处理后的请求数据
+     * @see #getPage(QueryPageRequest)
+     */
+    protected <T extends QueryRequest<E>> T beforeGetPage(T sourceRequestData) {
+        return sourceRequestData;
+    }
+
+    /**
+     * 分页查询后置方法
+     *
+     * @param queryPageResponse 查询到的数据
+     * @return 处理后的数据
+     * @see #getPage(QueryPageRequest)
+     */
+    protected QueryPageResponse<E> afterGetPage(QueryPageResponse<E> queryPageResponse) {
+        return queryPageResponse;
+    }
+
+    /**
+     * 不分页查询前置方法
+     *
+     * @param queryRequest 查询条件
+     * @return 处理后的查询条件
+     * @see #getList(QueryRequest)
+     */
+    protected QueryRequest<E> beforeGetList(QueryRequest<E> queryRequest) {
+        return queryRequest;
+    }
+
+    /**
+     * 不分页查询后置方法
+     *
+     * @param list 查询到的数据
+     * @return 处理后的数据
+     * @see #getList(QueryRequest)
+     */
+    protected List<E> afterGetList(List<E> list) {
+        return list;
+    }
+
+    /**
+     * 查到一条数据后置方法
+     *
+     * @param entity 查到的数据
+     * @return 实体
+     * @see #getById(Long)
+     * @see #getByIdMaybeNull(Long)
+     */
+    protected E afterGetById(E entity) {
+        return entity;
+    }
+
+    /**
+     * 数据库操作前的最后一次确认
+     *
+     * @return 当前实体
+     */
+    protected E beforeSaveToDatabase(E entity) {
+        return entity;
+    }
+
+    /**
+     * 系统级删除前置确认方法
+     *
+     * @param id ID
+     * @see #deleteById(Long)
+     */
+    protected void beforeDelete(Long id) {
+    }
+
+    /**
+     * 禁用指定的数据
      *
      * @param id ID
      * @return 实体
      */
-    public E getById(Long id) {
+    public final E disableById(Long id) {
+        E entity = getById(id);
+        return saveToDatabase(entity.setIsDisabled(true));
+    }
+
+    /**
+     * 启用指定的数据
+     *
+     * @param id ID
+     * @return 实体
+     */
+    public final E enableById(Long id) {
+        E entity = getById(id);
+        return saveToDatabase(entity.setIsDisabled(false));
+    }
+
+    /**
+     * 删除指定的数据
+     *
+     * @param id ID
+     * @see #beforeDelete(Long)
+     */
+    public final void deleteById(Long id) {
+        beforeDelete(id);
+        repository.deleteById(id);
+        if (GlobalConfig.isCacheEnabled) {
+            redisUtil.deleteEntity(getNewInstance().setId(id));
+        }
+    }
+
+    /**
+     * 根据ID查询对应的实体
+     *
+     * @param id ID
+     * @return 实体
+     * @see #afterGetById(RootEntity)
+     * @see #getById(Long)
+     */
+    public final E getById(Long id) {
         Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         if (GlobalConfig.isCacheEnabled) {
             //如果打开了缓存，优先读取缓存
@@ -92,8 +271,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param id ID
      * @return 实体
      * @apiNote 查不到返回null，不抛异常
+     * @see #afterGetById(RootEntity)
+     * @see #getById(Long)
      */
-    public E getByIdMaybeNull(Long id) {
+    public final E getByIdMaybeNull(Long id) {
         try {
             return getById(id);
         } catch (Exception exception) {
@@ -102,257 +283,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 添加一条数据(可能被重写)
-     *
-     * @param entity 保存的实体
-     * @return 实体
-     */
-    public E add(E entity) {
-        return addToDatabase(entity);
-    }
-
-    /**
-     * 修改一条已经存在的数据(可能被重写)
-     *
-     * @param entity 保存的实体
-     * @return 实体
-     */
-    public E update(E entity) {
-        return saveToDatabase(entity);
-    }
-
-    /**
-     * 禁用指定的数据
-     *
-     * @param id ID
-     * @return 实体
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    public E disableById(Long id) {
-        E entity = getById(id);
-        entity = beforeDisable(entity);
-        entity.setIsDisabled(true);
-        return afterDisable(saveToDatabase(entity));
-    }
-
-    /**
-     * 启用指定的数据
-     *
-     * @param id ID
-     * @return 实体
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    public E enableById(Long id) {
-        E entity = getById(id);
-        entity = beforeEnable(entity);
-        entity.setIsDisabled(false);
-        return afterEnable(saveToDatabase(entity));
-    }
-
-    /**
-     * 删除指定的数据
-     *
-     * @param id ID
-     */
-    public void deleteById(Long id) {
-        beforeDelete(id);
-        repository.deleteById(id);
-        if (GlobalConfig.isCacheEnabled) {
-            redisUtil.deleteEntity(getNewInstance().setId(id));
-        }
-    }
-
-    /**
-     * 不分页查询数据
-     *
-     * @param queryRequest 请求的request
-     * @return List数据
-     */
-    public List<E> getList(QueryRequest<E> queryRequest) {
-        if (Objects.isNull(queryRequest)) {
-            queryRequest = new QueryRequest<>();
-        }
-        if (Objects.isNull(queryRequest.getFilter())) {
-            queryRequest.setFilter(getNewInstance());
-        }
-        queryRequest = beforeGetList(queryRequest);
-        List<E> list = repository.findAll(createSpecification(queryRequest), createSort(queryRequest));
-        return afterGetList(list);
-    }
-
-    /**
-     * 分页查询数据
-     *
-     * @param queryPageRequest 请求的request对象
-     * @return 分页查询列表
-     */
-    public QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
-        if (Objects.isNull(queryPageRequest)) {
-            queryPageRequest = new QueryPageRequest<>();
-        }
-        if (Objects.isNull(queryPageRequest.getFilter())) {
-            queryPageRequest.setFilter(getNewInstance());
-        }
-        queryPageRequest = beforeGetPage(queryPageRequest);
-        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest), createPageable(queryPageRequest)))
-                .setSort(queryPageRequest.getSort());
-
-        return afterGetPage(queryPageResponse);
-    }
-
-    /**
-     * 分页查询后置方法
-     *
-     * @param queryPageResponse 查询到的数据
-     * @return 处理后的数据
-     */
-    protected QueryPageResponse<E> afterGetPage(QueryPageResponse<E> queryPageResponse) {
-        return queryPageResponse;
-    }
-
-    /**
-     * 分页查询前置方法
-     *
-     * @param sourceRequestData 原始请求的数据
-     * @return 处理后的请求数据
-     */
-    protected <T extends QueryRequest<E>> T beforeGetPage(T sourceRequestData) {
-        return sourceRequestData;
-    }
-
-    /**
-     * 不分页查询后置方法
-     *
-     * @param list 查询到的数据
-     * @return 处理后的数据
-     */
-    protected List<E> afterGetList(List<E> list) {
-        return list;
-    }
-
-    /**
-     * 不分页查询前置方法
-     *
-     * @param queryRequest 查询条件
-     * @return 处理后的查询条件
-     */
-    protected QueryRequest<E> beforeGetList(QueryRequest<E> queryRequest) {
-        return queryRequest;
-    }
-
-    /**
-     * 查到一条数据后置方法
-     *
-     * @param entity 查到的数据
-     * @return 实体
-     */
-    protected E afterGetById(E entity) {
-        return entity;
-    }
-
-    /**
-     * 数据库操作前的最后一次确认
-     *
-     * @return 当前实体
-     */
-    protected E beforeSaveToDatabase(E entity) {
-        return entity;
-    }
-
-    /**
-     * 禁用前置方法
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E beforeDisable(E entity) {
-        return entity;
-    }
-
-    /**
-     * 禁用后置方法
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E afterDisable(E entity) {
-        return entity;
-    }
-
-    /**
-     * 启用前置方法
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E beforeEnable(E entity) {
-        return entity;
-    }
-
-    /**
-     * 启用后置方法
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E afterEnable(E entity) {
-        return entity;
-    }
-
-    /**
-     * 新增前置方法
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E beforeAdd(E entity) {
-        return entity;
-    }
-
-    /**
-     * 新增后置方法
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E afterAdd(E entity) {
-        return entity;
-    }
-
-    /**
-     * 修改前置方法
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E beforeUpdate(E entity) {
-        return entity;
-    }
-
-    /**
-     * 修改后置方法
-     *
-     * @param entity 实体
-     * @return 实体
-     */
-    protected E afterUpdate(E entity) {
-        return entity;
-    }
-
-    /**
-     * 删除前置方法
-     *
-     * @param id ID
-     */
-    protected void beforeDelete(Long id) {
-    }
-
-    /**
      * 获取当前登录用户的信息
      *
      * @return 用户ID
      */
-    protected Long getCurrentUserId() {
+    protected final Long getCurrentUserId() {
         try {
             String accessToken = request.getHeader(GlobalConfig.authorizeHeader);
             return secureUtil.getUserIdFromAccessToken(accessToken);
@@ -376,30 +311,83 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             entity.setRemark("");
         }
         entity.setCreateUserId(getCurrentUserId());
-        entity = beforeAdd(entity);
-        entity = saveToDatabase(entity);
-        return afterAdd(entity);
+        return saveToDatabase(entity);
     }
 
     /**
      * 更新到数据库(直接保存)
      *
-     * @param entity 实体
-     * @return 实体
+     * @param entity 待更新的实体
+     * @return 更新后的实体
      */
     protected final E updateToDatabase(E entity) {
         Result.PARAM_MISSING.whenNull(entity.getId(),
                 "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        entity = beforeUpdate(entity);
-        entity = saveToDatabase(entity);
-        return afterUpdate(entity);
+        return saveToDatabase(entity);
+    }
+
+    /**
+     * 忽略只读字段
+     *
+     * @param entity 实体
+     * @return 忽略只读字段之后的实体
+     */
+    protected final E ignoreReadOnlyFields(E entity) {
+        List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
+        for (Field field : fields) {
+            ReadOnly annotation = field.getAnnotation(ReadOnly.class);
+            if (Objects.isNull(annotation)) {
+                continue;
+            }
+            try {
+                field.setAccessible(true);
+                field.set(entity, null);
+            } catch (Exception e) {
+                Result.ERROR.show();
+            }
+        }
+        return entity;
+    }
+
+    /**
+     * 普通平层树数组按层级转为树结构
+     *
+     * @param list     普通的平层数组
+     * @param parentId 父级ID
+     * @param <T>      类型
+     * @return 层级结构的树
+     */
+    @SuppressWarnings("rawtypes")
+    protected final <T extends ITree> List<T> list2TreeList(List<T> list, Long parentId) {
+        List<T> treeList = new ArrayList<>();
+        list.forEach(item -> {
+            if (parentId.equals(item.getParentId())) {
+                treeList.add(item);
+            }
+        });
+        for (T t : treeList) {
+            t.setChildren(list2TreeList(list, t.getId()));
+        }
+        return treeList;
+    }
+
+    /**
+     * 普通平层树数组按层级转为树结构
+     *
+     * @param list 普通的平层数组
+     * @param <T>  类型
+     * @return 层级结构的树
+     */
+    @SuppressWarnings("rawtypes")
+    protected final <T extends ITree> List<T> list2TreeList(List<T> list) {
+        return list2TreeList(list, 0L);
     }
 
     /**
      * 保存到数据库
      *
-     * @param entity 实体
-     * @return 实体
+     * @param entity 待保存实体
+     * @return 保存后的实体
      */
     private E saveToDatabase(E entity) {
         checkUnique(entity);
@@ -425,7 +413,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * 保存实体到缓存
      *
-     * @param entity 实体
+     * @param entity 待缓存的实体
      */
     private void saveToCache(E entity) {
         if (GlobalConfig.isCacheEnabled) {
@@ -485,29 +473,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 Result.ERROR.show();
             }
         }
-    }
-
-    /**
-     * 忽略只读字段
-     *
-     * @param entity 实体
-     * @return 忽略只读字段之后的实体
-     */
-    protected E ignoreReadOnlyFields(E entity) {
-        List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
-        for (Field field : fields) {
-            ReadOnly annotation = field.getAnnotation(ReadOnly.class);
-            if (Objects.isNull(annotation)) {
-                continue;
-            }
-            try {
-                field.setAccessible(true);
-                field.set(entity, null);
-            } catch (Exception e) {
-                Result.ERROR.show();
-            }
-        }
-        return entity;
     }
 
     /**
@@ -714,38 +679,5 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
-    }
-
-    /**
-     * 普通平层树数组按层级转为树结构
-     *
-     * @param list     普通的平层数组
-     * @param parentId 父级ID
-     * @param <T>      类型
-     * @return 层级结构的树
-     */
-    protected <T extends ITree> List<T> list2TreeList(List<T> list, Long parentId) {
-        List<T> treeList = new ArrayList<>();
-        list.forEach(item -> {
-            if (parentId.equals(item.getParentId())) {
-                treeList.add(item);
-            }
-        });
-        for (T t : treeList) {
-            t.setChildren(list2TreeList(list, t.getId()));
-        }
-        return treeList;
-    }
-
-
-    /**
-     * 普通平层树数组按层级转为树结构
-     *
-     * @param list 普通的平层数组
-     * @param <T>  类型
-     * @return 层级结构的树
-     */
-    protected <T extends ITree> List<T> list2TreeList(List<T> list) {
-        return list2TreeList(list, 0L);
     }
 }

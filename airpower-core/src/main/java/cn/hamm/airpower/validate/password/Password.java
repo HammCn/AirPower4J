@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 
 /**
  * <h1>标记进行密码规范校验</h1>
- * 请注意，请自行做非空验证
  *
  * @author Hamm
+ * @apiNote 请注意，请自行做非空验证
  */
 @Constraint(validatedBy = PasswordAnnotationValidator.class)
 @Target({ElementType.FIELD, ElementType.METHOD})

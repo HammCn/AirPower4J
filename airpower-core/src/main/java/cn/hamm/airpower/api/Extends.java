@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
  * <li>如标记黑名单,则只需要写不继承的接口</li>
  *
  * @author Hamm
+ * @see Api
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

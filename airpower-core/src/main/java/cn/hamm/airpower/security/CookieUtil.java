@@ -16,6 +16,7 @@ public class CookieUtil {
      * @param key   Key
      * @param value Value
      * @return Cookie
+     * @see CookieConfig
      */
     public static Cookie getCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
@@ -31,6 +32,7 @@ public class CookieUtil {
      *
      * @param value 身份串的值
      * @return Cookie
+     * @see CookieConfig
      */
     public static Cookie getAuthorizeCookie(String value) {
         return getCookie(CookieConfig.authCookieName, value);

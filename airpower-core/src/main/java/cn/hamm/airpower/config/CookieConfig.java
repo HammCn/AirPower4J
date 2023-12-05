@@ -1,9 +1,12 @@
 package cn.hamm.airpower.config;
 
+import cn.hamm.airpower.security.CookieUtil;
+
 /**
  * <h1>Cookie相关配置</h1>
  *
  * @author Hamm
+ * @see CookieUtil
  */
 public class CookieConfig {
     /**
