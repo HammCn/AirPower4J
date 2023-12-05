@@ -36,15 +36,6 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 将实体的继承对象转化为实体对象
-     *
-     * @return 实体
-     */
-    public E toEntity() {
-        return (E) this;
-    }
-
-    /**
      * 排除传入的字段列表
      *
      * @param fieldNames 字段列表
