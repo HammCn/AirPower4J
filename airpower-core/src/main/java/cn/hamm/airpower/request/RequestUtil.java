@@ -83,7 +83,7 @@ public class RequestUtil {
      * @return 判定结果
      */
     private static boolean isValidAddress(String ipAddress) {
-        return Objects.nonNull(ipAddress) && ipAddress.length() > 0 && !LOCAL_ADDRESS.equalsIgnoreCase(ipAddress);
+        return Objects.nonNull(ipAddress) && !ipAddress.isEmpty() && !LOCAL_ADDRESS.equalsIgnoreCase(ipAddress);
     }
 
     /**

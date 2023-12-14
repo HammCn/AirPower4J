@@ -159,6 +159,7 @@ public class ReflectUtil {
      * @param clazz 枚举类
      * @return 返回结果
      */
+    @SuppressWarnings("unused")
     public static List<Map<String, String>> getEnumMapList(Class<?> clazz) {
         return getEnumMapList(clazz, "value", "label");
     }

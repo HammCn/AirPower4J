@@ -25,6 +25,7 @@ import java.util.Objects;
 @Component
 public class ResponseAspect {
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")
+    @SuppressWarnings("EmptyMethod")
     public void pointCut() {
     }
 

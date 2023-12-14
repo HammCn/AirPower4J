@@ -24,6 +24,7 @@ public class DataSourceAspect {
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.GetMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.RequestMapping)")
+    @SuppressWarnings("EmptyMethod")
     public void pointCut() {
 
     }

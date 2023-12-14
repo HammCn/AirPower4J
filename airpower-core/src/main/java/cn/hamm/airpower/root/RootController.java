@@ -22,6 +22,7 @@ public class RootController {
      * @return JSON
      * @apiNote 如需抛出异常, 直接使用 {@link Result}
      */
+    @SuppressWarnings("unused")
     protected Json json() {
         return json("操作成功");
     }

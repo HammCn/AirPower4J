@@ -18,6 +18,7 @@ import cn.hutool.core.util.StrUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.criteria.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -41,6 +42,7 @@ import java.util.*;
  * @author Hamm
  */
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
+@Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     @Autowired
     protected R repository;
@@ -320,6 +322,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param entity 待更新的实体
      * @return 更新后的实体
      */
+    @SuppressWarnings("unused")
     protected final E updateToDatabase(E entity) {
         Result.PARAM_MISSING.whenNull(entity.getId(),
                 "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
@@ -352,7 +355,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * 普通平层树数组按层级转为树结构
      *
-     * @param list     普通的平层数组
+     * @param list     普通平层数组
      * @param parentId 父级ID
      * @param <T>      类型
      * @return 层级结构的树
@@ -374,7 +377,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * 普通平层树数组按层级转为树结构
      *
-     * @param list 普通的平层数组
+     * @param list 普通平层数组
      * @param <T>  类型
      * @return 层级结构的树
      */
@@ -644,7 +647,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     }
                 }
             } catch (IllegalAccessException exception) {
-                exception.printStackTrace();
+                log.error(exception.getMessage());
             }
         }
         return predicateList;

@@ -11,6 +11,7 @@ public interface IEnum {
      *
      * @return key
      */
+    @SuppressWarnings("unused")
     int getValue();
 
     /**
@@ -18,5 +19,6 @@ public interface IEnum {
      *
      * @return 描述
      */
+    @SuppressWarnings("unused")
     String getLabel();
 }

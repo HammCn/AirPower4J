@@ -10,7 +10,7 @@
   <img src="https://svg.hamm.cn?key=DB&value=MySQL"/>
 </p>
 
-[Gitee](https://gitee.com/air-power/AirPower4J) / [Github](https://github.com/HammCn/AirPower4J) / [CHANGELOG](./CHANGELOG.md)
+[Gitee](https://gitee.com/air-power/AirPower4J) / [GitHub](https://github.com/HammCn/AirPower4J) / [CHANGELOG](./CHANGELOG.md)
 
 ## 📖 这是个什么项目
 
@@ -24,7 +24,7 @@
 
 你可以通过我们提供的 ```AirPower宿主仓库``` 项目来完成 **AirPower** 宿主项目的初始化:
 
-AirPowerJavaStarter via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md) / [Github](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md)
+AirPowerJavaStarter via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md) / [GitHub](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md)
 
 ## 🛎 问题反馈与建议
 

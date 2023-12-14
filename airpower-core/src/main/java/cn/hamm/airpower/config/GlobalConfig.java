@@ -8,6 +8,7 @@ import cn.hamm.airpower.validate.password.PasswordAnnotationValidator;
  *
  * @author Hamm
  */
+@SuppressWarnings("CanBeFinal")
 public class GlobalConfig {
     /**
      * 服务全局拦截

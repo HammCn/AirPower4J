@@ -140,7 +140,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * 根据key 获取过期时间
      *
      * @param key 键 不能为null
-     * @return 时间(秒) 返回0代表为永久有效
+     * @return 时间(秒) 返回0 代表为永久有效
      */
     @SuppressWarnings("unused")
     public long getExpire(String key) {

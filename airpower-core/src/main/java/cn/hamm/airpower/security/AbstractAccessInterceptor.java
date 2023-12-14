@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,7 @@ import java.lang.reflect.Method;
  * @author Hamm
  */
 @Component
+@Slf4j
 public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
 
     @Autowired
@@ -85,7 +87,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
                 writer.close();
                 return true;
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
         return false;

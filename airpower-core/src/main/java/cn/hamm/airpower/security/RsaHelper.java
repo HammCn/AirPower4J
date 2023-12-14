@@ -2,9 +2,12 @@ package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -18,6 +21,9 @@ import java.util.Base64;
  * @author Hamm
  */
 @SuppressWarnings("unused")
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class RsaHelper {
     /**
      * 加密算法KEY长度
@@ -27,22 +33,37 @@ public class RsaHelper {
      * 加密方式
      */
     private final String CRYPT_METHOD = "RSA";
-    /**
-     * openssl genrsa -out ca.key 2048 && openssl pkcs8 -topk8 -inform PEM -in ca.key -outform PEM -nocrypt -out ca.pem && openssl rsa -in ca.pem -pubout -out ca.crt
-     */
-    String publicKey;
-    String privateKey;
 
     /**
-     * 初始化RSA Helper
+     * 公钥
      *
-     * @param publicKey  公钥字符串
-     * @param privateKey 私钥字符串
+     * @apiNote openssl genrsa -out ca.key 2048 && openssl pkcs8 -topk8 -inform PEM -in ca.key -outform PEM -nocrypt -out ca.pem && openssl rsa -in ca.pem -pubout -out ca.crt
      */
-    public RsaHelper(String publicKey, String privateKey) {
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
+    @Setter
+    private String publicKey;
+
+    /**
+     * 私钥
+     */
+    @Setter
+    private String privateKey;
+
+    /**
+     * 公钥加密
+     *
+     * @param sourceContent 原文
+     * @return 密文
+     */
+    public String publicKeyEncode(String sourceContent) {
+        try {
+            int blockSize = CRYPT_KEY_SIZE / 8 - 11;
+            PublicKey publicKey = getPublicKey(this.publicKey);
+            return encodeByKey(sourceContent, publicKey, blockSize);
+        } catch (Exception e) {
+            throw new ResultException(Result.ERROR);
+        }
     }
+
 
     /**
      * 私钥解密
@@ -54,13 +75,7 @@ public class RsaHelper {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
             PrivateKey privateKey = getPrivateKey(this.privateKey);
-            byte[] srcBytes = Base64.getDecoder().decode(encryptedContent);
-            Cipher deCipher = Cipher.getInstance(CRYPT_METHOD);
-            deCipher.init(Cipher.DECRYPT_MODE, privateKey);
-            byte[] resultBytes;
-            //分段加密
-            resultBytes = rsaDoFinal(deCipher, srcBytes, blockSize);
-            return new String(resultBytes);
+            return decodeByKey(encryptedContent, privateKey, blockSize);
         } catch (Exception e) {
             throw new ResultException(Result.ERROR);
         }
@@ -76,39 +91,12 @@ public class RsaHelper {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
             PrivateKey privateKey = getPrivateKey(this.privateKey);
-            byte[] srcBytes = sourceContent.getBytes();
-            Cipher deCipher = Cipher.getInstance(CRYPT_METHOD);
-            deCipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            byte[] resultBytes;
-            //分段加密
-            resultBytes = rsaDoFinal(deCipher, srcBytes, blockSize);
-            return Base64.getEncoder().encodeToString(resultBytes);
+            return encodeByKey(sourceContent, privateKey, blockSize);
         } catch (Exception e) {
             throw new ResultException(Result.ERROR);
         }
     }
 
-    /**
-     * 公钥加密
-     *
-     * @param sourceContent 原文
-     * @return 密文
-     */
-    public String publicKeyEncode(String sourceContent) {
-        try {
-            int blockSize = CRYPT_KEY_SIZE / 8 - 11;
-            PublicKey publicKey = getPublicKey(this.publicKey);
-            byte[] srcBytes = sourceContent.getBytes();
-            Cipher cipher = Cipher.getInstance(CRYPT_METHOD);
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[] resultBytes;
-            //分段加密
-            resultBytes = rsaDoFinal(cipher, srcBytes, blockSize);
-            return Base64.getEncoder().encodeToString(resultBytes);
-        } catch (Exception e) {
-            throw new ResultException(Result.ERROR);
-        }
-    }
 
     /**
      * 公钥解密
@@ -120,15 +108,53 @@ public class RsaHelper {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
             PublicKey publicKey = getPublicKey(this.publicKey);
-            byte[] srcBytes = Base64.getDecoder().decode(encryptedContent);
-            Cipher cipher = Cipher.getInstance(CRYPT_METHOD);
-            cipher.init(Cipher.DECRYPT_MODE, publicKey);
-            byte[] resultBytes;
-            //分段加密
-            resultBytes = rsaDoFinal(cipher, srcBytes, blockSize);
-            return new String(resultBytes);
+            return decodeByKey(encryptedContent, publicKey, blockSize);
         } catch (Exception e) {
             throw new ResultException(Result.ERROR);
+        }
+    }
+
+    /**
+     * 公私钥解密
+     *
+     * @param encryptedContent 密文
+     * @param key              公私钥
+     * @param blockSize        分块大小
+     * @return 明文
+     */
+    private String decodeByKey(String encryptedContent, Key key, int blockSize) {
+        byte[] srcBytes = Base64.getDecoder().decode(encryptedContent);
+        Cipher deCipher;
+        try {
+            deCipher = Cipher.getInstance(CRYPT_METHOD);
+            deCipher.init(Cipher.DECRYPT_MODE, key);
+            byte[] resultBytes;
+            resultBytes = rsaDoFinal(deCipher, srcBytes, blockSize);
+            return new String(resultBytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 公私钥加密
+     *
+     * @param sourceContent 明文
+     * @param key           公私钥
+     * @param blockSize     区块大小
+     * @return 密文
+     */
+    private String encodeByKey(String sourceContent, Key key, int blockSize) {
+        byte[] srcBytes = sourceContent.getBytes();
+        Cipher cipher;
+        try {
+            cipher = Cipher.getInstance(CRYPT_METHOD);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] resultBytes;
+            resultBytes = rsaDoFinal(cipher, srcBytes, blockSize);
+            return Base64.getEncoder().encodeToString(resultBytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

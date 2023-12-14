@@ -14,6 +14,7 @@ import java.util.Objects;
  *
  * @author Hamm
  */
+@SuppressWarnings("unused")
 @Component
 public class SecurityUtil {
     /**
@@ -44,6 +45,7 @@ public class SecurityUtil {
      * @param userId 用户ID
      * @return AccessToken
      */
+    @SuppressWarnings("unused")
     public String createAccessToken(Long userId) {
         int accessTokenLength = 32;
         String accessToken = RandomUtil.randomString(accessTokenLength);

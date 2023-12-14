@@ -11,6 +11,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  *
  * @author hamm
  */
+@SuppressWarnings("CanBeFinal")
 @Configuration
 public class WebsocketConfig implements WebSocketConfigurer {
     /**

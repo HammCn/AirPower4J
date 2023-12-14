@@ -41,6 +41,7 @@ public class RootModel<E extends RootModel<E>> {
      * @param fieldNames 字段列表
      * @return 实体
      */
+    @SuppressWarnings("unused")
     public E exclude(String... fieldNames) {
         List<String> list = new ArrayList<>(fieldNames.length);
         Collections.addAll(list, fieldNames);

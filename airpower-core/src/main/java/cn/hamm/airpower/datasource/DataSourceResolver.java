@@ -3,6 +3,7 @@ package cn.hamm.airpower.datasource;
 import cn.hamm.airpower.config.GlobalConfig;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.Map;
  * @author Hamm
  */
 @Service
+@Slf4j
 public class DataSourceResolver extends AbstractRoutingDataSource {
     /**
      * 数据库驱动协议
@@ -111,12 +113,13 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
                     , dataSource.getUser(), dataSource.getPassword());
 
             statement = connection.createStatement();
+            //noinspection SqlSourceToSinkFlow
             statement.execute(
                     "CREATE DATABASE IF NOT EXISTS " + GlobalConfig.databasePrefix + dataSource.getDatabase() +
                             " DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci"
             );
         } catch (Exception exception) {
-            exception.printStackTrace();
+            log.error(exception.getMessage());
         } finally {
             try {
                 if (statement != null) {
@@ -126,7 +129,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
                     connection.close();
                 }
             } catch (Exception exception) {
-                exception.printStackTrace();
+                log.error(exception.getMessage());
             }
         }
     }

@@ -21,5 +21,6 @@ public interface IEntity<E extends RootModel<E>> {
      * @param id 主键ID
      * @return 实体
      */
+    @SuppressWarnings("unused")
     E setId(Long id);
 }

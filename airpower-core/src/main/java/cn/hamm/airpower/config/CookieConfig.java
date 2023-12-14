@@ -8,6 +8,7 @@ import cn.hamm.airpower.security.CookieUtil;
  * @author Hamm
  * @see CookieUtil
  */
+@SuppressWarnings("CanBeFinal")
 public class CookieConfig {
     /**
      * Cookie的路径

@@ -5,6 +5,7 @@ import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -37,6 +38,7 @@ import java.util.Set;
 @ControllerAdvice
 @ResponseStatus(HttpStatus.OK)
 @ResponseBody
+@Slf4j
 public class ExceptionInterceptor {
     /**
      * 参数验证失败
@@ -110,7 +112,7 @@ public class ExceptionInterceptor {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Json methodExceptionHandle(HttpRequestMethodNotSupportedException exception) {
-        String supportedMethod = String.join("|", exception.getSupportedMethods());
+        String supportedMethod = String.join("|", Objects.requireNonNull(exception.getSupportedMethods()));
         return new Json(
                 Result.REQUEST_METHOD_UNSUPPORTED,
                 exception.getMethod() + "不被支持,请使用" + supportedMethod + "方法请求");
@@ -123,7 +125,7 @@ public class ExceptionInterceptor {
     public Json httpMediaTypeNotSupportedExceptionHandle(HttpMediaTypeNotSupportedException exception) {
         return new Json(
                 Result.REQUEST_CONTENT_TYPE_UNSUPPORTED,
-                Objects.requireNonNull(exception.getContentType()).toString() + "不被支持,请使用JSON请求");
+                Objects.requireNonNull(exception.getContentType()) + "不被支持,请使用JSON请求");
     }
 
     /**
@@ -179,7 +181,7 @@ public class ExceptionInterceptor {
      */
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public Object otherExceptionHandle(Exception exception) {
-        exception.printStackTrace();
+        log.error(exception.getMessage());
         return new Json(Result.ERROR);
     }
 }
