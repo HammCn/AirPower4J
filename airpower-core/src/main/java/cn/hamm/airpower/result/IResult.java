@@ -33,14 +33,14 @@ public interface IResult {
     }
 
     /**
-     * 返回结果
+     * 抛出异常
      */
     default void show() {
         show(getMessage());
     }
 
     /**
-     * 返回结果
+     * 抛出异常
      *
      * @param message 返回信息
      */
@@ -49,7 +49,7 @@ public interface IResult {
     }
 
     /**
-     * 当满足条件时返回结果
+     * 当满足条件时抛出异常
      *
      * @param condition 条件
      */
@@ -58,7 +58,7 @@ public interface IResult {
     }
 
     /**
-     * 当满足条件时返回结果
+     * 当满足条件时抛出异常
      *
      * @param condition 条件
      * @param message   返回信息
@@ -70,7 +70,7 @@ public interface IResult {
     }
 
     /**
-     * 当为null时返回结果
+     * 当为null时抛出异常
      *
      * @param obj 被验证的数据
      */
@@ -79,7 +79,7 @@ public interface IResult {
     }
 
     /**
-     * 当为null时返回结果
+     * 当为null时抛出异常
      *
      * @param obj     被验证的数据
      * @param message 返回信息
@@ -89,7 +89,7 @@ public interface IResult {
     }
 
     /**
-     * 当两者相同时返回结果
+     * 当两者相同时抛出异常
      *
      * @param obj1 被验证的数据
      * @param obj2 被验证的数据
@@ -99,7 +99,7 @@ public interface IResult {
     }
 
     /**
-     * 当两者相同时返回结果
+     * 当两者相同时抛出异常
      *
      * @param obj1    被验证的数据
      * @param obj2    被验证的数据
@@ -110,7 +110,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串相同时返回结果
+     * 当两个字符串相同时抛出异常
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -120,7 +120,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串相同时返回结果
+     * 当两个字符串相同时抛出异常
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -131,7 +131,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串忽略大小写相同时返回结果
+     * 当两个字符串忽略大小写相同时抛出异常
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -141,7 +141,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串忽略大小写相同时返回结果
+     * 当两个字符串忽略大小写相同时抛出异常
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -152,7 +152,7 @@ public interface IResult {
     }
 
     /**
-     * 当两者不相同时返回结果
+     * 当两者不相同时抛出异常
      *
      * @param obj1 被验证的数据
      * @param obj2 被验证的数据
@@ -162,7 +162,7 @@ public interface IResult {
     }
 
     /**
-     * 当两者不相同时返回结果
+     * 当两者不相同时抛出异常
      *
      * @param obj1    被验证的数据
      * @param obj2    被验证的数据
@@ -173,7 +173,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串不相同时返回结果
+     * 当两个字符串不相同时抛出异常
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -183,7 +183,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串不相同时返回结果
+     * 当两个字符串不相同时抛出异常
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -194,7 +194,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串忽略大小写还不相同时返回结果
+     * 当两个字符串忽略大小写还不相同时抛出异常
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -204,7 +204,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串忽略大小写还不相同时返回结果
+     * 当两个字符串忽略大小写还不相同时抛出异常
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -215,7 +215,7 @@ public interface IResult {
     }
 
     /**
-     * 当为null或空字符串时返回结果
+     * 当为null或空字符串时抛出异常
      *
      * @param obj 被验证的数据
      */
@@ -224,7 +224,7 @@ public interface IResult {
     }
 
     /**
-     * 当为null或空字符串时返回结果
+     * 当为null或空字符串时抛出异常
      *
      * @param obj     被验证的数据
      * @param message 返回信息
@@ -234,7 +234,7 @@ public interface IResult {
     }
 
     /**
-     * 当不为null时返回结果
+     * 当不为null时抛出异常
      *
      * @param obj 被验证的数据
      */
@@ -243,7 +243,7 @@ public interface IResult {
     }
 
     /**
-     * 当不为null时返回结果
+     * 当不为null时抛出异常
      *
      * @param obj     被验证的数据
      * @param message 返回信息
