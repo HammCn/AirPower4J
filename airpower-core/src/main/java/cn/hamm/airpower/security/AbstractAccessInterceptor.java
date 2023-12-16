@@ -7,14 +7,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
 /**
@@ -31,10 +27,6 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object object) {
-        // 设置允许跨域
-        if (setCrossOriginHeaders(request, response)) {
-            return false;
-        }
         HandlerMethod handlerMethod = (HandlerMethod) object;
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBeanType();
@@ -64,32 +56,4 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
      * @return 验证结果
      */
     public abstract boolean checkPermissionAccess(Long userId, String permissionIdentity);
-
-    /**
-     * 设置允许跨域的头
-     *
-     * @param httpServletResponse response对象
-     */
-    private boolean setCrossOriginHeaders(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
-        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-
-
-        if (HttpMethod.OPTIONS.name().equals(httpServletRequest.getMethod())) {
-            httpServletResponse.setStatus(HttpStatus.OK.value());
-            try {
-                PrintWriter writer = httpServletResponse.getWriter();
-                writer.println("Hello World");
-                writer.flush();
-                writer.close();
-                return true;
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }
-        return false;
-    }
 }
