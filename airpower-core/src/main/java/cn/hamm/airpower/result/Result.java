@@ -8,6 +8,7 @@ import lombok.Getter;
  *
  * @author Hamm
  */
+@Getter
 @SuppressWarnings({"AlibabaEnumConstantsMustHaveComment", "unused"})
 @AllArgsConstructor
 public enum Result implements IResult {
@@ -54,15 +55,7 @@ public enum Result implements IResult {
     ;
 
 
-    /**
-     * 错误代码
-     */
     private final Double code;
-
-    /**
-     * 错误信息
-     */
-    @Getter
     private final String message;
 
     @Override
