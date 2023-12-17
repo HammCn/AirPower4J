@@ -3,10 +3,8 @@ package cn.hamm.airpower.websocket;
 import cn.hamm.airpower.mqtt.MqttHelper;
 import cn.hamm.airpower.security.SecurityUtil;
 import lombok.SneakyThrows;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.paho.client.mqttv3.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
@@ -18,6 +16,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -27,6 +26,7 @@ import java.util.Objects;
  */
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Component
+@Slf4j
 public class WebsocketHandler extends TextWebSocketHandler implements MessageListener {
     @Autowired
     private SecurityUtil securityUtil;
@@ -39,13 +39,16 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
      *
      * @param session     会话
      * @param textMessage 文本消息
-     * @throws Exception 异常
      */
     @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session, @NotNull TextMessage textMessage) throws Exception {
+    protected void handleTextMessage(@NonNull WebSocketSession session, @NotNull TextMessage textMessage) {
         String message = textMessage.getPayload();
         if (WebsocketConfig.ping.equals(message)) {
-            session.sendMessage(new TextMessage(WebsocketConfig.pong));
+            try {
+                session.sendMessage(new TextMessage(WebsocketConfig.pong));
+            } catch (IOException e) {
+                log.error("发送Websocket消息失败: " + e.getMessage());
+            }
         }
     }
 
@@ -53,17 +56,21 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
      * 连接就绪后监听队列
      *
      * @param session 会话
-     * @throws Exception 异常
      */
     @Override
-    public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         if (Objects.isNull(session.getUri())) {
             return;
         }
         try {
             String accessToken = session.getUri().getQuery();
             if (Objects.isNull(accessToken)) {
-                session.close();
+                log.warn("没有传入AccessToken 即将关闭连接");
+                try {
+                    session.close();
+                } catch (IOException e) {
+                    log.error("关闭Websocket失败");
+                }
                 return;
             }
             Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
@@ -89,14 +96,22 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
             mqttClient.connect(mqttHelper.createOption());
             String[] topics = {WebsocketConfig.channelAll, WebsocketConfig.channelUserPrefix + userId};
             mqttClient.subscribe(topics);
-        } catch (Exception e) {
-            session.close();
+        } catch (MqttException e) {
+            try {
+                session.close();
+            } catch (IOException ioException) {
+                log.error("关闭Websocket失败");
+            }
         }
     }
 
     @Override
-    public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) throws Exception {
-        session.close();
+    public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
+        try {
+            session.close();
+        } catch (IOException e) {
+            log.error("关闭Websocket失败");
+        }
     }
 
     @Override
