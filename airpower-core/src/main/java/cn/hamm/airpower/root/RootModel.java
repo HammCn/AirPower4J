@@ -3,7 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Expose;
 import cn.hamm.airpower.annotation.Payload;
-import cn.hamm.airpower.result.ResultException;
+import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.util.ReflectUtil;
 import org.springframework.beans.BeanUtils;
 
@@ -31,8 +31,9 @@ public class RootModel<E extends RootModel<E>> {
             BeanUtils.copyProperties(this, target);
             return target;
         } catch (Exception e) {
-            throw new ResultException(e.getMessage());
+            Result.ERROR.show(e.getMessage());
         }
+        return null;
     }
 
     /**

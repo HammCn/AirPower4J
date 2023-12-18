@@ -3,6 +3,7 @@ package cn.hamm.airpower.exception;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
+import cn.hamm.airpower.result.json.JsonData;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -148,8 +149,8 @@ public class ExceptionInterceptor {
      * 自定义业务异常
      */
     @ExceptionHandler(ResultException.class)
-    public Json customExceptionHandle(ResultException result) {
-        return new Json(result, result.getMessage());
+    public JsonData customExceptionHandle(ResultException result) {
+        return new JsonData(result.getData(), result.getMessage(), result.getCode());
     }
 
     /**

@@ -28,6 +28,11 @@ public class ResultException extends RuntimeException implements IResult {
     private String message = Result.ERROR.getMessage();
 
     /**
+     * 错误数据
+     */
+    private Object data = null;
+
+    /**
      * 抛出一个自定义错误信息的默认异常
      *
      * @param message 错误信息
@@ -48,10 +53,10 @@ public class ResultException extends RuntimeException implements IResult {
     /**
      * 直接抛出一个异常
      *
-     * @param error   异常
+     * @param code    错误代码
      * @param message 错误信息
      */
-    public ResultException(Result error, String message) {
-        this.setCode(error.getCode()).setMessage(message);
+    public ResultException(int code, String message) {
+        this.setCode(code).setMessage(message);
     }
 }

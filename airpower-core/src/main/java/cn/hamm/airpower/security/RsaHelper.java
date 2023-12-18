@@ -2,7 +2,9 @@ package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.crypto.Cipher;
@@ -195,9 +197,7 @@ public class RsaHelper {
      * @throws Exception 加解密异常
      */
     private byte[] rsaDoFinal(Cipher cipher, byte[] sourceBytes, int blockSize) throws Exception {
-        if (blockSize <= 0) {
-            throw new ResultException(Result.ERROR, "分段大小必须大于0");
-        }
+        Result.ERROR.when(blockSize <= 0, "分段大小必须大于0");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int inputLength = sourceBytes.length;
         int currentOffSet = 0;

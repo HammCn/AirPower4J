@@ -42,4 +42,17 @@ public class JsonData extends Json {
         super(message);
         this.data = data;
     }
+
+    /**
+     * 实例化JSON
+     *
+     * @param data    数据
+     * @param message 错误信息
+     * @param code    错误代码
+     */
+    public JsonData(Object data, String message, int code) {
+        super(message);
+        this.data = data;
+        this.setCode(code);
+    }
 }

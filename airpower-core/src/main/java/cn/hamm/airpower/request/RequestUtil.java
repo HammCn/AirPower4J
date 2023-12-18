@@ -1,7 +1,6 @@
 package cn.hamm.airpower.request;
 
 import cn.hamm.airpower.result.Result;
-import cn.hamm.airpower.result.ResultException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.InetAddress;
@@ -67,13 +66,14 @@ public class RequestUtil {
                         return ipAddress;
                     }
                 } catch (UnknownHostException e) {
-                    throw new ResultException(Result.FORBIDDEN, ERROR_MESSAGE);
+                    Result.FORBIDDEN.show(ERROR_MESSAGE);
                 }
             }
             return LOCAL_ADDRESS;
         } catch (Exception e) {
-            throw new ResultException(Result.FORBIDDEN, ERROR_MESSAGE);
+            Result.FORBIDDEN.show(ERROR_MESSAGE);
         }
+        return "";
     }
 
     /**

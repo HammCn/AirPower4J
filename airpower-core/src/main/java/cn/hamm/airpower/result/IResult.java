@@ -32,6 +32,7 @@ public interface IResult {
         return new ResultException(getCode(), getMessage());
     }
 
+
     /**
      * 抛出异常
      */
@@ -45,7 +46,17 @@ public interface IResult {
      * @param message 返回信息
      */
     default void show(String message) {
-        throw create().setMessage(message);
+        show(message, null);
+    }
+
+    /**
+     * 抛出异常
+     *
+     * @param message 返回信息
+     * @param data    返回数据
+     */
+    default void show(String message, Object data) {
+        throw create().setMessage(message).setData(data);
     }
 
     /**
@@ -66,6 +77,19 @@ public interface IResult {
     default void when(boolean condition, String message) {
         if (condition) {
             show(message);
+        }
+    }
+
+    /**
+     * 当满足条件时抛出异常
+     *
+     * @param condition 条件
+     * @param message   返回信息
+     * @param data      数据
+     */
+    default void when(boolean condition, String message, Object data) {
+        if (condition) {
+            show(message, data);
         }
     }
 
