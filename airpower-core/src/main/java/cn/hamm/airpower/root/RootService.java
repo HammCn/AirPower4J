@@ -452,9 +452,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 没标注解 或者标了 但不做唯一校验
                 continue;
             }
+            Object fieldValue = "";
             try {
                 field.setAccessible(true);
-                Object fieldValue = field.get(entity);
+                fieldValue = field.get(entity);
                 if (Objects.isNull(fieldValue)) {
                     // 没有值 不校验
                     continue;
@@ -471,10 +472,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     // 是修改 且查到的是自己 就不校验重复了
                     continue;
                 }
-                Result.FORBIDDEN_EXIST.show(fieldName + "(" + field.get(entity).toString() + ")已经存在！");
             } catch (Exception e) {
                 Result.ERROR.show();
             }
+            Result.FORBIDDEN_EXIST.show(fieldName + "(" + fieldValue.toString() + ")已经存在！");
         }
     }
 
