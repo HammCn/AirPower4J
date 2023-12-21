@@ -676,7 +676,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param search        搜索的实体
      * @return 查询条件
      */
-    private Predicate createPredicate(
+    protected Predicate createPredicate(
             Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E search
     ) {
         List<Predicate> predicateList = this.getPredicateList(root, builder, search, true);
