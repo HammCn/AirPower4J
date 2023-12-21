@@ -76,7 +76,6 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
             Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
             MqttClient mqttClient = mqttHelper.createClient();
             mqttClient.setCallback(new MqttCallback() {
-                @SneakyThrows
                 @Override
                 public void connectionLost(Throwable throwable) {
                 }
