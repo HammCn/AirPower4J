@@ -32,6 +32,7 @@ AirPowerJavaStarter via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/
 
 ## ⏰ Enjoy it
 
-好了, 那么接下来你可以愉快的开发了, 如果你有什么建议或者意见, 可以在本仓库中提交你的 **issues**, 你可以为这个依赖库进行 **添砖加瓦**!
+好了, 那么接下来你可以愉快地开发了, 如果你有什么建议或者意见, 可以在本仓库中提交你的 **issues**, 你可以为这个依赖库进行
+**添砖加瓦**!
 
 > ☕️Java: 加瓦? 什么Java?
