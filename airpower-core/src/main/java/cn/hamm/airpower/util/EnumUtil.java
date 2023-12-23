@@ -2,7 +2,6 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.interfaces.IEnum;
 import cn.hamm.airpower.result.Result;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
@@ -12,10 +11,7 @@ import java.lang.reflect.Method;
  *
  * @author Hamm
  */
-@Component
-public class EnumHelper {
-
-
+public class EnumUtil {
     /**
      * 查询指定value的枚举项目
      *
@@ -24,13 +20,12 @@ public class EnumHelper {
      * @param <T>       [泛型] 当前类型
      * @return 指定的枚举项目
      */
-    public <T extends IEnum> T getEnumByValue(Class<T> enumClass, int value) {
+    public static <T extends IEnum> T getEnumByValue(Class<T> enumClass, int value) {
         try {
             Method getValue = enumClass.getMethod("getValue");
             //取出所有枚举类型
             Object[] objs = enumClass.getEnumConstants();
             for (Object obj : objs) {
-                @SuppressWarnings("unchecked")
                 int exitValue = (int) getValue.invoke(obj);
                 if (exitValue == value) {
                     //noinspection unchecked

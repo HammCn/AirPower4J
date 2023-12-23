@@ -44,7 +44,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     /**
      * 数据源列表
      */
-    public static Map<Object, Object> dataSourceList = new HashMap<>();
+    public static final Map<Object, Object> dataSourceList = new HashMap<>();
 
     /**
      * 初始化空列表

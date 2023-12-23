@@ -2,7 +2,6 @@ package cn.hamm.airpower.websocket;
 
 import cn.hamm.airpower.mqtt.MqttHelper;
 import cn.hamm.airpower.security.SecurityUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.jetbrains.annotations.NotNull;
