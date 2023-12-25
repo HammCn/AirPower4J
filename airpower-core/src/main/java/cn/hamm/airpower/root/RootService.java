@@ -628,7 +628,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                         } else {
                             predicateList.add(builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue));
                         }
-                        return predicateList;
+                        continue;
                     }
                     if (Search.Mode.LIKE.equals(searchMode.value())) {
                         // LIKE 模糊搜索
@@ -638,13 +638,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                         } else {
                             predicateList.add(builder.like(((Join<?, ?>) root).get(field.getName()), searchValue));
                         }
-                        return predicateList;
+                        continue;
                     }
 
                     if (isRoot) {
-                        predicateList.add(builder.equal(((Root<E>) root).get(field.getName()), searchValue));
+                        predicateList.add(builder.equal(((Root<E>) root).get(field.getName()), fieldValue));
                     } else {
-                        predicateList.add(builder.equal(((Join<?, ?>) root).get(field.getName()), searchValue));
+                        predicateList.add(builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue));
                     }
                 }
             } catch (IllegalAccessException exception) {

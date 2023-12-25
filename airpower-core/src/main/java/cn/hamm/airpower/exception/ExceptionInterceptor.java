@@ -46,6 +46,7 @@ public class ExceptionInterceptor {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Json badRequestHandle(MethodArgumentNotValidException exception) {
+        log.error(exception.getMessage());
         BindingResult result = exception.getBindingResult();
         StringBuilder stringBuilder = new StringBuilder();
         if (!result.hasErrors()) {
@@ -71,6 +72,7 @@ public class ExceptionInterceptor {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Json badRequestHandle(ConstraintViolationException exception) {
+        log.error(exception.getMessage());
         StringBuilder stringBuilder = new StringBuilder();
         Set<ConstraintViolation<?>> errors = exception.getConstraintViolations();
         for (ConstraintViolation<?> error : errors) {
@@ -88,7 +90,8 @@ public class ExceptionInterceptor {
      * 删除时的数据关联校验异常
      */
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
-    public Json deleteUsingDataException() {
+    public Json deleteUsingDataException(Exception exception) {
+        log.error(exception.getMessage());
         return new Json(Result.FORBIDDEN_DELETE_USED, "数据正在使用中,无法被删除!");
     }
 
@@ -96,7 +99,8 @@ public class ExceptionInterceptor {
      * 访问的接口没有实现
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public Json notFoundHandle() {
+    public Json notFoundHandle(Exception exception) {
+        log.error(exception.getMessage());
         return new Json(Result.SERVICE_NOT_FOUND);
     }
 
@@ -104,7 +108,8 @@ public class ExceptionInterceptor {
      * 请求的数据不是标准JSON
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Json dataExceptionHandle() {
+    public Json dataExceptionHandle(Exception exception) {
+        log.error(exception.getMessage());
         return new Json(Result.REQUEST_CONTENT_TYPE_UNSUPPORTED, "请求参数格式不正确,请检查是否接口支持的JSON");
     }
 
@@ -113,6 +118,7 @@ public class ExceptionInterceptor {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Json methodExceptionHandle(HttpRequestMethodNotSupportedException exception) {
+        log.error(exception.getMessage());
         String supportedMethod = String.join("|", Objects.requireNonNull(exception.getSupportedMethods()));
         return new Json(
                 Result.REQUEST_METHOD_UNSUPPORTED,
@@ -124,6 +130,7 @@ public class ExceptionInterceptor {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Json httpMediaTypeNotSupportedExceptionHandle(HttpMediaTypeNotSupportedException exception) {
+        log.error(exception.getMessage());
         return new Json(
                 Result.REQUEST_CONTENT_TYPE_UNSUPPORTED,
                 Objects.requireNonNull(exception.getContentType()) + "不被支持,请使用JSON请求");
@@ -133,7 +140,8 @@ public class ExceptionInterceptor {
      * 数据库连接发生错误
      */
     @ExceptionHandler(CannotCreateTransactionException.class)
-    public Json databaseExceptionHandle() {
+    public Json databaseExceptionHandle(Exception exception) {
+        log.error(exception.getMessage());
         return new Json(Result.DATABASE_ERROR);
     }
 
@@ -141,7 +149,8 @@ public class ExceptionInterceptor {
      * REDIS连接发生错误
      */
     @ExceptionHandler(RedisConnectionFailureException.class)
-    public Json redisExceptionHandle() {
+    public Json redisExceptionHandle(Exception exception) {
+        log.error(exception.getMessage());
         return new Json(Result.REDIS_ERROR);
     }
 
@@ -157,7 +166,8 @@ public class ExceptionInterceptor {
      * JWT校验失败错误
      */
     @ExceptionHandler(value = {cn.hutool.jwt.JWTException.class})
-    public Json jwtExceptionHandle() {
+    public Json jwtExceptionHandle(Exception exception) {
+        log.error(exception.getMessage());
         return new Json(Result.UNAUTHORIZED);
     }
 
@@ -166,6 +176,7 @@ public class ExceptionInterceptor {
      */
     @ExceptionHandler(value = PropertyReferenceException.class)
     public Json propertyReferenceExceptionHandle(PropertyReferenceException exception) {
+        log.error(exception.getMessage());
         return new Json(Result.DATABASE_UNKNOWN_FIELD, "不支持的数据字段" + exception.getPropertyName());
     }
 
@@ -173,7 +184,8 @@ public class ExceptionInterceptor {
      * 数据表或字段异常
      */
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
-    public Json invalidDataAccessResourceUsageExceptionHandle() {
+    public Json invalidDataAccessResourceUsageExceptionHandle(Exception exception) {
+        log.error(exception.getMessage());
         return new Json(Result.DATABASE_TABLE_OR_FIELD_ERROR);
     }
 
