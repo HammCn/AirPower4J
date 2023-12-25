@@ -183,7 +183,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     /**
      * 新增前置方法
      *
-     * @param entity 实体
+     * @param entity Api请求提交的实体数据，可能会缺失很多数据
      * @return 实体
      * @apiNote 可重写后执行新增前的数据处理
      * @see #add(RootEntity)
@@ -207,7 +207,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     /**
      * 修改前置方法
      *
-     * @param entity 实体
+     * @param entity Api请求提交的实体数据，可能会缺失很多数据
      * @return 实体
      * @apiNote 可重写后执行修改前的其他业务或拦截
      * @see #update(RootEntity)
