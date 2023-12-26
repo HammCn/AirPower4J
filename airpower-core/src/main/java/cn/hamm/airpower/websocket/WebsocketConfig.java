@@ -9,7 +9,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 /**
  * <h1>WebSocket配置</h1>
  *
- * @author hamm
+ * @author Hamm
  */
 @SuppressWarnings("CanBeFinal")
 @Configuration

@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * <h1>WebSocket Handler</h1>
  *
- * @author hamm
+ * @author Hamm
  */
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Component

@@ -3,7 +3,7 @@ package cn.hamm.airpower.interfaces;
 /**
  * <h1>枚举标准接口</h1>
  *
- * @author hamm
+ * @author Hamm
  */
 public interface IEnum {
     /**

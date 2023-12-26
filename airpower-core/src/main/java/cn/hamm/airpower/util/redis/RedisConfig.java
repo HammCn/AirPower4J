@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * <h1>Redis配置</h1>
  *
- * @author hamm
+ * @author Hamm
  */
 @Configuration
 @EnableCaching

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * <h1>标记为搜索字段</h1>
  *
- * @author hamm
+ * @author Hamm
  */
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
