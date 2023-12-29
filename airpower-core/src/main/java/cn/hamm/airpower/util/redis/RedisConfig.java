@@ -47,13 +47,13 @@ public class RedisConfig implements CachingConfigurer {
     @Override
     public KeyGenerator keyGenerator() {
         return (target, method, params) -> {
-            StringBuilder sb = new StringBuilder();
-            sb.append(target.getClass().getName());
-            sb.append(method.getName());
+            StringBuilder builder = new StringBuilder();
+            builder.append(target.getClass().getName());
+            builder.append(method.getName());
             for (Object obj : params) {
-                sb.append(obj.toString());
+                builder.append(obj.toString());
             }
-            return sb.toString();
+            return builder.toString();
         };
     }
 
