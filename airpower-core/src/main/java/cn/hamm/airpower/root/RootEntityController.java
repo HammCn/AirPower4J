@@ -273,10 +273,10 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 禁用前置方法
+     * 启用前置方法
      *
      * @param entity 带ID的实体,其他属性没有
-     * @apiNote 可重写后执行禁用之前的业务处理或拦截
+     * @apiNote 可重写后执行启用之前的业务处理或拦截
      * @see #enable(RootEntity)
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -284,10 +284,10 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 禁用后置方法
+     * 启用后置方法
      *
      * @param entity 带ID的实体,其他属性没有
-     * @apiNote 可重写后执行禁用之后的其他业务
+     * @apiNote 可重写后执行启用之后的其他业务
      * @see #enable(RootEntity)
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
