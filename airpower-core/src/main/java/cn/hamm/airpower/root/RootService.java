@@ -78,7 +78,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #beforeSaveToDatabase(RootEntity)
      */
     public E update(E entity) {
-        return saveToDatabase(entity);
+        return updateToDatabase(entity);
     }
 
     /**
