@@ -60,7 +60,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected SecurityUtil secureUtil;
 
     /**
-     * 添加一条数据(自定义请重写)
+     * 添加一条数据
      *
      * @param entity 保存的实体
      * @return 保存后的实体
@@ -71,25 +71,82 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 修改一条已经存在的数据(自定义请重写)
+     * 根据ID查询对应的实体
+     *
+     * @param id ID
+     * @return 实体
+     * @see #getById(Long)
+     * @see #getMaybeNull(Long)
+     * @see #getByIdMaybeNull(Long)
+     */
+    public E get(Long id) {
+        return getById(id);
+    }
+
+    /**
+     * 根据ID查询对应的实体
+     *
+     * @param id ID
+     * @return 实体
+     * @apiNote 查不到返回null，不抛异常
+     * @see #get(Long)
+     * @see #getById(Long)
+     * @see #getByIdMaybeNull(Long)
+     */
+    public E getMaybeNull(Long id) {
+        return getByIdMaybeNull(id);
+    }
+
+    /**
+     * 修改一条已经存在的数据
      *
      * @param entity 保存的实体
      * @return 更新后的实体
-     * @see #beforeSaveToDatabase(RootEntity)
+     * @see #updateToDatabase(RootEntity)
      */
     public E update(E entity) {
         return updateToDatabase(entity);
     }
 
     /**
-     * 不分页查询数据(自定义请重写)
+     * 禁用指定的数据
+     *
+     * @param id ID
+     * @return 实体
+     * @see #disableById(Long)
+     */
+    public E disable(Long id) {
+        return disableById(id);
+    }
+
+    /**
+     * 启用指定的数据
+     *
+     * @param id ID
+     * @return 实体
+     */
+    public E enable(Long id) {
+        return enableById(id);
+    }
+
+    /**
+     * 删除指定的数据
+     *
+     * @param id ID
+     */
+    public void delete(Long id) {
+        deleteById(id);
+    }
+
+    /**
+     * 不分页查询数据
      *
      * @param queryRequest 请求的request
      * @return List数据
-     * @see #afterGetList(List)
      * @see #beforeGetList(QueryRequest)
+     * @see #afterGetList(List)
      */
-    public List<E> getList(QueryRequest<E> queryRequest) {
+    public final List<E> getList(QueryRequest<E> queryRequest) {
         if (Objects.isNull(queryRequest)) {
             queryRequest = new QueryRequest<>();
         }
@@ -102,14 +159,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 分页查询数据(自定义请重写)
+     * 分页查询数据
      *
      * @param queryPageRequest 请求的request对象
      * @return 分页查询列表
-     * @see #afterGetPage(QueryPageResponse)
      * @see #beforeGetPage(QueryRequest)
+     * @see #afterGetPage(QueryPageResponse)
      */
-    public QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
+    public final QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
         if (Objects.isNull(queryPageRequest)) {
             queryPageRequest = new QueryPageRequest<>();
         }
@@ -145,38 +202,27 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         return queryPageResponse;
     }
 
-    /**
-     * 不分页查询前置方法
-     *
-     * @param queryRequest 查询条件
-     * @return 处理后的查询条件
-     * @see #getList(QueryRequest)
-     */
-    protected QueryRequest<E> beforeGetList(QueryRequest<E> queryRequest) {
-        return queryRequest;
-    }
 
     /**
      * 不分页查询后置方法
      *
      * @param list 查询到的数据
      * @return 处理后的数据
-     * @see #getList(QueryRequest)
+     * @see #getPage(QueryPageRequest)
      */
     protected List<E> afterGetList(List<E> list) {
         return list;
     }
 
     /**
-     * 查到一条数据后置方法
+     * 不分页查询前置方法
      *
-     * @param entity 查到的数据
-     * @return 实体
-     * @see #getById(Long)
-     * @see #getByIdMaybeNull(Long)
+     * @param sourceRequestData 查询条件
+     * @return 处理后的查询条件
+     * @see #getList(QueryRequest)
      */
-    protected E afterGetById(E entity) {
-        return entity;
+    protected QueryRequest<E> beforeGetList(QueryRequest<E> sourceRequestData) {
+        return sourceRequestData;
     }
 
     /**
@@ -188,14 +234,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         return entity;
     }
 
-    /**
-     * 系统级删除前置确认方法
-     *
-     * @param id ID
-     * @see #deleteById(Long)
-     */
-    protected void beforeDelete(Long id) {
-    }
 
     /**
      * 禁用指定的数据
@@ -203,8 +241,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param id ID
      * @return 实体
      */
-    public final E disableById(Long id) {
-        E entity = getById(id);
+    protected final E disableById(Long id) {
+        E entity = get(id);
         return saveToDatabase(entity.setIsDisabled(true));
     }
 
@@ -214,8 +252,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param id ID
      * @return 实体
      */
-    public final E enableById(Long id) {
-        E entity = getById(id);
+    protected final E enableById(Long id) {
+        E entity = get(id);
         return saveToDatabase(entity.setIsDisabled(false));
     }
 
@@ -223,10 +261,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * 删除指定的数据
      *
      * @param id ID
-     * @see #beforeDelete(Long)
      */
-    public final void deleteById(Long id) {
-        beforeDelete(id);
+    protected final void deleteById(Long id) {
         repository.deleteById(id);
         if (GlobalConfig.isCacheEnabled) {
             redisUtil.deleteEntity(getNewInstance().setId(id));
@@ -238,10 +274,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @param id ID
      * @return 实体
-     * @see #afterGetById(RootEntity)
-     * @see #getById(Long)
      */
-    public final E getById(Long id) {
+    protected final E getById(Long id) {
         Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         if (GlobalConfig.isCacheEnabled) {
             //如果打开了缓存，优先读取缓存
@@ -249,7 +283,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             if (Objects.nonNull(entity)) {
                 // 查到了缓存 更新缓存
                 saveToCache(entity);
-                entity = afterGetById(entity);
                 return entity;
             }
         }
@@ -258,14 +291,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             E entity = optional.get();
             // 更新缓存
             saveToCache(entity);
-            entity = afterGetById(entity);
             return entity;
         }
         Result.NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
-        E entity = getNewInstance();
-        entity = afterGetById(entity);
-        return entity;
+        return getNewInstance();
     }
+
 
     /**
      * 根据ID查询对应的实体
@@ -273,12 +304,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param id ID
      * @return 实体
      * @apiNote 查不到返回null，不抛异常
-     * @see #afterGetById(RootEntity)
+     * @see #get(Long)
      * @see #getById(Long)
      */
-    public final E getByIdMaybeNull(Long id) {
+    protected final E getByIdMaybeNull(Long id) {
         try {
-            return getById(id);
+            return get(id);
         } catch (Exception exception) {
             return null;
         }
@@ -398,7 +429,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         entity.setUpdateUserId(getCurrentUserId());
         if (Objects.nonNull(entity.getId())) {
             //有ID 走修改 且不允许修改下列字段
-            E existEntity = getById(entity.getId());
+            E existEntity = get(entity.getId());
             if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
                 // 如果数据库是null 且 传入的也是null 签名给空字符串
                 entity.setRemark("");

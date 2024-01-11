@@ -63,7 +63,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     public Json delete(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Delete);
         beforeDelete(entity);
-        service.deleteById(entity.getId());
+        service.delete(entity.getId());
         afterDelete(entity);
         return json("删除成功");
     }
@@ -98,7 +98,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @Filter(RootEntity.WhenGetDetail.class)
     public JsonData getDetail(@RequestBody @Validated(RootEntity.WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.GetDetail);
-        return jsonData(afterGetDetail(service.getById(entity.getId())));
+        return jsonData(afterGetDetail(service.get(entity.getId())));
     }
 
     /**
@@ -115,7 +115,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     public Json disable(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Disable);
         beforeDisable(entity);
-        afterDisable(service.disableById(entity.getId()));
+        afterDisable(service.disable(entity.getId()));
         return json("禁用成功");
     }
 
@@ -133,7 +133,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     public Json enable(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Enable);
         beforeEnable(entity);
-        afterEnable(service.enableById(entity.getId()));
+        afterEnable(service.enable(entity.getId()));
         return json("启用成功");
     }
 
