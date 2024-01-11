@@ -46,9 +46,20 @@ public class MqttHelper {
      * @throws MqttException 异常
      */
     public MqttClient createClient() throws MqttException {
+        return createClient(UUID.randomUUID().toString());
+    }
+
+    /**
+     * 创建MQTT客户端
+     *
+     * @param id 客户端ID
+     * @return 配置
+     * @throws MqttException 异常
+     */
+    public MqttClient createClient(String id) throws MqttException {
         return new MqttClient(
                 "tcp://" + host + ":" + port,
-                UUID.randomUUID().toString(),
+                id,
                 new MemoryPersistence()
         );
     }
