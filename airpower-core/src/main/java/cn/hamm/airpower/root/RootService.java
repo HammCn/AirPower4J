@@ -163,7 +163,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @param queryPageRequest 请求的request对象
      * @return 分页查询列表
-     * @see #beforeGetPage(QueryPageRequest) 
+     * @see #beforeGetPage(QueryPageRequest)
      * @see #afterGetPage(QueryPageResponse)
      */
     public final QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
