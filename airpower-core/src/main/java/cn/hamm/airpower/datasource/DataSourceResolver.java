@@ -44,13 +44,13 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     /**
      * 数据源列表
      */
-    public static final Map<Object, Object> dataSourceList = new HashMap<>();
+    public static final Map<Object, Object> DATA_SOURCE_LIST = new HashMap<>();
 
     /**
      * 初始化空列表
      */
     public DataSourceResolver() {
-        super.setTargetDataSources(dataSourceList);
+        super.setTargetDataSources(DATA_SOURCE_LIST);
     }
 
     /**
@@ -146,7 +146,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
         dataSource.setUrl(getDataSourceUrl(dataSourceInfo));
         dataSource.setUsername(dataSourceInfo.getUser());
         dataSource.setPassword(dataSourceInfo.getPassword());
-        dataSourceList.put(GlobalConfig.databasePrefix + dataSourceInfo.getDatabase(), dataSource);
+        DATA_SOURCE_LIST.put(GlobalConfig.databasePrefix + dataSourceInfo.getDatabase(), dataSource);
         super.afterPropertiesSet();
     }
 
