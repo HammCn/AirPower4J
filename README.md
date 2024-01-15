@@ -2,7 +2,7 @@
   <!--suppress HtmlRequiredAltAttribute -->
 <img width="300" src="docs/img/airpower.png"/>
 </p>
-.
+
 <p align="center">
   <img src="https://svg.hamm.cn?key=Lang&value=Java17&bg=green"/>
   <img src="https://svg.hamm.cn?key=Base&value=SpringBoot3"/>
