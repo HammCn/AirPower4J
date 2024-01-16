@@ -1,7 +1,5 @@
 package cn.hamm.airpower.interfaces;
 
-import cn.hamm.airpower.root.RootEntity;
-
 import java.util.List;
 
 /**
@@ -9,7 +7,7 @@ import java.util.List;
  *
  * @author Hamm
  */
-public interface ITree<E extends RootEntity<E>> extends IEntity<E> {
+public interface ITree<E extends ITree<E>> extends IEntity<E> {
     /**
      * 获取树的名称
      *

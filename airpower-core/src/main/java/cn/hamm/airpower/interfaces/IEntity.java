@@ -1,13 +1,11 @@
 package cn.hamm.airpower.interfaces;
 
-import cn.hamm.airpower.root.RootModel;
-
 /**
  * <h1>标准实体接口</h1>
  *
  * @author Hamm
  */
-public interface IEntity<E extends RootModel<E>> {
+public interface IEntity<E extends IEntity<E>> {
     /**
      * 获取主键ID
      *
