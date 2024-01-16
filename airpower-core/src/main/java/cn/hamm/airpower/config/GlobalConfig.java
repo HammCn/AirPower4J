@@ -80,4 +80,11 @@ public class GlobalConfig {
      * @see Password
      */
     public static int passwordMinLength = 6;
+
+    /**
+     * 是否开启调试模式
+     *
+     * @apiNote 调试模式打开，控制台将输出部分错误堆栈信息等
+     */
+    public static boolean debug = false;
 }

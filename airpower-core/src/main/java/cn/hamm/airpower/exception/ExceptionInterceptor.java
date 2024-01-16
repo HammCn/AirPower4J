@@ -1,5 +1,6 @@
 package cn.hamm.airpower.exception;
 
+import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
@@ -36,6 +37,7 @@ import java.util.Set;
  * @author Hamm
  * @see Result
  */
+@SuppressWarnings({"SingleStatementInBlock", "CallToPrintStackTrace"})
 @ControllerAdvice
 @ResponseStatus(HttpStatus.OK)
 @ResponseBody
@@ -92,6 +94,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
     public Json deleteUsingDataException(Exception exception) {
         log.error(exception.getMessage());
+        if (GlobalConfig.debug) {
+            exception.printStackTrace();
+        }
         return new Json(Result.FORBIDDEN_DELETE_USED, "数据正在使用中,无法被删除!");
     }
 
@@ -131,6 +136,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Json httpMediaTypeNotSupportedExceptionHandle(HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
+        if (GlobalConfig.debug) {
+            exception.printStackTrace();
+        }
         return new Json(
                 Result.REQUEST_CONTENT_TYPE_UNSUPPORTED,
                 Objects.requireNonNull(exception.getContentType()) + "不被支持,请使用JSON请求");
@@ -142,6 +150,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler(CannotCreateTransactionException.class)
     public Json databaseExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
+        if (GlobalConfig.debug) {
+            exception.printStackTrace();
+        }
         return new Json(Result.DATABASE_ERROR);
     }
 
@@ -151,6 +162,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler(RedisConnectionFailureException.class)
     public Json redisExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
+        if (GlobalConfig.debug) {
+            exception.printStackTrace();
+        }
         return new Json(Result.REDIS_ERROR);
     }
 
@@ -168,6 +182,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = {cn.hutool.jwt.JWTException.class})
     public Json jwtExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
+        if (GlobalConfig.debug) {
+            exception.printStackTrace();
+        }
         return new Json(Result.UNAUTHORIZED);
     }
 
@@ -177,6 +194,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = PropertyReferenceException.class)
     public Json propertyReferenceExceptionHandle(PropertyReferenceException exception) {
         log.error(exception.getMessage());
+        if (GlobalConfig.debug) {
+            exception.printStackTrace();
+        }
         return new Json(Result.DATABASE_UNKNOWN_FIELD, "不支持的数据字段" + exception.getPropertyName());
     }
 
@@ -186,6 +206,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
     public Json invalidDataAccessResourceUsageExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
+        if (GlobalConfig.debug) {
+            exception.printStackTrace();
+        }
         return new Json(Result.DATABASE_TABLE_OR_FIELD_ERROR);
     }
 
@@ -195,7 +218,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public Object otherExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
-        exception.printStackTrace();
+        if (GlobalConfig.debug) {
+            exception.printStackTrace();
+        }
         return new Json(Result.ERROR);
     }
 }
