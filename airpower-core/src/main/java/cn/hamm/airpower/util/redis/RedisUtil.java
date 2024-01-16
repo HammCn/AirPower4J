@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.root.RootEntity;
 import com.alibaba.fastjson.JSON;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,9 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil<E extends RootEntity<E>> {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private GlobalConfig globalConfig;
 
     /**
      * 从缓存中获取实体
@@ -88,8 +92,8 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      */
     public void saveEntityCacheData(String key, E entity) {
-        if (GlobalConfig.cacheExpTime > 0) {
-            set(key, JSON.toJSONString(entity), GlobalConfig.cacheExpTime);
+        if (globalConfig.getCacheExpTime() > 0) {
+            set(key, JSON.toJSONString(entity), globalConfig.getCacheExpTime());
         } else {
             set(key, JSON.toJSONString(entity));
         }

@@ -8,6 +8,7 @@ import cn.hamm.airpower.result.json.JsonData;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -43,6 +44,9 @@ import java.util.Set;
 @ResponseBody
 @Slf4j
 public class ExceptionInterceptor {
+    @Autowired
+    private GlobalConfig globalConfig;
+
     /**
      * 参数验证失败
      */
@@ -94,7 +98,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
     public Json deleteUsingDataException(Exception exception) {
         log.error(exception.getMessage());
-        if (GlobalConfig.debug) {
+        if (globalConfig.isDebug()) {
             exception.printStackTrace();
         }
         return new Json(Result.FORBIDDEN_DELETE_USED, "数据正在使用中,无法被删除!");
@@ -136,7 +140,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Json httpMediaTypeNotSupportedExceptionHandle(HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
-        if (GlobalConfig.debug) {
+        if (globalConfig.isDebug()) {
             exception.printStackTrace();
         }
         return new Json(
@@ -150,7 +154,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(CannotCreateTransactionException.class)
     public Json databaseExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
-        if (GlobalConfig.debug) {
+        if (globalConfig.isDebug()) {
             exception.printStackTrace();
         }
         return new Json(Result.DATABASE_ERROR);
@@ -162,7 +166,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(RedisConnectionFailureException.class)
     public Json redisExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
-        if (GlobalConfig.debug) {
+        if (globalConfig.isDebug()) {
             exception.printStackTrace();
         }
         return new Json(Result.REDIS_ERROR);
@@ -182,7 +186,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = {cn.hutool.jwt.JWTException.class})
     public Json jwtExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
-        if (GlobalConfig.debug) {
+        if (globalConfig.isDebug()) {
             exception.printStackTrace();
         }
         return new Json(Result.UNAUTHORIZED);
@@ -194,7 +198,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = PropertyReferenceException.class)
     public Json propertyReferenceExceptionHandle(PropertyReferenceException exception) {
         log.error(exception.getMessage());
-        if (GlobalConfig.debug) {
+        if (globalConfig.isDebug()) {
             exception.printStackTrace();
         }
         return new Json(Result.DATABASE_UNKNOWN_FIELD, "不支持的数据字段" + exception.getPropertyName());
@@ -206,7 +210,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
     public Json invalidDataAccessResourceUsageExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
-        if (GlobalConfig.debug) {
+        if (globalConfig.isDebug()) {
             exception.printStackTrace();
         }
         return new Json(Result.DATABASE_TABLE_OR_FIELD_ERROR);
@@ -218,7 +222,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public Object otherExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
-        if (GlobalConfig.debug) {
+        if (globalConfig.isDebug()) {
             exception.printStackTrace();
         }
         return new Json(Result.ERROR);

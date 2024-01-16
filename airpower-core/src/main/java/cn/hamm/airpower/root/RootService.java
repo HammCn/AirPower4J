@@ -47,6 +47,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     @Autowired
     protected R repository;
 
+    @Autowired
+    private GlobalConfig globalConfig;
+
     /**
      * 当前请求的实例
      */
@@ -264,7 +267,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected final void deleteById(Long id) {
         repository.deleteById(id);
-        if (GlobalConfig.isCacheEnabled) {
+        if (globalConfig.isCache()) {
             redisUtil.deleteEntity(getNewInstance().setId(id));
         }
     }
@@ -277,7 +280,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected final E getById(Long id) {
         Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        if (GlobalConfig.isCacheEnabled) {
+        if (globalConfig.isCache()) {
             //如果打开了缓存，优先读取缓存
             E entity = redisUtil.getEntity(getNewInstance().setId(id));
             if (Objects.nonNull(entity)) {
@@ -322,7 +325,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected final Long getCurrentUserId() {
         try {
-            String accessToken = request.getHeader(GlobalConfig.authorizeHeader);
+            String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
             return secureUtil.getUserIdFromAccessToken(accessToken);
         } catch (Exception ignored) {
         }
@@ -450,7 +453,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param entity 待缓存的实体
      */
     private void saveToCache(E entity) {
-        if (GlobalConfig.isCacheEnabled) {
+        if (globalConfig.isCache()) {
             //如果打开了缓存，将查询结果在缓存中存储一份
             redisUtil.saveEntityCacheData(entity);
         }
@@ -586,7 +589,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return Sort
      */
     private Sort createSort(QueryRequest<E> queryRequest) {
-        String sortField = GlobalConfig.defaultSortField;
+        String sortField = globalConfig.getDefaultSortField();
         if (Objects.isNull(queryRequest.getSort())) {
             queryRequest.setSort(new cn.hamm.airpower.model.Sort());
         }
@@ -594,7 +597,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             // 如果传入了Sort和字段
             sortField = queryRequest.getSort().getField();
         }
-        if (!GlobalConfig.defaultSortDirection.equals(queryRequest.getSort().getDirection())) {
+        if (!globalConfig.getDefaultSortDirection().equals(queryRequest.getSort().getDirection())) {
             return Sort.by(Sort.Order.asc(sortField));
         }
         return Sort.by(Sort.Order.desc(sortField));

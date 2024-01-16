@@ -1,8 +1,9 @@
 package cn.hamm.airpower.mqtt;
 
+import cn.hamm.airpower.config.MqttConfig;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.UUID;
@@ -12,32 +13,11 @@ import java.util.UUID;
  *
  * @author Hamm
  */
+@SuppressWarnings("unused")
 @Configuration
 public class MqttHelper {
-    /**
-     * 用户
-     */
-    @Value("${spring.mqtt.user}")
-    private String user;
-
-    /**
-     * 密码
-     */
-    @Value("${spring.mqtt.pass}")
-    private String pass;
-
-    /**
-     * 地址
-     */
-    @Value("${spring.mqtt.host}")
-    private String host;
-
-    /**
-     * 端口
-     */
-    @Value("${spring.mqtt.port}")
-    private String port;
-
+    @Autowired
+    private MqttConfig mqttConfig;
 
     /**
      * 创建MQTT客户端
@@ -58,7 +38,7 @@ public class MqttHelper {
      */
     public MqttClient createClient(String id) throws MqttException {
         return new MqttClient(
-                "tcp://" + host + ":" + port,
+                "tcp://" + mqttConfig.getHost() + ":" + mqttConfig.getPort(),
                 id,
                 new MemoryPersistence()
         );
@@ -73,8 +53,8 @@ public class MqttHelper {
     public MqttConnectOptions createOption() {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(false);
-        options.setUserName(user);
-        options.setPassword(pass.toCharArray());
+        options.setUserName(mqttConfig.getUser());
+        options.setPassword(mqttConfig.getPass().toCharArray());
         options.setConnectionTimeout(30);
         options.setKeepAliveInterval(10);
         return options;

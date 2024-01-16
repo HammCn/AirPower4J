@@ -25,6 +25,9 @@ public class SecurityUtil {
     @Autowired
     private RedisUtil<?> redisUtil;
 
+    @Autowired
+    private GlobalConfig globalConfig;
+
     /**
      * 从AccessToken中获取用户ID
      *
@@ -54,7 +57,7 @@ public class SecurityUtil {
             return createAccessToken(userId);
         } catch (Exception e) {
             // 不存在 存储
-            redisUtil.set(ACCESS_TOKEN_PREFIX + accessToken, userId, GlobalConfig.authorizeExpireTime);
+            redisUtil.set(ACCESS_TOKEN_PREFIX + accessToken, userId, globalConfig.getAuthorizeExpireTime());
             return accessToken;
         }
     }

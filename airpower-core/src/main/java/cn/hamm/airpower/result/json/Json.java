@@ -17,6 +17,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
+@SuppressWarnings("unused")
 public class Json implements IResult {
     /**
      * 错误码

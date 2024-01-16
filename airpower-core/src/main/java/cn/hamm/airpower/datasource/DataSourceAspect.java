@@ -8,6 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,6 +22,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Component
 public class DataSourceAspect {
+    @Autowired
+    private GlobalConfig globalConfig;
+
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.GetMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.RequestMapping)")
@@ -34,9 +38,9 @@ public class DataSourceAspect {
      */
     @Around("pointCut()")
     public Object multipleDataSource(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Result.ERROR.when(!GlobalConfig.isServiceRunning, "服务短暂维护中,请稍后再试：）");
+        Result.ERROR.when(!globalConfig.isServiceRunning(), "服务短暂维护中,请稍后再试：）");
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
-        String database = request.getHeader(GlobalConfig.tenantHeader);
+        String database = request.getHeader(globalConfig.getTenantHeader());
         if (StrUtil.isAllBlank(database)) {
             return proceedingJoinPoint.proceed();
         }

@@ -1,6 +1,5 @@
 package cn.hamm.airpower.model;
 
-import cn.hamm.airpower.config.GlobalConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,10 +18,10 @@ public class Sort {
     /**
      * 排序字段
      */
-    private String field = GlobalConfig.defaultSortField;
+    private String field;
 
     /**
      * 排序方法
      */
-    private String direction = GlobalConfig.defaultSortDirection;
+    private String direction;
 }

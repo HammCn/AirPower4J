@@ -3,6 +3,7 @@ package cn.hamm.airpower.validate.password;
 import cn.hamm.airpower.config.GlobalConfig;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.util.regex.Matcher;
@@ -14,6 +15,8 @@ import java.util.regex.Pattern;
  * @author Hamm
  */
 public class PasswordAnnotationValidator implements ConstraintValidator<Password, String> {
+    @Autowired
+    private GlobalConfig globalConfig;
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
@@ -21,11 +24,11 @@ public class PasswordAnnotationValidator implements ConstraintValidator<Password
             return true;
         }
 
-        if (value.length() < GlobalConfig.passwordMinLength) {
+        if (value.length() < globalConfig.getPasswordMinLength()) {
             return false;
         }
 
-        if (value.length() > GlobalConfig.passwordMaxLength) {
+        if (value.length() > globalConfig.getPasswordMaxLength()) {
             return contain(value, ".*[a-zA-Z]+.*") &&
                     contain(value, ".*[0-9]+.*");
         }

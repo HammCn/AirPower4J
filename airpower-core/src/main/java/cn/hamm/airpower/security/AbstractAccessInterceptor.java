@@ -25,6 +25,9 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private GlobalConfig globalConfig;
+
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object object) {
         HandlerMethod handlerMethod = (HandlerMethod) object;
@@ -37,7 +40,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
             return true;
         }
         //需要登录
-        String accessToken = request.getHeader(GlobalConfig.authorizeHeader);
+        String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
         Result.UNAUTHORIZED.whenEmpty(accessToken);
         Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
         //需要RBAC

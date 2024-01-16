@@ -11,6 +11,7 @@ import java.util.List;
  *
  * @author Hamm
  */
+@SuppressWarnings("unused")
 @Component
 public class TreeUtil {
     /**

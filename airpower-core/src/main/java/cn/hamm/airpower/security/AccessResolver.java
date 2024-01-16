@@ -22,6 +22,9 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private GlobalConfig globalConfig;
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         Class<?> clazz = parameter.getParameterType();
@@ -36,7 +39,7 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String accessToken = null;
         if (request != null) {
-            accessToken = request.getHeader(GlobalConfig.authorizeHeader);
+            accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
         }
         return securityUtil.getUserIdFromAccessToken(accessToken);
     }
