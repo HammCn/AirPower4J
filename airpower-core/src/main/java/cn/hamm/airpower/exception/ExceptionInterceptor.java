@@ -195,6 +195,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public Object otherExceptionHandle(Exception exception) {
         log.error(exception.getMessage());
+        exception.printStackTrace();
         return new Json(Result.ERROR);
     }
 }
