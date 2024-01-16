@@ -40,6 +40,9 @@ public class ResponseAspect {
             return result;
         }
         Filter filter = method.getAnnotation(Filter.class);
+        if (Objects.isNull(filter)) {
+            return result;
+        }
         JsonData jsonData = (JsonData) result;
         Class<?> dataCls = jsonData.getData().getClass();
 
@@ -83,7 +86,7 @@ public class ResponseAspect {
      * 使用指定的过滤器过滤数据列表
      *
      * @param filter 过滤器
-     * @param list           数据列表
+     * @param list   数据列表
      * @return 列表
      */
     private List<?> filterResponseListBy(Filter filter, List<?> list) {
