@@ -23,7 +23,7 @@ public class GlobalConfig {
     /**
      * 默认分页条数
      */
-    public static int defaultPageSize = 20;
+    private int defaultPageSize = 20;
 
     /**
      * 多数据源数据库前缀
@@ -94,7 +94,7 @@ public class GlobalConfig {
      *
      * @apiNote 调试模式打开，控制台将输出部分错误堆栈信息等
      */
-    private boolean debug = false;
+    private boolean debug = true;
 
     /**
      * MQTT配置

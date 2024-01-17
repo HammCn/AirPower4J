@@ -554,18 +554,19 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return Sort
      */
     private Sort createSort(QueryRequest<E> queryRequest) {
-        String sortField = globalConfig.getDefaultSortField();
         if (Objects.isNull(queryRequest.getSort())) {
             queryRequest.setSort(new cn.hamm.airpower.model.Sort());
         }
-        if (!"".equalsIgnoreCase(queryRequest.getSort().getField())) {
-            // 如果传入了Sort和字段
-            sortField = queryRequest.getSort().getField();
+        if (StrUtil.isBlank(queryRequest.getSort().getField())) {
+            queryRequest.getSort().setField(globalConfig.getDefaultSortField());
+        }
+        if (StrUtil.isBlank(queryRequest.getSort().getDirection())) {
+            queryRequest.getSort().setDirection(globalConfig.getDefaultSortDirection());
         }
         if (!globalConfig.getDefaultSortDirection().equals(queryRequest.getSort().getDirection())) {
-            return Sort.by(Sort.Order.asc(sortField));
+            return Sort.by(Sort.Order.asc(queryRequest.getSort().getField()));
         }
-        return Sort.by(Sort.Order.desc(sortField));
+        return Sort.by(Sort.Order.desc(queryRequest.getSort().getField()));
     }
 
     /**
@@ -576,12 +577,19 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private Pageable createPageable(QueryPageRequest<E> queryPageData) {
         Sort sort = createSort(queryPageData);
-        Page page = new Page();
-        if (!Objects.isNull(queryPageData.getPage())) {
-            page = queryPageData.getPage();
+        Page page = queryPageData.getPage();
+        if (Objects.isNull(page)) {
+            page = new Page();
+        }
+        if (Objects.isNull(page.getPageNum())) {
+            page.setPageNum(1);
+        }
+        if (Objects.isNull(page.getPageSize())) {
+            page.setPageSize(globalConfig.getDefaultPageSize());
         }
         int pageNumber = page.getPageNum() - 1;
         pageNumber = Math.max(0, pageNumber);
+
         int pageSize = queryPageData.getPage().getPageSize();
         pageSize = Math.max(1, pageSize);
         return PageRequest.of(pageNumber, pageSize, sort);
