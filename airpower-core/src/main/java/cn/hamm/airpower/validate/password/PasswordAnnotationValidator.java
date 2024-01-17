@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.GlobalConfig;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.regex.Matcher;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
  *
  * @author Hamm
  */
+@Component
 public class PasswordAnnotationValidator implements ConstraintValidator<Password, String> {
     @Autowired
     private GlobalConfig globalConfig;

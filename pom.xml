@@ -13,9 +13,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <springboot.version>3.2.0</springboot.version>
-        <mysql.version>8.0.33</mysql.version>
-        <hutool.version>5.8.23</hutool.version>
+        <springboot.version>3.2.1</springboot.version>
+        <mysql.version>8.0.29</mysql.version>
+        <hutool.version>5.8.25</hutool.version>
         <fastjon.version>1.2.83</fastjon.version>
         <druid.springboot.version>1.2.11</druid.springboot.version>
         <jetbrains.annotations.version>23.0.0</jetbrains.annotations.version>
