@@ -8,6 +8,7 @@ import cn.hutool.extra.mail.MailUtil;
  *
  * @author Hamm
  */
+@SuppressWarnings("unused")
 public class EmailUtil {
 
     /**
