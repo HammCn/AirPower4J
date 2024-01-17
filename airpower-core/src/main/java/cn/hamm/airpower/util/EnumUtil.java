@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
  *
  * @author Hamm
  */
+@SuppressWarnings("unused")
 public class EnumUtil {
     /**
      * 查询指定value的枚举项目

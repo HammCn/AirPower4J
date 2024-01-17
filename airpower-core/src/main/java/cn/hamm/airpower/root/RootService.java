@@ -3,7 +3,6 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.GlobalConfig;
-import cn.hamm.airpower.interfaces.ITree;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.query.QueryPageRequest;
 import cn.hamm.airpower.query.QueryPageResponse;
@@ -384,40 +383,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
         }
         return entity;
-    }
-
-    /**
-     * 普通平层树数组按层级转为树结构
-     *
-     * @param list     普通平层数组
-     * @param parentId 父级ID
-     * @param <T>      类型
-     * @return 层级结构的树
-     */
-    @SuppressWarnings("rawtypes")
-    protected final <T extends ITree> List<T> list2TreeList(List<T> list, Long parentId) {
-        List<T> treeList = new ArrayList<>();
-        list.forEach(item -> {
-            if (parentId.equals(item.getParentId())) {
-                treeList.add(item);
-            }
-        });
-        for (T t : treeList) {
-            t.setChildren(list2TreeList(list, t.getId()));
-        }
-        return treeList;
-    }
-
-    /**
-     * 普通平层树数组按层级转为树结构
-     *
-     * @param list 普通平层数组
-     * @param <T>  类型
-     * @return 层级结构的树
-     */
-    @SuppressWarnings("rawtypes")
-    protected final <T extends ITree> List<T> list2TreeList(List<T> list) {
-        return list2TreeList(list, 0L);
     }
 
     /**
