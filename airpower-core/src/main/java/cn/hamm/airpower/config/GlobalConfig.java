@@ -33,15 +33,16 @@ public class GlobalConfig {
      * 服务全局拦截
      */
     private boolean isServiceRunning = true;
+
     /**
      * 是否开启缓存
      */
-    private boolean cache = true;
+    private boolean cache = false;
 
     /**
      * 缓存过期时间
      */
-    private int cacheExpTime = 3600;
+    private int cacheExpTime = 60;
 
     /**
      * 默认排序字段
