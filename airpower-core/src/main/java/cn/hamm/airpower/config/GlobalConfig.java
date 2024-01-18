@@ -29,6 +29,7 @@ public class GlobalConfig {
      * 多数据源数据库前缀
      */
     public static String databasePrefix = "tenant_";
+
     /**
      * 服务全局拦截
      */
