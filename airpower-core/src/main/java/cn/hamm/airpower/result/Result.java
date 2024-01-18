@@ -15,6 +15,8 @@ public enum Result implements IResult {
     SUCCESS(0.200, "成功"),
     CONTINUE(0.201, "请继续"),
 
+    REDIRECT(0.301, "请更新客户端"),
+
     // 400 请求参数代码
     PARAM_MISSING(0.4001, "缺少参数"),
     PARAM_INVALID(0.4002, "无效的参数"),
