@@ -31,6 +31,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object object) {
         HandlerMethod handlerMethod = (HandlerMethod) object;
+        beforeHandleRequest(request, response, handlerMethod);
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBeanType();
         Method method = handlerMethod.getMethod();
@@ -59,4 +60,16 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
      * @return 验证结果
      */
     public abstract boolean checkPermissionAccess(Long userId, String permissionIdentity);
+
+    /**
+     * 请求拦截器前置方法
+     *
+     * @param request       请求对象
+     * @param response      响应对象
+     * @param handlerMethod 请求方法
+     */
+    @SuppressWarnings("unused")
+    protected void beforeHandleRequest(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
+
+    }
 }
