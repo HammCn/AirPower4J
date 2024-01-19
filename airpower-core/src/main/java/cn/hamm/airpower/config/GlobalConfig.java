@@ -43,7 +43,7 @@ public class GlobalConfig {
     /**
      * 缓存过期时间
      */
-    private int cacheExpTime = 60;
+    private int cacheExpireSecond = 60;
 
     /**
      * 默认排序字段
@@ -102,4 +102,9 @@ public class GlobalConfig {
      * MQTT配置
      */
     private MqttConfig mqtt = new MqttConfig();
+
+    /**
+     * Cookie配置
+     */
+    private CookieConfig cookie = new CookieConfig();
 }

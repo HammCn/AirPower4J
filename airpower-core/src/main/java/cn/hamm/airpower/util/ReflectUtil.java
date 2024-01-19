@@ -217,7 +217,6 @@ public class ReflectUtil {
      * @param clazz  所在类
      * @return 描述
      */
-    @SuppressWarnings("DuplicatedCode")
     private static String getDescription(Method method, Class<?> clazz) {
         Description description = method.getAnnotation(Description.class);
         if (Objects.nonNull(description)) {

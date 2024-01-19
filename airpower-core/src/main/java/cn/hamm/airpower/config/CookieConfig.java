@@ -1,6 +1,11 @@
 package cn.hamm.airpower.config;
 
 import cn.hamm.airpower.security.CookieUtil;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * <h1>Cookie相关配置</h1>
@@ -8,30 +13,34 @@ import cn.hamm.airpower.security.CookieUtil;
  * @author Hamm
  * @see CookieUtil
  */
-@SuppressWarnings("CanBeFinal")
+@Component
+@Data
+@Accessors(chain = true)
+@Configuration
+@ConfigurationProperties("airpower.cookie")
 public class CookieConfig {
     /**
      * Cookie的路径
      */
-    public static String cookiePath = "/";
+    private String cookiePath = "/";
 
     /**
      * 身份验证的Cookie名称
      */
-    public static String authCookieName = "authorization-key";
+    private String authCookieName = "authorization-key";
 
     /**
      * Cookie的HttpOnly配置
      */
-    public static boolean isCookieHttpOnly = true;
+    private boolean cookieHttpOnly = true;
 
     /**
      * Cookie有效期
      */
-    public static int cookieMaxAge = 86400;
+    private int cookieMaxAge = 86400;
 
     /**
      * 使用Https方式的安全Cookie
      */
-    public static boolean isCookieSecurity = true;
+    private boolean cookieSecurity = true;
 }

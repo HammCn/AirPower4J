@@ -266,9 +266,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected final void deleteById(Long id) {
         repository.deleteById(id);
-        if (globalConfig.isCache()) {
-            redisUtil.deleteEntity(getNewInstance().setId(id));
-        }
     }
 
     /**
@@ -279,26 +276,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected final E getById(Long id) {
         Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        if (globalConfig.isCache()) {
-            //如果打开了缓存，优先读取缓存
-            E entity = redisUtil.getEntity(getNewInstance().setId(id));
-            if (Objects.nonNull(entity)) {
-                // 查到了缓存 更新缓存
-                saveToCache(entity);
-                return entity;
-            }
-        }
         Optional<E> optional = repository.findById(id);
         if (optional.isPresent()) {
-            E entity = optional.get();
-            // 更新缓存
-            saveToCache(entity);
-            return entity;
+            return optional.get();
         }
         Result.NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
         return getNewInstance();
     }
-
 
     /**
      * 根据ID查询对应的实体
@@ -408,20 +392,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
-        redisUtil.deleteEntity(target);
         return target;
-    }
-
-    /**
-     * 保存实体到缓存
-     *
-     * @param entity 待缓存的实体
-     */
-    private void saveToCache(E entity) {
-        if (globalConfig.isCache()) {
-            //如果打开了缓存，将查询结果在缓存中存储一份
-            redisUtil.saveEntityCacheData(entity);
-        }
     }
 
     /**

@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Hamm
  */
+@SuppressWarnings("unused")
 @Component
 public class RedisUtil<E extends RootEntity<E>> {
     @Resource
@@ -32,20 +33,8 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @return 实体
      */
-    public E getEntity(E entity) {
-        return getEntity(getCacheKey(entity), entity);
-    }
-
-
-    /**
-     * 从缓存中获取实体
-     *
-     * @param key    指定的Key
-     * @param entity 实体
-     * @return 实体
-     */
-    public E getEntity(String key, E entity) {
-        Object object = get(key);
+    public final E getEntity(E entity) {
+        Object object = get(getCacheKey(entity));
         if (Objects.isNull(object)) {
             return null;
         }
@@ -62,54 +51,39 @@ public class RedisUtil<E extends RootEntity<E>> {
      *
      * @param entity 实体
      */
-    public void deleteEntity(E entity) {
+    public final void deleteEntity(E entity) {
         del(getCacheKey(entity));
     }
 
     /**
-     * 获取缓存Entity的cacheKey
+     * 缓存实体
      *
      * @param entity 实体
-     * @return key
      */
-    private String getCacheKey(E entity) {
-        return entity.getClass().getSimpleName() + "_" + entity.getId().toString();
+    public final void saveEntity(E entity) {
+        saveEntity(entity, globalConfig.getCacheExpireSecond());
     }
 
     /**
      * 缓存实体
      *
      * @param entity 实体
+     * @param second 缓存时间(秒)
      */
-    public void saveEntityCacheData(E entity) {
-        saveEntityCacheData(getCacheKey(entity), entity);
-    }
-
-    /**
-     * 缓存实体
-     *
-     * @param key    缓存的Key
-     * @param entity 实体
-     */
-    public void saveEntityCacheData(String key, E entity) {
-        if (globalConfig.getCacheExpTime() > 0) {
-            set(key, JSON.toJSONString(entity), globalConfig.getCacheExpTime());
-        } else {
-            set(key, JSON.toJSONString(entity));
-        }
+    public final void saveEntity(E entity, long second) {
+        set(getCacheKey(entity), JSON.toJSONString(entity), second);
     }
 
     /**
      * 指定缓存失效时间
      *
-     * @param key  键
-     * @param time 时间(秒)
+     * @param key    键
+     * @param second 时间(秒)
      */
-    @SuppressWarnings("unused")
-    public void expire(String key, long time) {
+    public final void setExpireSecond(String key, long second) {
         try {
-            if (time > 0) {
-                redisTemplate.expire(key, time, TimeUnit.SECONDS);
+            if (second > 0) {
+                redisTemplate.expire(key, second, TimeUnit.SECONDS);
             }
         } catch (Exception e) {
             throw new RedisConnectionFailureException("Redis服务器连接失败");
@@ -121,7 +95,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      *
      * @param pattern 正则
      */
-    public void clearAll(String pattern) {
+    public final void clearAll(String pattern) {
         try {
             Set<String> keys = redisTemplate.keys(pattern);
             if (Objects.nonNull(keys)) {
@@ -133,21 +107,12 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 删除所有数据
-     */
-    @SuppressWarnings("unused")
-    public void clearAll() {
-        clearAll("*");
-    }
-
-    /**
-     * 根据key 获取过期时间
+     * 获取过期时间
      *
-     * @param key 键 不能为null
-     * @return 时间(秒) 返回0 代表为永久有效
+     * @param key 缓存的Key
+     * @return 过期时间
      */
-    @SuppressWarnings("unused")
-    public long getExpire(String key) {
+    public final long getExpireSecond(String key) {
         try {
             //noinspection ConstantConditions
             return redisTemplate.getExpire(key, TimeUnit.SECONDS);
@@ -162,7 +127,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param key 键
      * @return <code>true</code> 存在; <code>false</code> 不存在
      */
-    public boolean hasKey(String key) {
+    public final boolean hasKey(String key) {
         try {
             //noinspection ConstantConditions
             return redisTemplate.hasKey(key);
@@ -176,7 +141,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      *
      * @param key 键
      */
-    public void del(String key) {
+    public final void del(String key) {
         try {
             redisTemplate.delete(key);
         } catch (Exception e) {
@@ -190,9 +155,9 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param key 键
      * @return 值
      */
-    public Object get(String key) {
+    public final Object get(String key) {
         try {
-            return Objects.isNull(key) ? null : redisTemplate.opsForValue().get(key);
+            return redisTemplate.opsForValue().get(key);
         } catch (Exception e) {
             throw new RedisConnectionFailureException("Redis服务器连接失败");
         }
@@ -204,12 +169,8 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param key   键
      * @param value 值
      */
-    public void set(String key, Object value) {
-        try {
-            redisTemplate.opsForValue().set(key, value);
-        } catch (Exception e) {
-            throw new RedisConnectionFailureException("Redis服务器连接失败");
-        }
+    public final void set(String key, Object value) {
+        set(key, value, globalConfig.getCacheExpireSecond());
     }
 
     /**
@@ -220,7 +181,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param time  时间(秒)
      * @apiNote time要大于0 如果time小于等于0 将设置无限期
      */
-    public void set(String key, Object value, long time) {
+    public final void set(String key, Object value, long time) {
         try {
             if (time > 0) {
                 redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
@@ -238,8 +199,17 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param channel 频道
      * @param message 消息
      */
-    @SuppressWarnings("unused")
-    public void publish(String channel, String message) {
+    public final void publish(String channel, String message) {
         redisTemplate.convertAndSend(channel, message);
+    }
+
+    /**
+     * 获取缓存Entity的cacheKey
+     *
+     * @param entity 实体
+     * @return key
+     */
+    private String getCacheKey(E entity) {
+        return entity.getClass().getSimpleName() + "_" + entity.getId().toString();
     }
 }
