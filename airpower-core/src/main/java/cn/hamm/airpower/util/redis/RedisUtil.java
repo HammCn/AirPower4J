@@ -31,10 +31,30 @@ public class RedisUtil<E extends RootEntity<E>> {
      * 从缓存中获取实体
      *
      * @param entity 实体
-     * @return 实体
+     * @return 缓存实体
      */
     public final E getEntity(E entity) {
         Object object = get(getCacheKey(entity));
+        if (Objects.isNull(object)) {
+            return null;
+        }
+        String json = object.toString();
+        if (Objects.isNull(json)) {
+            return null;
+        }
+        //noinspection unchecked
+        return (E) JSON.parseObject(json, entity.getClass());
+    }
+
+    /**
+     * 从缓存中获取实体
+     *
+     * @param key    缓存的Key
+     * @param entity 实体
+     * @return 缓存的实体
+     */
+    public final E getEntity(String key, E entity) {
+        Object object = get(key);
         if (Objects.isNull(object)) {
             return null;
         }
@@ -75,10 +95,31 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
+     * 缓存实体
+     *
+     * @param key    缓存的Key
+     * @param entity 实体
+     */
+    public final void saveEntity(String key, E entity) {
+        saveEntity(key, entity, globalConfig.getCacheExpireSecond());
+    }
+
+    /**
+     * 缓存实体
+     *
+     * @param key    缓存的Key
+     * @param entity 实体
+     * @param second 缓存时间(秒)
+     */
+    public final void saveEntity(String key, E entity, long second) {
+        set(key, JSON.toJSONString(entity), second);
+    }
+
+    /**
      * 指定缓存失效时间
      *
-     * @param key    键
-     * @param second 时间(秒)
+     * @param key    缓存的Key
+     * @param second 缓存时间(秒)
      */
     public final void setExpireSecond(String key, long second) {
         try {
@@ -124,7 +165,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     /**
      * 判断key是否存在
      *
-     * @param key 键
+     * @param key 缓存的Key
      * @return <code>true</code> 存在; <code>false</code> 不存在
      */
     public final boolean hasKey(String key) {
@@ -139,7 +180,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     /**
      * 删除缓存
      *
-     * @param key 键
+     * @param key 缓存的Key
      */
     public final void del(String key) {
         try {
@@ -152,7 +193,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     /**
      * 普通缓存获取
      *
-     * @param key 键
+     * @param key 缓存的Key
      * @return 值
      */
     public final Object get(String key) {
@@ -176,15 +217,15 @@ public class RedisUtil<E extends RootEntity<E>> {
     /**
      * 普通缓存放入并设置时间
      *
-     * @param key   键
-     * @param value 值
-     * @param time  时间(秒)
+     * @param key    缓存的Key
+     * @param value  缓存的值
+     * @param second 缓存时间(秒)
      * @apiNote time要大于0 如果time小于等于0 将设置无限期
      */
-    public final void set(String key, Object value, long time) {
+    public final void set(String key, Object value, long second) {
         try {
-            if (time > 0) {
-                redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
+            if (second > 0) {
+                redisTemplate.opsForValue().set(key, value, second, TimeUnit.SECONDS);
             } else {
                 set(key, value);
             }
