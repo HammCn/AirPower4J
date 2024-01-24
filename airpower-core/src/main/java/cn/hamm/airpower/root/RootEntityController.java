@@ -46,7 +46,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @Filter(RootEntity.WhenGetDetail.class)
     public JsonData add(@RequestBody @Validated(RootEntity.WhenAdd.class) E entity) {
         checkApiAvailableStatus(Api.Add);
-        return jsonData(afterAdd(service.add(service.ignoreReadOnlyFields(beforeAdd(entity)))), "创建成功");
+        return jsonData(afterAdd(service.add(beforeAdd(service.ignoreReadOnlyFields(entity)))), "创建成功");
     }
 
     /**
@@ -82,7 +82,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @Filter(RootEntity.WhenGetDetail.class)
     public JsonData update(@RequestBody @Validated(RootEntity.WhenUpdate.class) E entity) {
         checkApiAvailableStatus(Api.Update);
-        return jsonData(afterUpdate(service.update(service.ignoreReadOnlyFields(beforeUpdate(entity)))), "修改成功");
+        return jsonData(afterUpdate(service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)))), "修改成功");
     }
 
     /**
