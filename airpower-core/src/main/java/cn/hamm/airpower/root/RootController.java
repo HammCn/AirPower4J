@@ -1,9 +1,13 @@
 package cn.hamm.airpower.root;
 
+import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.result.json.JsonData;
 import cn.hamm.airpower.security.Permission;
+import cn.hamm.airpower.security.SecurityUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("")
 public class RootController {
+    /**
+     * 当前请求的实例
+     */
+    @Autowired
+    protected HttpServletRequest request;
+
+    @Autowired
+    protected GlobalConfig globalConfig;
+
+    @Autowired
+    private SecurityUtil securityUtil;
+
     /**
      * 响应一个操作成功
      *
@@ -59,5 +75,21 @@ public class RootController {
      */
     protected JsonData jsonData(Object data, String message) {
         return new JsonData(data, message);
+    }
+
+
+    /**
+     * 获取当前登录用户的信息
+     *
+     * @return 用户ID
+     */
+    protected final Long getCurrentUserId() {
+        try {
+            String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
+            return securityUtil.getUserIdFromAccessToken(accessToken);
+        } catch (Exception ignored) {
+            Result.UNAUTHORIZED.show("获取当前用户信息失败,请重新登录后尝试");
+        }
+        return null;
     }
 }

@@ -16,7 +16,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.criteria.*;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -48,12 +47,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
     @Autowired
     private GlobalConfig globalConfig;
-
-    /**
-     * 当前请求的实例
-     */
-    @Autowired
-    protected HttpServletRequest request;
 
     @Autowired
     protected RedisUtil<E> redisUtil;
@@ -302,20 +295,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 获取当前登录用户的信息
-     *
-     * @return 用户ID
-     */
-    protected final Long getCurrentUserId() {
-        try {
-            String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
-            return secureUtil.getUserIdFromAccessToken(accessToken);
-        } catch (Exception ignored) {
-        }
-        return 0L;
-    }
-
-    /**
      * 添加到数据库(直接保存)
      *
      * @param entity 实体
@@ -329,7 +308,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (Objects.isNull(entity.getRemark())) {
             entity.setRemark("");
         }
-        entity.setCreateUserId(getCurrentUserId());
         return saveToDatabase(entity);
     }
 
@@ -378,7 +356,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private E saveToDatabase(E entity) {
         checkUnique(entity);
         entity.setUpdateTime(DateUtil.current());
-        entity.setUpdateUserId(getCurrentUserId());
         if (Objects.nonNull(entity.getId())) {
             //有ID 走修改 且不允许修改下列字段
             E existEntity = get(entity.getId());
