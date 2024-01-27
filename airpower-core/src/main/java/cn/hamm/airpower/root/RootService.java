@@ -216,7 +216,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 处理后的查询条件
      * @see #getList(QueryRequest)
      */
-    protected QueryRequest<E> beforeGetList(QueryRequest<E> sourceRequestData) {
+    protected <T extends QueryRequest<E>> T beforeGetList(T sourceRequestData) {
         return sourceRequestData;
     }
 
