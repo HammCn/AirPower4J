@@ -47,7 +47,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
         //需要RBAC
         if (accessConfig.authorize) {
             //验证用户是否有接口的访问权限
-            return checkPermissionAccess(userId, AccessUtil.getPermissionIdentity(clazz, method));
+            return checkPermissionAccess(userId, AccessUtil.getPermissionIdentity(clazz, method), request);
         }
         return true;
     }
@@ -57,9 +57,10 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
      *
      * @param userId             用户ID
      * @param permissionIdentity 权限标识
+     * @param request            请求对象
      * @return 验证结果
      */
-    public abstract boolean checkPermissionAccess(Long userId, String permissionIdentity);
+    public abstract boolean checkPermissionAccess(Long userId, String permissionIdentity, HttpServletRequest request);
 
     /**
      * 请求拦截器前置方法
