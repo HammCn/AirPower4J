@@ -83,13 +83,13 @@ public class RootController {
      *
      * @return 用户ID
      */
-    protected final Long getCurrentUserId() {
+    protected final long getCurrentUserId() {
         try {
             String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
             return securityUtil.getUserIdFromAccessToken(accessToken);
         } catch (Exception ignored) {
             Result.UNAUTHORIZED.show("获取当前用户信息失败,请重新登录后尝试");
         }
-        return null;
+        return 0L;
     }
 }
