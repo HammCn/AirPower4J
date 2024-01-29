@@ -4,6 +4,7 @@ import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.api.Api;
 import cn.hamm.airpower.api.Extends;
 import cn.hamm.airpower.query.QueryPageRequest;
+import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.query.QueryRequest;
 import cn.hamm.airpower.response.Filter;
 import cn.hamm.airpower.result.Result;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,7 +26,7 @@ import java.util.Objects;
  * @param <S> Service
  * @param <E> 实体或实体的子类
  * @author Hamm
- * @apiNote 如需自定义, 可使用前后置方法, 也可以自行重写后实现 如需继承或排除部分接口, 可使用 {@link Extends} 注解
+ * @apiNote 提供了 {@link Extends} 处理接口黑白名单，同时提供了一些 前置/后置 方法，可被子控制器类重写(不建议)
  */
 @Permission
 public class RootEntityController<E extends RootEntity<E>, S extends RootService<E, R>, R extends RootRepository<E>> extends RootController {
@@ -37,7 +39,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      *
      * @param entity 数据实体
      * @return 新增成功后的数据实体
-     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeAdd(RootEntity) 前置方法
      * @see #afterAdd(RootEntity) 后置方法
      */
@@ -54,7 +56,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      *
      * @param entity 包含ID的实体
      * @return 删除结果
-     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeDelete(RootEntity) 前置方法
      * @see #afterDelete(RootEntity) 后置方法
      */
@@ -73,7 +75,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      *
      * @param entity 包含ID的实体
      * @return 修改后的实体数据
-     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeUpdate(RootEntity) 前置方法
      * @see #afterUpdate(RootEntity) 后置方法
      */
@@ -90,7 +92,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      *
      * @param entity 包含ID的实体
      * @return 详情数据
-     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #afterGetDetail(RootEntity) 后置方法
      */
     @Description("查询详情")
@@ -106,7 +108,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      *
      * @param entity 包含ID的实体
      * @return 禁用结果
-     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeDisable(RootEntity) 前置方法
      * @see #afterDisable(RootEntity) 后置方法
      */
@@ -124,7 +126,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      *
      * @param entity 包含ID的实体
      * @return 启用结果
-     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeEnable(RootEntity) 前置方法
      * @see #afterEnable(RootEntity) 后置方法
      */
@@ -142,31 +144,81 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      *
      * @param queryRequest 查询请求
      * @return 查询结果
-     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
+     * @see #beforeGetList(QueryRequest) 前置方法
+     * @see #afterGetList(List) 后置方法
      */
     @Description("不分页查询")
     @PostMapping("getList")
     @Filter(RootEntity.WhenGetList.class)
     public JsonData getList(@RequestBody QueryRequest<E> queryRequest) {
         checkApiAvailableStatus(Api.GetList);
-        return jsonData(service.getList(queryRequest));
+        return jsonData(afterGetList(service.getList(beforeGetList(queryRequest))));
     }
 
     /**
      * 分页查询
      *
-     * @param queryPageData 查询请求
+     * @param queryPageRequest 查询请求
      * @return 查询结果
-     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
+     * @see #beforeGetPage(QueryPageRequest) 前置方法
+     * @see #afterGetPage(QueryPageResponse) 后置方法
      */
     @Description("分页查询")
     @PostMapping("getPage")
     @Filter(RootEntity.WhenGetPage.class)
-    public JsonData getPage(@RequestBody QueryPageRequest<E> queryPageData) {
+    public JsonData getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         checkApiAvailableStatus(Api.GetPage);
-        return jsonData(service.getPage(queryPageData));
+        return jsonData(afterGetPage(service.getPage(beforeGetPage(queryPageRequest))));
     }
 
+    /**
+     * 查询分页后置方法
+     *
+     * @param queryPageResponse 查询到的分页数据
+     * @return 处理后的分页数据
+     * @see #getPage(QueryPageRequest)
+     */
+    protected <T extends QueryPageResponse<E>> T afterGetPage(T queryPageResponse) {
+        return queryPageResponse;
+    }
+
+    /**
+     * 查询分页前置方法
+     *
+     * @param queryPageRequest 查询请求
+     * @return 处理后的查询请求
+     * @apiNote 可重写后重新设置查询条件
+     * @see #getPage(QueryPageRequest)
+     */
+    protected <T extends QueryPageRequest<E>> T beforeGetPage(T queryPageRequest) {
+        return queryPageRequest;
+    }
+
+    /**
+     * 查询不分页前置方法
+     *
+     * @param queryRequest 查询请求
+     * @return 查询请求
+     * @apiNote 可重写后重新设置查询条件
+     * @see #getList(QueryRequest)
+     */
+    protected <T extends QueryRequest<E>> T beforeGetList(T queryRequest) {
+        return queryRequest;
+    }
+
+    /**
+     * 查询不分页后置方法
+     *
+     * @param list 查询结果
+     * @return 查询结果
+     * @apiNote 可重写后执行装载更多数据的业务
+     * @see #getList(QueryRequest)
+     */
+    protected List<E> afterGetList(List<E> list) {
+        return list;
+    }
 
     /**
      * 查询详情后置方法
