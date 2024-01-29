@@ -152,6 +152,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @PostMapping("getList")
     @Filter(RootEntity.WhenGetList.class)
     public JsonData getList(@RequestBody QueryRequest<E> queryRequest) {
+        queryRequest = getQueryRequest(queryRequest);
         checkApiAvailableStatus(Api.GetList);
         return jsonData(afterGetList(service.getList(beforeGetList(queryRequest))));
     }
@@ -169,6 +170,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @PostMapping("getPage")
     @Filter(RootEntity.WhenGetPage.class)
     public JsonData getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
+        queryPageRequest = getQueryRequest(queryPageRequest);
         checkApiAvailableStatus(Api.GetPage);
         return jsonData(afterGetPage(service.getPage(beforeGetPage(queryPageRequest))));
     }
@@ -344,6 +346,25 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterEnable(E entity) {
+    }
+
+
+    /**
+     * 获取查询请求
+     *
+     * @param queryRequest 传入的查询请求
+     * @param <T>          QueryRequest子类
+     * @return 处理后的查询请求
+     */
+    private <T extends QueryRequest<E>> T getQueryRequest(T queryRequest) {
+        if (Objects.isNull(queryRequest)) {
+            //noinspection unchecked
+            queryRequest = (T) new QueryRequest<E>();
+        }
+        if (Objects.isNull(queryRequest.getFilter())) {
+            queryRequest.setFilter(new QueryRequest<E>().getFilter());
+        }
+        return queryRequest;
     }
 
     /**
