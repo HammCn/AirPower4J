@@ -8,6 +8,7 @@ import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.query.QueryRequest;
 import cn.hamm.airpower.response.Filter;
 import cn.hamm.airpower.result.Result;
+import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.result.json.JsonData;
 import cn.hamm.airpower.security.Permission;
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -348,7 +350,6 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     protected void afterEnable(E entity) {
     }
 
-
     /**
      * 获取查询请求
      *
@@ -362,7 +363,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
             queryRequest = (T) new QueryRequest<E>();
         }
         if (Objects.isNull(queryRequest.getFilter())) {
-            queryRequest.setFilter(new QueryRequest<E>().getFilter());
+            queryRequest.setFilter(getNewInstance());
         }
         return queryRequest;
     }
@@ -390,5 +391,28 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
         }
 
         Result.SERVICE_NOT_FOUND.show("该接口暂未提供");
+    }
+
+    /**
+     * 获取一个空实体
+     *
+     * @return 实体
+     */
+    private E getNewInstance() {
+        try {
+            return getEntityClass().getConstructor().newInstance();
+        } catch (Exception e) {
+            throw new ResultException("初始化实体失败");
+        }
+    }
+
+    /**
+     * 获取实体类
+     *
+     * @return 类
+     */
+    @SuppressWarnings("unchecked")
+    private Class<E> getEntityClass() {
+        return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 }
