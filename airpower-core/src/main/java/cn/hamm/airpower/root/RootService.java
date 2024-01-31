@@ -15,6 +15,7 @@ import cn.hamm.airpower.util.redis.RedisUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -53,6 +54,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
     @Autowired
     protected SecurityUtil secureUtil;
+
+    @Autowired
+    private EntityManager entityManager;
 
     /**
      * 添加一条数据
@@ -369,7 +373,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
-        return target;
+        long id = target.getId();
+        entityManager.clear();
+        return getById(id);
     }
 
     /**
