@@ -11,13 +11,73 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public class ValidateUtil {
     /**
+     * 数字
+     */
+    public static final Pattern NUMBER = Pattern.compile("^(-?\\d+)(\\.\\d+)?$");
+
+    /**
+     * 字母
+     */
+    public static final Pattern LETTER = Pattern.compile("^[A-Za-z]+$");
+
+    /**
+     * 整数
+     */
+    public static final Pattern INTEGER = Pattern.compile("^-?[0-9]\\d*$");
+
+    /**
+     * 邮箱
+     */
+    public static final Pattern EMAIL = Pattern.compile("^[a-zA-Z0-9]+(\\.([a-zA-Z0-9]+))*@[a-zA-Z0-9]+(\\.([a-zA-Z0-9]+))+$");
+
+    /**
+     * 字母或数字
+     */
+    public static final Pattern LETTER_OR_NUMBER = Pattern.compile("^[A-Za-z0-9]+$");
+
+    /**
+     * 中文
+     */
+    public static final Pattern CHINESE = Pattern.compile("^[\\u4e00-\\u9fa5]*$");
+
+    /**
+     * 手机
+     */
+    public static final Pattern MOBILE_PHONE = Pattern.compile("^(\\+(\\d{1,4}))?1[3-9](\\d{9})$");
+
+    /**
+     * 座机电话
+     */
+    public static final Pattern TEL_PHONE = Pattern.compile("^(((0\\d{2,3})-)?((\\d{7,8})|(400\\d{7})|(800\\d{7}))(-(\\d{1,4}))?)$");
+
+    /**
+     * 普通字符
+     */
+    public static final Pattern NORMAL_CODE = Pattern.compile("^[@#%a-zA-Z0-9\\u4e00-\\u9fa5_\\-\\\\/+]+$");
+
+    /**
+     * 数字或字母
+     */
+    public static final Pattern NUMBER_OR_LETTER = Pattern.compile("^[0-9a-zA-Z]+$");
+
+    /**
+     * 自然数
+     */
+    public static final Pattern NATURAL_NUMBER = Pattern.compile("^[0-9]+((.)[0-9]+)?$");
+
+    /**
+     * 自然整数
+     */
+    public static final Pattern NATURAL_INTEGER = Pattern.compile("^[0-9]+$");
+
+    /**
      * 是否是数字
      *
      * @param value 参数
      * @return 验证结果
      */
     public static boolean isNumber(String value) {
-        return validRegex(value, "^(-?\\d+)(\\.\\d+)?$");
+        return validRegex(value, NUMBER);
     }
 
     /**
@@ -27,7 +87,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isInteger(String value) {
-        return validRegex(value, "^-?[0-9]\\d*$");
+        return validRegex(value, INTEGER);
     }
 
     /**
@@ -37,8 +97,9 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isEmail(String value) {
-        return validRegex(value, "^[a-zA-Z0-9]+(\\.([a-zA-Z0-9]+)){0,}@[a-zA-Z0-9]+(\\.([a-zA-Z0-9]+)){1,}$");
+        return validRegex(value, EMAIL);
     }
+
 
     /**
      * 是否是字母
@@ -47,7 +108,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isLetter(String value) {
-        return validRegex(value, "^[A-Za-z]+$");
+        return validRegex(value, LETTER);
     }
 
     /**
@@ -57,7 +118,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isLetterOrNumber(String value) {
-        return validRegex(value, "^[A-Za-z0-9]+$");
+        return validRegex(value, LETTER_OR_NUMBER);
     }
 
     /**
@@ -67,7 +128,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isChinese(String value) {
-        return validRegex(value, "^[\\u4e00-\\u9fa5]{0,}$");
+        return validRegex(value, CHINESE);
     }
 
     /**
@@ -77,7 +138,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isMobilePhone(String value) {
-        return validRegex(value, "^(\\+(\\d{1,4})){0,1}1[3-9](\\d{9})$");
+        return validRegex(value, MOBILE_PHONE);
     }
 
     /**
@@ -87,7 +148,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isTelPhone(String value) {
-        return validRegex(value, "^(((0\\d{2,3})-){0,1}((\\d{7,8})|(400\\d{7})|(800\\d{7}))(-(\\d{1,4})){0,1})$");
+        return validRegex(value, TEL_PHONE);
     }
 
     /**
@@ -101,17 +162,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isNormalCode(String value) {
-        return validRegex(value, "^[@#%a-zA-Z0-9\\u4e00-\\u9fa5_\\-\\\\/\\\\+]+$");
-    }
-
-    /**
-     * 是否是纯字母
-     *
-     * @param value 参数
-     * @return 验证结果
-     */
-    public static boolean isOnlyLetter(String value) {
-        return validRegex(value, "^[a-zA-Z]+$");
+        return validRegex(value, NORMAL_CODE);
     }
 
     /**
@@ -121,7 +172,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isOnlyNumberAndLetter(String value) {
-        return validRegex(value, "^[0-9a-zA-Z]+$");
+        return validRegex(value, NUMBER_OR_LETTER);
     }
 
     /**
@@ -131,7 +182,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isNaturalNumber(String value) {
-        return validRegex(value, "^[0-9]+((.)[0-9]+){0,1}$");
+        return validRegex(value, NATURAL_NUMBER);
     }
 
     /**
@@ -141,18 +192,17 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isNaturalInteger(String value) {
-        return validRegex(value, "^[0-9]+$");
+        return validRegex(value, NATURAL_INTEGER);
     }
 
     /**
      * 正则校验
      *
-     * @param value 参数
-     * @param regex 正则
+     * @param value   参数
+     * @param pattern 正则
      * @return 验证结果
      */
-    public static boolean validRegex(String value, String regex) {
-        Pattern pattern = Pattern.compile(regex);
+    public static boolean validRegex(String value, Pattern pattern) {
         Matcher emailMatcher = pattern.matcher(value);
         return emailMatcher.matches();
     }
