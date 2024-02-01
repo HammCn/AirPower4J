@@ -277,7 +277,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (optional.isPresent()) {
             return optional.get();
         }
-        Result.NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
+        Result.DATA_NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
         return getNewInstance();
     }
 

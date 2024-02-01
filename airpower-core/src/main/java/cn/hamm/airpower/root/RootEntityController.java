@@ -390,7 +390,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
             return;
         }
 
-        Result.SERVICE_NOT_FOUND.show("该接口暂未提供");
+        Result.API_SERVICE_UNSUPPORTED.show("该接口暂未提供");
     }
 
     /**

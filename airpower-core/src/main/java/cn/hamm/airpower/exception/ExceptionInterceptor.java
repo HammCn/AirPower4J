@@ -110,7 +110,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(NoHandlerFoundException.class)
     public Json notFoundHandle(Exception exception) {
         log.error(exception.getMessage());
-        return new Json(Result.SERVICE_NOT_FOUND);
+        return new Json(Result.API_SERVICE_UNSUPPORTED);
     }
 
     /**

@@ -21,6 +21,11 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower")
 public class GlobalConfig {
     /**
+     * 错误代码基数
+     */
+    private int baseErrorCode = 1;
+
+    /**
      * 默认分页条数
      */
     private int defaultPageSize = 20;
