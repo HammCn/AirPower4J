@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 @Component
 @Slf4j
 public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
-
     @Autowired
     private SecurityUtil securityUtil;
 

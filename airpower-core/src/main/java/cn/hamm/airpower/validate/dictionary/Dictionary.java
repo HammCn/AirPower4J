@@ -1,6 +1,5 @@
 package cn.hamm.airpower.validate.dictionary;
 
-
 import cn.hamm.airpower.interfaces.IEnum;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

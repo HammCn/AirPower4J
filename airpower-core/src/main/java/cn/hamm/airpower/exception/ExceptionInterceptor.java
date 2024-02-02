@@ -8,6 +8,7 @@ import cn.hamm.airpower.result.json.JsonData;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
@@ -51,7 +52,7 @@ public class ExceptionInterceptor {
      * 参数验证失败
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Json badRequestHandle(MethodArgumentNotValidException exception) {
+    public Json badRequestHandle(@NotNull MethodArgumentNotValidException exception) {
         log.error(exception.getMessage());
         BindingResult result = exception.getBindingResult();
         StringBuilder stringBuilder = new StringBuilder();
@@ -77,7 +78,7 @@ public class ExceptionInterceptor {
      * 参数校验失败
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public Json badRequestHandle(ConstraintViolationException exception) {
+    public Json badRequestHandle(@NotNull ConstraintViolationException exception) {
         log.error(exception.getMessage());
         StringBuilder stringBuilder = new StringBuilder();
         Set<ConstraintViolation<?>> errors = exception.getConstraintViolations();
@@ -96,7 +97,7 @@ public class ExceptionInterceptor {
      * 删除时的数据关联校验异常
      */
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
-    public Json deleteUsingDataException(Exception exception) {
+    public Json deleteUsingDataException(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             exception.printStackTrace();
@@ -108,7 +109,7 @@ public class ExceptionInterceptor {
      * 访问的接口没有实现
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public Json notFoundHandle(Exception exception) {
+    public Json notFoundHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         return new Json(Result.API_SERVICE_UNSUPPORTED);
     }
@@ -117,7 +118,7 @@ public class ExceptionInterceptor {
      * 请求的数据不是标准JSON
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Json dataExceptionHandle(Exception exception) {
+    public Json dataExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         return new Json(Result.REQUEST_CONTENT_TYPE_UNSUPPORTED, "请求参数格式不正确,请检查是否接口支持的JSON");
     }
@@ -126,7 +127,7 @@ public class ExceptionInterceptor {
      * 不支持的请求方法
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public Json methodExceptionHandle(HttpRequestMethodNotSupportedException exception) {
+    public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
         log.error(exception.getMessage());
         String supportedMethod = String.join("|", Objects.requireNonNull(exception.getSupportedMethods()));
         return new Json(
@@ -138,7 +139,7 @@ public class ExceptionInterceptor {
      * 不支持的数据类型
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public Json httpMediaTypeNotSupportedExceptionHandle(HttpMediaTypeNotSupportedException exception) {
+    public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             exception.printStackTrace();
@@ -152,7 +153,7 @@ public class ExceptionInterceptor {
      * 数据库连接发生错误
      */
     @ExceptionHandler(CannotCreateTransactionException.class)
-    public Json databaseExceptionHandle(Exception exception) {
+    public Json databaseExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             exception.printStackTrace();
@@ -164,7 +165,7 @@ public class ExceptionInterceptor {
      * REDIS连接发生错误
      */
     @ExceptionHandler(RedisConnectionFailureException.class)
-    public Json redisExceptionHandle(Exception exception) {
+    public Json redisExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             exception.printStackTrace();
@@ -176,7 +177,7 @@ public class ExceptionInterceptor {
      * 自定义业务异常
      */
     @ExceptionHandler(ResultException.class)
-    public JsonData customExceptionHandle(ResultException result) {
+    public JsonData customExceptionHandle(@NotNull ResultException result) {
         return new JsonData(result.getData(), result.getMessage(), result.getCode());
     }
 
@@ -184,7 +185,7 @@ public class ExceptionInterceptor {
      * JWT校验失败错误
      */
     @ExceptionHandler(value = {cn.hutool.jwt.JWTException.class})
-    public Json jwtExceptionHandle(Exception exception) {
+    public Json jwtExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             exception.printStackTrace();
@@ -196,7 +197,7 @@ public class ExceptionInterceptor {
      * 数据字段不存在
      */
     @ExceptionHandler(value = PropertyReferenceException.class)
-    public Json propertyReferenceExceptionHandle(PropertyReferenceException exception) {
+    public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             exception.printStackTrace();
@@ -208,7 +209,7 @@ public class ExceptionInterceptor {
      * 数据表或字段异常
      */
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
-    public Json invalidDataAccessResourceUsageExceptionHandle(Exception exception) {
+    public Json invalidDataAccessResourceUsageExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             exception.printStackTrace();
@@ -220,7 +221,7 @@ public class ExceptionInterceptor {
      * 其他异常
      */
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
-    public Object otherExceptionHandle(Exception exception) {
+    public Object otherExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             exception.printStackTrace();

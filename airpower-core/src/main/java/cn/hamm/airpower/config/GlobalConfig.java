@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
  *
  * @author Hamm
  */
-@SuppressWarnings("CanBeFinal")
 @Component
 @Data
 @Accessors(chain = true)

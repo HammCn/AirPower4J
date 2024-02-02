@@ -6,12 +6,11 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
- * <h1>权限判断助手</h1>
+ * <h1>权限处理助手</h1>
  *
  * @author Hamm
  */
 public class AccessUtil {
-
     /**
      * 获取需要被授权的类型
      *

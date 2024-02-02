@@ -1,6 +1,5 @@
 package cn.hamm.airpower.validate.dictionary;
 
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -12,7 +11,6 @@ import java.lang.reflect.Method;
  * @author Hamm
  */
 public class DictionaryAnnotationValidator implements ConstraintValidator<Dictionary, Integer> {
-
     Class<?> enumClazz = null;
 
     @Override

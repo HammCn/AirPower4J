@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
- * MQTT配置类
+ * <h1>MQTT配置类</h1>
  *
  * @author Hamm
  */

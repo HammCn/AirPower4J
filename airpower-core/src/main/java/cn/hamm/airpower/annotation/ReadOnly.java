@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <h1>只读字段,不允许控制器修改</h1>
+ * <h1>只读字段</h1>
  *
  * @author Hamm
  * @apiNote 可在控制器调用Service前先调用 {@link RootService#ignoreReadOnlyFields(RootEntity)} 将标记了此注解的字段移除
