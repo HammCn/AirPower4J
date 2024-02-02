@@ -20,11 +20,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower")
 public class GlobalConfig {
     /**
-     * 错误代码基数
-     */
-    private int baseErrorCode = 1;
-
-    /**
      * 默认分页条数
      */
     private int defaultPageSize = 20;
@@ -52,7 +47,7 @@ public class GlobalConfig {
     /**
      * 默认排序字段
      */
-    private String defaultSortField = "id";
+    private String defaultSortField = "createTime";
 
     /**
      * 默认排序方向
@@ -73,11 +68,6 @@ public class GlobalConfig {
      * 多租户的header的key
      */
     private String tenantHeader = "tenant-code";
-
-    /**
-     * 应用版本号header的key
-     */
-    private String appVersionHeader = "app-version";
 
     /**
      * 密码最大长度
