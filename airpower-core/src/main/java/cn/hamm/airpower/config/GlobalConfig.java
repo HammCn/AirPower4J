@@ -1,7 +1,5 @@
 package cn.hamm.airpower.config;
 
-import cn.hamm.airpower.validate.password.Password;
-import cn.hamm.airpower.validate.password.PasswordAnnotationValidator;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -68,22 +66,6 @@ public class GlobalConfig {
      * 多租户的header的key
      */
     private String tenantHeader = "tenant-code";
-
-    /**
-     * 密码最大长度
-     *
-     * @see PasswordAnnotationValidator
-     * @see Password
-     */
-    private int passwordMaxLength = 16;
-
-    /**
-     * 密码最小长度
-     *
-     * @see PasswordAnnotationValidator
-     * @see Password
-     */
-    private int passwordMinLength = 6;
 
     /**
      * 是否开启调试模式
