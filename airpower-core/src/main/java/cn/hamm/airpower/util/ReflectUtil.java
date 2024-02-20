@@ -4,13 +4,15 @@ import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.root.RootController;
 import cn.hamm.airpower.root.RootEntity;
 import cn.hamm.airpower.root.RootModel;
-import cn.hutool.core.util.StrUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <h1>反射工具类</h1>
@@ -145,42 +147,6 @@ public class ReflectUtil {
             fieldNames.add(field.getName());
         }
         return fieldNames;
-    }
-
-    /**
-     * 获取指定枚举类的Map数据
-     *
-     * @param clazz  枚举类
-     * @param params 参数列表
-     * @return 返回结果
-     */
-    public static List<Map<String, String>> getEnumMapList(Class<?> clazz, String... params) {
-        List<Map<String, String>> mapList = new ArrayList<>();
-        for (Object obj : clazz.getEnumConstants()) {
-            //取出所有枚举类型
-            Map<String, String> item = new HashMap<>(params.length);
-            for (String param : params) {
-                // 依次取出参数的值
-                try {
-                    Method method = clazz.getMethod("get" + StrUtil.upperFirst(param));
-                    item.put(param, method.invoke(obj).toString());
-                } catch (Exception ignored) {
-                }
-            }
-            mapList.add(item);
-        }
-        return mapList;
-    }
-
-    /**
-     * 获取指定枚举类的Map数据
-     *
-     * @param clazz 枚举类
-     * @return 返回结果
-     */
-    @SuppressWarnings("unused")
-    public static List<Map<String, String>> getEnumMapList(Class<?> clazz) {
-        return getEnumMapList(clazz, "value", "label");
     }
 
 
