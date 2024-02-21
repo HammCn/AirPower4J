@@ -4,10 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.hamm</groupId>
     <artifactId>airpower</artifactId>
-    <version>1.0.2</version>
+    <version>${airpower.version}</version>
     <name>airpower</name>
     <description>AirPower is a fast backend development tool based on SpringBoot3 and JPA.</description>
     <properties>
+        <airpower.version>1.0.3</airpower.version>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -21,7 +22,6 @@
         <jetbrains.annotations.version>23.0.0</jetbrains.annotations.version>
         <codec.version>1.13</codec.version>
         <sun.mail.veriosn>1.5.6</sun.mail.veriosn>
-        <airpower.version>1.0.0</airpower.version>
         <integration.mqtt.version>6.0.0</integration.mqtt.version>
         <integration.version>3.2.0</integration.version>
     </properties>
