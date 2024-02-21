@@ -171,6 +171,9 @@ public class ReflectUtil {
             return getPostMapping(superMethod, superClass);
         } catch (NoSuchMethodException e) {
             superClass = superClass.getSuperclass();
+            if (Objects.isNull(superClass)) {
+                return null;
+            }
             return getPostMapping(method, superClass);
         }
     }
