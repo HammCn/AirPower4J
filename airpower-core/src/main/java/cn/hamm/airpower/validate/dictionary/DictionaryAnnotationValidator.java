@@ -20,11 +20,11 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
         }
         boolean isValidated = false;
         try {
-            Method getValue = enumClazz.getMethod("getValue");
+            Method getKey = enumClazz.getMethod("getKey");
             //取出所有枚举类型
             Object[] objs = enumClazz.getEnumConstants();
             for (Object obj : objs) {
-                if (value.equals(getValue.invoke(obj))) {
+                if (value.equals(getKey.invoke(obj))) {
                     isValidated = true;
                     break;
                 }

@@ -28,11 +28,11 @@ public class DictionaryUtil {
      */
     public static <T extends IDictionary> T getDictionaryByKey(Class<T> enumClass, int key) {
         try {
-            Method getValue = enumClass.getMethod("getKey");
+            Method getKey = enumClass.getMethod("getKey");
             //取出所有枚举类型
             Object[] objs = enumClass.getEnumConstants();
             for (Object obj : objs) {
-                int exitValue = (int) getValue.invoke(obj);
+                int exitValue = (int) getKey.invoke(obj);
                 if (exitValue == key) {
                     //noinspection unchecked
                     return (T) obj;
