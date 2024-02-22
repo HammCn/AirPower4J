@@ -1,18 +1,18 @@
 package cn.hamm.airpower.interfaces;
 
 /**
- * <h1>枚举标准接口</h1>
+ * <h1>枚举字典标准接口</h1>
  *
  * @author Hamm
  */
-public interface IEnum {
+public interface IDictionary {
     /**
      * 获取枚举的key
      *
      * @return key
      */
     @SuppressWarnings("unused")
-    int getValue();
+    int getKey();
 
     /**
      * 获取枚举的描述

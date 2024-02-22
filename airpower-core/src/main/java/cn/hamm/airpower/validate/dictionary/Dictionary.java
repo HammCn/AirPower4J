@@ -1,6 +1,6 @@
 package cn.hamm.airpower.validate.dictionary;
 
-import cn.hamm.airpower.interfaces.IEnum;
+import cn.hamm.airpower.interfaces.IDictionary;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * <h1>标记进行字典校验</h1>
  *
  * @author Hamm
- * @apiNote 请注意, 请自行做非空验证, 字典必须实现 {@link IEnum} 接口
+ * @apiNote 请注意, 请自行做非空验证, 字典必须实现 {@link IDictionary} 接口
  */
 @Constraint(validatedBy = DictionaryAnnotationValidator.class)
 @Target({ElementType.FIELD, ElementType.METHOD})
@@ -27,7 +27,7 @@ public @interface Dictionary {
     /**
      * 使用的枚举类
      *
-     * @see IEnum
+     * @see IDictionary
      */
     Class<?> value() default Void.class;
 
