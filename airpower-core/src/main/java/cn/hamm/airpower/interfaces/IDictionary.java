@@ -21,4 +21,14 @@ public interface IDictionary {
      */
     @SuppressWarnings("unused")
     String getLabel();
+
+    /**
+     * 判断Key是否相等
+     *
+     * @param key 被判断的Key
+     * @return 对比结果
+     */
+    default boolean equalsKey(int key) {
+        return this.getKey() == key;
+    }
 }
