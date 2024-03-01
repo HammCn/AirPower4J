@@ -40,17 +40,17 @@ public class GlobalConfig {
     /**
      * 缓存过期时间
      */
-    private int cacheExpireSecond = 60;
+    private int cacheExpireSecond = Constant.SECOND_PER_MINUTE;
 
     /**
      * 默认排序字段
      */
-    private String defaultSortField = "createTime";
+    private String defaultSortField = Constant.CREATE_TIME_FIELD;
 
     /**
      * 默认排序方向
      */
-    private String defaultSortDirection = "desc";
+    private String defaultSortDirection = Constant.SORT_DESC;
 
     /**
      * 身份令牌header的key
@@ -60,7 +60,7 @@ public class GlobalConfig {
     /**
      * 身份令牌有效期
      */
-    private int authorizeExpireTime = 86400;
+    private int authorizeExpireTime = Constant.SECOND_PER_DAY;
 
     /**
      * 多租户的header的key

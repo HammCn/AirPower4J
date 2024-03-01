@@ -2,6 +2,7 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.query.QueryPageRequest;
@@ -153,7 +154,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             queryRequest.setFilter(getNewInstance());
         }
         queryRequest = beforeGetList(queryRequest);
-        List<E> list = repository.findAll(createSpecification(queryRequest), createSort(queryRequest));
+        List<E> list = repository.findAll(createSpecification(queryRequest, false), createSort(queryRequest));
         return afterGetList(list);
     }
 
@@ -174,7 +175,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         queryPageRequest = beforeGetPage(queryPageRequest);
 
-        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest), createPageable(queryPageRequest)))
+        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest, true), createPageable(queryPageRequest)))
                 .setSort(queryPageRequest.getSort());
         return afterGetPage(queryPageResponse);
     }
@@ -550,7 +551,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * PredicateList
+     * 获取查询条件列表
      *
      * @param root    root
      * @param builder builder
@@ -593,7 +594,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     }
                     if (Search.Mode.LIKE.equals(searchMode.value())) {
                         // LIKE 模糊搜索
-                        searchValue = "%" + searchValue + "%";
+                        searchValue = Constant.SQL_LIKE_PERCENT + searchValue + Constant.SQL_LIKE_PERCENT;
                         if (isRoot) {
                             predicateList.add(builder.like(((Root<E>) root).get(field.getName()), searchValue));
                         } else {
@@ -616,15 +617,16 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 创建Specification
+     * 创建查询对象
      *
      * @param queryRequest 查询请求
-     * @return Specification
+     * @param isPaging     是否是分页
+     * @return 查询对象
      */
-    private Specification<E> createSpecification(QueryRequest<E> queryRequest) {
+    private Specification<E> createSpecification(QueryRequest<E> queryRequest, boolean isPaging) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 createPredicate(
-                        root, criteriaQuery, criteriaBuilder, queryRequest.getFilter()
+                        root, criteriaQuery, criteriaBuilder, queryRequest.getFilter(), isPaging
                 );
     }
 
@@ -635,14 +637,53 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param criteriaQuery query
      * @param builder       builder
      * @param search        搜索的实体
+     * @param isPaging      是否是分页
      * @return 查询条件
      */
-    protected Predicate createPredicate(
-            Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E search
+    private Predicate createPredicate(
+            Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E search, boolean isPaging
     ) {
         List<Predicate> predicateList = this.getPredicateList(root, builder, search, true);
+        predicateList.addAll(addSearchPredicate(root, builder, search, isPaging));
+        addCreateAndUpdateTimePredicate(root, builder, search, predicateList);
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
+    }
+
+    /**
+     * 添加创建时间和更新时间的查询条件
+     *
+     * @param root          ROOT
+     * @param builder       参数构造器
+     * @param search        原始查询对象
+     * @param predicateList 查询条件列表
+     */
+    private void addCreateAndUpdateTimePredicate(Root<E> root, CriteriaBuilder builder, E search, List<Predicate> predicateList) {
+        if (Objects.nonNull(search.getCreateTimeFrom())) {
+            predicateList.add(builder.greaterThanOrEqualTo(root.get(Constant.CREATE_TIME_FIELD), search.getCreateTimeFrom()));
+        }
+        if (Objects.nonNull(search.getCreateTimeTo())) {
+            predicateList.add(builder.lessThan(root.get(Constant.CREATE_TIME_FIELD), search.getCreateTimeTo()));
+        }
+        if (Objects.nonNull(search.getUpdateTimeFrom())) {
+            predicateList.add(builder.greaterThanOrEqualTo(root.get(Constant.UPDATE_TIME_FIELD), search.getUpdateTimeFrom()));
+        }
+        if (Objects.nonNull(search.getUpdateTimeTo())) {
+            predicateList.add(builder.lessThan(root.get(Constant.UPDATE_TIME_FIELD), search.getUpdateTimeTo()));
+        }
+    }
+
+    /**
+     * 添加搜索的查询条件
+     *
+     * @param root     ROOT
+     * @param builder  参数构造器
+     * @param search   原始查询对象
+     * @param isPaging 是否是分页
+     * @return 查询条件列表
+     */
+    protected List<Predicate> addSearchPredicate(Root<E> root, CriteriaBuilder builder, E search, boolean isPaging) {
+        return new ArrayList<>();
     }
 }

@@ -30,7 +30,7 @@ public class MqttConfig {
     /**
      * 地址
      */
-    private String host = "127.0.0.1";
+    private String host = Constant.LOCAL_IP_ADDRESS;
 
     /**
      * 端口

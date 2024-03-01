@@ -101,6 +101,18 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @Exclude(filters = {WhenPayLoad.class})
     private Long updateTime;
 
+    @Transient
+    private Long createTimeFrom;
+
+    @Transient
+    private Long createTimeTo;
+
+    @Transient
+    private Long updateTimeFrom;
+
+    @Transient
+    private Long updateTimeTo;
+
     /**
      * 设置ID
      *

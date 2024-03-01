@@ -1,5 +1,6 @@
 package cn.hamm.airpower.request;
 
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.result.Result;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -13,11 +14,6 @@ import java.util.Objects;
  * @author Hamm
  */
 public class RequestUtil {
-    /**
-     * 本地地址
-     */
-    private static final String LOCAL_ADDRESS = "127.0.0.1";
-
     /**
      * 多IP分割字符
      */
@@ -56,7 +52,7 @@ public class RequestUtil {
                 return ipAddress;
             }
             ipAddress = request.getRemoteAddr();
-            if (LOCAL_ADDRESS.equals(ipAddress)) {
+            if (Constant.LOCAL_IP_ADDRESS.equals(ipAddress)) {
                 // 根据网卡取本机配置的IP
                 InetAddress inet;
                 try {
@@ -69,7 +65,7 @@ public class RequestUtil {
                     Result.FORBIDDEN.show(ERROR_MESSAGE);
                 }
             }
-            return LOCAL_ADDRESS;
+            return Constant.LOCAL_IP_ADDRESS;
         } catch (Exception e) {
             Result.FORBIDDEN.show(ERROR_MESSAGE);
         }
@@ -83,7 +79,7 @@ public class RequestUtil {
      * @return 判定结果
      */
     private static boolean isValidAddress(String ipAddress) {
-        return Objects.nonNull(ipAddress) && !ipAddress.isEmpty() && !LOCAL_ADDRESS.equalsIgnoreCase(ipAddress);
+        return Objects.nonNull(ipAddress) && !ipAddress.isEmpty() && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
     }
 
     /**

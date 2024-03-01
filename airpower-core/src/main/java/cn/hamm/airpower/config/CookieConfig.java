@@ -37,7 +37,7 @@ public class CookieConfig {
     /**
      * Cookie有效期
      */
-    private int cookieMaxAge = 86400;
+    private int cookieMaxAge = Constant.SECOND_PER_DAY;
 
     /**
      * 使用Https方式的安全Cookie

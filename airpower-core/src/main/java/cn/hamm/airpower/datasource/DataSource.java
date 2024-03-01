@@ -1,5 +1,6 @@
 package cn.hamm.airpower.datasource;
 
+import cn.hamm.airpower.config.Constant;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -19,7 +20,7 @@ public class DataSource {
     /**
      * 数据库地址
      */
-    private String host = "127.0.0.1";
+    private String host = Constant.LOCAL_IP_ADDRESS;
 
     /**
      * 数据库端口
