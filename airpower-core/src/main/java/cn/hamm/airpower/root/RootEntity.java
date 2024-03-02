@@ -192,6 +192,50 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
+     * 设置创建时间起点
+     *
+     * @param createTimeFrom 创建时间起点
+     * @return 实体
+     */
+    public E setCreateTimeFrom(Long createTimeFrom) {
+        this.createTimeFrom = createTimeFrom;
+        return (E) this;
+    }
+
+    /**
+     * 设置创建时间终点
+     *
+     * @param createTimeTo 创建时间终点
+     * @return 实体
+     */
+    public E setCreateTimeTo(Long createTimeTo) {
+        this.createTimeTo = createTimeTo;
+        return (E) this;
+    }
+
+    /**
+     * 设置更新时间起点
+     *
+     * @param updateTimeFrom 更新时间起点
+     * @return 实体
+     */
+    public E setUpdateTimeFrom(Long updateTimeFrom) {
+        this.updateTimeFrom = updateTimeFrom;
+        return (E) this;
+    }
+
+    /**
+     * 设置更新时间终点
+     *
+     * @param updateTimeTo 更新时间终点
+     * @return 实体
+     */
+    public E setUpdateTimeTo(Long updateTimeTo) {
+        this.updateTimeTo = updateTimeTo;
+        return (E) this;
+    }
+
+    /**
      * 获取简单实体对象
      * <p>
      * 一般来说会舍弃一些基础数据
