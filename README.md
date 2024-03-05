@@ -28,7 +28,7 @@
 <dependency>
     <groupId>cn.hamm</groupId>
     <artifactId>airpower-core</artifactId>
-    <version>1.1.1</version>
+    <version>VERSION</version> 
 </dependency>
 ```
 
