@@ -22,7 +22,17 @@
 
 ## 🔑 如何使用(初始化)?
 
-你可以通过我们提供的 ```AirPower宿主仓库``` 项目来完成 **AirPower** 宿主项目的初始化:
+推荐使用 `Maven` 初始化：
+
+```xml
+<dependency>
+    <groupId>cn.hamm</groupId>
+    <artifactId>airpower-core</artifactId>
+    <version>1.1.1</version>
+</dependency>
+```
+
+你也可以通过我们提供的 ```AirPower宿主仓库``` 项目来完成 **AirPower** 宿主项目的初始化:
 
 AirPowerJavaStarter via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md) / [GitHub](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md)
 
