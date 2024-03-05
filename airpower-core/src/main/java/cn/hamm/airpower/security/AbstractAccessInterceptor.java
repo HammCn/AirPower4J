@@ -2,6 +2,7 @@ package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
+import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,12 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
         }
         //需要登录
         String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
+        
+        // 优先使用 Get 参数传入的身份
+        String accessTokenFromParam = request.getParameter(globalConfig.getAuthorizeHeader());
+        if (StrUtil.isAllNotEmpty(accessTokenFromParam)) {
+            accessToken = accessTokenFromParam;
+        }
         Result.UNAUTHORIZED.whenEmpty(accessToken);
         Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
         //需要RBAC
