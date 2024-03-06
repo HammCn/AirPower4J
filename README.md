@@ -48,3 +48,10 @@ AirPowerJavaStarter via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/
 **添砖加瓦**!
 
 > ☕️Java: 加瓦? 什么Java?
+
+
+---
+
+<p align="center">
+ATTENTION: Contributor list is just for fun!!!
+</p>
