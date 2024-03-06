@@ -49,7 +49,6 @@ AirPowerJavaStarter via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/
 
 > ☕️Java: 加瓦? 什么Java?
 
-
 ---
 
 <p align="center">
