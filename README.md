@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-<a href="https://gitee.com/air-power/AirPower4J">Gitee</a> / <a href="https://github.com/HammCn/AirPower4J">GitHub</a> / [CHANGELOG](./CHANGELOG.md)
+<a href="https://gitee.com/air-power/AirPower4J">Gitee</a> / <a href="https://github.com/HammCn/AirPower4J">GitHub</a> / <a href="./CHANGELOG.md">CHANGELOG</a>
 </p>
 
 ## 📖 这是个什么项目
