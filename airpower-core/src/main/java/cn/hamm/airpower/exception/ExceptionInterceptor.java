@@ -64,11 +64,7 @@ public class ExceptionInterceptor {
         }
         List<FieldError> errors = result.getFieldErrors();
         for (FieldError error : errors) {
-            stringBuilder
-                    .append(error.getDefaultMessage())
-                    .append("(")
-                    .append(error.getField())
-                    .append(")");
+            stringBuilder.append(error.getDefaultMessage()).append("(").append(error.getField()).append(")");
             break;
         }
         return new Json(Result.PARAM_INVALID, stringBuilder.toString());
@@ -83,11 +79,7 @@ public class ExceptionInterceptor {
         StringBuilder stringBuilder = new StringBuilder();
         Set<ConstraintViolation<?>> errors = exception.getConstraintViolations();
         for (ConstraintViolation<?> error : errors) {
-            stringBuilder
-                    .append(error.getMessage())
-                    .append("(")
-                    .append(error.getInvalidValue())
-                    .append(")");
+            stringBuilder.append(error.getMessage()).append("(").append(error.getInvalidValue()).append(")");
             break;
         }
         return new Json(Result.PARAM_INVALID, stringBuilder.toString());
@@ -100,7 +92,7 @@ public class ExceptionInterceptor {
     public Json deleteUsingDataException(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            log.error("删除时的数据关联校验异常",exception);
+            log.error("删除时的数据关联校验异常", exception);
         }
         return new Json(Result.FORBIDDEN_DELETE_USED, "数据正在使用中,无法被删除!");
     }
@@ -130,9 +122,7 @@ public class ExceptionInterceptor {
     public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
         log.error(exception.getMessage());
         String supportedMethod = String.join("|", Objects.requireNonNull(exception.getSupportedMethods()));
-        return new Json(
-                Result.REQUEST_METHOD_UNSUPPORTED,
-                exception.getMethod() + "不被支持,请使用" + supportedMethod + "方法请求");
+        return new Json(Result.REQUEST_METHOD_UNSUPPORTED, exception.getMethod() + "不被支持,请使用" + supportedMethod + "方法请求");
     }
 
     /**
@@ -142,11 +132,9 @@ public class ExceptionInterceptor {
     public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            log.error("不支持的数据类型",exception);
+            log.error("不支持的数据类型", exception);
         }
-        return new Json(
-                Result.REQUEST_CONTENT_TYPE_UNSUPPORTED,
-                Objects.requireNonNull(exception.getContentType()) + "不被支持,请使用JSON请求");
+        return new Json(Result.REQUEST_CONTENT_TYPE_UNSUPPORTED, Objects.requireNonNull(exception.getContentType()) + "不被支持,请使用JSON请求");
     }
 
     /**
@@ -156,7 +144,7 @@ public class ExceptionInterceptor {
     public Json databaseExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            log.error("数据库连接发生错误",exception);
+            log.error("数据库连接发生错误", exception);
         }
         return new Json(Result.DATABASE_ERROR);
     }
@@ -168,7 +156,7 @@ public class ExceptionInterceptor {
     public Json redisExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            log.error("REDIS连接发生错误",exception);
+            log.error("REDIS连接发生错误", exception);
         }
         return new Json(Result.REDIS_ERROR);
     }
@@ -188,7 +176,7 @@ public class ExceptionInterceptor {
     public Json jwtExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-           log.error("JWT校验失败错误",exception);
+            log.error("JWT校验失败错误", exception);
         }
         return new Json(Result.UNAUTHORIZED);
     }
@@ -200,7 +188,7 @@ public class ExceptionInterceptor {
     public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            log.error("数据字段不存在",exception);
+            log.error("数据字段不存在", exception);
         }
         return new Json(Result.DATABASE_UNKNOWN_FIELD, "不支持的数据字段" + exception.getPropertyName());
     }
@@ -212,7 +200,7 @@ public class ExceptionInterceptor {
     public Json invalidDataAccessResourceUsageExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            log.error("数据表或字段异常",exception);
+            log.error("数据表或字段异常", exception);
         }
         return new Json(Result.DATABASE_TABLE_OR_FIELD_ERROR);
     }
@@ -224,7 +212,7 @@ public class ExceptionInterceptor {
     public Object otherExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            log.error("其他异常",exception);
+            log.error("其他异常", exception);
         }
         return new Json(Result.ERROR);
     }
