@@ -100,7 +100,7 @@ public class ExceptionInterceptor {
     public Json deleteUsingDataException(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            exception.printStackTrace();
+            log.error("删除时的数据关联校验异常",exception);
         }
         return new Json(Result.FORBIDDEN_DELETE_USED, "数据正在使用中,无法被删除!");
     }
@@ -142,7 +142,7 @@ public class ExceptionInterceptor {
     public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            exception.printStackTrace();
+            log.error("不支持的数据类型",exception);
         }
         return new Json(
                 Result.REQUEST_CONTENT_TYPE_UNSUPPORTED,
@@ -156,7 +156,7 @@ public class ExceptionInterceptor {
     public Json databaseExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            exception.printStackTrace();
+            log.error("数据库连接发生错误",exception);
         }
         return new Json(Result.DATABASE_ERROR);
     }
@@ -168,7 +168,7 @@ public class ExceptionInterceptor {
     public Json redisExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            exception.printStackTrace();
+            log.error("REDIS连接发生错误",exception);
         }
         return new Json(Result.REDIS_ERROR);
     }
@@ -188,7 +188,7 @@ public class ExceptionInterceptor {
     public Json jwtExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            exception.printStackTrace();
+           log.error("JWT校验失败错误",exception);
         }
         return new Json(Result.UNAUTHORIZED);
     }
@@ -200,7 +200,7 @@ public class ExceptionInterceptor {
     public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            exception.printStackTrace();
+            log.error("数据字段不存在",exception);
         }
         return new Json(Result.DATABASE_UNKNOWN_FIELD, "不支持的数据字段" + exception.getPropertyName());
     }
@@ -212,7 +212,7 @@ public class ExceptionInterceptor {
     public Json invalidDataAccessResourceUsageExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            exception.printStackTrace();
+            log.error("数据表或字段异常",exception);
         }
         return new Json(Result.DATABASE_TABLE_OR_FIELD_ERROR);
     }
@@ -224,7 +224,7 @@ public class ExceptionInterceptor {
     public Object otherExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
-            exception.printStackTrace();
+            log.error("其他异常",exception);
         }
         return new Json(Result.ERROR);
     }
