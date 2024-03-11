@@ -1,6 +1,6 @@
 <p align="center">
   <!--suppress HtmlRequiredAltAttribute -->
-<img width="300" src="docs/img/airpower.svg"/>4J
+<img width="300" src="docs/img/airpower.svg"/> <b>4J</b>
 </p>
 
 <p align="center">
