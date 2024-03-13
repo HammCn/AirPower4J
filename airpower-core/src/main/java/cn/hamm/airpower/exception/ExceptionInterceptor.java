@@ -39,7 +39,7 @@ import java.util.Set;
  * @author Hamm
  * @see Result
  */
-@SuppressWarnings({"SingleStatementInBlock", "CallToPrintStackTrace"})
+@SuppressWarnings({"SingleStatementInBlock"})
 @ControllerAdvice
 @ResponseStatus(HttpStatus.OK)
 @ResponseBody
@@ -165,8 +165,12 @@ public class ExceptionInterceptor {
      * 自定义业务异常
      */
     @ExceptionHandler(ResultException.class)
-    public JsonData customExceptionHandle(@NotNull ResultException result) {
-        return new JsonData(result.getData(), result.getMessage(), result.getCode());
+    public JsonData customExceptionHandle(@NotNull ResultException exception) {
+        log.error(exception.getMessage());
+        if (globalConfig.isDebug()) {
+            log.error("自定义业务异常", exception);
+        }
+        return new JsonData(exception.getData(), exception.getMessage(), exception.getCode());
     }
 
     /**
