@@ -29,7 +29,7 @@ public @interface Dictionary {
      *
      * @see IDictionary
      */
-    Class<?> value() default Void.class;
+    Class<? extends IDictionary> value();
 
     /**
      * 验证组

@@ -1,9 +1,11 @@
 package cn.hamm.airpower.validate.dictionary;
 
+import cn.hamm.airpower.interfaces.IDictionary;
+import cn.hamm.airpower.util.DictionaryUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * <h1>枚举字典验证实现类</h1>
@@ -11,31 +13,20 @@ import java.lang.reflect.Method;
  * @author Hamm
  */
 public class DictionaryAnnotationValidator implements ConstraintValidator<Dictionary, Integer> {
-    Class<?> enumClazz = null;
+    Class<? extends IDictionary> enumClazz = null;
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
         if (null == value) {
             return true;
         }
-        boolean isValidated = false;
-        try {
-            Method getKey = enumClazz.getMethod("getKey");
-            //取出所有枚举类型
-            Object[] objs = enumClazz.getEnumConstants();
-            for (Object obj : objs) {
-                if (value.equals(getKey.invoke(obj))) {
-                    isValidated = true;
-                    break;
-                }
-            }
-        } catch (Exception ignored) {
-        }
-        return isValidated;
+
+        IDictionary dictionary = DictionaryUtil.getDictionaryByKey(enumClazz, value);
+        return Objects.nonNull(dictionary);
     }
 
     @Override
-    public void initialize(Dictionary constraintAnnotation) {
-        enumClazz = constraintAnnotation.value();
+    public void initialize(Dictionary dictionary) {
+        enumClazz = dictionary.value();
     }
 }
