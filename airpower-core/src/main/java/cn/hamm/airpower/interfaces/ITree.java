@@ -13,7 +13,6 @@ public interface ITree<E extends ITree<E>> extends IEntity<E> {
      *
      * @return 树名称
      */
-    @SuppressWarnings("unused")
     String getName();
 
     /**
@@ -22,7 +21,6 @@ public interface ITree<E extends ITree<E>> extends IEntity<E> {
      * @param name 树名称
      * @return 树实体
      */
-    @SuppressWarnings("unused")
     E setName(String name);
 
     /**
@@ -31,7 +29,6 @@ public interface ITree<E extends ITree<E>> extends IEntity<E> {
      * @param parentId 设置父级ID
      * @return 树实体
      */
-    @SuppressWarnings("unused")
     E setParentId(Long parentId);
 
     /**
@@ -55,6 +52,5 @@ public interface ITree<E extends ITree<E>> extends IEntity<E> {
      *
      * @return 树的子集
      */
-    @SuppressWarnings("unused")
     List<E> getChildren();
 }

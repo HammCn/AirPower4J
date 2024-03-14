@@ -75,7 +75,6 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
      * @param response      响应对象
      * @param handlerMethod 请求方法
      */
-    @SuppressWarnings("unused")
     protected void beforeHandleRequest(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
 
     }

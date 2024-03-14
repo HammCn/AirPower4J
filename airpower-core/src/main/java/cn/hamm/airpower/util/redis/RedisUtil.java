@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Hamm
  */
-@SuppressWarnings("unused")
 @Component
 public class RedisUtil<E extends RootEntity<E>> {
     @Resource

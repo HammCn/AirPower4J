@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
  *
  * @author Hamm
  */
-@SuppressWarnings("unused")
 public class ValidateUtil {
     /**
      * 数字

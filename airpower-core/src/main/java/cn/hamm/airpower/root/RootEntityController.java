@@ -291,7 +291,6 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @apiNote 可重写后执行删除之前的业务处理或拦截
      * @see #delete(RootEntity)
      */
-    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeDelete(E entity) {
     }
 
@@ -302,7 +301,6 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @apiNote 可重写后执行删除之后的其他业务
      * @see #delete(RootEntity)
      */
-    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterDelete(E entity) {
     }
 
@@ -313,7 +311,6 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @apiNote 可重写后执行禁用之前的业务处理或拦截
      * @see #disable(RootEntity)
      */
-    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeDisable(E entity) {
     }
 
@@ -324,7 +321,6 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @apiNote 可重写后执行禁用之后的其他业务
      * @see #disable(RootEntity)
      */
-    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterDisable(E entity) {
     }
 
@@ -335,7 +331,6 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @apiNote 可重写后执行启用之前的业务处理或拦截
      * @see #enable(RootEntity)
      */
-    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeEnable(E entity) {
     }
 
@@ -346,7 +341,6 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @apiNote 可重写后执行启用之后的其他业务
      * @see #enable(RootEntity)
      */
-    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterEnable(E entity) {
     }
 

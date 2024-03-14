@@ -16,7 +16,6 @@ import java.util.Map;
  *
  * @author Hamm
  */
-@SuppressWarnings("unused")
 public class DictionaryUtil {
     /**
      * 查询指定key的枚举字典项目

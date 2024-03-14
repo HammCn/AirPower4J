@@ -103,7 +103,6 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      *
      * @param dataSource 数据源信息
      */
-    @SuppressWarnings({"unused", "SqlNoDataSourceInspection"})
     public void createDatabase(DataSource dataSource) {
         Statement statement = null;
         Connection connection = null;
@@ -139,7 +138,6 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      *
      * @param dataSourceInfo 数据源
      */
-    @SuppressWarnings("unused")
     public void createDataSource(DataSource dataSourceInfo) {
         DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
         dataSource.setDriverClassName(DRIVER_NAME);

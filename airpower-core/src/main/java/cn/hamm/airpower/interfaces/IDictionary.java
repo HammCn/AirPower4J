@@ -11,7 +11,6 @@ public interface IDictionary {
      *
      * @return key
      */
-    @SuppressWarnings("unused")
     int getKey();
 
     /**
@@ -19,7 +18,6 @@ public interface IDictionary {
      *
      * @return 描述
      */
-    @SuppressWarnings("unused")
     String getLabel();
 
     /**

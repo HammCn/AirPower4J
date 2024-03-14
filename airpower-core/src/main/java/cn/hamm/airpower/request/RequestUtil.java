@@ -88,7 +88,6 @@ public class RequestUtil {
      * @param ipAddress 原始IP地址
      * @return 处理之后的真实IP
      */
-    @SuppressWarnings("unused")
     private static String getRealIpAddress(String ipAddress) {
         if (Objects.nonNull(ipAddress) && ipAddress.length() > MAX_IP_ADDRESS_CHAR_LENGTH && ipAddress.indexOf(MULTI_IP_ADDRESS_SPLITTER) > 0) {
             ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));

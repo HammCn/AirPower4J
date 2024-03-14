@@ -39,7 +39,6 @@ import java.util.Set;
  * @author Hamm
  * @see Result
  */
-@SuppressWarnings({"SingleStatementInBlock"})
 @ControllerAdvice
 @ResponseStatus(HttpStatus.OK)
 @ResponseBody

@@ -13,7 +13,6 @@ import java.util.UUID;
  *
  * @author Hamm
  */
-@SuppressWarnings("unused")
 @Configuration
 public class MqttHelper {
     @Autowired

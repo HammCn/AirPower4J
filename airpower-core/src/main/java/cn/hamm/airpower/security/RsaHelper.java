@@ -22,7 +22,6 @@ import java.util.Base64;
  *
  * @author Hamm
  */
-@SuppressWarnings("unused")
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor

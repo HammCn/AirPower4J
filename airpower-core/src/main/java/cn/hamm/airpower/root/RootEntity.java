@@ -240,12 +240,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * <p>
      * 一般来说会舍弃一些基础数据
      * </p>
-     *
-     * @return 简单对象
      */
-    @SuppressWarnings("UnusedReturnValue")
-    public E excludeBaseData() {
-        return this.setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
+    public void excludeBaseData() {
+        this.setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
     }
 
     /**

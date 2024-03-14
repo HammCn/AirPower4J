@@ -41,9 +41,10 @@ import java.util.*;
  * @param <R> 数据源
  * @author Hamm
  */
-@SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings("unchecked")
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected R repository;
 
@@ -322,7 +323,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param entity 待更新的实体
      * @return 更新后的实体
      */
-    @SuppressWarnings("unused")
     protected final E updateToDatabase(E entity) {
         Result.PARAM_MISSING.whenNull(entity.getId(),
                 "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
@@ -451,6 +451,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @return 类
      */
+    @SuppressWarnings("unchecked")
     private Class<E> getEntityClass() {
         return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }

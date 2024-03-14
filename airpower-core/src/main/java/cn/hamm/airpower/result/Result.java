@@ -8,8 +8,8 @@ import lombok.Getter;
  *
  * @author Hamm
  */
+@SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
 @Getter
-@SuppressWarnings({"AlibabaEnumConstantsMustHaveComment", "unused"})
 @AllArgsConstructor
 public enum Result implements IResult {
     SUCCESS(200, "成功"),

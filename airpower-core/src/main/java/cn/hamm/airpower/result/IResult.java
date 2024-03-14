@@ -7,7 +7,6 @@ import java.util.Objects;
  *
  * @author Hamm
  */
-@SuppressWarnings("unused")
 public interface IResult {
     /**
      * 获取错误代码

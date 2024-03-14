@@ -59,7 +59,6 @@ public class QueryRequest<E extends RootEntity<E>> {
      * @param keyword 关键词
      * @return 请求
      */
-    @SuppressWarnings("unused")
     public QueryRequest<E> setKeyword(String keyword) {
         this.keyword = keyword;
         return this;

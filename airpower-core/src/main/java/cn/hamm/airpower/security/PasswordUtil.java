@@ -8,7 +8,6 @@ import cn.hutool.crypto.SecureUtil;
  *
  * @author Hamm
  */
-@SuppressWarnings("unused")
 public class PasswordUtil {
     /**
      * 密码和盐获取密码的散列摘要
