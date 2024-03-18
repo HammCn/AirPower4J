@@ -581,6 +581,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     if (isRoot) {
                         Join<E, ?> payload = ((Root<E>) root).join(field.getName(), JoinType.INNER);
                         predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false));
+                    } else {
+                        Join<?, ?> payload = ((Join<?, ?>) root).join(field.getName(), JoinType.INNER);
+                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false));
                     }
                 } else {
                     String searchValue = fieldValue.toString();
