@@ -3,7 +3,6 @@ package cn.hamm.airpower.validate.dictionary;
 import cn.hamm.airpower.interfaces.IDictionary;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.groups.Default;
 
 import java.lang.annotation.*;
 
@@ -33,7 +32,7 @@ public @interface Dictionary {
     /**
      * 验证组
      */
-    Class<Default>[] groups() default {};
+    Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 }
