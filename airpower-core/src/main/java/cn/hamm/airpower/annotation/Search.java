@@ -1,9 +1,6 @@
 package cn.hamm.airpower.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * <h1>标记为搜索字段</h1>
@@ -12,6 +9,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface Search {
     /**
      * 搜索方式

@@ -4,10 +4,7 @@ package cn.hamm.airpower.validate.phone;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * <h1>标记电话验证 座机或手机</h1>
@@ -18,6 +15,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = PhoneAnnotationValidator.class)
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface Phone {
     /**
      * 错误信息

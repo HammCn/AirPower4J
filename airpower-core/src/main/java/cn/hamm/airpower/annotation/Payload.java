@@ -3,10 +3,7 @@ package cn.hamm.airpower.annotation;
 import cn.hamm.airpower.response.Filter;
 import cn.hamm.airpower.root.RootEntity;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * <h1>标记是挂载数据</h1>
@@ -16,5 +13,6 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface Payload {
 }

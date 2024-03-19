@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 @Target({ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
+@Documented
 public @interface Description {
     /**
      * 文案
