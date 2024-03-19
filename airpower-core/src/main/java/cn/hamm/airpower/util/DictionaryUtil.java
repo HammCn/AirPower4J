@@ -59,7 +59,7 @@ public class DictionaryUtil {
      * @param params 参数列表
      * @return 返回结果
      */
-    private static @NotNull List<Map<String, String>> getDictionaryList(@NotNull Class<?> clazz, String... params) {
+    public static @NotNull List<Map<String, String>> getDictionaryList(@NotNull Class<?> clazz, String... params) {
         List<Map<String, String>> mapList = new ArrayList<>();
         for (Object obj : clazz.getEnumConstants()) {
             //取出所有枚举类型
