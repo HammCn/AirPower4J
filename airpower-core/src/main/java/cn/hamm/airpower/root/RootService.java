@@ -41,10 +41,9 @@ import java.util.*;
  * @param <R> 数据源
  * @author Hamm
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected R repository;
 
