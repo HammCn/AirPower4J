@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Primary;
  */
 @Configuration
 public class DataSourceConfiguration {
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private DataSourceProperties dataSourceProperties;
 
