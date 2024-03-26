@@ -13,27 +13,27 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DataSource {
     /**
-     * 数据库名称(租户的key)
+     * <h2>数据库名称(租户的key)</h2>
      */
     private String database;
 
     /**
-     * 数据库地址
+     * <h2>数据库地址</h2>
      */
     private String host = Constant.LOCAL_IP_ADDRESS;
 
     /**
-     * 数据库端口
+     * <h2>数据库端口</h2>
      */
     private int port = 3306;
 
     /**
-     * 数据库用户名
+     * <h2>数据库用户名</h2>
      */
     private String user = "root";
 
     /**
-     * 数据库密码
+     * <h2>数据库密码</h2>
      */
     private String password;
 }

@@ -7,57 +7,57 @@ package cn.hamm.airpower.config;
  */
 public class Constant {
     /**
-     * AirPower
+     * <h2>AirPower</h2>
      */
     public static final String AIRPOWER = "airpower";
 
     /**
-     * 创建时间字段名
+     * <h2>创建时间字段名</h2>
      */
     public static final String CREATE_TIME_FIELD = "createTime";
 
     /**
-     * 修改时间字段名
+     * <h2>修改时间字段名</h2>
      */
     public static final String UPDATE_TIME_FIELD = "updateTime";
 
     /**
-     * 主键ID字段名
+     * <h2>主键ID字段名</h2>
      */
     public static final String ID_FIELD = "id";
 
     /**
-     * 排序降序
+     * <h2>排序降序</h2>
      */
     public static final String SORT_DESC = "desc";
 
     /**
-     * 排序升序
+     * <h2>排序升序</h2>
      */
     public static final String SORT_ASC = "asc";
 
     /**
-     * SQL语句中like的前缀
+     * <h2>SQL语句中like的前缀</h2>
      */
     public static final String SQL_LIKE_PERCENT = "%";
 
     /**
-     * 一天的秒数
+     * <h2>一天的秒数</h2>
      */
     public static final int SECOND_PER_DAY = 86400;
 
     /**
-     * 一小时的秒数
+     * <h2>一小时的秒数</h2>
      */
     public static final int SECOND_PER_HOUR = 3600;
 
     /**
-     * 一分钟
+     * <h2>一分钟</h2>
      */
     public static final int SECOND_PER_MINUTE = 60;
 
     /**
-     * 本机IP地址
+     * <h2>本机IP地址</h2>
      */
     public static final String LOCAL_IP_ADDRESS = "127.0.0.1";
 }

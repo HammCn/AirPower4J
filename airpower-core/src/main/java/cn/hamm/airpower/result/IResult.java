@@ -9,21 +9,21 @@ import java.util.Objects;
  */
 public interface IResult {
     /**
-     * 获取错误代码
+     * <h2>获取错误代码</h2>
      *
      * @return 错误代码
      */
     int getCode();
 
     /**
-     * 获取返回信息
+     * <h2>获取返回信息</h2>
      *
      * @return 返回信息
      */
     String getMessage();
 
     /**
-     * 创建一个自定义异常
+     * <h2>创建一个自定义异常</h2>
      *
      * @return 异常
      */
@@ -33,14 +33,14 @@ public interface IResult {
 
 
     /**
-     * 抛出异常
+     * <h2>抛出异常</h2>
      */
     default void show() {
         show(getMessage());
     }
 
     /**
-     * 抛出异常
+     * <h2>抛出异常</h2>
      *
      * @param message 返回信息
      */
@@ -49,7 +49,7 @@ public interface IResult {
     }
 
     /**
-     * 抛出异常
+     * <h2>抛出异常</h2>
      *
      * @param message 返回信息
      * @param data    返回数据
@@ -59,7 +59,7 @@ public interface IResult {
     }
 
     /**
-     * 当满足条件时抛出异常
+     * <h2>当满足条件时抛出异常</h2>
      *
      * @param condition 条件
      */
@@ -68,7 +68,7 @@ public interface IResult {
     }
 
     /**
-     * 当满足条件时抛出异常
+     * <h2>当满足条件时抛出异常</h2>
      *
      * @param condition 条件
      * @param message   返回信息
@@ -80,7 +80,7 @@ public interface IResult {
     }
 
     /**
-     * 当满足条件时抛出异常
+     * <h2>当满足条件时抛出异常</h2>
      *
      * @param condition 条件
      * @param message   返回信息
@@ -93,7 +93,7 @@ public interface IResult {
     }
 
     /**
-     * 当为null时抛出异常
+     * <h2>当为null时抛出异常</h2>
      *
      * @param obj 被验证的数据
      */
@@ -102,7 +102,7 @@ public interface IResult {
     }
 
     /**
-     * 当为null时抛出异常
+     * <h2>当为null时抛出异常</h2>
      *
      * @param obj     被验证的数据
      * @param message 返回信息
@@ -112,7 +112,7 @@ public interface IResult {
     }
 
     /**
-     * 当两者相同时抛出异常
+     * <h2>当两者相同时抛出异常</h2>
      *
      * @param obj1 被验证的数据
      * @param obj2 被验证的数据
@@ -122,7 +122,7 @@ public interface IResult {
     }
 
     /**
-     * 当两者相同时抛出异常
+     * <h2>当两者相同时抛出异常</h2>
      *
      * @param obj1    被验证的数据
      * @param obj2    被验证的数据
@@ -133,7 +133,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串相同时抛出异常
+     * <h2>当两个字符串相同时抛出异常</h2>
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -143,7 +143,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串相同时抛出异常
+     * <h2>当两个字符串相同时抛出异常</h2>
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -154,7 +154,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串忽略大小写相同时抛出异常
+     * <h2>当两个字符串忽略大小写相同时抛出异常</h2>
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -164,7 +164,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串忽略大小写相同时抛出异常
+     * <h2>当两个字符串忽略大小写相同时抛出异常</h2>
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -175,7 +175,7 @@ public interface IResult {
     }
 
     /**
-     * 当两者不相同时抛出异常
+     * <h2>当两者不相同时抛出异常</h2>
      *
      * @param obj1 被验证的数据
      * @param obj2 被验证的数据
@@ -185,7 +185,7 @@ public interface IResult {
     }
 
     /**
-     * 当两者不相同时抛出异常
+     * <h2>当两者不相同时抛出异常</h2>
      *
      * @param obj1    被验证的数据
      * @param obj2    被验证的数据
@@ -196,7 +196,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串不相同时抛出异常
+     * <h2>当两个字符串不相同时抛出异常</h2>
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -206,7 +206,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串不相同时抛出异常
+     * <h2>当两个字符串不相同时抛出异常</h2>
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -217,7 +217,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串忽略大小写还不相同时抛出异常
+     * <h2>当两个字符串忽略大小写还不相同时抛出异常</h2>
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -227,7 +227,7 @@ public interface IResult {
     }
 
     /**
-     * 当两个字符串忽略大小写还不相同时抛出异常
+     * <h2>当两个字符串忽略大小写还不相同时抛出异常</h2>
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -238,7 +238,7 @@ public interface IResult {
     }
 
     /**
-     * 当为null或空字符串时抛出异常
+     * <h2>当为null或空字符串时抛出异常</h2>
      *
      * @param obj 被验证的数据
      */
@@ -247,7 +247,7 @@ public interface IResult {
     }
 
     /**
-     * 当为null或空字符串时抛出异常
+     * <h2>当为null或空字符串时抛出异常</h2>
      *
      * @param obj     被验证的数据
      * @param message 返回信息
@@ -257,7 +257,7 @@ public interface IResult {
     }
 
     /**
-     * 当不为null时抛出异常
+     * <h2>当不为null时抛出异常</h2>
      *
      * @param obj 被验证的数据
      */
@@ -266,7 +266,7 @@ public interface IResult {
     }
 
     /**
-     * 当不为null时抛出异常
+     * <h2>当不为null时抛出异常</h2>
      *
      * @param obj     被验证的数据
      * @param message 返回信息

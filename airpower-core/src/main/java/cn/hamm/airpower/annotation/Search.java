@@ -12,26 +12,26 @@ import java.lang.annotation.*;
 @Documented
 public @interface Search {
     /**
-     * 搜索方式
+     * <h2>搜索方式</h2>
      */
     Mode value() default Mode.LIKE;
 
     /**
-     * 搜索类型
+     * <h2>搜索类型</h2>
      */
     enum Mode {
         /**
-         * 相等
+         * <h2>相等</h2>
          */
         EQUALS,
 
         /**
-         * 字符串模糊匹配
+         * <h2>字符串模糊匹配</h2>
          */
         LIKE,
 
         /**
-         * JOIN查询
+         * <h2>JOIN查询</h2>
          */
         JOIN,
     }

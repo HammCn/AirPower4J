@@ -37,65 +37,61 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     protected S service;
 
     /**
-     * 添加一条新数据接口
+     * <h2>添加一条新数据接口</h2>
      *
-     * @param entity 数据实体
-     * @return 新增成功后的数据实体
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
-     * @see #beforeAdd(RootEntity) 前置方法
-     * @see #afterAdd(RootEntity) 后置方法
+     * @see #beforeAdd(E) 前置方法
+     * @see #afterAdd(long) 后置方法
      */
     @Description("添加")
     @PostMapping("add")
     @Filter(RootEntity.WhenGetDetail.class)
     public JsonData add(@RequestBody @Validated(RootEntity.WhenAdd.class) E entity) {
         checkApiAvailableStatus(Api.Add);
-        return jsonData(afterAdd(service.add(beforeAdd(service.ignoreReadOnlyFields(entity)))), "创建成功");
+        long id = service.add(beforeAdd(service.ignoreReadOnlyFields(entity)));
+        afterAdd(id);
+        return jsonData(new RootEntity<E>().setId(id));
     }
 
     /**
-     * 删除一条已存在的数据接口
+     * <h2>删除一条已存在的数据接口</h2>
      *
-     * @param entity 包含ID的实体
-     * @return 删除结果
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
-     * @see #beforeDelete(RootEntity) 前置方法
-     * @see #afterDelete(RootEntity) 后置方法
+     * @see #beforeDelete(long) 前置方法
+     * @see #afterDelete(long) 后置方法
      */
     @Description("删除")
     @PostMapping("delete")
     public Json delete(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Delete);
-        beforeDelete(entity);
+        beforeDelete(entity.getId());
         service.delete(entity.getId());
-        afterDelete(entity);
+        afterDelete(entity.getId());
         return json("删除成功");
     }
 
     /**
-     * 修改一条已存在的数据接口
+     * <h2>修改一条已存在的数据接口</h2>
      *
-     * @param entity 包含ID的实体
-     * @return 修改后的实体数据
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
-     * @see #beforeUpdate(RootEntity) 前置方法
-     * @see #afterUpdate(RootEntity) 后置方法
+     * @see #beforeUpdate(E) 前置方法
+     * @see #afterUpdate(long) 后置方法
      */
     @Description("修改")
     @PostMapping("update")
     @Filter(RootEntity.WhenGetDetail.class)
     public JsonData update(@RequestBody @Validated(RootEntity.WhenUpdate.class) E entity) {
         checkApiAvailableStatus(Api.Update);
-        return jsonData(afterUpdate(service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)))), "修改成功");
+        service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)));
+        afterUpdate(entity.getId());
+        return jsonData(new RootEntity<E>().setId(entity.getId()), "修改成功");
     }
 
     /**
-     * 查询一条详情数据
+     * <h2>查询一条详情数据</h2>
      *
-     * @param entity 包含ID的实体
-     * @return 详情数据
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
-     * @see #afterGetDetail(RootEntity) 后置方法
+     * @see #afterGetDetail(E) 后置方法
      */
     @Description("查询详情")
     @PostMapping("getDetail")
@@ -106,46 +102,42 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 禁用一条已存在的数据
+     * <h2>禁用一条已存在的数据</h2>
      *
-     * @param entity 包含ID的实体
-     * @return 禁用结果
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
-     * @see #beforeDisable(RootEntity) 前置方法
-     * @see #afterDisable(RootEntity) 后置方法
+     * @see #beforeDisable(long) 前置方法
+     * @see #afterDisable(long) 后置方法
      */
     @Description("禁用")
     @PostMapping("disable")
     public Json disable(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Disable);
-        beforeDisable(entity);
-        afterDisable(service.disable(entity.getId()));
+        beforeDisable(entity.getId());
+        service.disable(entity.getId());
+        afterDisable(entity.getId());
         return json("禁用成功");
     }
 
     /**
-     * 启用一条已存在的数据
+     * <h2>启用一条已存在的数据</h2>
      *
-     * @param entity 包含ID的实体
-     * @return 启用结果
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
-     * @see #beforeEnable(RootEntity) 前置方法
-     * @see #afterEnable(RootEntity) 后置方法
+     * @see #beforeEnable(long) 前置方法
+     * @see #afterEnable(long) 后置方法
      */
     @Description("启用")
     @PostMapping("enable")
     public Json enable(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Enable);
-        beforeEnable(entity);
-        afterEnable(service.enable(entity.getId()));
+        beforeEnable(entity.getId());
+        service.enable(entity.getId());
+        afterEnable(entity.getId());
         return json("启用成功");
     }
 
     /**
-     * 不分页查询
+     * <h2>不分页查询</h2>
      *
-     * @param queryRequest 查询请求
-     * @return 查询结果
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeGetList(QueryRequest) 前置方法
      * @see #afterGetList(List) 后置方法
@@ -160,10 +152,8 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 分页查询
+     * <h2>分页查询</h2>
      *
-     * @param queryPageRequest 查询请求
-     * @return 查询结果
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeGetPage(QueryPageRequest) 前置方法
      * @see #afterGetPage(QueryPageResponse) 后置方法
@@ -178,10 +168,8 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 查询分页后置方法
+     * <h2>查询分页后置方法</h2>
      *
-     * @param queryPageResponse 查询到的分页数据
-     * @return 处理后的分页数据
      * @see #getPage(QueryPageRequest)
      */
     protected <T extends QueryPageResponse<E>> T afterGetPage(T queryPageResponse) {
@@ -189,10 +177,8 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 查询分页前置方法
+     * <h2>查询分页前置方法</h2>
      *
-     * @param queryPageRequest 查询请求
-     * @return 处理后的查询请求
      * @apiNote 可重写后重新设置查询条件
      * @see #getPage(QueryPageRequest)
      */
@@ -201,10 +187,8 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 查询不分页前置方法
+     * <h2>查询不分页前置方法</h2>
      *
-     * @param queryRequest 查询请求
-     * @return 查询请求
      * @apiNote 可重写后重新设置查询条件
      * @see #getList(QueryRequest)
      */
@@ -213,10 +197,8 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 查询不分页后置方法
+     * <h2>查询不分页后置方法</h2>
      *
-     * @param list 查询结果
-     * @return 查询结果
      * @apiNote 可重写后执行装载更多数据的业务
      * @see #getList(QueryRequest)
      */
@@ -225,127 +207,116 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 查询详情后置方法
+     * <h2>查询详情后置方法</h2>
      *
-     * @param entity 实体
-     * @return 实体
      * @apiNote 可重写后执行装载更多数据的业务
-     * @see #getDetail(RootEntity)
+     * @see #getDetail(E)
      */
     protected E afterGetDetail(E entity) {
         return entity;
     }
 
     /**
-     * 新增前置方法
+     * <h2>新增前置方法</h2>
      *
-     * @param entity Api请求提交的实体数据，可能会缺失很多数据
-     * @return 实体
      * @apiNote 可重写后执行新增前的数据处理
-     * @see #add(RootEntity)
+     * @see #add(E)
      */
     protected E beforeAdd(E entity) {
         return entity;
     }
 
     /**
-     * 新增后置方法
+     * <h2>新增后置方法</h2>
      *
-     * @param entity 实体
-     * @return 实体
+     * @param id 主键ID
      * @apiNote 可重写后执行新增后的其他业务
-     * @see #add(RootEntity)
      */
-    protected E afterAdd(E entity) {
-        return entity;
+    protected void afterAdd(long id) {
     }
 
     /**
-     * 修改前置方法
+     * <h2>修改前置方法</h2>
      *
      * @param entity Api请求提交的实体数据，可能会缺失很多数据
      * @return 实体
      * @apiNote 可重写后执行修改前的其他业务或拦截
-     * @see #update(RootEntity)
+     * @see #update(E)
      */
     protected E beforeUpdate(E entity) {
         return entity;
     }
 
     /**
-     * 修改后置方法
+     * <h2>修改后置方法</h2>
      *
-     * @param entity 实体
-     * @return 实体
+     * @param id 主键ID
      * @apiNote 可重写后执行修改之后的其他业务
-     * @see #update(RootEntity)
+     * @see #update(E)
      */
-    protected E afterUpdate(E entity) {
-        return entity;
+    protected void afterUpdate(long id) {
     }
 
     /**
-     * 删除前置方法
+     * <h2>删除前置方法</h2>
      *
-     * @param entity 实体
+     * @param id 主键ID
      * @apiNote 可重写后执行删除之前的业务处理或拦截
-     * @see #delete(RootEntity)
+     * @see #delete(E)
      */
-    protected void beforeDelete(E entity) {
+    protected void beforeDelete(long id) {
     }
 
     /**
      * 删除后置方法
      *
-     * @param entity 被删除的实体
+     * @param id 主键ID
      * @apiNote 可重写后执行删除之后的其他业务
-     * @see #delete(RootEntity)
+     * @see #delete(E)
      */
-    protected void afterDelete(E entity) {
+    protected void afterDelete(long id) {
     }
 
     /**
-     * 禁用前置方法
+     * <h2>禁用前置方法</h2>
      *
-     * @param entity 带ID的实体,其他属性没有
+     * @param id 主键ID
      * @apiNote 可重写后执行禁用之前的业务处理或拦截
-     * @see #disable(RootEntity)
+     * @see #disable(E)
      */
-    protected void beforeDisable(E entity) {
+    protected void beforeDisable(long id) {
     }
 
     /**
-     * 禁用后置方法
+     * <h2>禁用后置方法</h2>
      *
-     * @param entity 带ID的实体,其他属性没有
+     * @param id 主键ID
      * @apiNote 可重写后执行禁用之后的其他业务
-     * @see #disable(RootEntity)
+     * @see #disable(E)
      */
-    protected void afterDisable(E entity) {
+    protected void afterDisable(long id) {
     }
 
     /**
-     * 启用前置方法
+     * <h2>启用前置方法</h2>
      *
-     * @param entity 带ID的实体,其他属性没有
-     * @apiNote 可重写后执行启用之前的业务处理或拦截
-     * @see #enable(RootEntity)
+     * @param id 主键ID
+     * @see #enable(E)
      */
-    protected void beforeEnable(E entity) {
+    protected void beforeEnable(long id) {
     }
 
     /**
-     * 启用后置方法
+     * <h2>启用后置方法</h2>
      *
-     * @param entity 带ID的实体,其他属性没有
-     * @apiNote 可重写后执行启用之后的其他业务
-     * @see #enable(RootEntity)
+     * @param id 主键ID
+     * @see #enable(E)
      */
-    protected void afterEnable(E entity) {
+    protected void afterEnable(long id) {
     }
 
     /**
-     * 获取查询请求
+     * <h2>获取查询请求</h2>
      *
      * @param queryRequest 传入的查询请求
      * @param <T>          QueryRequest子类
@@ -363,7 +334,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 检查Api可用状态
+     * <h2>检查Api可用状态</h2>
      */
     private void checkApiAvailableStatus(Api api) {
         Extends extendsApi = this.getClass().getAnnotation(Extends.class);
@@ -388,7 +359,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 获取一个空实体
+     * <h2>获取一个空实体</h2>
      *
      * @return 实体
      */
@@ -401,7 +372,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     }
 
     /**
-     * 获取实体类
+     * <h2>获取实体类</h2>
      *
      * @return 类
      */

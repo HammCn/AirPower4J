@@ -16,12 +16,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Sort {
     /**
-     * 排序字段
+     * <h2>排序字段</h2>
      */
     private String field;
 
     /**
-     * 排序方法
+     * <h2>排序方法</h2>
      */
     private String direction;
 }

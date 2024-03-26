@@ -18,19 +18,19 @@ import java.lang.annotation.*;
 @Documented
 public @interface Dictionary {
     /**
-     * 错误信息
+     * <h2>错误信息</h2>
      */
     String message() default "不允许的枚举字典值";
 
     /**
-     * 使用的枚举类
+     * <h2>使用的枚举类</h2>
      *
      * @see IDictionary
      */
     Class<? extends IDictionary> value();
 
     /**
-     * 验证组
+     * <h2>验证组</h2>
      */
     Class<?>[] groups() default {};
 

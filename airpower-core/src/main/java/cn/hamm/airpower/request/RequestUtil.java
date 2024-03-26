@@ -15,23 +15,23 @@ import java.util.Objects;
  */
 public class RequestUtil {
     /**
-     * 多IP分割字符
+     * <h2>多IP分割字符</h2>
      */
     private static final String MULTI_IP_ADDRESS_SPLITTER = ",";
 
     /**
-     * IP地址字符串最大的长度
+     * <h2>IP地址字符串最大的长度</h2>
      */
     private static final int MAX_IP_ADDRESS_CHAR_LENGTH = 15;
 
     /**
-     * 错误信息
+     * <h2>错误信息</h2>
      */
     private static final String ERROR_MESSAGE = "你的IP地址异常";
 
 
     /**
-     * 获取IP地址
+     * <h2>获取IP地址</h2>
      *
      * @param request 请求
      * @return IP地址
@@ -73,7 +73,7 @@ public class RequestUtil {
     }
 
     /**
-     * 是否是有效的IP地址
+     * <h2>是否是有效的IP地址</h2>
      *
      * @param ipAddress IP地址
      * @return 判定结果
@@ -83,7 +83,7 @@ public class RequestUtil {
     }
 
     /**
-     * 多IP获取真实IP地址
+     * <h2>多IP获取真实IP地址</h2>
      *
      * @param ipAddress 原始IP地址
      * @return 处理之后的真实IP

@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class TreeUtil {
     /**
-     * 生成树结构
+     * <h2>生成树结构</h2>
      *
      * @param list     原始数据列表
      * @param parentId 父级ID
@@ -34,7 +34,7 @@ public class TreeUtil {
     }
 
     /**
-     * 生成树结构
+     * <h2>生成树结构</h2>
      *
      * @param list 原始数据列表
      * @param <E>  泛型

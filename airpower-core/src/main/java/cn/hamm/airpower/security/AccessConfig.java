@@ -7,12 +7,12 @@ package cn.hamm.airpower.security;
  */
 public class AccessConfig {
     /**
-     * 需要登录
+     * <h2>需要登录</h2>
      */
     public boolean login = false;
 
     /**
-     * 需要授权访问
+     * <h2>需要授权访问</h2>
      */
     public boolean authorize = false;
 }

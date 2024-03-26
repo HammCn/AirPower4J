@@ -60,86 +60,169 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private EntityManager entityManager;
 
     /**
-     * 添加一条数据
+     * <h2>🟢添加前置方法</h2>
+     *
+     * @param entity 添加实体
+     * @return 处理后的实体
+     */
+    protected E beforeAdd(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>🟡添加一条数据</h2>
      *
      * @param entity 保存的实体
-     * @return 保存后的实体
-     * @see #beforeSaveToDatabase(RootEntity)
+     * @return 保存后的主键ID
+     * @see #beforeAdd(E)
+     * @see #beforeSaveToDatabase(E)
+     * @see #afterAdd(long)
      */
-    public E add(E entity) {
-        return addToDatabase(entity);
+    public final long add(E entity) {
+        long id = addToDatabase(beforeAdd(entity));
+        afterAdd(id);
+        return id;
     }
 
     /**
-     * 根据ID查询对应的实体
+     * <h2>🟢添加后置方法</h2>
      *
-     * @param id ID
-     * @return 实体
-     * @see #getById(Long)
-     * @see #getMaybeNull(Long)
-     * @see #getByIdMaybeNull(Long)
+     * @param id 主键ID
      */
-    public E get(Long id) {
-        return getById(id);
+    protected void afterAdd(long id) {
     }
 
     /**
-     * 根据ID查询对应的实体
+     * <h2>🟢修改前置方法</h2>
      *
-     * @param id ID
-     * @return 实体
-     * @apiNote 查不到返回null，不抛异常
-     * @see #get(Long)
-     * @see #getById(Long)
-     * @see #getByIdMaybeNull(Long)
+     * @param entity 修改的实体
+     * @return 处理后的实体
      */
-    public E getMaybeNull(Long id) {
-        return getByIdMaybeNull(id);
+    protected E beforeUpdate(E entity) {
+        return entity;
     }
 
     /**
-     * 修改一条已经存在的数据
+     * <h2>🟡修改一条已经存在的数据</h2>
      *
      * @param entity 保存的实体
-     * @return 更新后的实体
-     * @see #updateToDatabase(RootEntity)
+     * @see #beforeUpdate(E)
+     * @see #updateToDatabase(E)
+     * @see #afterUpdate(long)
      */
-    public E update(E entity) {
-        return updateToDatabase(entity);
+    public final void update(E entity) {
+        updateToDatabase(beforeUpdate(entity));
+        afterUpdate(entity.getId());
     }
 
     /**
-     * 禁用指定的数据
+     * <h2>🟢修改后置方法</h2>
      *
-     * @param id ID
-     * @return 实体
-     * @see #disableById(Long)
+     * @param id 主键ID
      */
-    public E disable(Long id) {
-        return disableById(id);
+    protected void afterUpdate(long id) {
     }
 
     /**
-     * 启用指定的数据
+     * <h2>🟢禁用前置方法</h2>
      *
-     * @param id ID
-     * @return 实体
+     * @param id 主键ID
      */
-    public E enable(Long id) {
-        return enableById(id);
+    protected void beforeDisable(long id) {
     }
 
     /**
-     * 删除指定的数据
+     * <h2>🟡禁用指定的数据</h2>
      *
-     * @param id ID
+     * @param id 主键ID
+     * @see #beforeDisable(long)
+     * @see #afterDisable(long)
      */
-    public void delete(Long id) {
+    public final void disable(long id) {
+        beforeDisable(id);
+        disableById(id);
+        afterDisable(id);
+    }
+
+    /**
+     * <h2>🟢禁用后置方法</h2>
+     *
+     * @param id 主键ID
+     */
+    protected void afterDisable(long id) {
+    }
+
+    /**
+     * <h2>🟢启用前置方法</h2>
+     *
+     * @param id 主键ID
+     */
+    protected void beforeEnable(long id) {
+    }
+
+    /**
+     * <h2>🟡启用指定的数据</h2>
+     *
+     * @param id 主键ID
+     * @see #beforeEnable(long)
+     * @see #afterEnable(long)
+     */
+    public final void enable(long id) {
+        beforeEnable(id);
+        enableById(id);
+        afterEnable(id);
+    }
+
+    /**
+     * <h2>🟢启用后置方法</h2>
+     *
+     * @param id 主键ID
+     */
+    protected void afterEnable(long id) {
+    }
+
+    /**
+     * <h2>🟢删除前置方法</h2>
+     *
+     * @param id 主键ID
+     */
+    protected void beforeDelete(long id) {
+    }
+
+    /**
+     * <h2>🟡删除指定的数据</h2>
+     *
+     * @param id 主键ID
+     * @see #beforeDelete(long)
+     * @see #afterDelete(long)
+     */
+    public final void delete(long id) {
+        beforeDelete(id);
         deleteById(id);
+        afterDelete(id);
     }
 
     /**
-     * 不分页查询数据
+     * <h2>🟢删除后置方法</h2>
+     *
+     * @param id 主键ID
+     */
+    protected void afterDelete(long id) {
+    }
+
+    /**
+     * <h2>🟢不分页查询前置方法</h2>
+     *
+     * @param sourceRequestData 查询条件
+     * @return 处理后的查询条件
+     * @see #getList(QueryRequest)
+     */
+    protected <T extends QueryRequest<E>> T beforeGetList(T sourceRequestData) {
+        return sourceRequestData;
+    }
+
+    /**
+     * <h2>🟡不分页查询数据</h2>
      *
      * @param queryRequest 请求的request
      * @return List数据
@@ -159,7 +242,85 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 分页查询数据
+     * <h2>🟢不分页查询后置方法</h2>
+     *
+     * @param list 查询到的数据
+     * @return 处理后的数据
+     * @see #getPage(QueryPageRequest)
+     */
+    protected List<E> afterGetList(List<E> list) {
+        return list;
+    }
+
+    /**
+     * <h2>🟢分页查询前置方法</h2>
+     *
+     * @param sourceRequestData 原始请求的数据
+     * @return 处理后的请求数据
+     */
+    protected <T extends QueryPageRequest<E>> T beforeGetPage(T sourceRequestData) {
+        return sourceRequestData;
+    }
+
+    /**
+     * <h2>🟢分页查询后置方法</h2>
+     *
+     * @param queryPageResponse 查询到的数据
+     * @return 处理后的数据
+     */
+    protected QueryPageResponse<E> afterGetPage(QueryPageResponse<E> queryPageResponse) {
+        return queryPageResponse;
+    }
+
+
+    /**
+     * <h2>🟢数据库操作前的最后一次确认</h2>
+     *
+     * @return 当前实体
+     */
+    protected E beforeSaveToDatabase(E entity) {
+        return entity;
+    }
+
+    /**
+     * <h2>🟢添加搜索的查询条件</h2>
+     *
+     * @param root     ROOT
+     * @param builder  参数构造器
+     * @param search   原始查询对象
+     * @param isPaging 是否是分页
+     * @return 查询条件列表
+     */
+    protected List<Predicate> addSearchPredicate(Root<E> root, CriteriaBuilder builder, E search, boolean isPaging) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * <h2>🟡根据ID查询对应的实体</h2>
+     *
+     * @param id 主键ID
+     * @return 实体
+     * @see #getMaybeNull(long)
+     */
+    public final E get(long id) {
+        return getById(id);
+    }
+
+    /**
+     * <h2>🟡根据ID查询对应的实体</h2>
+     *
+     * @param id 主键ID
+     * @return 实体
+     * @apiNote 查不到返回null，不抛异常
+     * @see #get(long)
+     */
+    public final E getMaybeNull(long id) {
+        return getByIdMaybeNull(id);
+    }
+
+
+    /**
+     * <h2>🟡分页查询数据</h2>
      *
      * @param queryPageRequest 请求的request对象
      * @return 分页查询列表
@@ -175,141 +336,59 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         queryPageRequest = beforeGetPage(queryPageRequest);
 
-        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest, true), createPageable(queryPageRequest)))
-                .setSort(queryPageRequest.getSort());
+        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest, true), createPageable(queryPageRequest))).setSort(queryPageRequest.getSort());
         return afterGetPage(queryPageResponse);
     }
 
     /**
-     * 分页查询前置方法
+     * <h2>🔴禁用指定的数据</h2>
      *
-     * @param sourceRequestData 原始请求的数据
-     * @return 处理后的请求数据
-     * @see #getPage(QueryPageRequest)
+     * @param id 主键ID
+     * @apiNote 不建议直接调用, 请优先使用前后置方法
+     * @see #beforeDisable(long)
+     * @see #afterDisable(long)
      */
-    protected <T extends QueryPageRequest<E>> T beforeGetPage(T sourceRequestData) {
-        return sourceRequestData;
-    }
-
-    /**
-     * 分页查询后置方法
-     *
-     * @param queryPageResponse 查询到的数据
-     * @return 处理后的数据
-     * @see #getPage(QueryPageRequest)
-     */
-    protected QueryPageResponse<E> afterGetPage(QueryPageResponse<E> queryPageResponse) {
-        return queryPageResponse;
-    }
-
-
-    /**
-     * 不分页查询后置方法
-     *
-     * @param list 查询到的数据
-     * @return 处理后的数据
-     * @see #getPage(QueryPageRequest)
-     */
-    protected List<E> afterGetList(List<E> list) {
-        return list;
-    }
-
-    /**
-     * 不分页查询前置方法
-     *
-     * @param sourceRequestData 查询条件
-     * @return 处理后的查询条件
-     * @see #getList(QueryRequest)
-     */
-    protected <T extends QueryRequest<E>> T beforeGetList(T sourceRequestData) {
-        return sourceRequestData;
-    }
-
-    /**
-     * 数据库操作前的最后一次确认
-     *
-     * @return 当前实体
-     */
-    protected E beforeSaveToDatabase(E entity) {
-        return entity;
-    }
-
-
-    /**
-     * 禁用指定的数据
-     *
-     * @param id ID
-     * @return 实体
-     */
-    protected final E disableById(Long id) {
+    protected final void disableById(long id) {
         E entity = get(id);
-        return saveToDatabase(entity.setIsDisabled(true));
+        saveToDatabase(entity.setIsDisabled(true));
     }
 
     /**
-     * 启用指定的数据
+     * <h2>🔴启用指定的数据</h2>
      *
-     * @param id ID
-     * @return 实体
+     * @param id 主键ID
+     * @apiNote 不建议直接调用, 请优先使用前后置方法
+     * @see #beforeEnable(long)
+     * @see #afterEnable(long)
      */
-    protected final E enableById(Long id) {
+    protected final void enableById(long id) {
         E entity = get(id);
-        return saveToDatabase(entity.setIsDisabled(false));
+        saveToDatabase(entity.setIsDisabled(false));
     }
 
     /**
-     * 删除指定的数据
+     * <h2>🔴删除指定的数据</h2>
      *
-     * @param id ID
+     * @param id 主键ID
+     * @apiNote 不建议直接调用, 请优先使用前后置方法
+     * @see #beforeDelete(long)
+     * @see #afterDelete(long)
      */
-    protected final void deleteById(Long id) {
+    protected final void deleteById(long id) {
         repository.deleteById(id);
     }
 
     /**
-     * 根据ID查询对应的实体
-     *
-     * @param id ID
-     * @return 实体
-     */
-    protected final E getById(Long id) {
-        Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        Optional<E> optional = repository.findById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-        Result.DATA_NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
-        return getNewInstance();
-    }
-
-    /**
-     * 根据ID查询对应的实体
-     *
-     * @param id ID
-     * @return 实体
-     * @apiNote 查不到返回null，不抛异常
-     * @see #get(Long)
-     * @see #getById(Long)
-     */
-    protected final E getByIdMaybeNull(Long id) {
-        try {
-            return get(id);
-        } catch (Exception exception) {
-            return null;
-        }
-    }
-
-    /**
-     * 添加到数据库(直接保存)
+     * <h2>🔴添加到数据库(直接保存)</h2>
      *
      * @param entity 实体
      * @return 实体
+     * @see #beforeAdd(E)
+     * @see #add(E)
+     * @see #afterAdd(long)
      */
-    protected final E addToDatabase(E entity) {
-        entity.setId(null)
-                .setIsDisabled(false)
-                .setCreateTime(DateUtil.current())
-                .setUpdateTime(entity.getCreateTime());
+    protected final long addToDatabase(E entity) {
+        entity.setId(null).setIsDisabled(false).setCreateTime(DateUtil.current()).setUpdateTime(entity.getCreateTime());
         if (Objects.isNull(entity.getRemark())) {
             entity.setRemark("");
         }
@@ -317,19 +396,19 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 更新到数据库(直接保存)
+     * <h2>🔴更新到数据库(直接保存)</h2>
      *
      * @param entity 待更新的实体
-     * @return 更新后的实体
+     * @see #beforeUpdate(E)
+     * @see #afterUpdate(long)
      */
-    protected final E updateToDatabase(E entity) {
-        Result.PARAM_MISSING.whenNull(entity.getId(),
-                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        return saveToDatabase(entity);
+    protected final void updateToDatabase(E entity) {
+        Result.PARAM_MISSING.whenNull(entity.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        saveToDatabase(entity);
     }
 
     /**
-     * 忽略只读字段
+     * <h2>🔴忽略只读字段</h2>
      *
      * @param entity 实体
      * @return 忽略只读字段之后的实体
@@ -352,12 +431,43 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 保存到数据库
+     * <h2>根据ID查询对应的实体</h2>
+     *
+     * @param id 主键ID
+     * @return 实体
+     */
+    private E getById(long id) {
+        Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        Optional<E> optional = repository.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        Result.DATA_NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
+        return getNewInstance();
+    }
+
+    /**
+     * <h2>根据ID查询对应的实体</h2>
+     *
+     * @param id 主键ID
+     * @return 实体
+     * @apiNote 查不到返回null，不抛异常
+     */
+    private E getByIdMaybeNull(long id) {
+        try {
+            return get(id);
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    /**
+     * <h2>保存到数据库</h2>
      *
      * @param entity 待保存实体
      * @return 保存后的实体
      */
-    private E saveToDatabase(E entity) {
+    private long saveToDatabase(E entity) {
         checkUnique(entity);
         entity.setUpdateTime(DateUtil.current());
         if (Objects.nonNull(entity.getId())) {
@@ -373,13 +483,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
-        long id = target.getId();
         entityManager.clear();
-        return getById(id);
+        return target.getId();
     }
 
     /**
-     * 获取用于更新的实体
+     * <h2>获取用于更新的实体</h2>
      *
      * @param sourceEntity 来源实体
      * @param targetEntity 已存在实体
@@ -392,7 +501,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 判断是否唯一
+     * <h2>判断是否唯一</h2>
      *
      * @param entity 实体
      */
@@ -433,7 +542,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 获取一个空实体
+     * <h2>获取一个空实体</h2>
      *
      * @return 实体
      */
@@ -446,17 +555,16 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 获取实体类
+     * <h2>获取实体类</h2>
      *
      * @return 类
      */
-    @SuppressWarnings("unchecked")
     private Class<E> getEntityClass() {
         return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     /**
-     * 获取null属性
+     * <h2>获取null属性</h2>
      *
      * @param src 来源对象
      * @return 非空属性列表
@@ -480,30 +588,17 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 获取响应的分页数据
+     * <h2>获取响应的分页数据</h2>
      *
      * @param data 分页数据
      * @return 输出分页对象
      */
     private QueryPageResponse<E> getResponsePageList(org.springframework.data.domain.Page<E> data) {
-        return new QueryPageResponse<E>()
-                .setList(data.getContent())
-                .setTotal(Math.toIntExact(data.getTotalElements()))
-                .setPageCount(data.getTotalPages())
-                .setPage(
-                        new Page()
-                                .setPageSize(
-                                        data.getPageable().getPageSize()
-                                )
-                                .setPageNum(
-                                        data.getPageable().getPageNumber() + 1
-                                )
-                )
-                ;
+        return new QueryPageResponse<E>().setList(data.getContent()).setTotal(Math.toIntExact(data.getTotalElements())).setPageCount(data.getTotalPages()).setPage(new Page().setPageSize(data.getPageable().getPageSize()).setPageNum(data.getPageable().getPageNumber() + 1));
     }
 
     /**
-     * 创建Sort
+     * <h2>创建Sort</h2>
      *
      * @param queryRequest 请求的request
      * @return Sort
@@ -525,7 +620,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 创建Pageable
+     * <h2>创建Pageable</h2>
      *
      * @param queryPageData 查询请求
      * @return Pageable
@@ -551,7 +646,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 获取查询条件列表
+     * <h2>获取查询条件列表</h2>
      *
      * @param root    root
      * @param builder builder
@@ -620,42 +715,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 创建查询对象
-     *
-     * @param queryRequest 查询请求
-     * @param isPaging     是否是分页
-     * @return 查询对象
-     */
-    private Specification<E> createSpecification(QueryRequest<E> queryRequest, boolean isPaging) {
-        return (root, criteriaQuery, criteriaBuilder) ->
-                createPredicate(
-                        root, criteriaQuery, criteriaBuilder, queryRequest.getFilter(), isPaging
-                );
-    }
-
-    /**
-     * 创建Predicate
-     *
-     * @param root          root
-     * @param criteriaQuery query
-     * @param builder       builder
-     * @param search        搜索的实体
-     * @param isPaging      是否是分页
-     * @return 查询条件
-     */
-    private Predicate createPredicate(
-            Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E search, boolean isPaging
-    ) {
-        List<Predicate> predicateList = this.getPredicateList(root, builder, search, true);
-        predicateList.addAll(addSearchPredicate(root, builder, search, isPaging));
-        addCreateAndUpdateTimePredicate(root, builder, search, predicateList);
-        Predicate[] predicates = new Predicate[predicateList.size()];
-        criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
-        return criteriaQuery.getRestriction();
-    }
-
-    /**
-     * 添加创建时间和更新时间的查询条件
+     * <h2>添加创建时间和更新时间的查询条件</h2>
      *
      * @param root          ROOT
      * @param builder       参数构造器
@@ -678,15 +738,32 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * 添加搜索的查询条件
+     * <h2>创建查询对象</h2>
      *
-     * @param root     ROOT
-     * @param builder  参数构造器
-     * @param search   原始查询对象
-     * @param isPaging 是否是分页
-     * @return 查询条件列表
+     * @param queryRequest 查询请求
+     * @param isPaging     是否是分页
+     * @return 查询对象
      */
-    protected List<Predicate> addSearchPredicate(Root<E> root, CriteriaBuilder builder, E search, boolean isPaging) {
-        return new ArrayList<>();
+    private Specification<E> createSpecification(QueryRequest<E> queryRequest, boolean isPaging) {
+        return (root, criteriaQuery, criteriaBuilder) -> createPredicate(root, criteriaQuery, criteriaBuilder, queryRequest.getFilter(), isPaging);
+    }
+
+    /**
+     * <h2>创建Predicate</h2>
+     *
+     * @param root          root
+     * @param criteriaQuery query
+     * @param builder       builder
+     * @param search        搜索的实体
+     * @param isPaging      是否是分页
+     * @return 查询条件
+     */
+    private Predicate createPredicate(Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E search, boolean isPaging) {
+        List<Predicate> predicateList = this.getPredicateList(root, builder, search, true);
+        predicateList.addAll(addSearchPredicate(root, builder, search, isPaging));
+        addCreateAndUpdateTimePredicate(root, builder, search, predicateList);
+        Predicate[] predicates = new Predicate[predicateList.size()];
+        criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
+        return criteriaQuery.getRestriction();
     }
 }

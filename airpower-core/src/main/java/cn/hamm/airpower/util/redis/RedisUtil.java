@@ -27,7 +27,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     private GlobalConfig globalConfig;
 
     /**
-     * 从缓存中获取实体
+     * <h2>从缓存中获取实体</h2>
      *
      * @param entity 实体
      * @return 缓存实体
@@ -46,7 +46,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 从缓存中获取实体
+     * <h2>从缓存中获取实体</h2>
      *
      * @param key    缓存的Key
      * @param entity 实体
@@ -66,7 +66,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 删除指定的实体缓存
+     * <h2>删除指定的实体缓存</h2>
      *
      * @param entity 实体
      */
@@ -75,7 +75,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 缓存实体
+     * <h2>缓存实体</h2>
      *
      * @param entity 实体
      */
@@ -84,7 +84,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 缓存实体
+     * <h2>缓存实体</h2>
      *
      * @param entity 实体
      * @param second 缓存时间(秒)
@@ -94,7 +94,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 缓存实体
+     * <h2>缓存实体</h2>
      *
      * @param key    缓存的Key
      * @param entity 实体
@@ -104,7 +104,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 缓存实体
+     * <h2>缓存实体</h2>
      *
      * @param key    缓存的Key
      * @param entity 实体
@@ -115,7 +115,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 指定缓存失效时间
+     * <h2>指定缓存失效时间</h2>
      *
      * @param key    缓存的Key
      * @param second 缓存时间(秒)
@@ -131,7 +131,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 删除所有满足条件的数据
+     * <h2>删除所有满足条件的数据</h2>
      *
      * @param pattern 正则
      */
@@ -147,7 +147,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 获取过期时间
+     * <h2>获取过期时间</h2>
      *
      * @param key 缓存的Key
      * @return 过期时间
@@ -162,7 +162,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 判断key是否存在
+     * <h2>判断key是否存在</h2>
      *
      * @param key 缓存的Key
      * @return <code>true</code> 存在; <code>false</code> 不存在
@@ -177,7 +177,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 删除缓存
+     * <h2>删除缓存</h2>
      *
      * @param key 缓存的Key
      */
@@ -190,7 +190,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 普通缓存获取
+     * <h2>普通缓存获取</h2>
      *
      * @param key 缓存的Key
      * @return 值
@@ -204,7 +204,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 普通缓存放入
+     * <h2>普通缓存放入</h2>
      *
      * @param key   键
      * @param value 值
@@ -214,7 +214,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 普通缓存放入并设置时间
+     * <h2>普通缓存放入并设置时间</h2>
      *
      * @param key    缓存的Key
      * @param value  缓存的值
@@ -234,7 +234,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 发布到channel的消息
+     * <h2>发布到channel的消息</h2>
      *
      * @param channel 频道
      * @param message 消息
@@ -244,7 +244,7 @@ public class RedisUtil<E extends RootEntity<E>> {
     }
 
     /**
-     * 获取缓存Entity的cacheKey
+     * <h2>获取缓存Entity的cacheKey</h2>
      *
      * @param entity 实体
      * @return key

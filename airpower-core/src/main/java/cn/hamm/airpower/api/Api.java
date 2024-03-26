@@ -8,42 +8,42 @@ package cn.hamm.airpower.api;
  */
 public enum Api {
     /**
-     * 添加
+     * <h2>添加</h2>
      */
     Add,
 
     /**
-     * 删除
+     * <h2>删除</h2>
      */
     Delete,
 
     /**
-     * 禁用
+     * <h2>禁用</h2>
      */
     Disable,
 
     /**
-     * 启用
+     * <h2>启用</h2>
      */
     Enable,
 
     /**
-     * 查询详情
+     * <h2>查询详情</h2>
      */
     GetDetail,
 
     /**
-     * 列表查询
+     * <h2>列表查询</h2>
      */
     GetList,
 
     /**
-     * 分页查询
+     * <h2>分页查询</h2>
      */
     GetPage,
 
     /**
-     * 修改
+     * <h2>修改</h2>
      */
     Update,
 }

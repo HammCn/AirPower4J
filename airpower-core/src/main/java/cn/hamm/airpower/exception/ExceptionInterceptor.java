@@ -48,7 +48,7 @@ public class ExceptionInterceptor {
     private GlobalConfig globalConfig;
 
     /**
-     * 参数验证失败
+     * <h2>参数验证失败</h2>
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Json badRequestHandle(@NotNull MethodArgumentNotValidException exception) {
@@ -70,7 +70,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 参数校验失败
+     * <h2>参数校验失败</h2>
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Json badRequestHandle(@NotNull ConstraintViolationException exception) {
@@ -85,7 +85,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 删除时的数据关联校验异常
+     * <h2>删除时的数据关联校验异常</h2>
      */
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
     public Json deleteUsingDataException(@NotNull Exception exception) {
@@ -97,7 +97,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 访问的接口没有实现
+     * <h2>访问的接口没有实现</h2>
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public Json notFoundHandle(@NotNull Exception exception) {
@@ -106,7 +106,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 请求的数据不是标准JSON
+     * <h2>请求的数据不是标准JSON</h2>
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Json dataExceptionHandle(@NotNull Exception exception) {
@@ -115,7 +115,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 不支持的请求方法
+     * <h2>不支持的请求方法</h2>
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
@@ -125,7 +125,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 不支持的数据类型
+     * <h2>不支持的数据类型</h2>
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
@@ -137,7 +137,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 数据库连接发生错误
+     * <h2>数据库连接发生错误</h2>
      */
     @ExceptionHandler(CannotCreateTransactionException.class)
     public Json databaseExceptionHandle(@NotNull Exception exception) {
@@ -149,7 +149,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * REDIS连接发生错误
+     * <h2>REDIS连接发生错误</h2>
      */
     @ExceptionHandler(RedisConnectionFailureException.class)
     public Json redisExceptionHandle(@NotNull Exception exception) {
@@ -161,7 +161,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 自定义业务异常
+     * <h2>自定义业务异常</h2>
      */
     @ExceptionHandler(ResultException.class)
     public JsonData customExceptionHandle(@NotNull ResultException exception) {
@@ -173,7 +173,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * JWT校验失败错误
+     * <h2>JWT校验失败错误</h2>
      */
     @ExceptionHandler(value = {cn.hutool.jwt.JWTException.class})
     public Json jwtExceptionHandle(@NotNull Exception exception) {
@@ -185,7 +185,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 数据字段不存在
+     * <h2>数据字段不存在</h2>
      */
     @ExceptionHandler(value = PropertyReferenceException.class)
     public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
@@ -197,7 +197,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 数据表或字段异常
+     * <h2>数据表或字段异常</h2>
      */
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
     public Json invalidDataAccessResourceUsageExceptionHandle(@NotNull Exception exception) {
@@ -209,7 +209,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * 其他异常
+     * <h2>其他异常</h2>
      */
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public Object otherExceptionHandle(@NotNull Exception exception) {

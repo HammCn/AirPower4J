@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class DictionaryUtil {
     /**
-     * 查询指定key的枚举字典项目
+     * <h2>查询指定key的枚举字典项目</h2>
      *
      * @param enumClass 枚举字典类
      * @param key       枚举字典值
@@ -42,7 +42,7 @@ public class DictionaryUtil {
     }
 
     /**
-     * 获取指定枚举类的Map数据
+     * <h2>获取指定枚举类的Map数据</h2>
      *
      * @param clazz 枚举类
      * @return 返回结果
@@ -53,7 +53,7 @@ public class DictionaryUtil {
 
 
     /**
-     * 获取指定枚举类的Map数据
+     * <h2>获取指定枚举类的Map数据</h2>
      *
      * @param clazz  枚举类
      * @param params 参数列表

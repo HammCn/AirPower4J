@@ -19,12 +19,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Extends {
     /**
-     * 白名单
+     * <h2>白名单</h2>
      */
     Api[] value() default {};
 
     /**
-     * 黑名单
+     * <h2>黑名单</h2>
      */
     Api[] exclude() default {};
 }

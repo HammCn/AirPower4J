@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TransactionUtil {
     /**
-     * <h1>开始执行一个包含若干方法的事务</h1>
+     * <h2>开始执行一个包含若干方法的事务</h2>
      *
      * @param function 事务包含的方法集合体
      */
@@ -23,7 +23,7 @@ public class TransactionUtil {
     @FunctionalInterface
     public interface Function {
         /**
-         * 开始执行一个包含若干方法的事务
+         * <h2>开始执行一个包含若干方法的事务</h2>
          */
         void run();
     }

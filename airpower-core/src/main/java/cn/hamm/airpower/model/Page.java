@@ -16,12 +16,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Page {
     /**
-     * 当前页码
+     * <h2>当前页码</h2>
      */
     private Integer pageNum = 1;
 
     /**
-     * 分页条数
+     * <h2>分页条数</h2>
      */
     private Integer pageSize;
 }

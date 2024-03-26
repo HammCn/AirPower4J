@@ -3,24 +3,24 @@ package cn.hamm.airpower.model;
 import lombok.Getter;
 
 /**
- * 负载模型
+ * <h1>负载模型</h1>
  *
  * @author hamm
  */
 @Getter
 public class Payload<T> {
     /**
-     * 键名
+     * <h2>键名</h2>
      */
     private String key;
 
     /**
-     * 负载的值
+     * <h2>负载的值</h2>
      */
     private T value;
 
     /**
-     * 设置键名
+     * <h2>设置键名</h2>
      *
      * @param key 键名
      * @return 负载实例
@@ -31,7 +31,7 @@ public class Payload<T> {
     }
 
     /**
-     * 设置负载的值
+     * <h2>设置负载的值</h2>
      *
      * @param value 负载的值
      * @return 负载实例
@@ -42,7 +42,7 @@ public class Payload<T> {
     }
 
     /**
-     * 创建一个负载实例
+     * <h2>创建一个负载实例</h2>
      *
      * @param key   键名
      * @param value 负载的值

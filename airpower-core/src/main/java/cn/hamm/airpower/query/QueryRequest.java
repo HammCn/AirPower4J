@@ -17,33 +17,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QueryRequest<E extends RootEntity<E>> {
     /**
-     * 排序对象
+     * <h2>排序对象</h2>
      */
     private Sort sort = null;
 
     /**
-     * 搜索过滤器
+     * <h2>搜索过滤器</h2>
      */
     private E filter = null;
 
     /**
-     * 关键词搜索
+     * <h2>关键词搜索</h2>
      */
     private String keyword;
 
     /**
-     * 设置过滤器
+     * <h2>设置过滤器</h2>
      *
      * @param filter 过滤器
      * @return 请求
      */
+    @SuppressWarnings("UnusedReturnValue")
     public QueryRequest<E> setFilter(E filter) {
         this.filter = filter;
         return this;
     }
 
     /**
-     * 设置排序
+     * <h2>设置排序</h2>
      *
      * @param sort 排序
      * @return 请求
@@ -54,7 +55,7 @@ public class QueryRequest<E extends RootEntity<E>> {
     }
 
     /**
-     * 设置查询关键词
+     * <h2>设置查询关键词</h2>
      *
      * @param keyword 关键词
      * @return 请求

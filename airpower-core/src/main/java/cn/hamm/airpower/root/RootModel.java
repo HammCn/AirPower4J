@@ -18,7 +18,7 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public class RootModel<E extends RootModel<E>> {
     /**
-     * 复制实例到新的实例
+     * <h2>复制实例到新的实例</h2>
      *
      * @param clazz 目标类
      * @param <R>   返回类型
@@ -36,7 +36,7 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 排除传入的字段列表
+     * <h2>排除传入的字段列表</h2>
      *
      * @param fieldNames 字段列表
      * @return 实体
@@ -48,7 +48,7 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 排除传入的字段列表
+     * <h2>排除传入的字段列表</h2>
      *
      * @param fieldNames 字段列表
      * @return 实体
@@ -67,7 +67,7 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 只暴露传入的字段列表
+     * <h2>只暴露传入的字段列表</h2>
      *
      * @param fieldNames 字段列表
      * @return 实体
@@ -90,7 +90,7 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 通过指定的过滤器来过滤响应数据
+     * <h2>通过指定的过滤器来过滤响应数据</h2>
      *
      * @param filter 过滤器
      * @return 实体
@@ -116,7 +116,7 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 通过指定的过滤器排除字段
+     * <h2>通过指定的过滤器排除字段</h2>
      *
      * @param filter 过滤器
      * @param field  字段
@@ -150,7 +150,7 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 通过指定的过滤器暴露字段
+     * <h2>通过指定的过滤器暴露字段</h2>
      *
      * @param filter 过滤器
      * @param field  字段
@@ -185,7 +185,7 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 挂载数据的Payload过滤
+     * <h2>挂载数据的Payload过滤</h2>
      *
      * @param field 字段
      */
@@ -228,9 +228,10 @@ public class RootModel<E extends RootModel<E>> {
     }
 
     /**
-     * 清空字段的数据 设置为null
+     * <h2>清空字段的数据</h2>
      *
      * @param field 字段
+     * @apiNote 设置为null
      */
     private void clearField(Field field) {
         try {

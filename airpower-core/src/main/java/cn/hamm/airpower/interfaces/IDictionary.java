@@ -7,21 +7,21 @@ package cn.hamm.airpower.interfaces;
  */
 public interface IDictionary {
     /**
-     * 获取枚举的key
+     * <h2>获取枚举的key</h2>
      *
      * @return key
      */
     int getKey();
 
     /**
-     * 获取枚举的描述
+     * <h2>获取枚举的描述</h2>
      *
      * @return 描述
      */
     String getLabel();
 
     /**
-     * 判断Key是否相等
+     * <h2>判断Key是否相等</h2>
      *
      * @param key 被判断的Key
      * @return 对比结果

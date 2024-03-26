@@ -17,7 +17,7 @@ import java.util.Objects;
 @Component
 public class SecurityUtil {
     /**
-     * AccessToken在Redis的存储前缀
+     * <h2>AccessToken在Redis的存储前缀</h2>
      */
     private final String ACCESS_TOKEN_PREFIX = "access_token_";
 
@@ -28,7 +28,7 @@ public class SecurityUtil {
     private GlobalConfig globalConfig;
 
     /**
-     * 从AccessToken中获取用户ID
+     * <h2>从AccessToken中获取用户ID</h2>
      *
      * @param accessToken accessToken
      */
@@ -42,7 +42,7 @@ public class SecurityUtil {
     }
 
     /**
-     * 创建一个AccessToken
+     * <h2>创建一个AccessToken</h2>
      *
      * @param userId 用户ID
      * @return AccessToken

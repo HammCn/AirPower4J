@@ -16,7 +16,7 @@ public class CookieUtil {
     private CookieConfig cookieConfig;
 
     /**
-     * 获取一个Cookie
+     * <h2>获取一个Cookie</h2>
      *
      * @param key   Key
      * @param value Value
@@ -33,7 +33,7 @@ public class CookieUtil {
     }
 
     /**
-     * 获取一个身份验证的Cookie
+     * <h2>获取一个身份验证的Cookie</h2>
      *
      * @param value 身份串的值
      * @return Cookie

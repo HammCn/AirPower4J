@@ -11,9 +11,9 @@ import java.lang.reflect.Method;
  *
  * @author Hamm
  * @apiNote 配置后可通过 {@link ReflectUtil } 获取
- * @see ReflectUtil#getDescription(Method) 
- * @see ReflectUtil#getDescription(Field) 
- * @see ReflectUtil#getDescription(Class) 
+ * @see ReflectUtil#getDescription(Method)
+ * @see ReflectUtil#getDescription(Field)
+ * @see ReflectUtil#getDescription(Class)
  */
 @Target({ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 @Documented
 public @interface Description {
     /**
-     * 文案
+     * <h2>文案</h2>
      */
     String value();
 }

@@ -11,7 +11,7 @@ import cn.hutool.extra.mail.MailUtil;
 public class EmailUtil {
 
     /**
-     * 发送邮件验证码
+     * <h2>发送邮件验证码</h2>
      *
      * @param email 邮箱
      * @param title 标题
@@ -27,7 +27,7 @@ public class EmailUtil {
     }
 
     /**
-     * 发送邮件验证码
+     * <h2>发送邮件验证码</h2>
      *
      * @param email 邮箱
      * @param title 标题
@@ -38,7 +38,7 @@ public class EmailUtil {
     }
 
     /**
-     * 发送邮件
+     * <h2>发送邮件</h2>
      *
      * @param email   邮箱
      * @param title   标题

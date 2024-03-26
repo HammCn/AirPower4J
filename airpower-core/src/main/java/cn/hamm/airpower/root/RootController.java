@@ -21,19 +21,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("")
 public class RootController {
     /**
-     * 当前请求的实例
+     * <h2>当前请求的实例</h2>
      */
     @Autowired
     protected HttpServletRequest request;
 
+    /**
+     * <h2>全局配置</h2>
+     */
     @Autowired
     protected GlobalConfig globalConfig;
 
+    /**
+     * <h2>安全工具</h2>
+     */
     @Autowired
     private SecurityUtil securityUtil;
 
     /**
-     * 响应一个操作成功
+     * <h2>响应一个操作成功</h2>
      *
      * @return JSON
      * @apiNote 如需抛出异常, 直接使用 {@link Result}
@@ -43,7 +49,7 @@ public class RootController {
     }
 
     /**
-     * 响应一个JSON
+     * <h2>响应一个JSON</h2>
      *
      * @param message 消息
      * @return JSON
@@ -54,7 +60,7 @@ public class RootController {
     }
 
     /**
-     * 响应一个JsonData
+     * <h2>响应一个JsonData</h2>
      *
      * @param data 数据
      * @return JsonData
@@ -65,7 +71,7 @@ public class RootController {
     }
 
     /**
-     * 响应一个JsonData
+     * <h2>响应一个JsonData</h2>
      *
      * @param data    数据
      * @param message 消息
@@ -78,7 +84,7 @@ public class RootController {
 
 
     /**
-     * 获取当前登录用户的信息
+     * <h2>获取当前登录用户的信息</h2>
      *
      * @return 用户ID
      */

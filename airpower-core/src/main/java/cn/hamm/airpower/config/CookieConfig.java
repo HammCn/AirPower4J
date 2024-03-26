@@ -20,27 +20,27 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower.cookie")
 public class CookieConfig {
     /**
-     * Cookie的路径
+     * <h2>Cookie的路径</h2>
      */
     private String cookiePath = "/";
 
     /**
-     * 身份验证的Cookie名称
+     * <h2>身份验证的Cookie名称</h2>
      */
     private String authCookieName = "authorization-key";
 
     /**
-     * Cookie的HttpOnly配置
+     * <h2>Cookie的HttpOnly配置</h2>
      */
     private boolean cookieHttpOnly = true;
 
     /**
-     * Cookie有效期
+     * <h2>Cookie有效期</h2>
      */
     private int cookieMaxAge = Constant.SECOND_PER_DAY;
 
     /**
-     * 使用Https方式的安全Cookie
+     * <h2>使用Https方式的安全Cookie</h2>
      */
     private boolean cookieSecurity = true;
 }

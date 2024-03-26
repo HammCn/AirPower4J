@@ -59,7 +59,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 验证指定的用户是否有指定权限标识的权限
+     * <h2>验证指定的用户是否有指定权限标识的权限</h2>
      *
      * @param userId             用户ID
      * @param permissionIdentity 权限标识
@@ -69,7 +69,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     public abstract boolean checkPermissionAccess(Long userId, String permissionIdentity, HttpServletRequest request);
 
     /**
-     * 请求拦截器前置方法
+     * <h2>请求拦截器前置方法</h2>
      *
      * @param request       请求对象
      * @param response      响应对象

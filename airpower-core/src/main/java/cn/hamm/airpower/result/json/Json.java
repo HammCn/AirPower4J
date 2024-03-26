@@ -19,17 +19,17 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Json implements IResult {
     /**
-     * 错误码
+     * <h2>错误码</h2>
      */
     private int code = Result.SUCCESS.getCode();
 
     /**
-     * 错误信息
+     * <h2>错误信息</h2>
      */
     private String message = Result.SUCCESS.getMessage();
 
     /**
-     * 实例化JSON
+     * <h2>实例化JSON</h2>
      *
      * @param message 错误信息
      */
@@ -38,7 +38,7 @@ public class Json implements IResult {
     }
 
     /**
-     * 实例化JSON
+     * <h2>实例化JSON</h2>
      *
      * @param result 枚举
      */
@@ -48,7 +48,7 @@ public class Json implements IResult {
     }
 
     /**
-     * 实例化JSON
+     * <h2>实例化JSON</h2>
      *
      * @param result  枚举
      * @param message 错误信息
@@ -59,7 +59,7 @@ public class Json implements IResult {
     }
 
     /**
-     * 实例化JSON
+     * <h2>实例化JSON</h2>
      *
      * @param result  自定义响应类
      * @param message 错误信息

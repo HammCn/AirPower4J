@@ -33,9 +33,6 @@ import java.io.Serializable;
 @Description("")
 @SuppressWarnings("unchecked")
 public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E> {
-    /**
-     * 主键ID
-     */
     @Description("ID")
     @Id
     @Search(Search.Mode.EQUALS)
@@ -45,9 +42,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @NotNull(groups = {WhenUpdate.class, WhenIdRequired.class}, message = "ID不能为空")
     private Long id;
 
-    /**
-     * 备注信息
-     */
     @Description("备注")
     @Search(Search.Mode.LIKE)
     @Column(columnDefinition = "text comment '备注'")
@@ -55,9 +49,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @Exclude(filters = {WhenPayLoad.class})
     private String remark;
 
-    /**
-     * 是否禁用
-     */
     @Description("是否禁用")
     @ReadOnly
     @Search(Search.Mode.EQUALS)
@@ -65,36 +56,24 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @Exclude(filters = {WhenPayLoad.class})
     private Boolean isDisabled;
 
-    /**
-     * 创建时间
-     */
     @Description("创建时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建时间'")
     @Exclude(filters = {WhenPayLoad.class})
     private Long createTime;
 
-    /**
-     * 创建人ID
-     */
     @Description("创建人ID")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建人ID'")
     @Exclude(filters = {WhenPayLoad.class})
     private Long createUserId;
 
-    /**
-     * 修改人ID
-     */
     @Description("修改人ID")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改人ID'")
     @Exclude(filters = {WhenPayLoad.class})
     private Long updateUserId;
 
-    /**
-     * 修改时间
-     */
     @Description("修改时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改时间'")
@@ -114,7 +93,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private Long updateTimeTo;
 
     /**
-     * 设置ID
+     * <h2>设置ID</h2>
      *
      * @param id ID
      * @return 实体
@@ -126,7 +105,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置备注
+     * <h2>设置备注</h2>
      *
      * @param remark 备注
      * @return 备注
@@ -137,7 +116,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置是否禁用
+     * <h2>设置是否禁用</h2>
      *
      * @param isDisabled 禁用
      * @return 实体
@@ -148,7 +127,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置创建时间
+     * <h2>设置创建时间</h2>
      *
      * @param createTime 创建时间
      * @return 实体
@@ -159,7 +138,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置创建人ID
+     * <h2>设置创建人ID</h2>
      *
      * @param createUserId 创建人ID
      * @return 实体
@@ -170,7 +149,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置修改人ID
+     * <h2>设置修改人ID</h2>
      *
      * @param updateUserId 修改人ID
      * @return 实体
@@ -181,7 +160,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置更新时间
+     * <h2>设置更新时间</h2>
      *
      * @param updateTime 更新时间
      * @return 实体
@@ -192,7 +171,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置创建时间起点
+     * <h2>设置创建时间起点</h2>
      *
      * @param createTimeFrom 创建时间起点
      * @return 实体
@@ -203,7 +182,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置创建时间终点
+     * <h2>设置创建时间终点</h2>
      *
      * @param createTimeTo 创建时间终点
      * @return 实体
@@ -214,7 +193,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置更新时间起点
+     * <h2>设置更新时间起点</h2>
      *
      * @param updateTimeFrom 更新时间起点
      * @return 实体
@@ -225,7 +204,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 设置更新时间终点
+     * <h2>设置更新时间终点</h2>
      *
      * @param updateTimeTo 更新时间终点
      * @return 实体
@@ -236,7 +215,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 获取简单实体对象
+     * <h2>获取简单实体对象</h2>
      * <p>
      * 一般来说会舍弃一些基础数据
      * </p>
@@ -246,43 +225,43 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     }
 
     /**
-     * 当添加时
+     * <h2>当添加时</h2>
      */
     public interface WhenAdd {
     }
 
     /**
-     * 当更新时
+     * <h2>当更新时</h2>
      */
     public interface WhenUpdate {
     }
 
     /**
-     * ID必须传入的场景
+     * <h2>ID必须传入的场景</h2>
      */
     public interface WhenIdRequired {
     }
 
     /**
-     * 当查询详情时
+     * <h2>当查询详情时</h2>
      */
     public interface WhenGetDetail {
     }
 
     /**
-     * 当需要过滤挂载数据时
+     * <h2>当需要过滤挂载数据时</h2>
      */
     public interface WhenPayLoad {
     }
 
     /**
-     * 分页查询
+     * <h2>分页查询</h2>
      */
     public interface WhenGetPage {
     }
 
     /**
-     * 不分页查询
+     * <h2>不分页查询</h2>
      */
     public interface WhenGetList {
     }

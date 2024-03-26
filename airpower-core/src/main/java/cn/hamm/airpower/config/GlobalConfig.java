@@ -18,69 +18,69 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower")
 public class GlobalConfig {
     /**
-     * 默认分页条数
+     * <h2>默认分页条数</h2>
      */
     private int defaultPageSize = 20;
 
     /**
-     * 多数据源数据库前缀
+     * <h2>多数据源数据库前缀</h2>
      */
     public static String databasePrefix = "tenant_";
 
     /**
-     * 服务全局拦截
+     * <h2>服务全局拦截</h2>
      */
     private boolean isServiceRunning = true;
 
     /**
-     * 是否开启缓存
+     * <h2>是否开启缓存</h2>
      */
     private boolean cache = false;
 
     /**
-     * 缓存过期时间
+     * <h2>缓存过期时间</h2>
      */
     private int cacheExpireSecond = Constant.SECOND_PER_MINUTE;
 
     /**
-     * 默认排序字段
+     * <h2>默认排序字段</h2>
      */
     private String defaultSortField = Constant.CREATE_TIME_FIELD;
 
     /**
-     * 默认排序方向
+     * <h2>默认排序方向</h2>
      */
     private String defaultSortDirection = Constant.SORT_DESC;
 
     /**
-     * 身份令牌header的key
+     * <h2>身份令牌header的key</h2>
      */
     private String authorizeHeader = "authorization";
 
     /**
-     * 身份令牌有效期
+     * <h2>身份令牌有效期</h2>
      */
     private int authorizeExpireTime = Constant.SECOND_PER_DAY;
 
     /**
-     * 多租户的header的key
+     * <h2>多租户的header的key</h2>
      */
     private String tenantHeader = "tenant-code";
 
     /**
-     * 是否开启调试模式
+     * <h2>是否开启调试模式</h2>
      *
      * @apiNote 调试模式打开，控制台将输出部分错误堆栈信息等
      */
     private boolean debug = true;
 
     /**
-     * MQTT配置
+     * <h2>MQTT配置</h2>
      */
     private MqttConfig mqtt = new MqttConfig();
 
     /**
-     * Cookie配置
+     * <h2>Cookie配置</h2>
      */
     private CookieConfig cookie = new CookieConfig();
 }

@@ -19,7 +19,7 @@ public class MqttHelper {
     private MqttConfig mqttConfig;
 
     /**
-     * 创建MQTT客户端
+     * <h2>创建MQTT客户端</h2>
      *
      * @return 配置
      * @throws MqttException 异常
@@ -29,7 +29,7 @@ public class MqttHelper {
     }
 
     /**
-     * 创建MQTT客户端
+     * <h2>创建MQTT客户端</h2>
      *
      * @param id 客户端ID
      * @return 配置
@@ -45,7 +45,7 @@ public class MqttHelper {
 
 
     /**
-     * 创建配置
+     * <h2>创建配置</h2>
      *
      * @return 配置
      */
@@ -60,7 +60,7 @@ public class MqttHelper {
     }
 
     /**
-     * 发送消息
+     * <h2>发送消息</h2>
      *
      * @param topic   主题
      * @param message 消息内容
