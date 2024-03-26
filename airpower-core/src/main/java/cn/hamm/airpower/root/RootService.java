@@ -62,65 +62,82 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>🟢添加前置方法</h2>
      *
-     * @param entity 添加实体
+     * @param source 原始实体
      * @return 处理后的实体
      */
-    protected E beforeAdd(E entity) {
-        return entity;
+    protected E beforeAdd(E source) {
+        return source;
     }
 
     /**
      * <h2>🟡添加一条数据</h2>
      *
-     * @param entity 保存的实体
+     * @param source 原始实体
      * @return 保存后的主键ID
      * @see #beforeAdd(E)
      * @see #beforeSaveToDatabase(E)
-     * @see #afterAdd(long)
+     * @see #afterAdd(long, E)
+     * @see #afterSaved(long, E)
      */
-    public final long add(E entity) {
-        long id = addToDatabase(beforeAdd(entity));
-        afterAdd(id);
+    public final long add(E source) {
+        long id = addToDatabase(beforeAdd(source));
+        afterAdd(id, source);
         return id;
     }
 
     /**
      * <h2>🟢添加后置方法</h2>
      *
-     * @param id 主键ID
+     * @param id     主键ID
+     * @param source 原始实体
      */
-    protected void afterAdd(long id) {
+    protected void afterAdd(long id, E source) {
     }
 
     /**
      * <h2>🟢修改前置方法</h2>
      *
-     * @param entity 修改的实体
+     * @param source 原始实体
      * @return 处理后的实体
      */
-    protected E beforeUpdate(E entity) {
-        return entity;
+    protected E beforeUpdate(E source) {
+        return source;
     }
 
     /**
      * <h2>🟡修改一条已经存在的数据</h2>
      *
-     * @param entity 保存的实体
+     * @param source 保存的实体
      * @see #beforeUpdate(E)
      * @see #updateToDatabase(E)
-     * @see #afterUpdate(long)
+     * @see #afterUpdate(long, E)
+     * @see #afterSaved(long, E)
      */
-    public final void update(E entity) {
-        updateToDatabase(beforeUpdate(entity));
-        afterUpdate(entity.getId());
+    public final void update(E source) {
+        source = beforeUpdate(source);
+        updateToDatabase(source);
+        afterUpdate(source.getId(), source);
+        afterSaved(source.getId(), source);
     }
 
     /**
      * <h2>🟢修改后置方法</h2>
      *
-     * @param id 主键ID
+     * @param id     主键ID
+     * @param source 原始实体
      */
-    protected void afterUpdate(long id) {
+    protected void afterUpdate(long id, E source) {
+    }
+
+    /**
+     * <h2>🟢保存后置方法</h2>
+     *
+     * @param id     主键ID
+     * @param source 保存前的原数据
+     * @apiNote 添加或修改后最后触发
+     */
+    protected void afterSaved(long id, E source) {
+
     }
 
     /**
@@ -303,7 +320,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #getMaybeNull(long)
      */
     public final E get(long id) {
-        return getById(id);
+        return afterGet(getById(id));
     }
 
     /**
@@ -315,7 +332,17 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #get(long)
      */
     public final E getMaybeNull(long id) {
-        return getByIdMaybeNull(id);
+        return afterGet(getByIdMaybeNull(id));
+    }
+
+    /**
+     * <h2>🟢详情查询后置方法</h2>
+     *
+     * @param result 查到的数据
+     * @return 处理后的数据
+     */
+    protected E afterGet(E result) {
+        return result;
     }
 
 
@@ -385,7 +412,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 实体
      * @see #beforeAdd(E)
      * @see #add(E)
-     * @see #afterAdd(long)
+     * @see #afterAdd(long, E)
      */
     protected final long addToDatabase(E entity) {
         entity.setId(null).setIsDisabled(false).setCreateTime(DateUtil.current()).setUpdateTime(entity.getCreateTime());
@@ -400,7 +427,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @param entity 待更新的实体
      * @see #beforeUpdate(E)
-     * @see #afterUpdate(long)
+     * @see #afterUpdate(long, E)
      */
     protected final void updateToDatabase(E entity) {
         Result.PARAM_MISSING.whenNull(entity.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
