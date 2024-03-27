@@ -39,16 +39,6 @@ public class RootController {
     private SecurityUtil securityUtil;
 
     /**
-     * <h2>响应一个操作成功</h2>
-     *
-     * @return JSON
-     * @apiNote 如需抛出异常, 直接使用 {@link Result}
-     */
-    protected Json json() {
-        return json("操作成功");
-    }
-
-    /**
      * <h2>响应一个JSON</h2>
      *
      * @param message 消息
