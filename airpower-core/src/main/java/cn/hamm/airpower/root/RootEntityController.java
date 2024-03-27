@@ -42,6 +42,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeAdd(E)
      * @see #afterAdd(long, E)
+     * @see #afterSaved(long, E)
      */
     @Description("添加")
     @PostMapping("add")
@@ -52,7 +53,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
         long id = service.add(beforeAdd(entity));
         afterAdd(id, entity);
         afterSaved(id, entity);
-        return jsonData(new RootEntity<E>().setId(entity.getId()), "添加成功");
+        return jsonId(entity.getId(), "添加成功");
     }
 
     /**
@@ -61,6 +62,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写
      * @see #beforeUpdate(E)
      * @see #afterUpdate(long, E)
+     * @see #afterSaved(long, E)
      */
     @Description("修改")
     @PostMapping("update")
@@ -70,7 +72,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
         service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)));
         afterUpdate(entity.getId(), entity);
         afterSaved(entity.getId(), entity);
-        return jsonData(new RootEntity<E>().setId(entity.getId()), "修改成功");
+        return jsonId(entity.getId(), "修改成功");
     }
 
     /**
@@ -84,10 +86,11 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     @PostMapping("delete")
     public Json delete(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
         checkApiAvailableStatus(Api.Delete);
-        beforeDelete(entity.getId());
-        service.delete(entity.getId());
-        afterDelete(entity.getId());
-        return json("删除成功");
+        long deleteId = entity.getId();
+        beforeDelete(deleteId);
+        service.delete(deleteId);
+        afterDelete(deleteId);
+        return jsonId(deleteId, "删除成功");
     }
 
     /**
@@ -118,7 +121,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
         beforeDisable(entity.getId());
         service.disable(entity.getId());
         afterDisable(entity.getId());
-        return json("禁用成功");
+        return jsonId(entity.getId(), "禁用成功");
     }
 
     /**
@@ -135,7 +138,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
         beforeEnable(entity.getId());
         service.enable(entity.getId());
         afterEnable(entity.getId());
-        return json("启用成功");
+        return jsonId(entity.getId(), "启用成功");
     }
 
     /**
