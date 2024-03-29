@@ -16,8 +16,8 @@ public interface IFile<E extends IFile<E>> extends IEntity<E> {
     /**
      * <h2>设置文件的URL</h2>
      *
-     * @param id URL
+     * @param url URL
      * @return 实体
      */
-    E getUrl(Long id);
+    E setUrl(String url);
 }
