@@ -6,6 +6,7 @@ import cn.hamm.airpower.security.AccessResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -17,6 +18,7 @@ import java.util.List;
  *
  * @author Hamm
  */
+@Configuration
 public abstract class AbstractWebConfig implements WebMvcConfigurer {
     @Autowired
     private AccessResolver accessResolver;
