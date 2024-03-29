@@ -31,6 +31,7 @@ public enum Result implements IResult {
     FORBIDDEN_EDIT(4032, "无权修改"),
     FORBIDDEN_DELETE(4033, "无权删除"),
     FORBIDDEN_DELETE_USED(4034, "无权删除被使用中的数据"),
+    FORBIDDEN_UPLOAD_MAX_SIZE(4035, "上传的文件大小超过最大限制"),
 
     // 404 没有查到数据代码
     DATA_NOT_FOUND(404, "没有查到相关的数据"),

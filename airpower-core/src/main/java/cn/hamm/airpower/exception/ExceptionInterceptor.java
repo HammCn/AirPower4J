@@ -5,6 +5,7 @@ import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.result.json.JsonData;
+import cn.hutool.jwt.JWTException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -100,7 +102,7 @@ public class ExceptionInterceptor {
      * <h2>访问的接口没有实现</h2>
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public Json notFoundHandle(@NotNull Exception exception) {
+    public Json notFoundHandle(@NotNull NoHandlerFoundException exception) {
         log.error(exception.getMessage());
         return new Json(Result.API_SERVICE_UNSUPPORTED);
     }
@@ -109,7 +111,7 @@ public class ExceptionInterceptor {
      * <h2>请求的数据不是标准JSON</h2>
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Json dataExceptionHandle(@NotNull Exception exception) {
+    public Json dataExceptionHandle(@NotNull HttpMessageNotReadableException exception) {
         log.error(exception.getMessage());
         return new Json(Result.REQUEST_CONTENT_TYPE_UNSUPPORTED, "请求参数格式不正确,请检查是否接口支持的JSON");
     }
@@ -140,7 +142,7 @@ public class ExceptionInterceptor {
      * <h2>数据库连接发生错误</h2>
      */
     @ExceptionHandler(CannotCreateTransactionException.class)
-    public Json databaseExceptionHandle(@NotNull Exception exception) {
+    public Json databaseExceptionHandle(@NotNull CannotCreateTransactionException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             log.error("数据库连接发生错误", exception);
@@ -152,7 +154,7 @@ public class ExceptionInterceptor {
      * <h2>REDIS连接发生错误</h2>
      */
     @ExceptionHandler(RedisConnectionFailureException.class)
-    public Json redisExceptionHandle(@NotNull Exception exception) {
+    public Json redisExceptionHandle(@NotNull RedisConnectionFailureException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             log.error("REDIS连接发生错误", exception);
@@ -175,8 +177,8 @@ public class ExceptionInterceptor {
     /**
      * <h2>JWT校验失败错误</h2>
      */
-    @ExceptionHandler(value = {cn.hutool.jwt.JWTException.class})
-    public Json jwtExceptionHandle(@NotNull Exception exception) {
+    @ExceptionHandler(value = {JWTException.class})
+    public Json jwtExceptionHandle(@NotNull JWTException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             log.error("JWT校验失败错误", exception);
@@ -200,12 +202,24 @@ public class ExceptionInterceptor {
      * <h2>数据表或字段异常</h2>
      */
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
-    public Json invalidDataAccessResourceUsageExceptionHandle(@NotNull Exception exception) {
+    public Json invalidDataAccessResourceUsageExceptionHandle(@NotNull InvalidDataAccessResourceUsageException exception) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             log.error("数据表或字段异常", exception);
         }
         return new Json(Result.DATABASE_TABLE_OR_FIELD_ERROR);
+    }
+
+    /**
+     * <h2>数据表或字段异常</h2>
+     */
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+    public Json maxUploadSizeExceededExceptionHandle(@NotNull MaxUploadSizeExceededException exception) {
+        log.error(exception.getMessage());
+        if (globalConfig.isDebug()) {
+            log.error("上传超过最大限制", exception);
+        }
+        return new Json(Result.FORBIDDEN_UPLOAD_MAX_SIZE.getCode(), "上传的文件大小超过最大限制");
     }
 
     /**
