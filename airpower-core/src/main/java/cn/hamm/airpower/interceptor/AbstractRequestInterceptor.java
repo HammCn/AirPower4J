@@ -1,7 +1,10 @@
-package cn.hamm.airpower.security;
+package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
+import cn.hamm.airpower.security.AccessConfig;
+import cn.hamm.airpower.security.AccessUtil;
+import cn.hamm.airpower.security.SecurityUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,10 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.io.BufferedReader;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * <h1>全局权限拦截器抽象类</h1>
@@ -21,7 +28,7 @@ import java.lang.reflect.Method;
  */
 @Component
 @Slf4j
-public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
+public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     @Autowired
     private SecurityUtil securityUtil;
 
@@ -29,12 +36,16 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     private GlobalConfig globalConfig;
 
     @Override
-    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object object) {
+    public boolean preHandle(
+            @NotNull HttpServletRequest request,
+            @NotNull HttpServletResponse response,
+            @NotNull Object object
+    ) {
         HandlerMethod handlerMethod = (HandlerMethod) object;
-        beforeHandleRequest(request, response, handlerMethod);
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBeanType();
         Method method = handlerMethod.getMethod();
+        beforeHandleRequest(request, response, clazz, method);
         AccessConfig accessConfig = AccessUtil.getWhatNeedAccess(clazz, method);
         if (!accessConfig.login) {
             // 不需要登录 直接返回有权限
@@ -42,7 +53,7 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
         }
         //需要登录
         String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
-        
+
         // 优先使用 Get 参数传入的身份
         String accessTokenFromParam = request.getParameter(globalConfig.getAuthorizeHeader());
         if (StrUtil.isAllNotEmpty(accessTokenFromParam)) {
@@ -71,11 +82,47 @@ public abstract class AbstractAccessInterceptor implements HandlerInterceptor {
     /**
      * <h2>请求拦截器前置方法</h2>
      *
-     * @param request       请求对象
-     * @param response      响应对象
-     * @param handlerMethod 请求方法
+     * @param request  请求对象
+     * @param response 响应对象
+     * @param clazz    控制器类
+     * @param method   执行方法
      */
-    protected void beforeHandleRequest(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
+    protected void beforeHandleRequest(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method) {
+
+    }
+
+    /**
+     * <h2>设置共享数据提供给其他拦截器实用</h2>
+     *
+     * @param key   KEY
+     * @param value VALUE
+     */
+    protected final void setShareData(String key, Object value) {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (Objects.nonNull(requestAttributes)) {
+            requestAttributes.setAttribute(key, value, RequestAttributes.SCOPE_REQUEST);
+        }
+    }
+
+
+    /**
+     * <h2>从请求中获取请求的包体</h2>
+     *
+     * @param request 请求
+     * @return 包体字符串
+     */
+    protected final String getRequestBody(HttpServletRequest request) {
+        try {
+            StringBuilder requestBody = new StringBuilder();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
+            }
+            return requestBody.toString();
+        } catch (Exception ignored) {
+        }
+        return "";
 
     }
 }
