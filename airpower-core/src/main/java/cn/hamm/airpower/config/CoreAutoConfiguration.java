@@ -1,10 +1,11 @@
 package cn.hamm.airpower.config;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.annotation.Import;
 
 /**
- * 自动装配类
+ * <h1>自动装配类</h1>
+ *
+ * @author BeauHou
  */
 @AutoConfiguration
 public class CoreAutoConfiguration {
