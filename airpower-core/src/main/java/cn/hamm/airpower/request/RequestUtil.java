@@ -2,6 +2,7 @@ package cn.hamm.airpower.request;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.result.Result;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.InetAddress;
@@ -28,6 +29,38 @@ public class RequestUtil {
      * <h2>错误信息</h2>
      */
     private static final String ERROR_MESSAGE = "你的IP地址异常";
+    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+
+    /**
+     * <h2>判断是否是上传请求</h2>
+     *
+     * @param request 请求
+     * @return 是否是上传请求
+     */
+    public static boolean isUploadRequest(HttpServletRequest request) {
+        return isUploadFileContentType(request.getContentType());
+    }
+
+
+    /**
+     * <h2>判断是否是上传请求</h2>
+     *
+     * @param request 请求
+     * @return 是否是上传请求
+     */
+    public static boolean isUploadRequest(ServletRequest request) {
+        return isUploadFileContentType(request.getContentType());
+    }
+
+    /**
+     * <h2>判断是否上传文件的请求类型头</h2>
+     *
+     * @param contentType 请求类型头
+     * @return 判断结果
+     */
+    private static boolean isUploadFileContentType(String contentType) {
+        return contentType != null && contentType.startsWith(MULTIPART_FORM_DATA);
+    }
 
 
     /**
