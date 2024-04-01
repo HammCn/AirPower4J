@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * 自动装配类
+ *
  * @author BeauHou
  */
 @AutoConfiguration
