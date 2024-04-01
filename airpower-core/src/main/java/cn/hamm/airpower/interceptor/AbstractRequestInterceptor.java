@@ -1,6 +1,7 @@
 package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.request.RequestUtil;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.security.AccessConfig;
 import cn.hamm.airpower.security.AccessUtil;
@@ -112,6 +113,10 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @return 包体字符串
      */
     protected final String getRequestBody(HttpServletRequest request) {
+        // 文件上传的请求 返回空
+        if (RequestUtil.isUploadRequest(request)) {
+            return "";
+        }
         try {
             StringBuilder requestBody = new StringBuilder();
             BufferedReader reader = request.getReader();
