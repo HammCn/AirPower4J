@@ -53,7 +53,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
         long id = service.add(beforeAdd(entity));
         afterAdd(id, entity);
         afterSaved(id, entity);
-        return jsonId(entity.getId(), "添加成功");
+        return jsonId(id, "添加成功");
     }
 
     /**
