@@ -254,7 +254,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             queryRequest.setFilter(getNewInstance());
         }
         queryRequest = beforeGetList(queryRequest);
-        List<E> list = repository.findAll(createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort()));
+        List<E> list = repository.findAll(
+                createSpecification(queryRequest.getFilter(), false),
+                createSort(queryRequest.getSort())
+        );
         return afterGetList(list);
     }
 
@@ -269,7 +272,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (Objects.isNull(queryRequest.getFilter())) {
             queryRequest.setFilter(filter);
         }
-        return repository.findAll(createSpecification(filter, true), createSort(queryRequest.getSort()));
+        return repository.findAll(
+                createSpecification(filter, true),
+                createSort(queryRequest.getSort())
+        );
     }
 
     /**
@@ -376,7 +382,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         queryPageRequest = beforeGetPage(queryPageRequest);
 
-        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest.getFilter(), true), createPageable(queryPageRequest))).setSort(queryPageRequest.getSort());
+        org.springframework.data.domain.Page<E> pageData = repository.findAll(
+                createSpecification(queryPageRequest.getFilter(), false),
+                createPageable(queryPageRequest)
+        );
+        QueryPageResponse<E> queryPageResponse = getResponsePageList(pageData);
+        queryPageResponse.setSort(queryPageRequest.getSort());
         return afterGetPage(queryPageResponse);
     }
 
@@ -428,7 +439,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterAdd(long, E)
      */
     protected final long addToDatabase(E entity) {
-        entity.setId(null).setIsDisabled(false).setCreateTime(DateUtil.current()).setUpdateTime(entity.getCreateTime());
+        entity.setId(null).setIsDisabled(false)
+                .setCreateTime(DateUtil.current())
+                .setUpdateTime(entity.getCreateTime());
         if (Objects.isNull(entity.getRemark())) {
             entity.setRemark("");
         }
@@ -443,7 +456,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterUpdate(long, E)
      */
     protected final void updateToDatabase(E entity) {
-        Result.PARAM_MISSING.whenNull(entity.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        Result.PARAM_MISSING.whenNull(entity.getId(),
+                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
+        );
         saveToDatabase(entity);
     }
 
@@ -477,7 +492,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 实体
      */
     private E getById(long id) {
-        Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        Result.PARAM_MISSING.whenNull(id,
+                "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
+        );
         Optional<E> optional = repository.findById(id);
         if (optional.isPresent()) {
             return optional.get();
@@ -634,7 +651,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 输出分页对象
      */
     private QueryPageResponse<E> getResponsePageList(org.springframework.data.domain.Page<E> data) {
-        return new QueryPageResponse<E>().setList(data.getContent()).setTotal(Math.toIntExact(data.getTotalElements())).setPageCount(data.getTotalPages()).setPage(new Page().setPageSize(data.getPageable().getPageSize()).setPageNum(data.getPageable().getPageNumber() + 1));
+        return new QueryPageResponse<E>()
+                .setList(data.getContent())
+                .setTotal(Math.toIntExact(data.getTotalElements()))
+                .setPageCount(data.getTotalPages())
+                .setPage(new Page()
+                        .setPageSize(data.getPageable().getPageSize())
+                        .setPageNum(data.getPageable().getPageNumber() + 1)
+                );
     }
 
     /**
@@ -654,9 +678,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             sort.setDirection(globalConfig.getDefaultSortDirection());
         }
         if (!globalConfig.getDefaultSortDirection().equals(sort.getDirection())) {
-            return org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Order.asc(sort.getField()));
+            return org.springframework.data.domain.Sort.by(
+                    org.springframework.data.domain.Sort.Order.asc(sort.getField())
+            );
         }
-        return org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Order.desc(sort.getField()));
+        return org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Order.desc(sort.getField())
+        );
     }
 
     /**
@@ -694,7 +722,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param isEqual 是否强匹配
      * @return 搜索条件
      */
-    private List<Predicate> getPredicateList(Object root, CriteriaBuilder builder, Object search, boolean isRoot, boolean isEqual) {
+    private List<Predicate> getPredicateList(
+            Object root, CriteriaBuilder builder, Object search, boolean isRoot, boolean isEqual
+    ) {
         List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
         for (Field field : fields) {
@@ -715,41 +745,45 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     // Join
                     if (isRoot) {
                         Join<E, ?> payload = ((Root<E>) root).join(field.getName(), JoinType.INNER);
-                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
+                        predicateList.addAll(
+                                this.getPredicateList(payload, builder, fieldValue, false, isEqual)
+                        );
                     } else {
                         Join<?, ?> payload = ((Join<?, ?>) root).join(field.getName(), JoinType.INNER);
-                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
+                        predicateList.addAll(
+                                this.getPredicateList(payload, builder, fieldValue, false, isEqual)
+                        );
                     }
-                } else {
-                    String searchValue = fieldValue.toString();
-                    // Boolean强匹配
-                    if (Boolean.class.equals(fieldValue.getClass())) {
-                        // Boolean搜索
-                        if (isRoot) {
-                            predicateList.add(builder.equal(((Root<E>) root).get(field.getName()), fieldValue));
-                        } else {
-                            predicateList.add(builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue));
-                        }
-                        continue;
-                    }
-                    if (Search.Mode.LIKE.equals(searchMode.value()) && !isEqual) {
-                        // LIKE 模糊搜索 且没有声明强匹配
-                        searchValue = Constant.SQL_LIKE_PERCENT + searchValue + Constant.SQL_LIKE_PERCENT;
-                        if (isRoot) {
-                            predicateList.add(builder.like(((Root<E>) root).get(field.getName()), searchValue));
-                        } else {
-                            predicateList.add(builder.like(((Join<?, ?>) root).get(field.getName()), searchValue));
-                        }
-                        continue;
-                    }
-
-                    // 强匹配
-                    if (isRoot) {
-                        predicateList.add(builder.equal(((Root<E>) root).get(field.getName()), fieldValue));
-                    } else {
-                        predicateList.add(builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue));
-                    }
+                    continue;
                 }
+                String searchValue = fieldValue.toString();
+                // Boolean强匹配
+                if (Boolean.class.equals(fieldValue.getClass())) {
+                    // Boolean搜索
+                    Predicate predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
+                    if (!isRoot) {
+                        predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
+                    }
+                    predicateList.add(predicate);
+                    continue;
+                }
+                if (Search.Mode.LIKE.equals(searchMode.value()) && !isEqual) {
+                    // LIKE 模糊搜索 且没有声明强匹配
+                    searchValue = searchValue + Constant.SQL_LIKE_PERCENT;
+                    Predicate predicate = builder.like(((Root<E>) root).get(field.getName()), searchValue);
+                    if (!isRoot) {
+                        predicate = builder.like(((Join<?, ?>) root).get(field.getName()), searchValue);
+                    }
+                    predicateList.add(predicate);
+                    continue;
+                }
+
+                // 强匹配
+                Predicate predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
+                if (!isRoot) {
+                    predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
+                }
+                predicateList.add(predicate);
             } catch (IllegalAccessException exception) {
                 log.error(exception.getMessage());
             }
