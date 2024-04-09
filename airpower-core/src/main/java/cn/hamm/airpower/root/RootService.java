@@ -5,6 +5,7 @@ import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.model.Page;
+import cn.hamm.airpower.model.Sort;
 import cn.hamm.airpower.query.QueryPageRequest;
 import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.query.QueryRequest;
@@ -26,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.beans.PropertyDescriptor;
@@ -254,8 +254,22 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             queryRequest.setFilter(getNewInstance());
         }
         queryRequest = beforeGetList(queryRequest);
-        List<E> list = repository.findAll(createSpecification(queryRequest, false), createSort(queryRequest));
+        List<E> list = repository.findAll(createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort()));
         return afterGetList(list);
+    }
+
+    /**
+     * <h2>🟡过滤数据</h2>
+     *
+     * @param filter 全匹配过滤器
+     * @return List数据
+     */
+    public final List<E> filter(E filter) {
+        QueryRequest<E> queryRequest = new QueryRequest<>();
+        if (Objects.isNull(queryRequest.getFilter())) {
+            queryRequest.setFilter(filter);
+        }
+        return repository.findAll(createSpecification(filter, true), createSort(queryRequest.getSort()));
     }
 
     /**
@@ -302,13 +316,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>🟢添加搜索的查询条件</h2>
      *
-     * @param root     ROOT
-     * @param builder  参数构造器
-     * @param search   原始查询对象
-     * @param isPaging 是否是分页
+     * @param root    ROOT
+     * @param builder 参数构造器
+     * @param search  原始查询对象
      * @return 查询条件列表
      */
-    protected List<Predicate> addSearchPredicate(Root<E> root, CriteriaBuilder builder, E search, boolean isPaging) {
+    protected List<Predicate> addSearchPredicate(Root<E> root, CriteriaBuilder builder, E search) {
         return new ArrayList<>();
     }
 
@@ -363,7 +376,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         queryPageRequest = beforeGetPage(queryPageRequest);
 
-        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest, true), createPageable(queryPageRequest))).setSort(queryPageRequest.getSort());
+        QueryPageResponse<E> queryPageResponse = getResponsePageList(repository.findAll(createSpecification(queryPageRequest.getFilter(), true), createPageable(queryPageRequest))).setSort(queryPageRequest.getSort());
         return afterGetPage(queryPageResponse);
     }
 
@@ -627,23 +640,23 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>创建Sort</h2>
      *
-     * @param queryRequest 请求的request
-     * @return Sort
+     * @param sort 排序对象
+     * @return Sort Spring的排序对象
      */
-    private Sort createSort(QueryRequest<E> queryRequest) {
-        if (Objects.isNull(queryRequest.getSort())) {
-            queryRequest.setSort(new cn.hamm.airpower.model.Sort());
+    private org.springframework.data.domain.Sort createSort(Sort sort) {
+        if (Objects.isNull(sort)) {
+            sort = new Sort();
         }
-        if (StrUtil.isBlank(queryRequest.getSort().getField())) {
-            queryRequest.getSort().setField(globalConfig.getDefaultSortField());
+        if (StrUtil.isBlank(sort.getField())) {
+            sort.setField(globalConfig.getDefaultSortField());
         }
-        if (StrUtil.isBlank(queryRequest.getSort().getDirection())) {
-            queryRequest.getSort().setDirection(globalConfig.getDefaultSortDirection());
+        if (StrUtil.isBlank(sort.getDirection())) {
+            sort.setDirection(globalConfig.getDefaultSortDirection());
         }
-        if (!globalConfig.getDefaultSortDirection().equals(queryRequest.getSort().getDirection())) {
-            return Sort.by(Sort.Order.asc(queryRequest.getSort().getField()));
+        if (!globalConfig.getDefaultSortDirection().equals(sort.getDirection())) {
+            return org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Order.asc(sort.getField()));
         }
-        return Sort.by(Sort.Order.desc(queryRequest.getSort().getField()));
+        return org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Order.desc(sort.getField()));
     }
 
     /**
@@ -653,7 +666,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return Pageable
      */
     private Pageable createPageable(QueryPageRequest<E> queryPageData) {
-        Sort sort = createSort(queryPageData);
         Page page = queryPageData.getPage();
         if (Objects.isNull(page)) {
             page = new Page();
@@ -669,7 +681,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
         int pageSize = queryPageData.getPage().getPageSize();
         pageSize = Math.max(1, pageSize);
-        return PageRequest.of(pageNumber, pageSize, sort);
+        return PageRequest.of(pageNumber, pageSize, createSort(queryPageData.getSort()));
     }
 
     /**
@@ -678,9 +690,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param root    root
      * @param builder builder
      * @param search  搜索实体
+     * @param isRoot  是否根查询条件
+     * @param isEqual 是否强匹配
      * @return 搜索条件
      */
-    private List<Predicate> getPredicateList(Object root, CriteriaBuilder builder, Object search, boolean isRoot) {
+    private List<Predicate> getPredicateList(Object root, CriteriaBuilder builder, Object search, boolean isRoot, boolean isEqual) {
         List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
         for (Field field : fields) {
@@ -701,13 +715,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     // Join
                     if (isRoot) {
                         Join<E, ?> payload = ((Root<E>) root).join(field.getName(), JoinType.INNER);
-                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false));
+                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
                     } else {
                         Join<?, ?> payload = ((Join<?, ?>) root).join(field.getName(), JoinType.INNER);
-                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false));
+                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
                     }
                 } else {
                     String searchValue = fieldValue.toString();
+                    // Boolean强匹配
                     if (Boolean.class.equals(fieldValue.getClass())) {
                         // Boolean搜索
                         if (isRoot) {
@@ -717,8 +732,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                         }
                         continue;
                     }
-                    if (Search.Mode.LIKE.equals(searchMode.value())) {
-                        // LIKE 模糊搜索
+                    if (Search.Mode.LIKE.equals(searchMode.value()) && !isEqual) {
+                        // LIKE 模糊搜索 且没有声明强匹配
                         searchValue = Constant.SQL_LIKE_PERCENT + searchValue + Constant.SQL_LIKE_PERCENT;
                         if (isRoot) {
                             predicateList.add(builder.like(((Root<E>) root).get(field.getName()), searchValue));
@@ -728,6 +743,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                         continue;
                     }
 
+                    // 强匹配
                     if (isRoot) {
                         predicateList.add(builder.equal(((Root<E>) root).get(field.getName()), fieldValue));
                     } else {
@@ -767,12 +783,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>创建查询对象</h2>
      *
-     * @param queryRequest 查询请求
-     * @param isPaging     是否是分页
+     * @param filter  过滤器对象
+     * @param isEqual 是否强匹配
      * @return 查询对象
      */
-    private Specification<E> createSpecification(QueryRequest<E> queryRequest, boolean isPaging) {
-        return (root, criteriaQuery, criteriaBuilder) -> createPredicate(root, criteriaQuery, criteriaBuilder, queryRequest.getFilter(), isPaging);
+    private Specification<E> createSpecification(E filter, boolean isEqual) {
+        return (root, criteriaQuery, criteriaBuilder) -> createPredicate(root, criteriaQuery, criteriaBuilder, filter, isEqual);
     }
 
     /**
@@ -781,14 +797,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param root          root
      * @param criteriaQuery query
      * @param builder       builder
-     * @param search        搜索的实体
-     * @param isPaging      是否是分页
+     * @param filter        过滤器实体
      * @return 查询条件
      */
-    private Predicate createPredicate(Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E search, boolean isPaging) {
-        List<Predicate> predicateList = this.getPredicateList(root, builder, search, true);
-        predicateList.addAll(addSearchPredicate(root, builder, search, isPaging));
-        addCreateAndUpdateTimePredicate(root, builder, search, predicateList);
+    private Predicate createPredicate(Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E filter, boolean isEqual) {
+        List<Predicate> predicateList = this.getPredicateList(root, builder, filter, true, isEqual);
+        predicateList.addAll(addSearchPredicate(root, builder, filter));
+        addCreateAndUpdateTimePredicate(root, builder, filter, predicateList);
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
