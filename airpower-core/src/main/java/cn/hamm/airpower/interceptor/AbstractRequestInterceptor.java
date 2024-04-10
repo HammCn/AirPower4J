@@ -3,7 +3,6 @@ package cn.hamm.airpower.interceptor;
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.request.RequestUtil;
 import cn.hamm.airpower.result.Result;
-import cn.hamm.airpower.root.RootController;
 import cn.hamm.airpower.security.AccessConfig;
 import cn.hamm.airpower.security.AccessUtil;
 import cn.hamm.airpower.security.SecurityUtil;
