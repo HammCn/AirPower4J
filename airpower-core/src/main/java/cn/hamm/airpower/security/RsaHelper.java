@@ -2,8 +2,6 @@ package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -23,8 +21,6 @@ import java.util.Base64;
  * @author Hamm
  */
 @Accessors(chain = true)
-@AllArgsConstructor
-@NoArgsConstructor
 public class RsaHelper {
     /**
      * <h2>加密算法KEY长度</h2>

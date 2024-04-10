@@ -14,9 +14,9 @@ import lombok.experimental.Accessors;
  * @author Hamm
  */
 @Data
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Accessors(chain = true)
 public class Json implements IResult {
     /**
      * <h2>错误码</h2>

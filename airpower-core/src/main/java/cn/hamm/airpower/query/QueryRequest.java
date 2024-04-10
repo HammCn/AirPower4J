@@ -2,9 +2,7 @@ package cn.hamm.airpower.query;
 
 import cn.hamm.airpower.model.Sort;
 import cn.hamm.airpower.root.RootModel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * <h1>查询请求</h1>
@@ -13,8 +11,6 @@ import lombok.NoArgsConstructor;
  * @author Hamm
  */
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class QueryRequest<M extends RootModel<M>> {
     /**
      * <h2>排序对象</h2>

@@ -3,7 +3,6 @@ package cn.hamm.airpower.result.json;
 import cn.hamm.airpower.annotation.Description;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -13,7 +12,6 @@ import lombok.experimental.Accessors;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
 @Accessors(chain = true)
 public class JsonData extends Json {
     /**
