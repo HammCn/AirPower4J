@@ -64,7 +64,7 @@ public class ResponseAspect {
         if (ReflectUtil.isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
-            jsonData.setData(filterResponseBy(filter, (RootModel<M>) jsonData.getData()));
+            jsonData.setData(filterResponseBy(filter, (M) jsonData.getData()));
         }
 
         // 其他数据 原样返回
@@ -78,7 +78,7 @@ public class ResponseAspect {
      * @param data   数据
      * @return 过滤后的数据
      */
-    private <M extends RootModel<M>> RootModel<M> filterResponseBy(Filter filter, RootModel<M> data) {
+    private <M extends RootModel<M>> M filterResponseBy(Filter filter, M data) {
         // 如果 responseFilter 是空 使用Void类进行转换
         return data.filterResponseDataBy(Objects.isNull(filter) ? Void.class : filter.value());
     }
