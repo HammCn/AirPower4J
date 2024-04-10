@@ -32,7 +32,10 @@ import java.util.Objects;
  * @apiNote 提供了 {@link Extends} 处理接口黑白名单，同时提供了一些 前置/后置 方法，可被子控制器类重写(不建议)
  */
 @Permission
-public class RootEntityController<E extends RootEntity<E>, S extends RootService<E, R>, R extends RootRepository<E>> extends RootController implements IAction {
+public class RootEntityController<
+        E extends RootEntity<E>,
+        S extends RootService<E, R>,
+        R extends RootRepository<E>> extends RootController implements IAction {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected S service;
