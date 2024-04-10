@@ -740,7 +740,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     // 没有配置查询注解 跳过
                     continue;
                 }
-
                 if (searchMode.value() == Search.Mode.JOIN) {
                     // Join
                     if (isRoot) {
@@ -756,12 +755,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     }
                     continue;
                 }
+                Predicate predicate;
                 String searchValue = fieldValue.toString();
                 // Boolean强匹配
                 if (Boolean.class.equals(fieldValue.getClass())) {
                     // Boolean搜索
-                    Predicate predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
-                    if (!isRoot) {
+                    if (isRoot) {
+                        predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
+                    } else {
                         predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
                     }
                     predicateList.add(predicate);
@@ -770,8 +771,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 if (Search.Mode.LIKE.equals(searchMode.value()) && !isEqual) {
                     // LIKE 模糊搜索 且没有声明强匹配
                     searchValue = searchValue + Constant.SQL_LIKE_PERCENT;
-                    Predicate predicate = builder.like(((Root<E>) root).get(field.getName()), searchValue);
-                    if (!isRoot) {
+                    if (isRoot) {
+                        predicate = builder.like(((Root<E>) root).get(field.getName()), searchValue);
+                    } else {
                         predicate = builder.like(((Join<?, ?>) root).get(field.getName()), searchValue);
                     }
                     predicateList.add(predicate);
@@ -779,8 +781,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 }
 
                 // 强匹配
-                Predicate predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
-                if (!isRoot) {
+                if (isRoot) {
+                    predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
+                } else {
                     predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
                 }
                 predicateList.add(predicate);
