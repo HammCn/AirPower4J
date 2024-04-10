@@ -93,10 +93,7 @@ public class ResponseAspect {
     private <M extends RootModel<M>> List<M> filterResponseListBy(Filter filter, List<M> list) {
         try {
             for (M item : list) {
-                Class<?> clazz = item.getClass();
-                if (ReflectUtil.isModel(clazz)) {
-                    filterResponseBy(filter, item);
-                }
+                filterResponseBy(filter, item);
             }
         } catch (Exception ignored) {
         }

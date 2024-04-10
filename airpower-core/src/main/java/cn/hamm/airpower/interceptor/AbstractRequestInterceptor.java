@@ -37,7 +37,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     private GlobalConfig globalConfig;
 
     @Override
-    public boolean preHandle(
+    public final boolean preHandle(
             @NotNull HttpServletRequest request,
             @NotNull HttpServletResponse response,
             @NotNull Object object

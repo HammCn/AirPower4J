@@ -1,7 +1,7 @@
 package cn.hamm.airpower.query;
 
 import cn.hamm.airpower.model.Page;
-import cn.hamm.airpower.root.RootEntity;
+import cn.hamm.airpower.root.RootModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 /**
  * <h1>查询分页请求</h1>
  *
- * @param <E> 数据模型
+ * @param <M> 数据模型
  * @author Hamm
  */
 @EqualsAndHashCode(callSuper = true)
@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class QueryPageRequest<E extends RootEntity<E>> extends QueryRequest<E> {
+public class QueryPageRequest<M extends RootModel<M>> extends QueryRequest<M> {
     /**
      * <h2>分页</h2>
      */

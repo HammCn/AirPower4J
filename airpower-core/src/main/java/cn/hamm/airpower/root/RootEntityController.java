@@ -38,6 +38,18 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
     protected S service;
 
     /**
+     * <h2>响应一个JsonData(只返回ID)</h2>
+     *
+     * @param id      主键ID
+     * @param message 消息
+     * @return JsonData
+     * @apiNote 如需抛出异常, 直接使用 {@link Result}
+     */
+    protected JsonData jsonId(Long id, String message) {
+        return new JsonData(new RootEntity<>().setId(id), message);
+    }
+
+    /**
      * <h2>添加一条新数据接口</h2>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，除修改接口的 {@link Permission} 之外，一般不建议重写

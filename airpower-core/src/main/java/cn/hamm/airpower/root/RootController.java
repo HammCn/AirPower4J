@@ -72,18 +72,6 @@ public class RootController {
         return new JsonData(data, message);
     }
 
-    /**
-     * <h2>响应一个JsonData(只返回ID)</h2>
-     *
-     * @param id      主键ID
-     * @param message 消息
-     * @return JsonData
-     * @apiNote 如需抛出异常, 直接使用 {@link Result}
-     */
-    protected JsonData jsonId(Long id, String message) {
-        return new JsonData(new RootEntity<>().setId(id), message);
-    }
-
 
     /**
      * <h2>获取当前登录用户的信息</h2>

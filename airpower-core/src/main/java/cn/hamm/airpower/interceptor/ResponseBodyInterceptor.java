@@ -21,7 +21,7 @@ import java.util.Objects;
 @ControllerAdvice
 public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     @Override
-    public boolean supports(
+    public final boolean supports(
             @NotNull MethodParameter returnType,
             @NotNull Class<? extends HttpMessageConverter<?>> converterType
     ) {
@@ -29,7 +29,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-    public Object beforeBodyWrite(
+    public final Object beforeBodyWrite(
             Object body,
             @NotNull MethodParameter returnType,
             @NotNull MediaType selectedContentType,
