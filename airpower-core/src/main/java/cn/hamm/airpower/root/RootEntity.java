@@ -5,6 +5,7 @@ import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.interfaces.IEntity;
+import cn.hamm.airpower.interfaces.IAction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -32,7 +33,7 @@ import java.io.Serializable;
 @DynamicUpdate
 @Description("")
 @SuppressWarnings("unchecked")
-public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E> {
+public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E>, IAction {
     @Description("ID")
     @Id
     @Search(Search.Mode.EQUALS)
@@ -222,47 +223,5 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      */
     public void excludeBaseData() {
         this.setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
-    }
-
-    /**
-     * <h2>当添加时</h2>
-     */
-    public interface WhenAdd {
-    }
-
-    /**
-     * <h2>当更新时</h2>
-     */
-    public interface WhenUpdate {
-    }
-
-    /**
-     * <h2>ID必须传入的场景</h2>
-     */
-    public interface WhenIdRequired {
-    }
-
-    /**
-     * <h2>当查询详情时</h2>
-     */
-    public interface WhenGetDetail {
-    }
-
-    /**
-     * <h2>当需要过滤挂载数据时</h2>
-     */
-    public interface WhenPayLoad {
-    }
-
-    /**
-     * <h2>分页查询</h2>
-     */
-    public interface WhenGetPage {
-    }
-
-    /**
-     * <h2>不分页查询</h2>
-     */
-    public interface WhenGetList {
     }
 }

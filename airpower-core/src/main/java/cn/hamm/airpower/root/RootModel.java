@@ -16,17 +16,17 @@ import java.util.*;
  * @author Hamm
  */
 @SuppressWarnings("unchecked")
-public class RootModel<E extends RootModel<E>> {
+public class RootModel<M extends RootModel<M>> {
     /**
      * <h2>复制实例到新的实例</h2>
      *
      * @param clazz 目标类
-     * @param <R>   返回类型
+     * @param <T>   返回类型
      * @return 返回实例
      */
-    public <R> R copyTo(Class<R> clazz) {
+    public final <T> T copyTo(Class<T> clazz) {
         try {
-            R target = clazz.getDeclaredConstructor().newInstance();
+            T target = clazz.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(this, target);
             return target;
         } catch (Exception e) {
@@ -41,7 +41,7 @@ public class RootModel<E extends RootModel<E>> {
      * @param fieldNames 字段列表
      * @return 实体
      */
-    public E exclude(String... fieldNames) {
+    public final M exclude(String... fieldNames) {
         List<String> list = new ArrayList<>(fieldNames.length);
         Collections.addAll(list, fieldNames);
         return exclude(list);
@@ -53,7 +53,7 @@ public class RootModel<E extends RootModel<E>> {
      * @param fieldNames 字段列表
      * @return 实体
      */
-    public E exclude(List<String> fieldNames) {
+    public final M exclude(List<String> fieldNames) {
         List<Field> fieldList = ReflectUtil.getFieldList(this.getClass());
         for (Field field : fieldList) {
             for (String fieldName : fieldNames) {
@@ -63,7 +63,7 @@ public class RootModel<E extends RootModel<E>> {
                 }
             }
         }
-        return (E) this;
+        return (M) this;
     }
 
     /**
@@ -72,7 +72,7 @@ public class RootModel<E extends RootModel<E>> {
      * @param fieldNames 字段列表
      * @return 实体
      */
-    public E expose(String... fieldNames) {
+    public final M expose(String... fieldNames) {
         List<Field> fieldList = ReflectUtil.getFieldList(this.getClass());
         for (Field field : fieldList) {
             boolean needReturn = false;
@@ -86,7 +86,7 @@ public class RootModel<E extends RootModel<E>> {
                 clearField(field);
             }
         }
-        return (E) this;
+        return (M) this;
     }
 
     /**
@@ -95,8 +95,8 @@ public class RootModel<E extends RootModel<E>> {
      * @param filter 过滤器
      * @return 实体
      */
-    public E filterResponseDataBy(Class<?> filter) {
-        Class<E> clazz = (Class<E>) this.getClass();
+    public final M filterResponseDataBy(Class<?> filter) {
+        Class<M> clazz = (Class<M>) this.getClass();
         List<Field> allFields = ReflectUtil.getFieldList(clazz);
 
         Exclude exclude = clazz.getAnnotation(Exclude.class);
@@ -105,14 +105,14 @@ public class RootModel<E extends RootModel<E>> {
             for (Field field : allFields) {
                 exposeBy(filter, field);
             }
-            return (E) this;
+            return (M) this;
         }
         // 类中没有标排除 则所有字段全暴露 走黑名单
         for (Field field : allFields) {
             excludeBy(filter, field);
         }
 
-        return (E) this;
+        return (M) this;
     }
 
     /**

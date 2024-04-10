@@ -22,11 +22,11 @@ public class DictionaryUtil {
      *
      * @param enumClass 枚举字典类
      * @param key       枚举字典值
-     * @param <T>       [泛型] 当前类型
+     * @param <D>       [泛型] 当前类型
      * @return 指定的枚举字典项目
      */
     @SneakyThrows
-    public static <T extends IDictionary> T getDictionaryByKey(Class<T> enumClass, int key) {
+    public static <D extends IDictionary> D getDictionaryByKey(Class<D> enumClass, int key) {
         Method getKey = enumClass.getMethod("getKey");
 
         // 取出所有枚举类型
@@ -35,7 +35,7 @@ public class DictionaryUtil {
             int exitValue = (int) getKey.invoke(obj);
             if (exitValue == key) {
                 //noinspection unchecked
-                return (T) obj;
+                return (D) obj;
             }
         }
         return null;
@@ -47,7 +47,7 @@ public class DictionaryUtil {
      * @param clazz 枚举类
      * @return 返回结果
      */
-    public static <T extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(Class<T> clazz) {
+    public static <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(Class<D> clazz) {
         return getDictionaryList(clazz, "key", "label");
     }
 
@@ -59,7 +59,7 @@ public class DictionaryUtil {
      * @param params 参数列表
      * @return 返回结果
      */
-    public static @NotNull List<Map<String, String>> getDictionaryList(@NotNull Class<?> clazz, String... params) {
+    public static <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(@NotNull Class<D> clazz, String... params) {
         List<Map<String, String>> mapList = new ArrayList<>();
         for (Object obj : clazz.getEnumConstants()) {
             //取出所有枚举类型

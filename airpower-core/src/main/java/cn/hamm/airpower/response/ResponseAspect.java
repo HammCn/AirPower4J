@@ -29,7 +29,7 @@ public class ResponseAspect {
     }
 
     @Around("pointCut()")
-    public Object responseFilter(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    public <M extends RootModel<M>> Object responseFilter(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
         Method method = signature.getMethod();
         Class<?> returnCls = method.getReturnType();
@@ -46,26 +46,28 @@ public class ResponseAspect {
         Class<?> dataCls = jsonData.getData().getClass();
 
         if (ArrayList.class.equals(dataCls)) {
-            // 如果JsonData是数组
+            // 如果 data 是 Model列表
             //noinspection unchecked
-            List<RootModel<?>> list = (List<RootModel<?>>) (jsonData.getData());
+            List<M> list = (List<M>) jsonData.getData();
             jsonData.setData(filterResponseListBy(filter, list));
             return jsonData;
         }
         if (QueryPageResponse.class.equals(dataCls)) {
-            // 如果JsonData是分页对象
-            @SuppressWarnings("rawtypes")
-            QueryPageResponse queryPageResponse = (QueryPageResponse) jsonData.getData();
-            List<?> list = queryPageResponse.getList();
-            filterResponseListBy(filter, list);
+            // 如果 data 分页对象
             //noinspection unchecked
+            QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) jsonData.getData();
+            List<M> list = queryPageResponse.getList();
+            filterResponseListBy(filter, list);
             jsonData.setData(queryPageResponse.setList(list));
             return jsonData;
         }
         if (ReflectUtil.isModel(dataCls)) {
-            // 其他 默认是模型对象 转换
-            jsonData.setData(filterResponseBy(filter, (RootModel<?>) jsonData.getData()));
+            // 如果 data 是 Model
+            //noinspection unchecked
+            jsonData.setData(filterResponseBy(filter, (RootModel<M>) jsonData.getData()));
         }
+
+        // 其他数据 原样返回
         return jsonData;
     }
 
@@ -76,7 +78,7 @@ public class ResponseAspect {
      * @param data   数据
      * @return 过滤后的数据
      */
-    private RootModel<?> filterResponseBy(Filter filter, RootModel<?> data) {
+    private <M extends RootModel<M>> RootModel<M> filterResponseBy(Filter filter, RootModel<M> data) {
         // 如果 responseFilter 是空 使用Void类进行转换
         return data.filterResponseDataBy(Objects.isNull(filter) ? Void.class : filter.value());
     }
@@ -88,12 +90,12 @@ public class ResponseAspect {
      * @param list   数据列表
      * @return 列表
      */
-    private List<?> filterResponseListBy(Filter filter, List<?> list) {
+    private <M extends RootModel<M>> List<M> filterResponseListBy(Filter filter, List<M> list) {
         try {
-            for (Object item : list) {
+            for (M item : list) {
                 Class<?> clazz = item.getClass();
                 if (ReflectUtil.isModel(clazz)) {
-                    filterResponseBy(filter, (RootModel<?>) item);
+                    filterResponseBy(filter, item);
                 }
             }
         } catch (Exception ignored) {

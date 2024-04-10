@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class QueryPageResponse<M extends RootModel<?>> {
+public class QueryPageResponse<M extends RootModel<M>> {
     /**
      * <h2>总数量</h2>
      */

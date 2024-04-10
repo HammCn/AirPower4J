@@ -3,6 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.api.Api;
 import cn.hamm.airpower.api.Extends;
+import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.query.QueryPageRequest;
 import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.query.QueryRequest;
@@ -31,7 +32,7 @@ import java.util.Objects;
  * @apiNote 提供了 {@link Extends} 处理接口黑白名单，同时提供了一些 前置/后置 方法，可被子控制器类重写(不建议)
  */
 @Permission
-public class RootEntityController<E extends RootEntity<E>, S extends RootService<E, R>, R extends RootRepository<E>> extends RootController {
+public class RootEntityController<E extends RootEntity<E>, S extends RootService<E, R>, R extends RootRepository<E>> extends RootController implements IAction {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected S service;
@@ -46,8 +47,8 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @Description("添加")
     @PostMapping("add")
-    @Filter(RootEntity.WhenGetDetail.class)
-    public JsonData add(@RequestBody @Validated(RootEntity.WhenAdd.class) E entity) {
+    @Filter(WhenGetDetail.class)
+    public JsonData add(@RequestBody @Validated(WhenAdd.class) E entity) {
         checkApiAvailableStatus(Api.Add);
         service.ignoreReadOnlyFields(entity);
         long id = service.add(beforeAdd(entity));
@@ -66,8 +67,8 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @Description("修改")
     @PostMapping("update")
-    @Filter(RootEntity.WhenGetDetail.class)
-    public JsonData update(@RequestBody @Validated(RootEntity.WhenUpdate.class) E entity) {
+    @Filter(WhenGetDetail.class)
+    public JsonData update(@RequestBody @Validated(WhenUpdate.class) E entity) {
         checkApiAvailableStatus(Api.Update);
         service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)));
         afterUpdate(entity.getId(), entity);
@@ -84,7 +85,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @Description("删除")
     @PostMapping("delete")
-    public Json delete(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
+    public Json delete(@RequestBody @Validated(WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.Delete);
         long deleteId = entity.getId();
         beforeDelete(deleteId);
@@ -101,8 +102,8 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @Description("查询详情")
     @PostMapping("getDetail")
-    @Filter(RootEntity.WhenGetDetail.class)
-    public JsonData getDetail(@RequestBody @Validated(RootEntity.WhenIdRequired.class) E entity) {
+    @Filter(WhenGetDetail.class)
+    public JsonData getDetail(@RequestBody @Validated(WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.GetDetail);
         return jsonData(afterGetDetail(service.get(entity.getId())));
     }
@@ -116,7 +117,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @Description("禁用")
     @PostMapping("disable")
-    public Json disable(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
+    public Json disable(@RequestBody @Validated(WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.Disable);
         beforeDisable(entity.getId());
         service.disable(entity.getId());
@@ -133,7 +134,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @Description("启用")
     @PostMapping("enable")
-    public Json enable(@RequestBody @Validated({RootEntity.WhenIdRequired.class}) E entity) {
+    public Json enable(@RequestBody @Validated(WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.Enable);
         beforeEnable(entity.getId());
         service.enable(entity.getId());
@@ -150,7 +151,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @Description("不分页查询")
     @PostMapping("getList")
-    @Filter(RootEntity.WhenGetList.class)
+    @Filter(WhenGetList.class)
     public JsonData getList(@RequestBody QueryRequest<E> queryRequest) {
         queryRequest = getQueryRequest(queryRequest);
         checkApiAvailableStatus(Api.GetList);
@@ -166,7 +167,7 @@ public class RootEntityController<E extends RootEntity<E>, S extends RootService
      */
     @Description("分页查询")
     @PostMapping("getPage")
-    @Filter(RootEntity.WhenGetPage.class)
+    @Filter(WhenGetPage.class)
     public JsonData getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         queryPageRequest = getQueryRequest(queryPageRequest);
         checkApiAvailableStatus(Api.GetPage);
