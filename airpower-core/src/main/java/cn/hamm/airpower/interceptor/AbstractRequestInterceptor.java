@@ -52,8 +52,10 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         Method method = handlerMethod.getMethod();
 
         if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) && globalConfig.isEnableDocument()) {
+            // 如果是GET 方法，并且开启了文档
             GetMapping getMapping = ReflectUtil.getAnnotation(GetMapping.class, method);
             if (Objects.isNull(getMapping)) {
+                // 如果没有GetMapping注解，则直接返回文档
                 ApiDocument.writeApiDocument(response, clazz, method);
                 return false;
             }
