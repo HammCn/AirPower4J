@@ -1,11 +1,13 @@
 package cn.hamm.airpower.exception;
 
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.result.json.JsonData;
 import cn.hutool.jwt.JWTException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -102,8 +104,21 @@ public class ExceptionInterceptor {
      * <h2>访问的接口没有实现</h2>
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public Json notFoundHandle(@NotNull NoHandlerFoundException exception) {
+    public Json notFoundHandle(@NotNull NoHandlerFoundException exception, HttpServletResponse response) {
         log.error(exception.getMessage());
+
+        if (globalConfig.isEnableDocument()) {
+            String[] arr = exception.getRequestURL().split("/");
+            if (arr.length > 1) {
+                String packageName = arr[arr.length - 1];
+                boolean result = ApiDocument.writeEntityDocument(packageName, response);
+                if (!result) {
+                    response.reset();
+                    return new Json(Result.API_SERVICE_UNSUPPORTED);
+                }
+
+            }
+        }
         return new Json(Result.API_SERVICE_UNSUPPORTED);
     }
 

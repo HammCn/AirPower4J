@@ -1,6 +1,9 @@
 package cn.hamm.airpower.model;
 
+import cn.hamm.airpower.annotation.Description;
+import cn.hamm.airpower.root.RootModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
@@ -8,16 +11,20 @@ import lombok.experimental.Accessors;
  *
  * @author Hamm
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-public class Page {
+@Description("分页对象")
+public class Page extends RootModel<Page> {
     /**
      * <h2>当前页码</h2>
      */
+    @Description("当前页码")
     private Integer pageNum = 1;
 
     /**
      * <h2>分页条数</h2>
      */
+    @Description("分页条数")
     private Integer pageSize;
 }

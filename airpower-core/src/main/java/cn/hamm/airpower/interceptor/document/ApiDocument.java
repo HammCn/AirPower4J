@@ -29,6 +29,8 @@ import java.util.*;
 @Data
 @Accessors(chain = true)
 public class ApiDocument {
+    private static final String PACKAGE_SPLIT = ".";
+
     /**
      * <h2>标题</h2>
      */
@@ -135,13 +137,17 @@ public class ApiDocument {
                                   margin-left: 20px;
                                   color: #159;
                               }
+                              a{
+                                color: orangered;
+                                text-decoration: none;
+                              }
                               </style>
                           </head>
                           <body>
                               <div id="app" v-cloak>
                                   <div class="body">
-                                      <div class="header">{{api.title}}</div>
-                                      <div class="desc">{{api.document}}</div>
+                                      <div class="header">{{api.title}} <a href="javascript:history.go(-1);"> 返回 </a></div>
+                                      <div class="desc" v-if="api.document">{{api.document}}</div>
                                       <div class="card">
                                           <h2>请求方式</h2>
                                           <div class="content">
@@ -151,7 +157,12 @@ public class ApiDocument {
                                           <el-table class="table" stripe size="medium" :data="api.requestParamList" default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
                                               <el-table-column prop="name" label="参数Key" ></el-table-column>
                                               <el-table-column prop="description" label="参数名称" width="200"></el-table-column>
-                                              <el-table-column prop="type" width="150" label="数据类型"></el-table-column>
+                                              <el-table-column prop="type" width="150" label="数据类型">
+                                                  <template slot-scope="scope">
+                                                    <el-link :href="scope.row.link" v-if="scope.row.link">{{ scope.row.type }}</el-link>
+                                                    <template v-else>{{ scope.row.type }}</template>
+                                                  </template>
+                                              </el-table-column>
                                               <el-table-column label="其他说明">
                                                   <template slot-scope="scope">
                                                       <el-tag size="small" v-if="scope.row.required">必填</el-tag>
@@ -225,11 +236,11 @@ public class ApiDocument {
     /**
      * <h2>获取请求参数</h2>
      *
-     * @param clazz  类
-     * @param method 方法
+     * @param currentClass 类
+     * @param method       方法
      * @return 请求参数列表
      */
-    private static List<ApiRequestParam> getRequestParamList(Class<?> clazz, Method method) {
+    private static List<ApiRequestParam> getRequestParamList(Class<?> currentClass, Method method) {
         Parameter[] parameters = method.getParameters();
         if (parameters.length == 0) {
             return new ArrayList<>();
@@ -237,17 +248,7 @@ public class ApiDocument {
         Parameter parameter = parameters[0];
         // 取出第一个参数
 
-        return buildApiRequestParamList(clazz, parameter);
-    }
 
-    /**
-     * <h2>将参数构建成请求参数列表</h2>
-     *
-     * @param currentClass 当前类
-     * @param parameter    参数
-     * @return 请求参数列表
-     */
-    private static List<ApiRequestParam> buildApiRequestParamList(Class<?> currentClass, Parameter parameter) {
         List<ApiRequestParam> params = new ArrayList<>();
         RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
         if (Objects.isNull(requestBody)) {
@@ -264,22 +265,40 @@ public class ApiDocument {
         }
 
         Class<?> paramClass = parameter.getType();
-        if (!parameter.getParameterizedType().getTypeName().equals(parameter.getType().getName())) {
+        if (!parameter.getParameterizedType().getTypeName().contains(PACKAGE_SPLIT)) {
             // 泛型
             paramClass = (Class<?>) ((((ParameterizedType) currentClass.getGenericSuperclass()).getActualTypeArguments())[0]);
         }
 
-        for (Field field : ReflectUtil.getFieldList(paramClass)) {
+        List<Field> fields = ReflectUtil.getFieldList(paramClass);
+
+        return getFieldList(fields, currentClass, action);
+    }
+
+    private static List<ApiRequestParam> getFieldList(List<Field> fields, Class<?> currentClass, Class<?> action) {
+        List<ApiRequestParam> params = new ArrayList<>();
+        for (Field field : fields) {
             ReadOnly readOnly = field.getAnnotation(ReadOnly.class);
             if (Objects.nonNull(readOnly)) {
                 continue;
             }
-
             ApiRequestParam apiRequestParam = new ApiRequestParam();
             apiRequestParam.setName(field.getName());
             apiRequestParam.setDescription(ReflectUtil.getDescription(field));
             apiRequestParam.setDocument(ReflectUtil.getDocument(field));
             apiRequestParam.setType(field.getType().getSimpleName());
+            if (ReflectUtil.isModel(field.getType())) {
+                apiRequestParam.setLink(field.getType().getName());
+            }
+
+            // 获取字段的泛型类型
+            if (!field.getGenericType().getTypeName().contains(PACKAGE_SPLIT)) {
+                Class<?> clazz = (Class<?>) (((ParameterizedType) currentClass.getGenericSuperclass()).getActualTypeArguments())[0];
+                apiRequestParam.setType(clazz.getSimpleName());
+                if (ReflectUtil.isModel(clazz)) {
+                    apiRequestParam.setLink(clazz.getName());
+                }
+            }
 
             jakarta.validation.constraints.NotNull notNull = field.getAnnotation(jakarta.validation.constraints.NotNull.class);
             NotBlank notBlank = field.getAnnotation(NotBlank.class);
@@ -305,7 +324,6 @@ public class ApiDocument {
                 }
             }
 
-
             Email email = field.getAnnotation(Email.class);
             if (Objects.nonNull(email) && Arrays.stream(email.groups()).toList().contains(action)) {
                 apiRequestParam.setEmail(true);
@@ -315,11 +333,194 @@ public class ApiDocument {
         return params;
     }
 
+    @SuppressWarnings("AlibabaMethodTooLong")
+    public static boolean writeEntityDocument(String packageName, HttpServletResponse response) {
+        System.out.println(packageName);
+        try {
+            Class<?> clazz = Class.forName(packageName);
+            if (!ReflectUtil.isModel(clazz)) {
+                return false;
+            }
+            List<ApiRequestParam> params = getFieldList(ReflectUtil.getFieldList(clazz), clazz, Void.class);
+
+            ApiDocument apiDocument = new ApiDocument();
+            apiDocument.setTitle(ReflectUtil.getDescription(clazz) + " " + clazz.getSimpleName());
+
+            apiDocument.setDocument(ReflectUtil.getDocument(clazz));
+
+            apiDocument.setRequestParamList(params);
+
+            String html = """
+                    <!DOCTYPE html>
+                          <html>
+                              <head>
+                                  <title>AirPower4J 类文档</title>
+                                  <meta name="referrer" content="never">
+                                  <meta charset="UTF-8">
+                                  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+                                  <link rel="stylesheet" href="//at.alicdn.com/t/c/font_666204_kf3f5tzpd8f.css">
+                                  <link rel="stylesheet" href="//cdn.hamm.cn/css/element.css">
+                                  <link rel="icon" href="//cdn.hamm.cn/favicon.ico">
+                                  <style>
+                                  .dictionary{
+                                      display: flex;
+                                      flex-direction: row;
+                                      align-items: center;
+                                      min-width: 200px;
+                                  }
+                                  .dictionary .key{
+                                      color: red;
+                                  }
+                                  .dictionary .label{
+                                      flex: 1;
+                                      width: 0;
+                                  }
+                                  .body{
+                                      position: absolute;
+                                      left: 10%;
+                                      right: 10%;
+                                      top: 0;
+                                      bottom: 0;
+                                      display: flex;
+                                      flex-direction: column;
+                                      padding: 40px;
+                                  }
+                                  .body .card{
+                                      flex: 1;
+                                      height: 0;
+                                      overflow: hidden;
+                                      overflow-y: auto;
+                                  }
+                                  .body .header{
+                                      font-size: 24px;
+                                      font-weight: bold;
+                                      padding: 20px 0px;
+                                  }
+                                  .body .desc{
+                                      font-size: 14px;
+                                      color: #999;
+                                      background: #f5f5f5;
+                                      padding: 10px 20px;
+                                      margin-bottom: 20px;
+                                      border-radius: 8px;
+                                  }
+                                  h2 {
+                                      font-size: 16px;
+                                      font-weight: bold;
+                                      margin-top: 40px;
+                                  }
+                                  .content{
+                                      display: flex;
+                                      flex-direction: row;
+                                      align-items: center;
+                                  }
+                                  .content .method{
+                                      background: #666;
+                                      color: white;
+                                      padding: 2px 8px;
+                                      font-size: 12px;
+                                      border-radius: 5px;
+                                  }
+                                  .content .url{
+                                      margin-left: 20px;
+                                      color: #159;
+                                  }
+                                  a{
+                                    color: orangered;
+                                    text-decoration: none;
+                                  }
+                                  </style>
+                              </head>
+                              <body>
+                                  <div id="app" v-cloak>
+                                      <div class="body">
+                                        <div class="header">{{api.title}} <a href="javascript:history.go(-1);"> 返回 </a></div>
+                                          <div class="desc" v-if="api.document">{{api.document}}</div>
+                                          <div class="card">
+                                              <h2>属性列表</h2>
+                                              <el-table class="table" stripe size="medium" :data="api.requestParamList" default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+                                                  <el-table-column prop="name" label="属性" ></el-table-column>
+                                                  <el-table-column prop="description" label="属性说明" width="200"></el-table-column>
+                                                  <el-table-column prop="type" width="150" label="数据类型">
+                                                      <template slot-scope="scope">
+                                                        <el-link :href="scope.row.link" v-if="scope.row.link">{{ scope.row.type }}</el-link>
+                                                        <template v-else>{{ scope.row.type }}</template>
+                                                      </template>
+                                                  </el-table-column>
+                                                  <el-table-column label="其他说明">
+                                                      <template slot-scope="scope">
+                                                          <el-tag size="small" v-if="scope.row.required">必填</el-tag>
+                                                          <el-tag size="small" v-if="scope.row.phone">电话</el-tag>
+                                                          <el-tag size="small" v-if="scope.row.email">邮箱</el-tag>
+                                                          <el-dropdown v-if="scope.row.dictionary.length>0">
+                                                              <el-tag size="small">字典</el-tag>
+                                                              <el-dropdown-menu slot="dropdown">
+                                                                  <el-dropdown-item v-for="item in scope.row.dictionary">
+                                                                      <div class="dictionary">
+                                                                          <div class="label">{{item.label}}</div>
+                                                                          <div class="key">{{item.key}}</div>
+                                                                      </div>
+                                                                  </el-dropdown-item>
+                                                              </el-dropdown-menu>
+                                                          </el-dropdown>
+                                                      </template>
+                                                  </el-table-column>
+                                                  <el-table-column prop="document" label="备注说明"></el-table-column>
+                                              </el-table>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </body>
+                              <script src="//cdn.hamm.cn/js/vue-2.6.10.min.js"></script>
+                              <script src="//cdn.hamm.cn/js/axios.min.js"></script>
+                              <script src="//cdn.hamm.cn/js/element.js"></script>
+                              <script src="//cdn.hamm.cn/js/vue-clipboard.min.js"></script>
+                              <script>
+                              const json =
+                              """
+                    + JSONUtil.toJsonStr(apiDocument) +
+                    """
+                                       </script>
+                                       <script>
+                                       new Vue({
+                                           el: '#app',
+                                           data() {
+                                               return {
+                                                   url: window.location.pathname,
+                                                   api: json,
+                                               }
+                                           },
+                                           created() {
+                                               console.log(this.api)
+                                           },
+                                           updated() {},
+                                           methods: {}
+                                       });
+                                       </script>
+                                   
+                                   </html>
+                            """;
+            try {
+                response.reset();
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(html);
+                response.flushBuffer();
+                response.reset();
+            } catch (IOException ignored) {
+
+            }
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     @Data
     @Accessors(chain = true)
     static class ApiRequestParam {
         private String name;
         private String type;
+        private String link;
         private String description;
         private String document;
         private Boolean required = false;
@@ -329,5 +530,5 @@ public class ApiDocument {
         private Boolean email = false;
         private Integer maxLength = 0;
     }
-
 }
+
