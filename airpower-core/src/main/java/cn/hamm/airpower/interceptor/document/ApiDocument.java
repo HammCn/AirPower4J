@@ -1,13 +1,11 @@
 package cn.hamm.airpower.interceptor.document;
 
 import cn.hamm.airpower.annotation.ReadOnly;
-import cn.hamm.airpower.interceptor.document.request.ApiRequestParam;
 import cn.hamm.airpower.util.DictionaryUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import cn.hamm.airpower.validate.phone.Phone;
 import cn.hutool.json.JSONUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,17 +13,13 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <h1>Api文档</h1>
@@ -41,19 +35,9 @@ public class ApiDocument {
     private String title;
 
     /**
-     * <h2>请求地址</h2>
-     */
-    private String url;
-
-    /**
      * <h2>接口文档</h2>
      */
     private String document;
-
-    /**
-     * <h2>请求方法</h2>
-     */
-    private String method = "POST";
 
     /**
      * <h2>请求参数</h2>
@@ -63,17 +47,15 @@ public class ApiDocument {
     /**
      * <h2>输出接口文档</h2>
      *
-     * @param request  请求
      * @param response 响应
      */
     @SuppressWarnings("AlibabaMethodTooLong")
-    public static void writeApiDocument(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method) {
+    public static void writeApiDocument(HttpServletResponse response, Class<?> clazz, Method method) {
         ApiDocument apiDocument = new ApiDocument();
         String className = ReflectUtil.getDescription(clazz);
         String methodName = ReflectUtil.getDescription(method);
         apiDocument.setTitle(className + " " + methodName + " Api接口文档");
 
-        apiDocument.setUrl(getRequestUrl(clazz, method));
         apiDocument.setDocument(ReflectUtil.getDocument(method));
 
         apiDocument.setRequestParamList(getRequestParamList(clazz, method));
@@ -163,7 +145,7 @@ public class ApiDocument {
                                       <div class="card">
                                           <h2>请求方式</h2>
                                           <div class="content">
-                                              <div class="method">{{api.method}}</div> <div class="url">{{api.url}}</div>
+                                              <div class="method">POST</div> <div class="url">{{url}}</div>
                                           </div>
                                           <h2>请求参数</h2>
                                           <el-table class="table" stripe size="medium" :data="api.requestParamList" default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
@@ -209,6 +191,7 @@ public class ApiDocument {
                                        el: '#app',
                                        data() {
                                            return {
+                                               url: window.location.pathname,
                                                api: json,
                                            }
                                        },
@@ -332,23 +315,19 @@ public class ApiDocument {
         return params;
     }
 
-    /**
-     * <h2>获取请求URL</h2>
-     *
-     * @param clazz  类
-     * @param method 方法
-     * @return URL
-     */
-    private static String getRequestUrl(Class<?> clazz, Method method) {
-        String url = "";
-        RequestMapping requestMappingClass = clazz.getAnnotation(RequestMapping.class);
-        if (Objects.nonNull(requestMappingClass)) {
-            url += "/" + requestMappingClass.value()[0];
-        }
-        RequestMapping requestMappingMethod = method.getAnnotation(RequestMapping.class);
-        if (Objects.nonNull(requestMappingMethod)) {
-            url += "/" + requestMappingMethod.value()[0];
-        }
-        return url;
+    @Data
+    @Accessors(chain = true)
+    static class ApiRequestParam {
+        private String name;
+        private String type;
+        private String description;
+        private String document;
+        private Boolean required = false;
+        private List<Map<String, String>> dictionary = new ArrayList<>();
+        private List<ApiRequestParam> children = new ArrayList<>();
+        private Boolean phone = false;
+        private Boolean email = false;
+        private Integer maxLength = 0;
     }
+
 }

@@ -54,7 +54,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) && globalConfig.isEnableDocument()) {
             GetMapping getMapping = ReflectUtil.getAnnotation(GetMapping.class, method);
             if (Objects.isNull(getMapping)) {
-                ApiDocument.writeApiDocument(request, response, clazz, method);
+                ApiDocument.writeApiDocument(response, clazz, method);
                 return false;
             }
         }
