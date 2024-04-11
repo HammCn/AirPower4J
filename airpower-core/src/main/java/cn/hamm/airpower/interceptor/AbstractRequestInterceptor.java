@@ -1,18 +1,22 @@
 package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.request.RequestUtil;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.security.AccessConfig;
 import cn.hamm.airpower.security.AccessUtil;
 import cn.hamm.airpower.security.SecurityUtil;
+import cn.hamm.airpower.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.method.HandlerMethod;
@@ -46,6 +50,15 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBeanType();
         Method method = handlerMethod.getMethod();
+
+        if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) && globalConfig.isEnableDocument()) {
+            GetMapping getMapping = ReflectUtil.getAnnotation(GetMapping.class, method);
+            if (Objects.isNull(getMapping)) {
+                ApiDocument.writeApiDocument(request, response, clazz, method);
+                return false;
+            }
+        }
+
         beforeHandleRequest(request, response, clazz, method);
         AccessConfig accessConfig = AccessUtil.getWhatNeedAccess(clazz, method);
         if (!accessConfig.login) {
@@ -69,6 +82,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         }
         return true;
     }
+
 
     /**
      * <h2>验证指定的用户是否有指定权限标识的权限</h2>

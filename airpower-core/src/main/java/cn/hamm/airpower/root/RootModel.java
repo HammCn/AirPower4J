@@ -3,6 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Expose;
 import cn.hamm.airpower.annotation.Payload;
+import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.util.ReflectUtil;
 import org.springframework.beans.BeanUtils;
@@ -16,7 +17,7 @@ import java.util.*;
  * @author Hamm
  */
 @SuppressWarnings("unchecked")
-public class RootModel<M extends RootModel<M>> {
+public class RootModel<M extends RootModel<M>> implements IAction {
     /**
      * <h2>复制实例到新的实例</h2>
      *
@@ -203,7 +204,7 @@ public class RootModel<M extends RootModel<M>> {
             if (fieldClass.isArray()) {
                 RootModel<?>[] list = (RootModel<?>[]) fieldValue;
                 for (RootModel<?> item : list) {
-                    field.set(this, item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
+                    field.set(this, item.filterResponseDataBy(WhenPayLoad.class));
                 }
                 return;
             }
@@ -215,12 +216,12 @@ public class RootModel<M extends RootModel<M>> {
                 if (Objects.isNull(list)) {
                     list = new HashSet<>();
                 }
-                list.forEach(item -> item.filterResponseDataBy(RootEntity.WhenPayLoad.class));
+                list.forEach(item -> item.filterResponseDataBy(WhenPayLoad.class));
                 field.set(this, list);
                 return;
             }
             if (Objects.nonNull(fieldValue)) {
-                field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(RootEntity.WhenPayLoad.class));
+                field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(WhenPayLoad.class));
             }
         } catch (IllegalAccessException | ClassCastException e) {
             // 发生点小问题...

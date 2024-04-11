@@ -1,9 +1,6 @@
 package cn.hamm.airpower.root;
 
-import cn.hamm.airpower.annotation.Description;
-import cn.hamm.airpower.annotation.Exclude;
-import cn.hamm.airpower.annotation.ReadOnly;
-import cn.hamm.airpower.annotation.Search;
+import cn.hamm.airpower.annotation.*;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.interfaces.IEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -34,7 +31,7 @@ import java.io.Serializable;
 @Description("")
 @SuppressWarnings("unchecked")
 public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E>, IAction {
-    @Description("ID")
+    @Description("主键ID")
     @Id
     @Search(Search.Mode.EQUALS)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,15 +79,23 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     private Long updateTime;
 
     @Transient
+    @Description("创建时间开始")
+    @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
     private Long createTimeFrom;
 
     @Transient
+    @Description("创建时间结束")
+    @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
     private Long createTimeTo;
 
     @Transient
+    @Description("修改时间开始")
+    @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
     private Long updateTimeFrom;
 
     @Transient
+    @Description("修改时间结束")
+    @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
     private Long updateTimeTo;
 
     /**

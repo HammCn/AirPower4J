@@ -18,6 +18,11 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower")
 public class GlobalConfig {
     /**
+     * <h2>是否开启文档</h2>
+     */
+    private boolean enableDocument = false;
+
+    /**
      * <h2>默认分页条数</h2>
      */
     private int defaultPageSize = 20;

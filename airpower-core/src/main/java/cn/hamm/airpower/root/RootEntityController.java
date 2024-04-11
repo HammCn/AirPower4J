@@ -15,8 +15,8 @@ import cn.hamm.airpower.result.json.JsonData;
 import cn.hamm.airpower.security.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
@@ -61,7 +61,7 @@ public class RootEntityController<
      * @see #afterSaved(long, E)
      */
     @Description("添加")
-    @PostMapping("add")
+    @RequestMapping("add")
     @Filter(WhenGetDetail.class)
     public JsonData add(@RequestBody @Validated(WhenAdd.class) E entity) {
         checkApiAvailableStatus(Api.Add);
@@ -81,7 +81,7 @@ public class RootEntityController<
      * @see #afterSaved(long, E)
      */
     @Description("修改")
-    @PostMapping("update")
+    @RequestMapping("update")
     @Filter(WhenGetDetail.class)
     public JsonData update(@RequestBody @Validated(WhenUpdate.class) E entity) {
         checkApiAvailableStatus(Api.Update);
@@ -99,7 +99,7 @@ public class RootEntityController<
      * @see #afterDelete(long)
      */
     @Description("删除")
-    @PostMapping("delete")
+    @RequestMapping("delete")
     public Json delete(@RequestBody @Validated(WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.Delete);
         long deleteId = entity.getId();
@@ -116,7 +116,7 @@ public class RootEntityController<
      * @see #afterGetDetail(E)
      */
     @Description("查询详情")
-    @PostMapping("getDetail")
+    @RequestMapping("getDetail")
     @Filter(WhenGetDetail.class)
     public JsonData getDetail(@RequestBody @Validated(WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.GetDetail);
@@ -131,7 +131,7 @@ public class RootEntityController<
      * @see #afterDisable(long)
      */
     @Description("禁用")
-    @PostMapping("disable")
+    @RequestMapping("disable")
     public Json disable(@RequestBody @Validated(WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.Disable);
         beforeDisable(entity.getId());
@@ -148,7 +148,7 @@ public class RootEntityController<
      * @see #afterEnable(long)
      */
     @Description("启用")
-    @PostMapping("enable")
+    @RequestMapping("enable")
     public Json enable(@RequestBody @Validated(WhenIdRequired.class) E entity) {
         checkApiAvailableStatus(Api.Enable);
         beforeEnable(entity.getId());
@@ -165,7 +165,7 @@ public class RootEntityController<
      * @see #afterGetList(List)
      */
     @Description("不分页查询")
-    @PostMapping("getList")
+    @RequestMapping("getList")
     @Filter(WhenGetList.class)
     public JsonData getList(@RequestBody QueryRequest<E> queryRequest) {
         queryRequest = getQueryRequest(queryRequest);
@@ -181,7 +181,7 @@ public class RootEntityController<
      * @see #afterGetPage(QueryPageResponse)
      */
     @Description("分页查询")
-    @PostMapping("getPage")
+    @RequestMapping("getPage")
     @Filter(WhenGetPage.class)
     public JsonData getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         queryPageRequest = getQueryRequest(queryPageRequest);
