@@ -246,8 +246,6 @@ public class ApiDocument {
             return new ArrayList<>();
         }
         Parameter parameter = parameters[0];
-        // 取出第一个参数
-
 
         List<ApiRequestParam> params = new ArrayList<>();
         RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
