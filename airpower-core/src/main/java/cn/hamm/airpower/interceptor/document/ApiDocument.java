@@ -505,7 +505,6 @@ public class ApiDocument {
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(html);
                 response.flushBuffer();
-                response.reset();
             } catch (IOException ignored) {
 
             }
