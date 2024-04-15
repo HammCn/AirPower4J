@@ -254,10 +254,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             queryRequest.setFilter(getNewInstance());
         }
         queryRequest = beforeGetList(queryRequest);
-        List<E> list = repository.findAll(
-                createSpecification(queryRequest.getFilter(), false),
-                createSort(queryRequest.getSort())
-        );
+        List<E> list = repository.findAll(createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort()));
         return afterGetList(list);
     }
 
@@ -272,10 +269,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (Objects.isNull(queryRequest.getFilter())) {
             queryRequest.setFilter(filter);
         }
-        return repository.findAll(
-                createSpecification(filter, true),
-                createSort(queryRequest.getSort())
-        );
+        return repository.findAll(createSpecification(filter, true), createSort(queryRequest.getSort()));
     }
 
     /**
@@ -382,10 +376,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         queryPageRequest = beforeGetPage(queryPageRequest);
 
-        org.springframework.data.domain.Page<E> pageData = repository.findAll(
-                createSpecification(queryPageRequest.getFilter(), false),
-                createPageable(queryPageRequest)
-        );
+        org.springframework.data.domain.Page<E> pageData = repository.findAll(createSpecification(queryPageRequest.getFilter(), false), createPageable(queryPageRequest));
         QueryPageResponse<E> queryPageResponse = getResponsePageList(pageData);
         queryPageResponse.setSort(queryPageRequest.getSort());
         return afterGetPage(queryPageResponse);
@@ -439,9 +430,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterAdd(long, E)
      */
     protected final long addToDatabase(E entity) {
-        entity.setId(null).setIsDisabled(false)
-                .setCreateTime(DateUtil.current())
-                .setUpdateTime(entity.getCreateTime());
+        entity.setId(null).setIsDisabled(false).setCreateTime(DateUtil.current()).setUpdateTime(entity.getCreateTime());
         if (Objects.isNull(entity.getRemark())) {
             entity.setRemark("");
         }
@@ -456,9 +445,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterUpdate(long, E)
      */
     protected final void updateToDatabase(E entity) {
-        Result.PARAM_MISSING.whenNull(entity.getId(),
-                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
-        );
+        Result.PARAM_MISSING.whenNull(entity.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         saveToDatabase(entity);
     }
 
@@ -492,9 +479,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 实体
      */
     private E getById(long id) {
-        Result.PARAM_MISSING.whenNull(id,
-                "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
-        );
+        Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         Optional<E> optional = repository.findById(id);
         if (optional.isPresent()) {
             return optional.get();
@@ -528,8 +513,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         checkUnique(entity);
         entity.setUpdateTime(DateUtil.current());
         if (Objects.nonNull(entity.getId())) {
-            //有ID 走修改 且不允许修改下列字段
-            E existEntity = get(entity.getId());
+            // 修改前清掉JPA缓存，避免查询到旧数据
+            entityManager.clear();
+            // 有ID 走修改 且不允许修改下列字段
+            E existEntity = getById(entity.getId());
             if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
                 // 如果数据库是null 且 传入的也是null 签名给空字符串
                 entity.setRemark("");
@@ -540,6 +527,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
+        if (Objects.nonNull(entity.getId())) {
+            return entity.getId();
+        }
+        // 新增完毕，清掉查询缓存，避免查询到旧数据
         entityManager.clear();
         return target.getId();
     }
@@ -651,14 +642,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 输出分页对象
      */
     private QueryPageResponse<E> getResponsePageList(org.springframework.data.domain.Page<E> data) {
-        return new QueryPageResponse<E>()
-                .setList(data.getContent())
-                .setTotal(Math.toIntExact(data.getTotalElements()))
-                .setPageCount(data.getTotalPages())
-                .setPage(new Page()
-                        .setPageSize(data.getPageable().getPageSize())
-                        .setPageNum(data.getPageable().getPageNumber() + 1)
-                );
+        return new QueryPageResponse<E>().setList(data.getContent()).setTotal(Math.toIntExact(data.getTotalElements())).setPageCount(data.getTotalPages()).setPage(new Page().setPageSize(data.getPageable().getPageSize()).setPageNum(data.getPageable().getPageNumber() + 1));
     }
 
     /**
@@ -678,13 +662,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             sort.setDirection(globalConfig.getDefaultSortDirection());
         }
         if (!globalConfig.getDefaultSortDirection().equals(sort.getDirection())) {
-            return org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Order.asc(sort.getField())
-            );
+            return org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Order.asc(sort.getField()));
         }
-        return org.springframework.data.domain.Sort.by(
-                org.springframework.data.domain.Sort.Order.desc(sort.getField())
-        );
+        return org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Order.desc(sort.getField()));
     }
 
     /**
@@ -722,9 +702,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param isEqual 是否强匹配
      * @return 搜索条件
      */
-    private List<Predicate> getPredicateList(
-            Object root, CriteriaBuilder builder, Object search, boolean isRoot, boolean isEqual
-    ) {
+    private List<Predicate> getPredicateList(Object root, CriteriaBuilder builder, Object search, boolean isRoot, boolean isEqual) {
         List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
         for (Field field : fields) {
@@ -744,14 +722,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     // Join
                     if (isRoot) {
                         Join<E, ?> payload = ((Root<E>) root).join(field.getName(), JoinType.INNER);
-                        predicateList.addAll(
-                                this.getPredicateList(payload, builder, fieldValue, false, isEqual)
-                        );
+                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
                     } else {
                         Join<?, ?> payload = ((Join<?, ?>) root).join(field.getName(), JoinType.INNER);
-                        predicateList.addAll(
-                                this.getPredicateList(payload, builder, fieldValue, false, isEqual)
-                        );
+                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
                     }
                     continue;
                 }
