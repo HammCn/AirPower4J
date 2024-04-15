@@ -3,7 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.api.Api;
 import cn.hamm.airpower.api.Extends;
-import cn.hamm.airpower.interfaces.IAction;
+import cn.hamm.airpower.interfaces.IEntityAction;
 import cn.hamm.airpower.query.QueryPageRequest;
 import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.query.QueryRequest;
@@ -35,7 +35,7 @@ import java.util.Objects;
 public class RootEntityController<
         E extends RootEntity<E>,
         S extends RootService<E, R>,
-        R extends RootRepository<E>> extends RootController implements IAction {
+        R extends RootRepository<E>> extends RootController implements IEntityAction {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected S service;
