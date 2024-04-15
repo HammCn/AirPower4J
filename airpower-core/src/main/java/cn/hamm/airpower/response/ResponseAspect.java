@@ -24,7 +24,7 @@ import java.util.Objects;
 @Aspect
 @Component
 public class ResponseAspect {
-    @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")
+    @Pointcut("@annotation(cn.hamm.airpower.response.Filter)")
     public void pointCut() {
     }
 
