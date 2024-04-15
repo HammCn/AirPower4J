@@ -1,8 +1,8 @@
 package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.*;
-import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.interfaces.IEntity;
+import cn.hamm.airpower.interfaces.IEntityAction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -30,7 +30,7 @@ import java.io.Serializable;
 @DynamicUpdate
 @Description("")
 @SuppressWarnings("unchecked")
-public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E>, IAction {
+public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E>, IEntityAction {
     @Description("主键ID")
     @Id
     @Search(Search.Mode.EQUALS)
