@@ -6,6 +6,8 @@ import cn.hamm.airpower.annotation.Payload;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.util.ReflectUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.Field;
@@ -17,7 +19,23 @@ import java.util.*;
  * @author Hamm
  */
 @SuppressWarnings("unchecked")
+@Getter
 public class RootModel<M extends RootModel<M>> implements IAction {
+    /**
+     * <h2>🔞表示该对象是一个特殊的空对象</h2>
+     */
+    @JsonIgnore
+    private boolean isNullModel = false;
+
+    /**
+     * <h2>🔞是否是一个特殊的空对象</h2>
+     *
+     * @return 🔞特殊空对象
+     */
+    public boolean isNullModel() {
+        return isNullModel;
+    }
+
     /**
      * <h2>复制实例到新的实例</h2>
      *
@@ -226,6 +244,15 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         } catch (IllegalAccessException | ClassCastException e) {
             // 发生点小问题...
         }
+    }
+
+    /**
+     * <h2>设置为特殊的空实体</h2>
+     *
+     * @param nullModel 是否空实体
+     */
+    private void setNullModel(boolean nullModel) {
+        isNullModel = nullModel;
     }
 
     /**

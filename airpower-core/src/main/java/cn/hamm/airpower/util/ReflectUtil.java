@@ -21,6 +21,23 @@ import java.util.Objects;
  * @author Hamm
  */
 public class ReflectUtil {
+    /**
+     * <h2>创建一个特殊的空实体</h2>
+     *
+     * @param clazz 类型
+     * @param <T>   类型
+     * @return 空实体
+     */
+    public static <T extends RootModel<T>> T createNull(Class<T> clazz) {
+        try {
+            T instance = clazz.getConstructor().newInstance();
+            Method method = clazz.getMethod("setNullModel", Boolean.class);
+            method.invoke(instance, true);
+            return instance;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     /**
      * <h2>判断是否是根类</h2>

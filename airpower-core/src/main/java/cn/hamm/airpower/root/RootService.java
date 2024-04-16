@@ -631,9 +631,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             Object propertyValue = srcBean.getPropertyValue(propertyName);
 
             // 需要强制更新为 null
-            if (NullEntity.class.equals(propertyDescriptor.getPropertyType())) {
-                srcBean.setPropertyValue(propertyName, null);
-                continue;
+            try {
+                if (Objects.nonNull(propertyValue) && ((RootModel<?>) propertyValue).isNullModel()) {
+                    srcBean.setPropertyValue(propertyName, null);
+                    continue;
+                }
+            } catch (Exception ignored) {
+
             }
 
             // null 不更新到数据库 添加到忽略名单
