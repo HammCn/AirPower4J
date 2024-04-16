@@ -31,8 +31,10 @@ public class ReflectUtil {
     public static <T extends RootModel<T>> T createNull(Class<T> clazz) {
         try {
             T instance = clazz.getConstructor().newInstance();
-            Method method = clazz.getMethod("setNullModel", Boolean.class);
-            method.invoke(instance, true);
+            Field field = clazz.getField("nullModel");
+            field.setAccessible(true);
+            field.set(instance, true);
+            field.setAccessible(false);
             return instance;
         } catch (Exception e) {
             return null;

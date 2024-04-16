@@ -18,23 +18,14 @@ import java.util.*;
  *
  * @author Hamm
  */
-@SuppressWarnings("unchecked")
 @Getter
+@SuppressWarnings("unchecked")
 public class RootModel<M extends RootModel<M>> implements IAction {
     /**
      * <h2>🔞表示该对象是一个特殊的空对象</h2>
      */
     @JsonIgnore
-    private boolean isNullModel = false;
-
-    /**
-     * <h2>🔞是否是一个特殊的空对象</h2>
-     *
-     * @return 🔞特殊空对象
-     */
-    public boolean isNullModel() {
-        return isNullModel;
-    }
+    public final boolean nullModel = false;
 
     /**
      * <h2>复制实例到新的实例</h2>
@@ -244,15 +235,6 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         } catch (IllegalAccessException | ClassCastException e) {
             // 发生点小问题...
         }
-    }
-
-    /**
-     * <h2>设置为特殊的空实体</h2>
-     *
-     * @param nullModel 是否空实体
-     */
-    private void setNullModel(boolean nullModel) {
-        isNullModel = nullModel;
     }
 
     /**
