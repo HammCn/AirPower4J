@@ -211,11 +211,17 @@ public class ReflectUtil {
             return null;
         }
         Class<?> superClass = currentClass.getSuperclass();
+        if (Objects.isNull(superClass)) {
+            return null;
+        }
         try {
             Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
             return getAnnotation(annotationClass, superMethod, superClass);
         } catch (NoSuchMethodException e) {
             superClass = superClass.getSuperclass();
+            if (Objects.isNull(superClass)) {
+                return null;
+            }
             return getAnnotation(annotationClass, method, superClass);
         }
     }
@@ -236,6 +242,9 @@ public class ReflectUtil {
             return method.getName();
         }
         Class<?> superClass = currentClass.getSuperclass();
+        if (Objects.isNull(superClass)) {
+            return method.getName();
+        }
         try {
             Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
             return getDescription(superMethod, superClass);
@@ -261,6 +270,9 @@ public class ReflectUtil {
             return "";
         }
         Class<?> superClass = currentClass.getSuperclass();
+        if (Objects.isNull(superClass)) {
+            return "";
+        }
         try {
             Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
             return getDocument(superMethod, superClass);
