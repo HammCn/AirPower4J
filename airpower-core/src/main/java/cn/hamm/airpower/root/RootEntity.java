@@ -229,4 +229,14 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     public void excludeBaseData() {
         this.setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
     }
+
+    /**
+     * <h2>创建一个空实体</h2>
+     *
+     * @param <T> 实体类型
+     * @return 空实体
+     */
+    public static <T extends RootEntity<T>> T createNull() {
+        return (T) new NullEntity();
+    }
 }

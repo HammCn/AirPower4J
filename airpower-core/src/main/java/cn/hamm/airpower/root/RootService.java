@@ -109,6 +109,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>🟡修改一条已经存在的数据</h2>
      *
      * @param source 保存的实体
+     * @apiNote 如需将非基本类型属性强制设置为 <code>null</code>，可为属性传入空实体参数，如 <code>UserEntity.createNull()</code>
      * @see #beforeUpdate(E)
      * @see #updateToDatabase(E)
      * @see #afterUpdate(long, E)
@@ -540,13 +541,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>获取用于更新的实体</h2>
      *
      * @param sourceEntity 来源实体
-     * @param targetEntity 已存在实体
+     * @param existEntity  已存在实体
      * @return 目标实体
      */
-    private E getEntityForSave(E sourceEntity, E targetEntity) {
+    private E getEntityForSave(E sourceEntity, E existEntity) {
         String[] nullProperties = getNullProperties(sourceEntity);
-        BeanUtils.copyProperties(sourceEntity, targetEntity, nullProperties);
-        return targetEntity;
+        BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
+        return existEntity;
     }
 
     /**
@@ -615,21 +616,28 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>获取null属性</h2>
      *
-     * @param src 来源对象
+     * @param sourceEntity 来源对象
      * @return 非空属性列表
      */
-    private String[] getNullProperties(Object src) {
+    private String[] getNullProperties(E sourceEntity) {
         // 获取Bean
-        BeanWrapper srcBean = new BeanWrapperImpl(src);
+        BeanWrapper srcBean = new BeanWrapperImpl(sourceEntity);
         // 获取Bean的属性描述
-        PropertyDescriptor[] pds = srcBean.getPropertyDescriptors();
+        PropertyDescriptor[] propertyDescriptors = srcBean.getPropertyDescriptors();
         // 获取Bean的空属性
         Set<String> properties = new HashSet<>();
-        for (PropertyDescriptor propertyDescriptor : pds) {
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             String propertyName = propertyDescriptor.getName();
             Object propertyValue = srcBean.getPropertyValue(propertyName);
-            if (Objects.isNull(propertyValue)) {
+
+            // 需要强制更新为 null
+            if (NullEntity.class.equals(propertyDescriptor.getPropertyType())) {
                 srcBean.setPropertyValue(propertyName, null);
+                continue;
+            }
+
+            // null 不更新到数据库 添加到忽略名单
+            if (Objects.isNull(propertyValue)) {
                 properties.add(propertyName);
             }
         }
