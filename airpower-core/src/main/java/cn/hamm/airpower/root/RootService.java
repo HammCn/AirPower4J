@@ -632,7 +632,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
             // 需要强制更新为 null
             try {
-                if (Objects.nonNull(propertyValue) && ((RootModel<?>) propertyValue).isNullModel()) {
+                Field field = RootModel.class.getField(propertyName);
+                field.setAccessible(true);
+                RootModel<?> payload = (RootModel<?>) field.get(propertyValue);
+                field.setAccessible(false);
+                if (Objects.nonNull(propertyValue) && payload.isNullModel()) {
                     srcBean.setPropertyValue(propertyName, null);
                     continue;
                 }
