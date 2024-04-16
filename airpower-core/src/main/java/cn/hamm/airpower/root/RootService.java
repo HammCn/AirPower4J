@@ -80,7 +80,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterSaved(long, E)
      */
     public final long add(E source) {
-        long id = addToDatabase(beforeAdd(source));
+        source = beforeAdd(source);
+        source.setId(null).setIsDisabled(false);
+        if (Objects.isNull(source.getRemark())) {
+            source.setRemark("");
+        }
+        long id = saveToDatabase(source);
         afterAdd(id, source);
         return id;
     }
@@ -109,15 +114,33 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>🟡修改一条已经存在的数据</h2>
      *
      * @param source 保存的实体
-     * @apiNote 如需将非基本类型属性强制设置为 <code>null</code>，可为属性传入空实体参数，如 <code>UserEntity.createNull()</code>
      * @see #beforeUpdate(E)
-     * @see #updateToDatabase(E)
      * @see #afterUpdate(long, E)
      * @see #afterSaved(long, E)
+     * @see #updateWithNull(E)
      */
     public final void update(E source) {
+        Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         source = beforeUpdate(source);
-        updateToDatabase(source);
+        saveToDatabase(source);
+        afterUpdate(source.getId(), source);
+        afterSaved(source.getId(), source);
+    }
+
+    /**
+     * <h2>🔴修改一条已经存在的数据</h2>
+     *
+     * @param source 保存的实体
+     * @apiNote 此方法的 <code>null</code> 属性依然会被更新到数据库
+     * @see #beforeUpdate(E)
+     * @see #afterUpdate(long, E)
+     * @see #afterSaved(long, E)
+     * @see #update(E)
+     */
+    public final void updateWithNull(E source) {
+        Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        source = beforeUpdate(source);
+        saveToDatabase(source, true);
         afterUpdate(source.getId(), source);
         afterSaved(source.getId(), source);
     }
@@ -423,35 +446,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>🔴添加到数据库(直接保存)</h2>
-     *
-     * @param entity 实体
-     * @return 实体
-     * @see #beforeAdd(E)
-     * @see #add(E)
-     * @see #afterAdd(long, E)
-     */
-    protected final long addToDatabase(E entity) {
-        entity.setId(null).setIsDisabled(false).setCreateTime(DateUtil.current()).setUpdateTime(entity.getCreateTime());
-        if (Objects.isNull(entity.getRemark())) {
-            entity.setRemark("");
-        }
-        return saveToDatabase(entity);
-    }
-
-    /**
-     * <h2>🔴更新到数据库(直接保存)</h2>
-     *
-     * @param entity 待更新的实体
-     * @see #beforeUpdate(E)
-     * @see #afterUpdate(long, E)
-     */
-    protected final void updateToDatabase(E entity) {
-        Result.PARAM_MISSING.whenNull(entity.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
-        saveToDatabase(entity);
-    }
-
-    /**
      * <h2>🔴忽略只读字段</h2>
      *
      * @param entity 实体
@@ -512,6 +506,17 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 保存后的实体
      */
     private long saveToDatabase(E entity) {
+        return saveToDatabase(entity, false);
+    }
+
+    /**
+     * <h2>保存到数据库</h2>
+     *
+     * @param entity   待保存实体
+     * @param withNull 是否保存空值
+     * @return 保存后的实体
+     */
+    private long saveToDatabase(E entity, boolean withNull) {
         checkUnique(entity);
         entity.setUpdateTime(DateUtil.current());
         if (Objects.nonNull(entity.getId())) {
@@ -523,7 +528,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 如果数据库是null 且 传入的也是null 签名给空字符串
                 entity.setRemark("");
             }
-            entity = getEntityForSave(entity, existEntity);
+            if (!withNull) {
+                entity = getEntityForSave(entity, existEntity);
+            }
         }
         E target = getNewInstance();
         BeanUtils.copyProperties(entity, target);
@@ -629,20 +636,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             String propertyName = propertyDescriptor.getName();
             Object propertyValue = srcBean.getPropertyValue(propertyName);
-
-            // 需要强制更新为 null
-            try {
-                Field field = RootModel.class.getField(propertyName);
-                field.setAccessible(true);
-                RootModel<?> payload = (RootModel<?>) field.get(propertyValue);
-                field.setAccessible(false);
-                if (Objects.nonNull(propertyValue) && payload.isNullModel()) {
-                    srcBean.setPropertyValue(propertyName, null);
-                    continue;
-                }
-            } catch (Exception ignored) {
-
-            }
 
             // null 不更新到数据库 添加到忽略名单
             if (Objects.isNull(propertyValue)) {

@@ -6,7 +6,6 @@ import cn.hamm.airpower.annotation.Payload;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.util.ReflectUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 
@@ -21,12 +20,6 @@ import java.util.*;
 @Getter
 @SuppressWarnings("unchecked")
 public class RootModel<M extends RootModel<M>> implements IAction {
-    /**
-     * <h2>🔞表示该对象是一个特殊的空对象</h2>
-     */
-    @JsonIgnore
-    public final boolean nullModel = false;
-
     /**
      * <h2>复制实例到新的实例</h2>
      *
