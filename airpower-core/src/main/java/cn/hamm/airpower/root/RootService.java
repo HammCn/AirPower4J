@@ -99,6 +99,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @param source 原始实体
      * @return 处理后的实体
+     * @apiNote 如此处将属性设置为 <code>null</code>，则表示不更新该字段
+     * @see #beforeUpdateToDatabase(E)
      */
     protected E beforeUpdate(E source) {
         return source;
@@ -313,6 +315,18 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         return entity;
     }
 
+
+    /**
+     * <h2>🟢修改并保存到数据库的前置操作</h2>
+     *
+     * @return 当前实体
+     * @apiNote 此处设置为 <code>null</code> 会同步更新到数据库，如需设置字段不修改，请不要重写此方法
+     * @see #beforeUpdate(E)
+     */
+    protected E beforeUpdateToDatabase(E entity) {
+        return entity;
+    }
+
     /**
      * <h2>🟢添加搜索的查询条件</h2>
      *
@@ -522,6 +536,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 entity.setRemark("");
             }
             entity = getEntityForSave(entity, existEntity);
+            entity = beforeUpdateToDatabase(entity);
         }
         E target = getNewInstance();
         BeanUtils.copyProperties(entity, target);
