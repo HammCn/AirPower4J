@@ -81,7 +81,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final long add(E source) {
         source = beforeAdd(source);
-        source.setId(null).setIsDisabled(false);
+        source.setId(null).setIsDisabled(false).setCreateTime(DateUtil.current());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark("");
         }
@@ -536,9 +536,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
-        if (Objects.nonNull(entity.getId())) {
-            return entity.getId();
-        }
         // 新增完毕，清掉查询缓存，避免查询到旧数据
         entityManager.clear();
         return target.getId();
