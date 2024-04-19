@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.hamm</groupId>
         <artifactId>airpower</artifactId>
-        <version>1.6.5</version>
+        <version>1.7.0</version>
     </parent>
     <artifactId>airpower-core</artifactId>
-    <version>1.6.5</version>
+    <version>1.7.0</version>
     <name>airpower-core</name>
     <description>AirPower is a fast backend development tool based on SpringBoot3 and JPA. It's the core of AirPower.
     </description>
@@ -77,13 +77,8 @@
             <artifactId>spring-boot-starter-integration</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.0.2</version>
         </dependency>
     </dependencies>
 

@@ -1,8 +1,9 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.result.Result;
+import jakarta.annotation.Resource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EmailUtil {
-    @Autowired
+    @Resource
     private JavaMailSender javaMailSender;
 
     /**
@@ -45,6 +46,7 @@ public class EmailUtil {
      * @param content 内容
      */
     public final void sendEmail(String email, String title, String content) throws MessagingException {
+        Result.EMAIL_ERROR.whenNull(javaMailSender, "未配置邮件服务的信息，发送失败");
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(email);
