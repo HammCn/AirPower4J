@@ -1,9 +1,9 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.result.Result;
-import jakarta.annotation.Resource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EmailUtil {
-    @Resource
+    @Autowired(required = false)
     private JavaMailSender javaMailSender;
 
     /**
@@ -35,7 +35,7 @@ public class EmailUtil {
         sendEmail(email, title, content);
     }
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.username: ''}")
     private String mailFrom;
 
     /**
