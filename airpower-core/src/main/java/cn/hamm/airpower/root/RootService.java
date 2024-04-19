@@ -14,8 +14,6 @@ import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.security.SecurityUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.redis.RedisUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
@@ -28,6 +26,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -81,7 +80,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final long add(E source) {
         source = beforeAdd(source);
-        source.setId(null).setIsDisabled(false).setCreateTime(DateUtil.current());
+        source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark("");
         }
@@ -518,7 +517,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private long saveToDatabase(E entity, boolean withNull) {
         checkUnique(entity);
-        entity.setUpdateTime(DateUtil.current());
+        entity.setUpdateTime(System.currentTimeMillis());
         if (Objects.nonNull(entity.getId())) {
             // 修改前清掉JPA缓存，避免查询到旧数据
             entityManager.clear();
@@ -662,10 +661,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (Objects.isNull(sort)) {
             sort = new Sort();
         }
-        if (StrUtil.isBlank(sort.getField())) {
+        if (!StringUtils.hasText(sort.getField())) {
             sort.setField(globalConfig.getDefaultSortField());
         }
-        if (StrUtil.isBlank(sort.getDirection())) {
+        if (!StringUtils.hasText(sort.getDirection())) {
             sort.setDirection(globalConfig.getDefaultSortDirection());
         }
         if (!globalConfig.getDefaultSortDirection().equals(sort.getDirection())) {
@@ -716,7 +715,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             try {
                 field.setAccessible(true);
                 Object fieldValue = field.get(search);
-                if (Objects.isNull(fieldValue) || StrUtil.isEmpty(fieldValue.toString())) {
+                if (Objects.isNull(fieldValue) || !StringUtils.hasText(fieldValue.toString())) {
                     // 没有传入查询值 跳过
                     continue;
                 }

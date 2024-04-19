@@ -1,7 +1,7 @@
 package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.result.Result;
-import cn.hutool.crypto.SecureUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * <h1>密码助手类</h1>
@@ -19,6 +19,6 @@ public class PasswordUtil {
     public static String encode(String password, String salt) {
         Result.PARAM_MISSING.whenEmpty(password, "密码不能为空");
         Result.PARAM_MISSING.whenEmpty(salt, "盐不能为空");
-        return SecureUtil.sha1(SecureUtil.sha1(password + salt) + SecureUtil.sha1(salt + password));
+        return DigestUtils.sha1Hex(DigestUtils.sha1Hex(password + salt) + DigestUtils.sha1Hex(salt + password));
     }
 }

@@ -5,7 +5,7 @@ import cn.hamm.airpower.util.DictionaryUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import cn.hamm.airpower.validate.phone.Phone;
-import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -61,6 +61,17 @@ public class ApiDocument {
         apiDocument.setDocument(ReflectUtil.getDocument(method));
 
         apiDocument.setRequestParamList(getRequestParamList(clazz, method));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        String json = "{}";
+        try {
+            json = objectMapper.writeValueAsString(apiDocument);
+        } catch (Exception ignored) {
+
+        }
+
 
         String html = """
                 <!DOCTYPE html>
@@ -194,7 +205,7 @@ public class ApiDocument {
                           <script>
                           const json =
                           """
-                + JSONUtil.toJsonStr(apiDocument) +
+                + json +
                 """
                                    </script>
                                    <script>
@@ -348,6 +359,16 @@ public class ApiDocument {
 
             apiDocument.setRequestParamList(params);
 
+            ObjectMapper objectMapper = new ObjectMapper();
+
+
+            String json = "{}";
+            try {
+                json = objectMapper.writeValueAsString(apiDocument);
+            } catch (Exception ignored) {
+
+            }
+
             String html = """
                     <!DOCTYPE html>
                           <html>
@@ -476,7 +497,7 @@ public class ApiDocument {
                               <script>
                               const json =
                               """
-                    + JSONUtil.toJsonStr(apiDocument) +
+                    + json +
                     """
                                        </script>
                                        <script>

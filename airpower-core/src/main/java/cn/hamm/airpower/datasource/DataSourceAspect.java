@@ -2,7 +2,6 @@ package cn.hamm.airpower.datasource;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
-import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -10,6 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -40,7 +40,7 @@ public class DataSourceAspect {
         Result.ERROR.when(!globalConfig.isServiceRunning(), "服务短暂维护中,请稍后再试：）");
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
         String database = request.getHeader(globalConfig.getTenantHeader());
-        if (StrUtil.isAllBlank(database)) {
+        if (!StringUtils.hasText(database)) {
             return proceedingJoinPoint.proceed();
         }
         DataSourceResolver.setDataSourceParam(database);

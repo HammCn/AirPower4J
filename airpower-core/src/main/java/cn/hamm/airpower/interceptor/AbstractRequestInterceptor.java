@@ -8,7 +8,6 @@ import cn.hamm.airpower.security.AccessConfig;
 import cn.hamm.airpower.security.AccessUtil;
 import cn.hamm.airpower.security.SecurityUtil;
 import cn.hamm.airpower.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -72,7 +72,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
 
         // 优先使用 Get 参数传入的身份
         String accessTokenFromParam = request.getParameter(globalConfig.getAuthorizeHeader());
-        if (StrUtil.isAllNotEmpty(accessTokenFromParam)) {
+        if (StringUtils.hasText(accessTokenFromParam)) {
             accessToken = accessTokenFromParam;
         }
         Result.UNAUTHORIZED.whenEmpty(accessToken);

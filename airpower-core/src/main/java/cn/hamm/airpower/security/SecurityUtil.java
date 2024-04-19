@@ -2,8 +2,8 @@ package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
+import cn.hamm.airpower.util.RandomUtil;
 import cn.hamm.airpower.util.redis.RedisUtil;
-import cn.hutool.core.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,8 +48,7 @@ public class SecurityUtil {
      * @return AccessToken
      */
     public String createAccessToken(Long userId) {
-        int accessTokenLength = 32;
-        String accessToken = RandomUtil.randomString(accessTokenLength);
+        String accessToken = RandomUtil.randomString();
         try {
             getUserIdFromAccessToken(accessToken);
             return createAccessToken(userId);

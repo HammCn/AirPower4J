@@ -1,8 +1,8 @@
 package cn.hamm.airpower.util.redis;
 
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.root.RootEntity;
-import com.alibaba.fastjson.JSON;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.RedisConnectionFailureException;
@@ -42,7 +42,7 @@ public class RedisUtil<E extends RootEntity<E>> {
             return null;
         }
         //noinspection unchecked
-        return (E) JSON.parseObject(json, entity.getClass());
+        return (E) Json.parse(json, entity.getClass());
     }
 
     /**
@@ -62,7 +62,7 @@ public class RedisUtil<E extends RootEntity<E>> {
             return null;
         }
         //noinspection unchecked
-        return (E) JSON.parseObject(json, entity.getClass());
+        return (E) Json.parse(json, entity.getClass());
     }
 
     /**
@@ -90,7 +90,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param second 缓存时间(秒)
      */
     public final void saveEntity(E entity, long second) {
-        set(getCacheKey(entity), JSON.toJSONString(entity), second);
+        set(getCacheKey(entity), Json.toString(entity), second);
     }
 
     /**
@@ -111,7 +111,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param second 缓存时间(秒)
      */
     public final void saveEntity(String key, E entity, long second) {
-        set(key, JSON.toJSONString(entity), second);
+        set(key, Json.toString(entity), second);
     }
 
     /**

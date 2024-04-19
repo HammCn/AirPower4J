@@ -3,6 +3,8 @@ package cn.hamm.airpower.result.json;
 import cn.hamm.airpower.result.IResult;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -67,5 +69,37 @@ public class Json implements IResult {
     public Json(ResultException result, String message) {
         this.code = result.getCode();
         this.message = message;
+    }
+
+    /**
+     * <h2>将JSON字符串转到指定的类的实例</h2>
+     *
+     * @param json  字符串
+     * @param clazz 目标类
+     * @param <E>   目标类
+     * @return 目标类的实例
+     */
+    public static <E> E parse(String json, Class<E> clazz) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * <h2>将指定对象转到JSON字符串</h2>
+     *
+     * @param object 对象
+     * @return 字符串
+     */
+    public static String toString(Object object) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            return "{}";
+        }
     }
 }

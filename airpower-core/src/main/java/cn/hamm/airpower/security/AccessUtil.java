@@ -1,6 +1,6 @@
 package cn.hamm.airpower.security;
 
-import cn.hutool.core.util.StrUtil;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -49,7 +49,7 @@ public class AccessUtil {
      * @return 权限标识
      */
     public static String getPermissionIdentity(Class<?> clazz, Method method) {
-        return StrUtil.lowerFirst(clazz.getSimpleName().replaceAll("Controller", "")) +
+        return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll("Controller", "")) +
                 "_" +
                 method.getName();
     }

@@ -16,12 +16,9 @@
         <maven.compiler.target>17</maven.compiler.target>
         <springboot.version>3.2.1</springboot.version>
         <mysql.version>8.0.29</mysql.version>
-        <hutool.version>5.8.25</hutool.version>
-        <fastjon.version>1.2.83</fastjon.version>
         <druid.springboot.version>1.2.11</druid.springboot.version>
         <jetbrains.annotations.version>23.0.0</jetbrains.annotations.version>
         <codec.version>1.13</codec.version>
-        <sun.mail.veriosn>1.5.6</sun.mail.veriosn>
         <integration.mqtt.version>6.0.0</integration.mqtt.version>
         <integration.version>3.2.0</integration.version>
     </properties>

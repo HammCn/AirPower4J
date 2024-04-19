@@ -1,9 +1,9 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.interfaces.IDictionary;
-import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class DictionaryUtil {
             for (String param : params) {
                 // 依次取出参数的值
                 try {
-                    Method method = clazz.getMethod("get" + StrUtil.upperFirst(param));
+                    Method method = clazz.getMethod("get" + StringUtils.capitalize(param));
                     item.put(param, method.invoke(obj).toString());
                 } catch (Exception ignored) {
                 }

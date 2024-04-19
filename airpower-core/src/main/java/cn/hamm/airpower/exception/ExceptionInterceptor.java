@@ -6,7 +6,6 @@ import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.result.json.JsonData;
-import cn.hutool.jwt.JWTException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -187,18 +186,6 @@ public class ExceptionInterceptor {
             log.error("自定义业务异常", exception);
         }
         return new JsonData(exception.getData(), exception.getMessage(), exception.getCode());
-    }
-
-    /**
-     * <h2>JWT校验失败错误</h2>
-     */
-    @ExceptionHandler(value = {JWTException.class})
-    public Json jwtExceptionHandle(@NotNull JWTException exception) {
-        log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
-            log.error("JWT校验失败错误", exception);
-        }
-        return new Json(Result.UNAUTHORIZED);
     }
 
     /**
