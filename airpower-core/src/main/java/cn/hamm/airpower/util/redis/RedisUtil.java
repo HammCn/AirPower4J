@@ -1,11 +1,12 @@
 package cn.hamm.airpower.util.redis;
 
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.root.RootEntity;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author Hamm
  */
 @Component
+@Slf4j
 public class RedisUtil<E extends RootEntity<E>> {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -125,8 +127,9 @@ public class RedisUtil<E extends RootEntity<E>> {
             if (second > 0) {
                 redisTemplate.expire(key, second, TimeUnit.SECONDS);
             }
-        } catch (Exception e) {
-            throw new RedisConnectionFailureException("Redis服务器连接失败");
+        } catch (Exception exception) {
+            log.error("Redis服务器连接失败", exception);
+            Result.REDIS_ERROR.show();
         }
     }
 
@@ -141,8 +144,9 @@ public class RedisUtil<E extends RootEntity<E>> {
             if (Objects.nonNull(keys)) {
                 redisTemplate.delete(keys);
             }
-        } catch (Exception e) {
-            throw new RedisConnectionFailureException("Redis服务器连接失败");
+        } catch (Exception exception) {
+            log.error("Redis服务器连接失败", exception);
+            Result.REDIS_ERROR.show();
         }
     }
 
@@ -156,9 +160,11 @@ public class RedisUtil<E extends RootEntity<E>> {
         try {
             //noinspection ConstantConditions
             return redisTemplate.getExpire(key, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            throw new RedisConnectionFailureException("Redis服务器连接失败");
+        } catch (Exception exception) {
+            log.error("Redis服务器连接失败", exception);
+            Result.REDIS_ERROR.show();
         }
+        return 0;
     }
 
     /**
@@ -171,7 +177,7 @@ public class RedisUtil<E extends RootEntity<E>> {
         try {
             //noinspection ConstantConditions
             return redisTemplate.hasKey(key);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             return false;
         }
     }
@@ -184,8 +190,9 @@ public class RedisUtil<E extends RootEntity<E>> {
     public final void del(String key) {
         try {
             redisTemplate.delete(key);
-        } catch (Exception e) {
-            throw new RedisConnectionFailureException("Redis服务器连接失败");
+        } catch (Exception exception) {
+            log.error("Redis服务器连接失败", exception);
+            Result.REDIS_ERROR.show();
         }
     }
 
@@ -198,9 +205,11 @@ public class RedisUtil<E extends RootEntity<E>> {
     public final Object get(String key) {
         try {
             return redisTemplate.opsForValue().get(key);
-        } catch (Exception e) {
-            throw new RedisConnectionFailureException("Redis服务器连接失败");
+        } catch (Exception exception) {
+            log.error("Redis服务器连接失败", exception);
+            Result.REDIS_ERROR.show();
         }
+        return null;
     }
 
     /**
@@ -228,8 +237,9 @@ public class RedisUtil<E extends RootEntity<E>> {
             } else {
                 set(key, value);
             }
-        } catch (Exception e) {
-            throw new RedisConnectionFailureException("Redis服务器连接失败");
+        } catch (Exception exception) {
+            log.error("Redis服务器连接失败", exception);
+            Result.REDIS_ERROR.show();
         }
     }
 

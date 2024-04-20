@@ -4,6 +4,7 @@ import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.result.json.JsonData;
 import cn.hamm.airpower.root.RootModel;
 import cn.hamm.airpower.util.ReflectUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,6 +24,7 @@ import java.util.Objects;
  */
 @Aspect
 @Component
+@Slf4j
 public class ResponseAspect {
     @Pointcut("@annotation(cn.hamm.airpower.response.Filter)")
     public void pointCut() {
@@ -95,7 +97,8 @@ public class ResponseAspect {
             for (M item : list) {
                 filterResponseBy(filter, item);
             }
-        } catch (Exception ignored) {
+        } catch (Exception exception) {
+            log.error("过滤数据失败", exception);
         }
         return list;
     }

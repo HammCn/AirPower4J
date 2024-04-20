@@ -388,7 +388,7 @@ public class RootEntityController<
     private E getNewInstance() {
         try {
             return getEntityClass().getConstructor().newInstance();
-        } catch (Exception e) {
+        } catch (Exception exception) {
             throw new ResultException("初始化实体失败");
         }
     }

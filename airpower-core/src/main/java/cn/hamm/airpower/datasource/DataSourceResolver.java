@@ -118,7 +118,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
                             " DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci"
             );
         } catch (Exception exception) {
-            log.error(exception.getMessage());
+            log.error("SQL语句执行失败", exception);
         } finally {
             try {
                 if (statement != null) {
@@ -128,7 +128,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
                     connection.close();
                 }
             } catch (Exception exception) {
-                log.error(exception.getMessage());
+                log.error("数据库连接关闭失败", exception);
             }
         }
     }

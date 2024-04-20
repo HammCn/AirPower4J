@@ -4,11 +4,14 @@ import cn.hamm.airpower.result.IResult;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <h1>简单JSON对象</h1>
@@ -19,6 +22,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class Json implements IResult {
     /**
      * <h2>错误码</h2>
@@ -79,14 +83,15 @@ public class Json implements IResult {
      * @param <E>   目标类
      * @return 目标类的实例
      */
-    public static <E> E parse(String json, Class<E> clazz) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static <E> @Nullable E parse(String json, Class<E> clazz) {
         try {
-            return objectMapper.readValue(json, clazz);
-        } catch (JsonProcessingException e) {
+            return getObjectMapper().readValue(json, clazz);
+        } catch (JsonProcessingException exception) {
+            log.error("JSON字符串转对象失败", exception);
             return null;
         }
     }
+
 
     /**
      * <h2>将指定对象转到JSON字符串</h2>
@@ -94,12 +99,19 @@ public class Json implements IResult {
      * @param object 对象
      * @return 字符串
      */
-    public static String toString(Object object) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static @Nullable String toString(Object object) {
         try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            return "{}";
+            return getObjectMapper().writeValueAsString(object);
+        } catch (JsonProcessingException exception) {
+            log.error("对象转JSON字符串失败", exception);
+            return null;
         }
+    }
+
+    private static ObjectMapper getObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        // 忽略未声明的属性
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
     }
 }

@@ -8,6 +8,7 @@ import cn.hamm.airpower.result.json.JsonData;
 import cn.hamm.airpower.security.Permission;
 import cn.hamm.airpower.security.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Permission(login = false)
 @RestController
 @RequestMapping("")
+@Slf4j
 public class RootController implements IAction {
     /**
      * <h2>当前请求的实例</h2>
@@ -83,7 +85,8 @@ public class RootController implements IAction {
         try {
             String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
             return securityUtil.getUserIdFromAccessToken(accessToken);
-        } catch (Exception ignored) {
+        } catch (Exception exception) {
+            log.error("获取当前用户信息失败", exception);
             Result.UNAUTHORIZED.show("获取当前用户信息失败,请重新登录后尝试");
         }
         return 0L;

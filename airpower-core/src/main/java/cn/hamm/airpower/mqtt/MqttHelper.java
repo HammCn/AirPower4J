@@ -1,6 +1,7 @@
 package cn.hamm.airpower.mqtt;
 
 import cn.hamm.airpower.config.MqttConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.UUID;
  * @author Hamm
  */
 @Configuration
+@Slf4j
 public class MqttHelper {
     @Autowired
     private MqttConfig mqttConfig;
@@ -78,7 +80,8 @@ public class MqttHelper {
             token.waitForCompletion();
             client.disconnect();
             client.close();
-        } catch (MqttException ignored) {
+        } catch (MqttException exception) {
+            log.error("MQTT发布失败", exception);
         }
     }
 }

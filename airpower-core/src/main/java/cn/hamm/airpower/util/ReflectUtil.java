@@ -275,7 +275,7 @@ public class ReflectUtil {
         try {
             Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
             return getDocument(superMethod, superClass);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException exception) {
             superClass = superClass.getSuperclass();
             return getDocument(method, superClass);
         }

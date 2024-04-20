@@ -4,6 +4,7 @@ import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.ResultException;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +21,7 @@ import java.util.Base64;
  *
  * @author Hamm
  */
+@Slf4j
 @Accessors(chain = true)
 public class RsaHelper {
     /**
@@ -56,7 +58,8 @@ public class RsaHelper {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
             PublicKey publicKey = getPublicKey(this.publicKey);
             return encodeByKey(sourceContent, publicKey, blockSize);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            log.error("公钥加密失败", exception);
             throw new ResultException(Result.ERROR);
         }
     }
@@ -73,7 +76,8 @@ public class RsaHelper {
             int blockSize = CRYPT_KEY_SIZE / 8;
             PrivateKey privateKey = getPrivateKey(this.privateKey);
             return decodeByKey(encryptedContent, privateKey, blockSize);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            log.error("私钥解密失败", exception);
             throw new ResultException(Result.ERROR);
         }
     }
@@ -89,7 +93,8 @@ public class RsaHelper {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
             PrivateKey privateKey = getPrivateKey(this.privateKey);
             return encodeByKey(sourceContent, privateKey, blockSize);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            log.error("私钥加密失败", exception);
             throw new ResultException(Result.ERROR);
         }
     }
@@ -106,7 +111,8 @@ public class RsaHelper {
             int blockSize = CRYPT_KEY_SIZE / 8;
             PublicKey publicKey = getPublicKey(this.publicKey);
             return decodeByKey(encryptedContent, publicKey, blockSize);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            log.error("公钥解密失败", exception);
             throw new ResultException(Result.ERROR);
         }
     }
@@ -119,18 +125,14 @@ public class RsaHelper {
      * @param blockSize        分块大小
      * @return 明文
      */
-    private String decodeByKey(String encryptedContent, Key key, int blockSize) {
+    private String decodeByKey(String encryptedContent, Key key, int blockSize) throws Exception {
         byte[] srcBytes = Base64.getDecoder().decode(encryptedContent);
         Cipher deCipher;
-        try {
-            deCipher = Cipher.getInstance(CRYPT_METHOD);
-            deCipher.init(Cipher.DECRYPT_MODE, key);
-            byte[] resultBytes;
-            resultBytes = rsaDoFinal(deCipher, srcBytes, blockSize);
-            return new String(resultBytes);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        deCipher = Cipher.getInstance(CRYPT_METHOD);
+        deCipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] resultBytes;
+        resultBytes = rsaDoFinal(deCipher, srcBytes, blockSize);
+        return new String(resultBytes);
     }
 
     /**
@@ -141,18 +143,14 @@ public class RsaHelper {
      * @param blockSize     区块大小
      * @return 密文
      */
-    private String encodeByKey(String sourceContent, Key key, int blockSize) {
+    private String encodeByKey(String sourceContent, Key key, int blockSize) throws Exception {
         byte[] srcBytes = sourceContent.getBytes();
         Cipher cipher;
-        try {
-            cipher = Cipher.getInstance(CRYPT_METHOD);
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            byte[] resultBytes;
-            resultBytes = rsaDoFinal(cipher, srcBytes, blockSize);
-            return Base64.getEncoder().encodeToString(resultBytes);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        cipher = Cipher.getInstance(CRYPT_METHOD);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] resultBytes;
+        resultBytes = rsaDoFinal(cipher, srcBytes, blockSize);
+        return Base64.getEncoder().encodeToString(resultBytes);
     }
 
     /**

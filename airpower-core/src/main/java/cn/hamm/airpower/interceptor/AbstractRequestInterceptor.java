@@ -141,7 +141,8 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
                 requestBody.append(line);
             }
             return requestBody.toString();
-        } catch (Exception ignored) {
+        } catch (Exception exception) {
+            log.error("获取请求包体失败", exception);
         }
         return "";
 

@@ -52,7 +52,7 @@ public class SecurityUtil {
         try {
             getUserIdFromAccessToken(accessToken);
             return createAccessToken(userId);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             // 不存在 存储
             redisUtil.set(ACCESS_TOKEN_PREFIX + accessToken, userId, globalConfig.getAuthorizeExpireTime());
             return accessToken;

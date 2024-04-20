@@ -7,6 +7,7 @@ import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.util.ReflectUtil;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.Field;
@@ -18,6 +19,7 @@ import java.util.*;
  * @author Hamm
  */
 @Getter
+@Slf4j
 @SuppressWarnings("unchecked")
 public class RootModel<M extends RootModel<M>> implements IAction {
     /**
@@ -32,8 +34,9 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             T target = clazz.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(this, target);
             return target;
-        } catch (Exception e) {
-            Result.ERROR.show(e.getMessage());
+        } catch (Exception exception) {
+            log.error("复制到实例失败", exception);
+            Result.ERROR.show(exception.getMessage());
         }
         return null;
     }
@@ -225,8 +228,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             if (Objects.nonNull(fieldValue)) {
                 field.set(this, ((RootModel<?>) fieldValue).filterResponseDataBy(WhenPayLoad.class));
             }
-        } catch (IllegalAccessException | ClassCastException e) {
-            // 发生点小问题...
+        } catch (IllegalAccessException | ClassCastException exception) {
+            log.error("过滤数据异常", exception);
         }
     }
 
@@ -240,8 +243,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         try {
             field.setAccessible(true);
             field.set(this, null);
-        } catch (IllegalAccessException e) {
-            // 发生了点小问题
+        } catch (IllegalAccessException exception) {
+            log.error("清空属性数据失败", exception);
         }
     }
 }

@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.result.Result;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -14,6 +15,7 @@ import java.util.Objects;
  *
  * @author Hamm
  */
+@Slf4j
 public class RequestUtil {
     /**
      * <h2>多IP分割字符</h2>
@@ -94,12 +96,14 @@ public class RequestUtil {
                     if (isValidAddress(ipAddress)) {
                         return ipAddress;
                     }
-                } catch (UnknownHostException e) {
+                } catch (UnknownHostException exception) {
+                    log.error("获取IP地址失败", exception);
                     Result.FORBIDDEN.show(ERROR_MESSAGE);
                 }
             }
             return Constant.LOCAL_IP_ADDRESS;
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            log.error("获取IP地址失败", exception);
             Result.FORBIDDEN.show(ERROR_MESSAGE);
         }
         return "";

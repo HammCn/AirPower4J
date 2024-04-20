@@ -1,16 +1,17 @@
 package cn.hamm.airpower.interceptor.document;
 
 import cn.hamm.airpower.annotation.ReadOnly;
+import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.util.DictionaryUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import cn.hamm.airpower.validate.phone.Phone;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -28,6 +29,7 @@ import java.util.*;
  */
 @Data
 @Accessors(chain = true)
+@Slf4j
 public class ApiDocument {
     private static final String PACKAGE_SPLIT = ".";
 
@@ -62,15 +64,7 @@ public class ApiDocument {
 
         apiDocument.setRequestParamList(getRequestParamList(clazz, method));
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-
-        String json = "{}";
-        try {
-            json = objectMapper.writeValueAsString(apiDocument);
-        } catch (Exception ignored) {
-
-        }
+        String json = Json.toString(apiDocument);
 
 
         String html = """
@@ -239,8 +233,8 @@ public class ApiDocument {
         try {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(html);
-        } catch (IOException ignored) {
-
+        } catch (IOException exception) {
+            log.error("输出文档失败", exception);
         }
     }
 
@@ -359,15 +353,8 @@ public class ApiDocument {
 
             apiDocument.setRequestParamList(params);
 
-            ObjectMapper objectMapper = new ObjectMapper();
 
-
-            String json = "{}";
-            try {
-                json = objectMapper.writeValueAsString(apiDocument);
-            } catch (Exception ignored) {
-
-            }
+            String json = Json.toString(apiDocument);
 
             String html = """
                     <!DOCTYPE html>
@@ -524,11 +511,11 @@ public class ApiDocument {
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(html);
                 response.flushBuffer();
-            } catch (IOException ignored) {
-
+            } catch (IOException exception) {
+                log.error("输出文档失败", exception);
             }
             return true;
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
             return false;
         }
     }

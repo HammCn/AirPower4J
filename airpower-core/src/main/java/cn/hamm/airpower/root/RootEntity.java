@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Length;
@@ -97,6 +98,12 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @Description("修改时间结束")
     @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
     private Long updateTimeTo;
+
+    @Transient
+    @Getter
+    @Setter
+    private String text;
+
 
     /**
      * <h2>设置ID</h2>

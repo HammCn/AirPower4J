@@ -2,6 +2,7 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.interfaces.IDictionary;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  *
  * @author Hamm
  */
+@Slf4j
 public class DictionaryUtil {
     /**
      * <h2>查询指定key的枚举字典项目</h2>
@@ -69,7 +71,8 @@ public class DictionaryUtil {
                 try {
                     Method method = clazz.getMethod("get" + StringUtils.capitalize(param));
                     item.put(param, method.invoke(obj).toString());
-                } catch (Exception ignored) {
+                } catch (Exception exception) {
+                    log.error("获取枚举字典数据失败", exception);
                 }
             }
             mapList.add(item);

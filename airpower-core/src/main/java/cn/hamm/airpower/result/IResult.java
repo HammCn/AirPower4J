@@ -109,6 +109,7 @@ public interface IResult {
      */
     default void whenNull(Object obj, String message) {
         when(Objects.isNull(obj), message);
+        assert obj != null;
     }
 
     /**

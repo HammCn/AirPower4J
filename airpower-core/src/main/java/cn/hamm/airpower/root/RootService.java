@@ -460,7 +460,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             try {
                 field.setAccessible(true);
                 field.set(entity, null);
-            } catch (Exception e) {
+            } catch (Exception exception) {
+                log.error("忽略只读属性失败", exception);
                 Result.ERROR.show();
             }
         }
@@ -587,7 +588,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     // 是修改 且查到的是自己 就不校验重复了
                     continue;
                 }
-            } catch (Exception e) {
+            } catch (Exception exception) {
+                log.error("唯一校验失败", exception);
                 Result.ERROR.show();
             }
             Result.FORBIDDEN_EXIST.show(fieldName + "(" + fieldValue.toString() + ")已经存在！");
@@ -602,7 +604,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private E getNewInstance() {
         try {
             return getEntityClass().getConstructor().newInstance();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             throw new ResultException("初始化实体失败");
         }
     }
@@ -768,7 +770,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 }
                 predicateList.add(predicate);
             } catch (IllegalAccessException exception) {
-                log.error(exception.getMessage());
+                log.error("读取属性失败,无法添加查询条件", exception);
             }
         }
         return predicateList;
