@@ -99,12 +99,12 @@ public class Json implements IResult {
      * @param object 对象
      * @return 字符串
      */
-    public static @Nullable String toString(Object object) {
+    public static String toString(Object object) {
         try {
             return getObjectMapper().writeValueAsString(object);
         } catch (JsonProcessingException exception) {
             log.error("对象转JSON字符串失败", exception);
-            return null;
+            return "";
         }
     }
 
