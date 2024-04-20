@@ -11,7 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * <h1>简单JSON对象</h1>
@@ -83,12 +82,15 @@ public class Json implements IResult {
      * @param <E>   目标类
      * @return 目标类的实例
      */
-    public static <E> @Nullable E parse(String json, Class<E> clazz) {
+    public static <E> E parse(String json, Class<E> clazz) {
         try {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
             log.error("JSON字符串转对象失败", exception);
-            return null;
+            Result.ERROR.show("JSON字符串转对象失败(" + exception.getMessage() + ")");
+            // 上面异常已经抛掉，这个递归不会执行。只是为了稳住返回值
+            log.error("THIS LINE WILL NEVER BE EXECUTED");
+            return parse(json, clazz);
         }
     }
 
