@@ -107,6 +107,11 @@ public class Json implements IResult {
         }
     }
 
+    /**
+     * <h2>获取一个配置后的ObjectMapper</h2>
+     *
+     * @return ObjectMapper
+     */
     private static ObjectMapper getObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         // 忽略未声明的属性
