@@ -19,6 +19,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -124,9 +125,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #updateWithNull(E)
      */
     public final void update(E source) {
-        Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         source = beforeUpdate(source);
-        saveToDatabase(source);
+        updateToDatabase(source);
         E finalSource = source;
         tryCatch(
                 () -> afterUpdate(finalSource.getId(), finalSource),
@@ -147,7 +147,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void updateWithNull(E source) {
         Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         source = beforeUpdate(source);
-        saveToDatabase(source, true);
+        updateToDatabase(source, true);
         E finalSource = source;
         tryCatch(
                 () -> afterUpdate(finalSource.getId(), finalSource),
@@ -157,6 +157,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
 
     /**
      * <h2>🟢修改后置方法</h2>
+     *
+     * <p>
+     * 🔴请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以避免循环调用
+     * </p>
+     * <p>
+     * 🟢如需再次保存，请调用 {@link #updateToDatabase(E)}
+     * </p>
      *
      * @param id     主键ID
      * @param source 原始实体
@@ -483,6 +490,32 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
             }
         }
         return entity;
+    }
+
+    /**
+     * <h2>🔴更新到数据库</h2>
+     *
+     * @param source 原始实体
+     * @apiNote 🔴请注意，此方法不会触发前后置
+     * @see #update(E)
+     * @see #updateWithNull(E)
+     */
+    protected final void updateToDatabase(@NotNull E source) {
+        updateToDatabase(source, false);
+    }
+
+    /**
+     * <h2>🔴更新到数据库</h2>
+     *
+     * @param source   原始实体
+     * @param withNull 是否更新空值
+     * @apiNote 🔴请注意，此方法不会触发前后置
+     * @see #update(E)
+     * @see #updateWithNull(E)
+     */
+    protected final void updateToDatabase(E source, boolean withNull) {
+        Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        saveToDatabase(source, withNull);
     }
 
     /**
