@@ -1,5 +1,7 @@
 package cn.hamm.airpower.result;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.Objects;
 
 /**
@@ -97,6 +99,7 @@ public interface IResult {
      *
      * @param obj 被验证的数据
      */
+    @Contract("null -> fail")
     default void whenNull(Object obj) {
         whenNull(obj, getMessage());
     }
@@ -107,9 +110,9 @@ public interface IResult {
      * @param obj     被验证的数据
      * @param message 返回信息
      */
+    @Contract("null, _ -> fail")
     default void whenNull(Object obj, String message) {
         when(Objects.isNull(obj), message);
-        assert obj != null;
     }
 
     /**

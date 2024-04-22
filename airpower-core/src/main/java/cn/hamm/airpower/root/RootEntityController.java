@@ -66,10 +66,12 @@ public class RootEntityController<
     public JsonData add(@RequestBody @Validated(WhenAdd.class) E entity) {
         checkApiAvailableStatus(Api.Add);
         service.ignoreReadOnlyFields(entity);
-        long id = service.add(beforeAdd(entity));
-        afterAdd(id, entity);
-        afterSaved(id, entity);
-        return jsonId(id, "添加成功");
+        long insertId = service.add(beforeAdd(entity));
+        tryCatch(
+                () -> afterAdd(insertId, entity),
+                () -> afterSaved(insertId, entity)
+        );
+        return jsonId(insertId, "添加成功");
     }
 
     /**
@@ -85,10 +87,13 @@ public class RootEntityController<
     @Filter(WhenGetDetail.class)
     public JsonData update(@RequestBody @Validated(WhenUpdate.class) E entity) {
         checkApiAvailableStatus(Api.Update);
+        long updateId = entity.getId();
         service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)));
-        afterUpdate(entity.getId(), entity);
-        afterSaved(entity.getId(), entity);
-        return jsonId(entity.getId(), "修改成功");
+        tryCatch(
+                () -> afterUpdate(updateId, entity),
+                () -> afterSaved(updateId, entity)
+        );
+        return jsonId(updateId, "修改成功");
     }
 
     /**
@@ -105,7 +110,9 @@ public class RootEntityController<
         long deleteId = entity.getId();
         beforeDelete(deleteId);
         service.delete(deleteId);
-        afterDelete(deleteId);
+        tryCatch(
+                () -> afterDelete(deleteId)
+        );
         return jsonId(deleteId, "删除成功");
     }
 
@@ -136,7 +143,9 @@ public class RootEntityController<
         checkApiAvailableStatus(Api.Disable);
         beforeDisable(entity.getId());
         service.disable(entity.getId());
-        afterDisable(entity.getId());
+        tryCatch(
+                () -> afterDisable(entity.getId())
+        );
         return jsonId(entity.getId(), "禁用成功");
     }
 
@@ -153,7 +162,9 @@ public class RootEntityController<
         checkApiAvailableStatus(Api.Enable);
         beforeEnable(entity.getId());
         service.enable(entity.getId());
-        afterEnable(entity.getId());
+        tryCatch(
+                () -> afterEnable(entity.getId())
+        );
         return jsonId(entity.getId(), "启用成功");
     }
 

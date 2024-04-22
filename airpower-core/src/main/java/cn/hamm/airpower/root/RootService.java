@@ -4,6 +4,7 @@ import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
 import cn.hamm.airpower.query.QueryPageRequest;
@@ -18,6 +19,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -42,7 +44,7 @@ import java.util.*;
  */
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
-public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
+public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> implements ITry {
     @Autowired
     protected R repository;
 
@@ -85,7 +87,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             source.setRemark("");
         }
         long id = saveToDatabase(source);
-        afterAdd(id, source);
+        E finalSource = source;
+        tryCatch(
+                () -> afterAdd(id, finalSource)
+        );
         return id;
     }
 
@@ -122,8 +127,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         source = beforeUpdate(source);
         saveToDatabase(source);
-        afterUpdate(source.getId(), source);
-        afterSaved(source.getId(), source);
+        E finalSource = source;
+        tryCatch(
+                () -> afterUpdate(finalSource.getId(), finalSource),
+                () -> afterSaved(finalSource.getId(), finalSource)
+        );
     }
 
     /**
@@ -140,8 +148,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         source = beforeUpdate(source);
         saveToDatabase(source, true);
-        afterUpdate(source.getId(), source);
-        afterSaved(source.getId(), source);
+        E finalSource = source;
+        tryCatch(
+                () -> afterUpdate(finalSource.getId(), finalSource),
+                () -> afterSaved(finalSource.getId(), finalSource)
+        );
     }
 
     /**
@@ -182,7 +193,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void disable(long id) {
         beforeDisable(id);
         disableById(id);
-        afterDisable(id);
+        tryCatch(
+                () -> afterDisable(id)
+        );
     }
 
     /**
@@ -211,7 +224,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void enable(long id) {
         beforeEnable(id);
         enableById(id);
-        afterEnable(id);
+        tryCatch(
+                () -> afterEnable(id)
+        );
     }
 
     /**
@@ -240,7 +255,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void delete(long id) {
         beforeDelete(id);
         deleteById(id);
-        afterDelete(id);
+        tryCatch(
+                () -> afterDelete(id)
+        );
     }
 
     /**
@@ -368,7 +385,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @apiNote 查不到返回null，不抛异常
      * @see #get(long)
      */
-    public final E getMaybeNull(long id) {
+    public final @Nullable E getMaybeNull(long id) {
         return afterGet(getByIdMaybeNull(id));
     }
 
@@ -491,7 +508,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 实体
      * @apiNote 查不到返回null，不抛异常
      */
-    private E getByIdMaybeNull(long id) {
+    private @Nullable E getByIdMaybeNull(long id) {
         try {
             return get(id);
         } catch (Exception exception) {

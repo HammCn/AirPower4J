@@ -2,6 +2,7 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.interfaces.IAction;
+import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.result.Result;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.result.json.JsonData;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("")
 @Slf4j
-public class RootController implements IAction {
+public class RootController implements IAction, ITry {
     /**
      * <h2>当前请求的实例</h2>
      */
