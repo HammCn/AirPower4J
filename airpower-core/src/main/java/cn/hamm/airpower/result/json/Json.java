@@ -87,10 +87,7 @@ public class Json implements IResult {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
             log.error("JSON字符串转对象失败", exception);
-            Result.ERROR.show("JSON字符串转对象失败(" + exception.getMessage() + ")");
-            // 上面异常已经抛掉，这个递归不会执行。只是为了稳住返回值
-            log.error("THIS LINE WILL NEVER BE EXECUTED");
-            return parse(json, clazz);
+            throw new ResultException(Result.ERROR.getCode(), "JSON字符串转对象失败(" + exception.getMessage() + ")");
         }
     }
 

@@ -5,6 +5,7 @@ import cn.hamm.airpower.annotation.Expose;
 import cn.hamm.airpower.annotation.Payload;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.result.Result;
+import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.util.ReflectUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +37,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return target;
         } catch (Exception exception) {
             log.error("复制到实例失败", exception);
-            Result.ERROR.show(exception.getMessage());
+            throw new ResultException(Result.ERROR.getCode(), exception.getMessage());
         }
-        return null;
     }
 
     /**

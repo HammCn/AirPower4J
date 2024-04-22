@@ -2,6 +2,7 @@ package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.result.Result;
+import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.util.RandomUtil;
 import cn.hamm.airpower.util.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,12 @@ public class SecurityUtil {
      *
      * @param accessToken accessToken
      */
-    public Long getUserIdFromAccessToken(String accessToken) {
+    public long getUserIdFromAccessToken(String accessToken) {
         Object data = redisUtil.get(ACCESS_TOKEN_PREFIX + accessToken);
         if (Objects.nonNull(data)) {
-            return Long.valueOf(data.toString());
+            return Long.parseLong(data.toString());
         }
-        Result.UNAUTHORIZED.show("获取身份信息失败,请重新登录!");
-        return null;
+        throw new ResultException(Result.UNAUTHORIZED);
     }
 
     /**

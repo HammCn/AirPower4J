@@ -23,7 +23,7 @@ public enum Result implements IResult {
     PARAM_INVALID(4002, "无效的参数"),
 
     // 401 需要登录代码
-    UNAUTHORIZED(401, "身份验证失败,请重新登录"),
+    UNAUTHORIZED(401, "获取身份信息失败,请重新登录!"),
 
     // 403 无权限代码
     FORBIDDEN(403, "无权限"),
