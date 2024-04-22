@@ -19,7 +19,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -83,6 +82,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     public final long add(E source) {
         source = beforeAdd(source);
+        Result.ERROR.whenNull(source, "新增的数据不能为空");
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark("");
@@ -500,7 +500,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #update(E)
      * @see #updateWithNull(E)
      */
-    protected final void updateToDatabase(@NotNull E source) {
+    protected final void updateToDatabase(E source) {
         updateToDatabase(source, false);
     }
 
@@ -514,6 +514,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #updateWithNull(E)
      */
     protected final void updateToDatabase(E source, boolean withNull) {
+        Result.ERROR.whenNull(source, "更新的数据不能为空");
         Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
         saveToDatabase(source, withNull);
     }
