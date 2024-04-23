@@ -70,7 +70,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param field  字段
      */
     private void excludeBy(@NotNull Class<?> filter, @NotNull Field field) {
-        Exclude fieldExclude = field.getAnnotation(Exclude.class);
+        Exclude fieldExclude = ReflectUtil.getAnnotation(Exclude.class, field);
         if (Objects.isNull(fieldExclude)) {
             filterFieldPayload(field);
             return;

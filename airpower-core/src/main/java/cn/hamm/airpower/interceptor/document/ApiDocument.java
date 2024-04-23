@@ -283,7 +283,7 @@ public class ApiDocument {
     private static List<ApiRequestParam> getFieldList(List<Field> fields, Class<?> currentClass, Class<?> action) {
         List<ApiRequestParam> params = new ArrayList<>();
         for (Field field : fields) {
-            ReadOnly readOnly = field.getAnnotation(ReadOnly.class);
+            ReadOnly readOnly = ReflectUtil.getAnnotation(ReadOnly.class, field);
             if (Objects.nonNull(readOnly)) {
                 continue;
             }
@@ -307,10 +307,10 @@ public class ApiDocument {
                 }
             }
 
-            jakarta.validation.constraints.NotNull notNull = field.getAnnotation(
-                    jakarta.validation.constraints.NotNull.class
+            jakarta.validation.constraints.NotNull notNull = ReflectUtil.getAnnotation(
+                    jakarta.validation.constraints.NotNull.class, field
             );
-            NotBlank notBlank = field.getAnnotation(NotBlank.class);
+            NotBlank notBlank = ReflectUtil.getAnnotation(NotBlank.class, field);
 
             if (!action.equals(Void.class)) {
                 if (Objects.nonNull(notBlank) && Arrays.stream(notBlank.groups()).toList().contains(action)) {
@@ -321,19 +321,19 @@ public class ApiDocument {
                 }
             }
 
-            Dictionary dictionary = field.getAnnotation(Dictionary.class);
+            Dictionary dictionary = ReflectUtil.getAnnotation(Dictionary.class, field);
             if (Objects.nonNull(dictionary) && Arrays.stream(dictionary.groups()).toList().contains(action)) {
                 apiRequestParam.setDictionary(DictionaryUtil.getDictionaryList(dictionary.value()));
             }
 
-            Phone phone = field.getAnnotation(Phone.class);
+            Phone phone = ReflectUtil.getAnnotation(Phone.class, field);
             if (Objects.nonNull(phone) && Arrays.stream(phone.groups()).toList().contains(action)) {
                 if (phone.mobile() || phone.tel()) {
                     apiRequestParam.setPhone(true);
                 }
             }
 
-            Email email = field.getAnnotation(Email.class);
+            Email email = ReflectUtil.getAnnotation(Email.class, field);
             if (Objects.nonNull(email) && Arrays.stream(email.groups()).toList().contains(action)) {
                 apiRequestParam.setEmail(true);
             }

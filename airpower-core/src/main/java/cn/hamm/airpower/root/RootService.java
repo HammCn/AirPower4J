@@ -465,7 +465,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     protected final E ignoreReadOnlyFields(E entity) {
         ReflectUtil.getFieldList(getEntityClass()).stream()
-                .filter(field -> Objects.nonNull(field.getAnnotation(ReadOnly.class)))
+                .filter(field -> Objects.nonNull(ReflectUtil.getAnnotation(ReadOnly.class, field)))
                 .forEach(field -> ReflectUtil.clearFieldValue(entity, field));
         return entity;
     }
@@ -596,7 +596,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
         for (Field field : fields) {
             String fieldName = ReflectUtil.getDescription(field);
-            Column annotation = field.getAnnotation(Column.class);
+            Column annotation = ReflectUtil.getAnnotation(Column.class, field);
             if (Objects.isNull(annotation)) {
                 // 不是数据库列 不校验
                 continue;
@@ -746,7 +746,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 空字符串 跳过
                 continue;
             }
-            Search searchMode = field.getAnnotation(Search.class);
+            Search searchMode = ReflectUtil.getAnnotation(Search.class, field);
             if (Objects.isNull(searchMode)) {
                 // 没有配置查询注解 跳过
                 continue;
