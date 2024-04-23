@@ -6,6 +6,8 @@ import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.root.RootController;
 import cn.hamm.airpower.root.RootEntity;
 import cn.hamm.airpower.root.RootModel;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -22,7 +24,55 @@ import java.util.Objects;
  * @author Hamm.cn
  * @see IDictionary
  */
+@Slf4j
 public class ReflectUtil {
+    /**
+     * <h2>获取对象指定属性的值</h2>
+     *
+     * @param object 对象
+     * @param field  属性
+     * @return 值
+     */
+    public static @Nullable Object getFieldValue(Object object, Field field) {
+        try {
+            field.setAccessible(true);
+            return field.get(object);
+        } catch (IllegalAccessException exception) {
+            log.error("反射获取值失败", exception);
+            return null;
+        } finally {
+            field.setAccessible(false);
+        }
+    }
+
+    /**
+     * <h2>设置对象指定属性的值</h2>
+     *
+     * @param object 对象
+     * @param field  属性
+     * @param value  值
+     */
+    public static void setFieldValue(Object object, Field field, Object value) {
+        try {
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (IllegalAccessException exception) {
+            log.error("反射设置值失败", exception);
+        } finally {
+            field.setAccessible(false);
+        }
+    }
+
+    /**
+     * <h2>清空对象指定属性的值</h2>
+     *
+     * @param object 对象
+     * @param field  属性
+     */
+    public static void clearFieldValue(Object object, Field field) {
+        setFieldValue(object, field, null);
+    }
+
     /**
      * <h2>判断是否是根类</h2>
      *
@@ -31,8 +81,8 @@ public class ReflectUtil {
      */
     public static boolean isTheRootClass(Class<?> clazz) {
         return clazz.getName().equals(RootController.class.getName()) ||
-               clazz.getName().equals(RootEntity.class.getName()) ||
-               clazz.getName().equals(Object.class.getName());
+                clazz.getName().equals(RootEntity.class.getName()) ||
+                clazz.getName().equals(Object.class.getName());
     }
 
     /**
