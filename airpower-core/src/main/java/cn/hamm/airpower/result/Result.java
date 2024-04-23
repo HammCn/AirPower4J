@@ -7,6 +7,7 @@ import lombok.Getter;
  * <h1>系统异常代码字典</h1>
  *
  * @author Hamm.cn
+ * @apiNote 如需自定义业务异常，可自行创建一个新业务异常枚举类并实现 {@link IResult} 接口即可。
  */
 @SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
 @Getter

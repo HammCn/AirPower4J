@@ -30,6 +30,10 @@ import java.util.Objects;
  * <h1>全局权限拦截器抽象类</h1>
  *
  * @author Hamm.cn
+ * @see #checkPermissionAccess(Long, String, HttpServletRequest)
+ * @see #beforeHandleRequest(HttpServletRequest, HttpServletResponse, Class, Method)
+ * @see #getRequestBody(HttpServletRequest)
+ * @see #setShareData(String, Object)
  */
 @Component
 @Slf4j
@@ -94,7 +98,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param request            请求对象
      * @return 验证结果
      */
-    public abstract boolean checkPermissionAccess(Long userId, String permissionIdentity, HttpServletRequest request);
+    protected abstract boolean checkPermissionAccess(Long userId, String permissionIdentity, HttpServletRequest request);
 
     /**
      * <h2>请求拦截器前置方法</h2>
