@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * <h1>权限处理助手</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public class AccessUtil {
     /**

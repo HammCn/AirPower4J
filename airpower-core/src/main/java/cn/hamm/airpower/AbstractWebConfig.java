@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * <h1>全局配置</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Configuration
 public abstract class AbstractWebConfig implements WebMvcConfigurer {

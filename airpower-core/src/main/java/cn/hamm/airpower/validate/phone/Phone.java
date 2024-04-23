@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 /**
  * <h1>标记电话验证 座机或手机</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  * @apiNote 请注意，请自行做非空验证
  */
 @Constraint(validatedBy = PhoneAnnotationValidator.class)

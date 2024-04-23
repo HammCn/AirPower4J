@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 /**
  * <h1>带DATA返回的JSON对象</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

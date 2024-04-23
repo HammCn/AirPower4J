@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * <h1>全局默认配置文件</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Component
 @Data

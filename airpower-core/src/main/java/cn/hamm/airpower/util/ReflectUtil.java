@@ -2,6 +2,7 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.annotation.Document;
+import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.root.RootController;
 import cn.hamm.airpower.root.RootEntity;
 import cn.hamm.airpower.root.RootModel;
@@ -18,7 +19,8 @@ import java.util.Objects;
 /**
  * <h1>反射工具类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
+ * @see IDictionary
  */
 public class ReflectUtil {
     /**
@@ -29,8 +31,8 @@ public class ReflectUtil {
      */
     public static boolean isTheRootClass(Class<?> clazz) {
         return clazz.getName().equals(RootController.class.getName()) ||
-                clazz.getName().equals(RootEntity.class.getName()) ||
-                clazz.getName().equals(Object.class.getName());
+               clazz.getName().equals(RootEntity.class.getName()) ||
+               clazz.getName().equals(Object.class.getName());
     }
 
     /**
@@ -82,6 +84,7 @@ public class ReflectUtil {
      *
      * @param clazz 类
      * @return 描述
+     * @see Description
      */
     public static String getDescription(Class<?> clazz) {
         Description description = clazz.getAnnotation(Description.class);
@@ -100,6 +103,7 @@ public class ReflectUtil {
      *
      * @param method 方法
      * @return 描述
+     * @see Description
      */
     public static String getDescription(Method method) {
         return getDescription(method, method.getDeclaringClass());
@@ -110,6 +114,7 @@ public class ReflectUtil {
      *
      * @param field 字段
      * @return 描述
+     * @see Description
      */
     public static String getDescription(Field field) {
         Description description = field.getAnnotation(Description.class);
@@ -121,6 +126,7 @@ public class ReflectUtil {
      *
      * @param clazz 类
      * @return 文档
+     * @see Document
      */
     public static String getDocument(Class<?> clazz) {
         Document document = clazz.getAnnotation(Document.class);
@@ -139,6 +145,7 @@ public class ReflectUtil {
      *
      * @param method 方法
      * @return 文档
+     * @see Document
      */
     public static String getDocument(Method method) {
         return getDocument(method, method.getDeclaringClass());
@@ -150,6 +157,7 @@ public class ReflectUtil {
      *
      * @param field 字段
      * @return 文档
+     * @see Document
      */
     public static String getDocument(Field field) {
         Document document = field.getAnnotation(Document.class);
@@ -199,7 +207,7 @@ public class ReflectUtil {
      * @param annotationClass 注解类
      * @param method          方法
      * @param currentClass    所在类
-     * @return PostMapping
+     * @return 装配的注解
      */
     private static <A extends Annotation> A getAnnotation(Class<A> annotationClass, Method method, Class<?> currentClass) {
         A annotation = method.getAnnotation(annotationClass);
@@ -231,6 +239,7 @@ public class ReflectUtil {
      * @param method       方法
      * @param currentClass 所在类
      * @return 描述
+     * @see Description
      */
     private static String getDescription(Method method, Class<?> currentClass) {
         Description description = method.getAnnotation(Description.class);
@@ -258,7 +267,8 @@ public class ReflectUtil {
      *
      * @param method       方法
      * @param currentClass 所在类
-     * @return 描述
+     * @return 装配的文档内容
+     * @see Document
      */
     private static String getDocument(Method method, Class<?> currentClass) {
         Document document = method.getAnnotation(Document.class);

@@ -6,7 +6,7 @@ import lombok.Getter;
 /**
  * <h1>系统异常代码字典</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
 @Getter

@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * <h1>返回数据的接口</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public interface IResult {
     /**

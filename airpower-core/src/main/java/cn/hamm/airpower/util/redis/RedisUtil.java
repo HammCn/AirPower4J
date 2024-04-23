@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * <h1>Redis封装类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Component
 @Slf4j

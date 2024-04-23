@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * <h1>简单JSON对象</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Data
 @Accessors(chain = true)

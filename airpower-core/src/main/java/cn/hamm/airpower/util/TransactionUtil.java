@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * <h1>事务助手类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Service
 public class TransactionUtil {

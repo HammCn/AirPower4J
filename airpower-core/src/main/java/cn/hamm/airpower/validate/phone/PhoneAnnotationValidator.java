@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 /**
  * <h1>电话验证实现类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public class PhoneAnnotationValidator implements ConstraintValidator<Phone, String> {
     /**

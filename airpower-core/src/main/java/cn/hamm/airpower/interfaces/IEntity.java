@@ -3,7 +3,7 @@ package cn.hamm.airpower.interfaces;
 /**
  * <h1>标准实体接口</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public interface IEntity<E extends IEntity<E>> {
     /**

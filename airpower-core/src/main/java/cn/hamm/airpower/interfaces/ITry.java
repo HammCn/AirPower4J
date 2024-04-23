@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * <h1>异常代码执行接口</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public interface ITry {
     /**

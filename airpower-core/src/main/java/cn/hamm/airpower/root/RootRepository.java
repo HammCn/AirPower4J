@@ -8,7 +8,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * <h1>数据源接口</h1>
  *
  * @param <E> 实体
- * @author Hamm
+ * @author Hamm.cn
  */
 @NoRepositoryBean
 public interface RootRepository<E extends RootEntity<E>> extends JpaRepository<E, Long>, JpaSpecificationExecutor<E> {

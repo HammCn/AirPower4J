@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * <h1>枚举字典助手</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Slf4j
 public class DictionaryUtil {

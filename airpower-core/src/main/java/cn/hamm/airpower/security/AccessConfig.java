@@ -3,7 +3,7 @@ package cn.hamm.airpower.security;
 /**
  * <h1>权限控制配置类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public class AccessConfig {
     /**

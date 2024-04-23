@@ -15,7 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 /**
  * <h1>用户授权处理类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Component
 public class AccessResolver implements HandlerMethodArgumentResolver {

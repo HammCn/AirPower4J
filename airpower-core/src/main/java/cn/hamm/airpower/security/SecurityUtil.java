@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * <h1>安全助手类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Component
 public class SecurityUtil {

@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * <h1>请求助手类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Slf4j
 public class RequestUtil {

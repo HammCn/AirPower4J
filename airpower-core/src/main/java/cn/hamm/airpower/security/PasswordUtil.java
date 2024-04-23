@@ -6,7 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 /**
  * <h1>密码助手类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public class PasswordUtil {
     /**

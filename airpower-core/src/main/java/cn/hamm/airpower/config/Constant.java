@@ -3,7 +3,7 @@ package cn.hamm.airpower.config;
 /**
  * <h1>内置常量</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public class Constant {
     /**

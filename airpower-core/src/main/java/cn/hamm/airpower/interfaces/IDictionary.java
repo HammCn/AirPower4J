@@ -1,9 +1,12 @@
 package cn.hamm.airpower.interfaces;
 
+import cn.hamm.airpower.util.ReflectUtil;
+
 /**
  * <h1>枚举字典标准接口</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
+ * @see ReflectUtil
  */
 public interface IDictionary {
     /**

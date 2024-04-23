@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * <h1>Cookie相关配置</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  * @see CookieUtil
  */
 @Component

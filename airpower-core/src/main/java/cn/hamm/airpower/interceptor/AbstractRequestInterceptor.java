@@ -29,7 +29,7 @@ import java.util.Objects;
 /**
  * <h1>全局权限拦截器抽象类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Component
 @Slf4j

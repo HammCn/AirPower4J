@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * <h1>随机助手类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public class RandomUtil {
     /**

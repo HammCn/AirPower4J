@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  * <h1>接口返回过滤器</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  * @apiNote 使用此注解指定过滤器后, 属性上使用 {@link Exclude} 指定了相同过滤器的属性将不会被接口输出
  */
 @Target({ElementType.METHOD})

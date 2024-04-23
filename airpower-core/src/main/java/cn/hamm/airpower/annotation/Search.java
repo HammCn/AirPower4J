@@ -5,7 +5,8 @@ import java.lang.annotation.*;
 /**
  * <h1>标记为搜索字段</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
+ * @apiNote 默认为 <code>LIKE</code>，支持 <code>LIKE</code>, <code>JOIN</code>, <code>EQUALS</code>
  */
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

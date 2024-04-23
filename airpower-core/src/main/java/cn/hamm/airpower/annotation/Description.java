@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 /**
  * <h1>类或属性的文案</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  * @apiNote 配置后可通过 {@link ReflectUtil } 获取
  * @see ReflectUtil#getDescription(Method)
  * @see ReflectUtil#getDescription(Field)

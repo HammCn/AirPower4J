@@ -3,7 +3,7 @@ package cn.hamm.airpower.api;
 /**
  * <h1>父类接口枚举</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  * @apiNote 可通过 {@link Extends} 注解为子控制器的类标记需要继承或过滤父类控制器提供的这些方法
  */
 public enum Api {

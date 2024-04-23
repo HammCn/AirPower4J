@@ -9,11 +9,11 @@ import java.lang.reflect.Method;
 /**
  * <h1>文档说明</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  * @apiNote 配置后可通过 {@link ReflectUtil } 获取
- * @see ReflectUtil#getDescription(Method)
- * @see ReflectUtil#getDescription(Field)
- * @see ReflectUtil#getDescription(Class)
+ * @see ReflectUtil#getDocument(Method)
+ * @see ReflectUtil#getDocument(Field)
+ * @see ReflectUtil#getDocument(Class)
  */
 @Target({ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

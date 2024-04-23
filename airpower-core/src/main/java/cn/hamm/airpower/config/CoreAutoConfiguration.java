@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 /**
  * <h1>自动装配类</h1>
  *
- * @author BeauHou
+ * @author BeauHou.cn
  */
 @AutoConfiguration
 @ComponentScan("cn.hamm.airpower")

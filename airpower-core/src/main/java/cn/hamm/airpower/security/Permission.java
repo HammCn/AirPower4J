@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * <h1>是否需要登录和授权</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

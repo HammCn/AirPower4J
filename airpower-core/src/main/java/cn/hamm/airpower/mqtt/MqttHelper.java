@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * <h1>MQTT助手类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Configuration
 @Slf4j

@@ -39,7 +39,7 @@ import java.util.Set;
 /**
  * <h1>全局异常处理拦截器</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  * @see Result
  */
 @ControllerAdvice

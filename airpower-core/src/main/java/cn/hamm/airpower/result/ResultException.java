@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 /**
  * <h1>自定义异常包装类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * <h1>控制器根类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Permission(login = false)
 @RestController

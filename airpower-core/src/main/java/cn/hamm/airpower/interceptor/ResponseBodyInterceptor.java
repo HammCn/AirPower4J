@@ -16,7 +16,7 @@ import java.util.Objects;
 /**
  * <h1>全局拦截响应</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @ControllerAdvice
 public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {

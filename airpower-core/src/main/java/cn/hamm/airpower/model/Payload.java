@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 /**
  * <h1>负载模型</h1>
  *
- * @author hamm
+ * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

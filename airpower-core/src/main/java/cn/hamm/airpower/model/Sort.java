@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 /**
  * <h1>查询排序</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

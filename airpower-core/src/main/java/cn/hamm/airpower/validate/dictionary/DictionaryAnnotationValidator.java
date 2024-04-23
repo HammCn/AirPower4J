@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * <h1>枚举字典验证实现类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public class DictionaryAnnotationValidator implements ConstraintValidator<Dictionary, Integer> {
     Class<? extends IDictionary> enumClazz = null;

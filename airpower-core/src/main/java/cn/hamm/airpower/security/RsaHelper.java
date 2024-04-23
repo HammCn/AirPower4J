@@ -19,7 +19,7 @@ import java.util.Base64;
 /**
  * <h1>RSA加解密助手类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Slf4j
 @Accessors(chain = true)

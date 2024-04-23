@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Primary;
 /**
  * <h1>数据源配置类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Configuration
 public class DataSourceConfiguration {

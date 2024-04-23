@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * <h1>数据根模型</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Getter
 @Slf4j

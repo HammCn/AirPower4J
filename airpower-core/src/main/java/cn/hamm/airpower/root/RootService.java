@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @param <E> 实体
  * @param <R> 数据源
- * @author Hamm
+ * @author Hamm.cn
  */
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j

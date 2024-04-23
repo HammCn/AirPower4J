@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * <h1>标准树接口</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 public interface ITree<E extends ITree<E>> extends IEntity<E> {
     /**

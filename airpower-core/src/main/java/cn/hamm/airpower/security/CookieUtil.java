@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * <h1>Cookie助手</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Component
 public class CookieUtil {

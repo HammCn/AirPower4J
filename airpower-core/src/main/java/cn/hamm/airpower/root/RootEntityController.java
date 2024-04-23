@@ -28,7 +28,7 @@ import java.util.Objects;
  *
  * @param <S> Service
  * @param <E> 实体或实体的子类
- * @author Hamm
+ * @author Hamm.cn
  * @apiNote 提供了 {@link Extends} 处理接口黑白名单，同时提供了一些 前置/后置 方法，可被子控制器类重写(不建议)
  */
 @Permission

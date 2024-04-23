@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * <h1>响应分页类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

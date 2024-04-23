@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 /**
  * <h1>邮件助手类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Service
 public class EmailUtil {

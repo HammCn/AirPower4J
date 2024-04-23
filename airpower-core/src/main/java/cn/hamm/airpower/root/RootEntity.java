@@ -20,7 +20,7 @@ import java.io.Serializable;
 /**
  * <h1>实体根类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})

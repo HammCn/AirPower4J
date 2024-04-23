@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 /**
  * <h1>标记进行字典校验</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  * @apiNote 请注意, 请自行做非空验证, 字典必须实现 {@link IDictionary} 接口
  */
 @Constraint(validatedBy = DictionaryAnnotationValidator.class)

@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
  * <h1>查询分页请求</h1>
  *
  * @param <M> 数据模型
- * @author Hamm
+ * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

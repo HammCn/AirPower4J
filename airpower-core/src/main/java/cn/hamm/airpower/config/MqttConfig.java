@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * <h1>MQTT配置类</h1>
  *
- * @author Hamm
+ * @author Hamm.cn
  */
 @Component
 @Data
