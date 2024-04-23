@@ -28,15 +28,13 @@ import java.util.function.BiConsumer;
 @SuppressWarnings("unchecked")
 public class RootModel<M extends RootModel<M>> implements IAction {
     /**
-     * <h2>复制实例到新的实例</h2>
+     * <h2>复制一个新对象</h2>
      *
-     * @param clazz 目标类
-     * @param <T>   返回类型
      * @return 返回实例
      */
-    public final <T> T copyTo(Class<T> clazz) {
+    public final M copy() {
         try {
-            T target = clazz.getDeclaredConstructor().newInstance();
+            M target = (M) getClass().getConstructor().newInstance();
             BeanUtils.copyProperties(this, target);
             return target;
         } catch (Exception exception) {
