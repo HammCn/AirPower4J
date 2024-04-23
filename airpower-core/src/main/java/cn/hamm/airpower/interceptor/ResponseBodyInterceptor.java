@@ -131,9 +131,9 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
      * @param data   数据
      * @return 过滤后的数据
      */
-    private <M extends RootModel<M>> M filterResponseBy(Filter filter, @NotNull M data) {
+    private <M extends RootModel<M>> M filterResponseBy(@NotNull Filter filter, @NotNull M data) {
         // 如果 responseFilter 是空 使用Void类进行转换
-        return data.filterResponseDataBy(Objects.isNull(filter) ? Void.class : filter.value());
+        return data.filterResponseDataBy(filter.value());
     }
 
     /**
@@ -143,7 +143,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
      * @param list   数据列表
      * @return 列表
      */
-    private <M extends RootModel<M>> List<M> filterResponseListBy(Filter filter, List<M> list) {
+    private <M extends RootModel<M>> List<M> filterResponseListBy(@NotNull Filter filter, List<M> list) {
         try {
             list.forEach(item -> filterResponseBy(filter, item));
         } catch (Exception exception) {

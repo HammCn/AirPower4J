@@ -53,7 +53,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filter 过滤器
      * @return 实体
      */
-    public final M filterResponseDataBy(Class<?> filter) {
+    public final M filterResponseDataBy(@NotNull Class<?> filter) {
         Class<M> clazz = (Class<M>) this.getClass();
         List<Field> allFields = ReflectUtil.getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
@@ -69,7 +69,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filter 过滤器
      * @param field  字段
      */
-    private void excludeBy(Class<?> filter, @NotNull Field field) {
+    private void excludeBy(@NotNull Class<?> filter, @NotNull Field field) {
         Exclude fieldExclude = field.getAnnotation(Exclude.class);
         if (Objects.isNull(fieldExclude)) {
             filterFieldPayload(field);
@@ -79,10 +79,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
 
         boolean isNeedClear = true;
         if (excludeClasses.length > 0) {
-            isNeedClear = Arrays.stream(excludeClasses)
-                    .anyMatch(excludeClass ->
-                            !Void.class.equals(filter) && filter.equals(excludeClass)
-                    );
+            isNeedClear = Arrays.asList(excludeClasses).contains(filter);
         }
         if (isNeedClear) {
             ReflectUtil.clearFieldValue(this, field);
@@ -97,8 +94,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filter 过滤器
      * @param field  字段
      */
-    private void exposeBy(Class<?> filter, @NotNull Field field) {
-        Expose fieldExpose = field.getAnnotation(Expose.class);
+    private void exposeBy(@NotNull Class<?> filter, @NotNull Field field) {
+        Expose fieldExpose = ReflectUtil.getAnnotation(Expose.class, field);
         if (Objects.isNull(fieldExpose)) {
             // 没有标记 则直接移除掉
             ReflectUtil.clearFieldValue(this, field);
@@ -108,10 +105,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         Class<?>[] exposeClasses = fieldExpose.filters();
 
         if (exposeClasses.length > 0) {
-            boolean isExpose = Arrays.stream(exposeClasses).anyMatch(
-                    // Void 或者标记了暴露
-                    exposeClass -> Void.class.equals(filter) || filter.equals(exposeClass)
-            );
+            // 标记了暴露
+            boolean isExpose = Arrays.asList(exposeClasses).contains(filter);
             if (!isExpose) {
                 ReflectUtil.clearFieldValue(this, field);
             }
@@ -125,7 +120,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param field 字段
      */
     private void filterFieldPayload(@NotNull Field field) {
-        Payload payload = field.getAnnotation(Payload.class);
+        Payload payload = ReflectUtil.getAnnotation(Payload.class, field);
         if (Objects.isNull(payload)) {
             return;
         }

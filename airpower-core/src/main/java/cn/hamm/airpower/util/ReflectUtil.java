@@ -91,7 +91,7 @@ public class ReflectUtil {
      * @param <A>             泛型
      * @return 注解
      */
-    public static <A extends Annotation> A getAnnotation(Class<A> annotationClass, Method method) {
+    public static <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, Method method) {
         return getAnnotation(annotationClass, method, method.getDeclaringClass());
     }
 
@@ -123,7 +123,7 @@ public class ReflectUtil {
      * @param <A>             泛型
      * @return 注解
      */
-    public static <A extends Annotation> A getAnnotation(Class<A> annotationClass, @NotNull Field field) {
+    public static <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Field field) {
         return field.getAnnotation(annotationClass);
     }
 

@@ -41,7 +41,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     /**
      * <h2>缓存的REQUEST_METHOD_KEY</h2>
      */
-    public static String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
+    public static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
 
     @Autowired
     private SecurityUtil securityUtil;
