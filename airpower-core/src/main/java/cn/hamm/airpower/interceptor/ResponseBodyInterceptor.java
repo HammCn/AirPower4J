@@ -1,5 +1,12 @@
 package cn.hamm.airpower.interceptor;
 
+import cn.hamm.airpower.query.QueryPageResponse;
+import cn.hamm.airpower.response.Filter;
+import cn.hamm.airpower.result.json.JsonData;
+import cn.hamm.airpower.root.RootModel;
+import cn.hamm.airpower.util.CollectionUtil;
+import cn.hamm.airpower.util.ReflectUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -11,6 +18,9 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -19,6 +29,7 @@ import java.util.Objects;
  * @author Hamm.cn
  */
 @ControllerAdvice
+@Slf4j
 public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     @Override
     public final boolean supports(
@@ -37,7 +48,53 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             @NotNull ServerHttpRequest request,
             @NotNull ServerHttpResponse response
     ) {
-        return beforeResponseFinished(body, request, response);
+        Method method = (Method) getShareData(AbstractRequestInterceptor.REQUEST_METHOD_KEY);
+        if (Objects.isNull(method)) {
+            return beforeResponseFinished(body, request, response);
+        }
+        Object result = getResult(body, method);
+        return beforeResponseFinished(result, request, response);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <M extends RootModel<M>> Object getResult(Object result, Method method) {
+        if (!(result instanceof JsonData jsonData)) {
+            // 返回不是JsonData 原样返回
+            return result;
+        }
+        Filter filter = ReflectUtil.getAnnotation(Filter.class, method);
+        if (Objects.isNull(filter)) {
+            return result;
+        }
+        if (Objects.isNull(jsonData.getData())) {
+            return result;
+        }
+        if (jsonData.getData() instanceof QueryPageResponse) {
+            QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) jsonData.getData();
+            // 如果 data 分页对象
+            List<M> list = queryPageResponse.getList();
+            filterResponseListBy(filter, list);
+            jsonData.setData(queryPageResponse.setList(list));
+            return jsonData;
+        }
+
+        Class<?> dataCls = jsonData.getData().getClass();
+        if (jsonData.getData() instanceof Collection) {
+            Collection<M> collection = CollectionUtil.getCollectWithoutNull(
+                    (Collection<M>) jsonData.getData(), dataCls
+            );
+            jsonData.setData(filterResponseListBy(filter, collection.stream().toList()));
+            return jsonData;
+        }
+        if (ReflectUtil.isModel(dataCls)) {
+            // 如果 data 是 Model
+            //noinspection unchecked
+            jsonData.setData(filterResponseBy(filter, (M) jsonData.getData()));
+            return jsonData;
+        }
+
+        // 其他数据 原样返回
+        return jsonData;
     }
 
     /**
@@ -63,5 +120,34 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             return null;
         }
         return requestAttributes.getAttribute(key, RequestAttributes.SCOPE_REQUEST);
+    }
+
+
+    /**
+     * <h2>使用指定的过滤器过滤数据</h2>
+     *
+     * @param filter 过滤器
+     * @param data   数据
+     * @return 过滤后的数据
+     */
+    private <M extends RootModel<M>> M filterResponseBy(Filter filter, M data) {
+        // 如果 responseFilter 是空 使用Void类进行转换
+        return data.filterResponseDataBy(Objects.isNull(filter) ? Void.class : filter.value());
+    }
+
+    /**
+     * <h2>使用指定的过滤器过滤数据列表</h2>
+     *
+     * @param filter 过滤器
+     * @param list   数据列表
+     * @return 列表
+     */
+    private <M extends RootModel<M>> List<M> filterResponseListBy(Filter filter, List<M> list) {
+        try {
+            list.forEach(item -> filterResponseBy(filter, item));
+        } catch (Exception exception) {
+            log.error("过滤数据失败", exception);
+        }
+        return list;
     }
 }

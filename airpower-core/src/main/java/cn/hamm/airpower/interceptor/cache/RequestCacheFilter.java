@@ -17,7 +17,8 @@ import java.io.IOException;
 @WebFilter
 public class RequestCacheFilter implements Filter {
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         // 如果是上传 不做任何缓存
         if (RequestUtil.isUploadRequest(servletRequest)) {
             filterChain.doFilter(servletRequest, servletResponse);

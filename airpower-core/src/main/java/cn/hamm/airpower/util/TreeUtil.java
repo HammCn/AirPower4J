@@ -3,7 +3,6 @@ package cn.hamm.airpower.util;
 import cn.hamm.airpower.interfaces.ITree;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,14 +33,12 @@ public class TreeUtil {
      * @return 数结构数组
      */
     private <E extends ITree<E>> List<E> buildTreeList(List<E> list, Long parentId) {
-        List<E> eList = new ArrayList<>();
-        for (E e : list) {
-            if (parentId.equals(e.getParentId())) {
-                List<E> children = buildTreeList(list, e.getId());
-                e.setChildren(children);
-                eList.add(e);
-            }
-        }
-        return eList;
+        return list.stream()
+                .filter(item -> parentId.equals(item.getParentId()))
+                .peek(item -> {
+                    List<E> children = buildTreeList(list, item.getId());
+                    item.setChildren(children);
+                })
+                .toList();
     }
 }

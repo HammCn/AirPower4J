@@ -19,6 +19,9 @@ public class EmailUtil {
     @Autowired(required = false)
     private JavaMailSender javaMailSender;
 
+    @Value("${spring.mail.username: ''}")
+    private String mailFrom;
+
     /**
      * <h2>发送邮件验证码</h2>
      *
@@ -28,15 +31,20 @@ public class EmailUtil {
      * @param sign  签名
      */
     public final void sendCode(String email, String title, String code, String sign) throws MessagingException {
-        String content = "<div style='border-radius:20px;padding: 20px;background-color:#f5f5f5;color:#333;display:inline-block;'>" +
-                "<div style='font-size:24px;font-weight:bold;color:orangered;'>" + code + "</div>" +
-                "<div style='margin-top:20px;font-size:16px;font-weight:300'>上面是你的验证码，请注意不要转发给他人，五分钟内有效，请尽快使用。</div>" +
-                "<div style='margin-top:10px;font-size:12px;color:#aaa;font-weight:300'>" + sign + "</div></div>";
+        String content = """
+                <div style='border-radius:20px;padding: 20px;background-color:#f5f5f5;color:#333;display:inline-block;'>
+                <div style='font-size:24px;font-weight:bold;color:orangered;'>
+                """ + code + """
+                </div>
+                <div style='margin-top:20px;font-size:16px;font-weight:300'>
+                    上面是你的验证码，请注意不要转发给他人，五分钟内有效，请尽快使用。
+                </div>
+                <div style='margin-top:10px;font-size:12px;color:#aaa;font-weight:300'>
+                    """ + sign + """
+                </div></div>
+                        """;
         sendEmail(email, title, content);
     }
-
-    @Value("${spring.mail.username: ''}")
-    private String mailFrom;
 
     /**
      * <h2>发送邮件</h2>

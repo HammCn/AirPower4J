@@ -11,6 +11,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.util.Objects;
+
 
 /**
  * <h1>用户授权处理类</h1>
@@ -35,12 +37,14 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
      * <h2>ACCESS_TOKEN换用户ID</h2>
      */
     @Override
-    public Object resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(
+            @NotNull MethodParameter parameter,
+            ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory
+    ) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        String accessToken = null;
-        if (request != null) {
-            accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
-        }
+        String accessToken = Objects.nonNull(request) ? request.getHeader(globalConfig.getAuthorizeHeader()) : null;
         return securityUtil.getUserIdFromAccessToken(accessToken);
     }
 }

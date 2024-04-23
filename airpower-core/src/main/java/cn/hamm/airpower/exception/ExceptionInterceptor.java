@@ -137,7 +137,9 @@ public class ExceptionInterceptor {
     public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
         log.error(exception.getMessage());
         String supportedMethod = String.join("|", Objects.requireNonNull(exception.getSupportedMethods()));
-        return new Json(Result.REQUEST_METHOD_UNSUPPORTED, exception.getMethod() + "不被支持,请使用" + supportedMethod + "方法请求");
+        return new Json(Result.REQUEST_METHOD_UNSUPPORTED,
+                exception.getMethod() + "不被支持,请使用" + supportedMethod + "方法请求"
+        );
     }
 
     /**
@@ -149,7 +151,9 @@ public class ExceptionInterceptor {
         if (globalConfig.isDebug()) {
             log.error("不支持的数据类型", exception);
         }
-        return new Json(Result.REQUEST_CONTENT_TYPE_UNSUPPORTED, Objects.requireNonNull(exception.getContentType()) + "不被支持,请使用JSON请求");
+        return new Json(Result.REQUEST_CONTENT_TYPE_UNSUPPORTED,
+                Objects.requireNonNull(exception.getContentType()) + "不被支持,请使用JSON请求"
+        );
     }
 
     /**
@@ -204,7 +208,9 @@ public class ExceptionInterceptor {
      * <h2>数据表或字段异常</h2>
      */
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
-    public Json invalidDataAccessResourceUsageExceptionHandle(@NotNull InvalidDataAccessResourceUsageException exception) {
+    public Json invalidDataAccessResourceUsageExceptionHandle(
+            @NotNull InvalidDataAccessResourceUsageException exception
+    ) {
         log.error(exception.getMessage());
         if (globalConfig.isDebug()) {
             log.error("数据表或字段异常", exception);

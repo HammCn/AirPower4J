@@ -38,6 +38,11 @@ import java.util.Objects;
 @Component
 @Slf4j
 public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
+    /**
+     * <h2>缓存的REQUEST_METHOD_KEY</h2>
+     */
+    public static String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
+
     @Autowired
     private SecurityUtil securityUtil;
 
@@ -54,6 +59,8 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBeanType();
         Method method = handlerMethod.getMethod();
+
+        setShareData(REQUEST_METHOD_KEY, method);
 
         if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) && globalConfig.isEnableDocument()) {
             // 如果是GET 方法，并且开启了文档
@@ -98,7 +105,9 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param request            请求对象
      * @return 验证结果
      */
-    protected abstract boolean checkPermissionAccess(Long userId, String permissionIdentity, HttpServletRequest request);
+    protected abstract boolean checkPermissionAccess(
+            Long userId, String permissionIdentity, HttpServletRequest request
+    );
 
     /**
      * <h2>请求拦截器前置方法</h2>
@@ -108,8 +117,9 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param clazz    控制器类
      * @param method   执行方法
      */
-    protected void beforeHandleRequest(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method) {
-
+    protected void beforeHandleRequest(
+            HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method
+    ) {
     }
 
     /**

@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.result.Result;
+import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.result.json.JsonData;
 import cn.hamm.airpower.security.Permission;
@@ -88,8 +89,7 @@ public class RootController implements IAction, ITry {
             return securityUtil.getUserIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             log.error("获取当前用户信息失败", exception);
-            Result.UNAUTHORIZED.show("获取当前用户信息失败,请重新登录后尝试");
+            throw new ResultException(Result.UNAUTHORIZED);
         }
-        return 0L;
     }
 }

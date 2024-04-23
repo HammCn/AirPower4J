@@ -31,7 +31,8 @@ import java.io.Serializable;
 @DynamicUpdate
 @Description("")
 @SuppressWarnings("unchecked")
-public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity<E>, IEntityAction {
+public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
+        implements Serializable, IEntity<E>, IEntityAction {
     @Description("主键ID")
     @Id
     @Search(Search.Mode.EQUALS)
@@ -233,6 +234,11 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * </p>
      */
     public void excludeBaseData() {
-        this.setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
+        this.setCreateTime(null)
+                .setUpdateTime(null)
+                .setCreateUserId(null)
+                .setUpdateUserId(null)
+                .setRemark(null)
+                .setIsDisabled(null);
     }
 }

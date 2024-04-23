@@ -38,7 +38,8 @@ public class DataSourceAspect {
     @Around("pointCut()")
     public Object multipleDataSource(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Result.ERROR.when(!globalConfig.isServiceRunning(), "服务短暂维护中,请稍后再试：）");
-        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes()))
+                .getRequest();
         String database = request.getHeader(globalConfig.getTenantHeader());
         if (!StringUtils.hasText(database)) {
             return proceedingJoinPoint.proceed();

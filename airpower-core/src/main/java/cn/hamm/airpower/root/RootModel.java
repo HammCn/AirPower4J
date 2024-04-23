@@ -179,7 +179,9 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return;
         }
         if (Objects.nonNull(fieldValue)) {
-            ReflectUtil.setFieldValue(this, field, ((RootModel<?>) fieldValue).filterResponseDataBy(WhenPayLoad.class));
+            ReflectUtil.setFieldValue(this, field,
+                    ((RootModel<?>) fieldValue).filterResponseDataBy(WhenPayLoad.class)
+            );
         }
     }
 }

@@ -1,9 +1,9 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.interfaces.IDictionary;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -27,18 +27,21 @@ public class DictionaryUtil {
      * @param <D>       [泛型] 当前类型
      * @return 指定的枚举字典项目
      */
-    @SneakyThrows
-    public static <D extends IDictionary> D getDictionaryByKey(Class<D> enumClass, int key) {
-        Method getKey = enumClass.getMethod("getKey");
 
-        // 取出所有枚举类型
-        Object[] objs = enumClass.getEnumConstants();
-        for (Object obj : objs) {
-            int exitValue = (int) getKey.invoke(obj);
-            if (exitValue == key) {
-                //noinspection unchecked
-                return (D) obj;
+    public static <D extends IDictionary> @Nullable D getDictionaryByKey(Class<D> enumClass, int key) {
+        try {
+            Method getKey = enumClass.getMethod("getKey");
+            // 取出所有枚举类型
+            Object[] objs = enumClass.getEnumConstants();
+            for (Object obj : objs) {
+                int exitValue = (int) getKey.invoke(obj);
+                if (exitValue == key) {
+                    //noinspection unchecked
+                    return (D) obj;
+                }
             }
+        } catch (Exception exception) {
+            log.error("获取字典信息失败", exception);
         }
         return null;
     }
@@ -61,7 +64,9 @@ public class DictionaryUtil {
      * @param params 参数列表
      * @return 返回结果
      */
-    public static <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(@NotNull Class<D> clazz, String... params) {
+    public static <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(
+            @NotNull Class<D> clazz, String... params
+    ) {
         List<Map<String, String>> mapList = new ArrayList<>();
         for (Object obj : clazz.getEnumConstants()) {
             //取出所有枚举类型

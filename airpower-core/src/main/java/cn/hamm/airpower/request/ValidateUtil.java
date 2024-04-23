@@ -27,7 +27,9 @@ public class ValidateUtil {
     /**
      * <h2>邮箱</h2>
      */
-    public static final Pattern EMAIL = Pattern.compile("^[a-zA-Z0-9]+(\\.([a-zA-Z0-9]+))*@[a-zA-Z0-9]+(\\.([a-zA-Z0-9]+))+$");
+    public static final Pattern EMAIL = Pattern.compile(
+            "^[a-zA-Z0-9]+(\\.([a-zA-Z0-9]+))*@[a-zA-Z0-9]+(\\.([a-zA-Z0-9]+))+$"
+    );
 
     /**
      * <h2>字母或数字</h2>
@@ -47,7 +49,9 @@ public class ValidateUtil {
     /**
      * <h2>座机电话</h2>
      */
-    public static final Pattern TEL_PHONE = Pattern.compile("^(((0\\d{2,3})-)?((\\d{7,8})|(400\\d{7})|(800\\d{7}))(-(\\d{1,4}))?)$");
+    public static final Pattern TEL_PHONE = Pattern.compile(
+            "^(((0\\d{2,3})-)?((\\d{7,8})|(400\\d{7})|(800\\d{7}))(-(\\d{1,4}))?)$"
+    );
 
     /**
      * <h2>普通字符</h2>

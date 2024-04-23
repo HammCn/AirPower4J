@@ -17,21 +17,19 @@ import java.util.Objects;
  */
 @Slf4j
 public class RequestUtil {
+    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
     /**
      * <h2>多IP分割字符</h2>
      */
     private static final String MULTI_IP_ADDRESS_SPLITTER = ",";
-
     /**
      * <h2>IP地址字符串最大的长度</h2>
      */
     private static final int MAX_IP_ADDRESS_CHAR_LENGTH = 15;
-
     /**
      * <h2>错误信息</h2>
      */
     private static final String ERROR_MESSAGE = "你的IP地址异常";
-    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
     /**
      * <h2>判断是否是上传请求</h2>
@@ -116,7 +114,9 @@ public class RequestUtil {
      * @return 判定结果
      */
     private static boolean isValidAddress(String ipAddress) {
-        return Objects.nonNull(ipAddress) && !ipAddress.isEmpty() && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
+        return Objects.nonNull(ipAddress) &&
+                !ipAddress.isEmpty() &&
+                !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
     }
 
     /**
@@ -126,7 +126,10 @@ public class RequestUtil {
      * @return 处理之后的真实IP
      */
     private static String getRealIpAddress(String ipAddress) {
-        if (Objects.nonNull(ipAddress) && ipAddress.length() > MAX_IP_ADDRESS_CHAR_LENGTH && ipAddress.indexOf(MULTI_IP_ADDRESS_SPLITTER) > 0) {
+        if (Objects.nonNull(ipAddress) &&
+                ipAddress.length() > MAX_IP_ADDRESS_CHAR_LENGTH &&
+                ipAddress.indexOf(MULTI_IP_ADDRESS_SPLITTER) > 0
+        ) {
             ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
         }
         return ipAddress;

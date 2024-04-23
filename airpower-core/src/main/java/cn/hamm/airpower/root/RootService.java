@@ -47,16 +47,12 @@ import java.util.*;
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> implements ITry {
     @Autowired
     protected R repository;
-
-    @Autowired
-    private GlobalConfig globalConfig;
-
     @Autowired
     protected RedisUtil<E> redisUtil;
-
     @Autowired
     protected SecurityUtil secureUtil;
-
+    @Autowired
+    private GlobalConfig globalConfig;
     @Autowired
     private EntityManager entityManager;
 
@@ -126,7 +122,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         source = beforeUpdate(source);
         updateToDatabase(source);
         E finalSource = source;
-        tryCatch(() -> afterUpdate(finalSource.getId(), finalSource), () -> afterSaved(finalSource.getId(), finalSource));
+        tryCatch(
+                () -> afterUpdate(finalSource.getId(), finalSource),
+                () -> afterSaved(finalSource.getId(), finalSource)
+        );
     }
 
     /**
@@ -140,11 +139,16 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #update(E)
      */
     public final void updateWithNull(E source) {
-        Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        Result.PARAM_MISSING.whenNull(source.getId(),
+                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
+        );
         source = beforeUpdate(source);
         updateToDatabase(source, true);
         E finalSource = source;
-        tryCatch(() -> afterUpdate(finalSource.getId(), finalSource), () -> afterSaved(finalSource.getId(), finalSource));
+        tryCatch(
+                () -> afterUpdate(finalSource.getId(), finalSource),
+                () -> afterSaved(finalSource.getId(), finalSource)
+        );
     }
 
     /**
@@ -281,14 +285,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #afterGetList(List)
      */
     public final List<E> getList(QueryRequest<E> queryRequest) {
-        if (Objects.isNull(queryRequest)) {
-            queryRequest = new QueryRequest<>();
-        }
-        if (Objects.isNull(queryRequest.getFilter())) {
-            queryRequest.setFilter(getNewInstance());
-        }
+        queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
+        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
         queryRequest = beforeGetList(queryRequest);
-        List<E> list = repository.findAll(createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort()));
+        List<E> list = repository.findAll(
+                createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort())
+        );
         return afterGetList(list);
     }
 
@@ -300,9 +302,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     public final List<E> filter(E filter) {
         QueryRequest<E> queryRequest = new QueryRequest<>();
-        if (Objects.isNull(queryRequest.getFilter())) {
-            queryRequest.setFilter(filter);
-        }
+        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), filter));
         return repository.findAll(createSpecification(filter, true), createSort(queryRequest.getSort()));
     }
 
@@ -402,15 +402,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #afterGetPage(QueryPageResponse)
      */
     public final QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
-        if (Objects.isNull(queryPageRequest)) {
-            queryPageRequest = new QueryPageRequest<>();
-        }
-        if (Objects.isNull(queryPageRequest.getFilter())) {
-            queryPageRequest.setFilter(getNewInstance());
-        }
+        queryPageRequest = Objects.requireNonNullElse(queryPageRequest, new QueryPageRequest<>());
+        queryPageRequest.setFilter(Objects.requireNonNullElse(queryPageRequest.getFilter(), getNewInstance()));
         queryPageRequest = beforeGetPage(queryPageRequest);
-
-        org.springframework.data.domain.Page<E> pageData = repository.findAll(createSpecification(queryPageRequest.getFilter(), false), createPageable(queryPageRequest));
+        org.springframework.data.domain.Page<E> pageData = repository.findAll(
+                createSpecification(queryPageRequest.getFilter(), false), createPageable(queryPageRequest)
+        );
         QueryPageResponse<E> queryPageResponse = getResponsePageList(pageData);
         queryPageResponse.setSort(queryPageRequest.getSort());
         return afterGetPage(queryPageResponse);
@@ -461,14 +458,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 忽略只读字段之后的实体
      */
     protected final E ignoreReadOnlyFields(E entity) {
-        List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
-        for (Field field : fields) {
-            ReadOnly annotation = field.getAnnotation(ReadOnly.class);
-            if (Objects.isNull(annotation)) {
-                continue;
-            }
-            ReflectUtil.clearFieldValue(entity, field);
-        }
+        ReflectUtil.getFieldList(getEntityClass()).stream()
+                .filter(field -> Objects.nonNull(field.getAnnotation(ReadOnly.class)))
+                .forEach(field -> ReflectUtil.clearFieldValue(entity, field));
         return entity;
     }
 
@@ -495,7 +487,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     protected final void updateToDatabase(E source, boolean withNull) {
         Result.ERROR.whenNull(source, "更新的数据不能为空");
-        Result.PARAM_MISSING.whenNull(source.getId(), "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        Result.PARAM_MISSING.whenNull(source.getId(),
+                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
+        );
         saveToDatabase(source, withNull);
     }
 
@@ -506,13 +500,17 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 实体
      */
     private E getById(long id) {
-        Result.PARAM_MISSING.whenNull(id, "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!");
+        Result.PARAM_MISSING.whenNull(id,
+                "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
+        );
         Optional<E> optional = repository.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
-        Result.DATA_NOT_FOUND.show("没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!");
-        return getNewInstance();
+        throw new ResultException(
+                Result.DATA_NOT_FOUND.getCode(),
+                "没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!"
+        );
     }
 
     /**
@@ -559,9 +557,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 如果数据库是null 且 传入的也是null 签名给空字符串
                 entity.setRemark("");
             }
-            if (!withNull) {
-                entity = getEntityForSave(entity, existEntity);
-            }
+            entity = withNull ? entity : getEntityForSave(entity, existEntity);
         }
         E target = getNewInstance();
         BeanUtils.copyProperties(entity, target);
@@ -595,8 +591,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         for (Field field : fields) {
             String fieldName = ReflectUtil.getDescription(field);
             Column annotation = field.getAnnotation(Column.class);
-            if (Objects.isNull(annotation) || !annotation.unique()) {
-                // 没标注解 或者标了 但不做唯一校验
+            if (Objects.isNull(annotation)) {
+                // 不是数据库列 不校验
+                continue;
+            }
+            if (!annotation.unique()) {
+                // 没有标唯一 不校验
                 continue;
             }
             Object fieldValue = ReflectUtil.getFieldValue(entity, field);
@@ -613,7 +613,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 continue;
             }
             if (Objects.nonNull(entity.getId()) && exist.get().getId().equals(entity.getId())) {
-                // 是修改 且查到的是自己 就不校验重复了
+                // 修改自己 不校验
                 continue;
             }
             Result.FORBIDDEN_EXIST.show(fieldName + "(" + fieldValue + ")已经存在！");
@@ -651,15 +651,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     private String[] getNullProperties(E sourceEntity) {
         // 获取Bean
         BeanWrapper srcBean = new BeanWrapperImpl(sourceEntity);
-        // 获取Bean的属性描述
-        PropertyDescriptor[] propertyDescriptors = srcBean.getPropertyDescriptors();
-        // 获取Bean的空属性
-        Set<String> properties = new HashSet<>();
-        Arrays.stream(propertyDescriptors)
-                .filter(propertyDescriptor -> Objects.isNull(propertyDescriptor.getValue(propertyDescriptor.getName())))
+        return Arrays.stream(srcBean.getPropertyDescriptors())
                 .map(PropertyDescriptor::getName)
-                .forEach(properties::add);
-        return properties.toArray(new String[0]);
+                .filter(name -> Objects.isNull(srcBean.getPropertyValue(name)))
+                .toArray(String[]::new);
     }
 
     /**
@@ -669,7 +664,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 输出分页对象
      */
     private QueryPageResponse<E> getResponsePageList(org.springframework.data.domain.Page<E> data) {
-        return new QueryPageResponse<E>().setList(data.getContent()).setTotal(Math.toIntExact(data.getTotalElements())).setPageCount(data.getTotalPages()).setPage(new Page().setPageSize(data.getPageable().getPageSize()).setPageNum(data.getPageable().getPageNumber() + 1));
+        return new QueryPageResponse<E>()
+                .setList(data.getContent())
+                .setTotal(Math.toIntExact(data.getTotalElements()))
+                .setPageCount(data.getTotalPages())
+                .setPage(new Page()
+                        .setPageSize(data.getPageable().getPageSize())
+                        .setPageNum(data.getPageable().getPageNumber() + 1)
+                );
     }
 
     /**
@@ -679,19 +681,23 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return Sort Spring的排序对象
      */
     private org.springframework.data.domain.Sort createSort(Sort sort) {
-        if (Objects.isNull(sort)) {
-            sort = new Sort();
-        }
+        sort = Objects.requireNonNullElse(sort, new Sort());
+
         if (!StringUtils.hasText(sort.getField())) {
             sort.setField(globalConfig.getDefaultSortField());
         }
+
         if (!StringUtils.hasText(sort.getDirection())) {
             sort.setDirection(globalConfig.getDefaultSortDirection());
         }
         if (!globalConfig.getDefaultSortDirection().equals(sort.getDirection())) {
-            return org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Order.asc(sort.getField()));
+            return org.springframework.data.domain.Sort.by(
+                    org.springframework.data.domain.Sort.Order.asc(sort.getField())
+            );
         }
-        return org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Order.desc(sort.getField()));
+        return org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Order.desc(sort.getField())
+        );
     }
 
     /**
@@ -701,21 +707,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return Pageable
      */
     private Pageable createPageable(QueryPageRequest<E> queryPageData) {
-        Page page = queryPageData.getPage();
-        if (Objects.isNull(page)) {
-            page = new Page();
-        }
-        if (Objects.isNull(page.getPageNum())) {
-            page.setPageNum(1);
-        }
-        if (Objects.isNull(page.getPageSize())) {
-            page.setPageSize(globalConfig.getDefaultPageSize());
-        }
-        int pageNumber = page.getPageNum() - 1;
-        pageNumber = Math.max(0, pageNumber);
-
-        int pageSize = queryPageData.getPage().getPageSize();
-        pageSize = Math.max(1, pageSize);
+        Page page = Objects.requireNonNullElse(queryPageData.getPage(), new Page());
+        page.setPageNum(Objects.requireNonNullElse(page.getPageNum(), 1));
+        page.setPageSize(Objects.requireNonNullElse(page.getPageSize(), globalConfig.getDefaultPageSize()));
+        int pageNumber = Math.max(0, page.getPageNum() - 1);
+        int pageSize = Math.max(1, queryPageData.getPage().getPageSize());
         return PageRequest.of(pageNumber, pageSize, createSort(queryPageData.getSort()));
     }
 
@@ -729,13 +725,19 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param isEqual 是否强匹配
      * @return 搜索条件
      */
-    private List<Predicate> getPredicateList(Object root, CriteriaBuilder builder, Object search, boolean isRoot, boolean isEqual) {
+    private List<Predicate> getPredicateList(
+            Object root, CriteriaBuilder builder, Object search, boolean isRoot, boolean isEqual
+    ) {
         List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
         for (Field field : fields) {
             Object fieldValue = ReflectUtil.getFieldValue(search, field);
-            if (Objects.isNull(fieldValue) || !StringUtils.hasText(fieldValue.toString())) {
+            if (Objects.isNull(fieldValue)) {
                 // 没有传入查询值 跳过
+                continue;
+            }
+            if (!StringUtils.hasText(fieldValue.toString())) {
+                // 空字符串 跳过
                 continue;
             }
             Search searchMode = field.getAnnotation(Search.class);
@@ -798,18 +800,28 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param search        原始查询对象
      * @param predicateList 查询条件列表
      */
-    private void addCreateAndUpdateTimePredicate(Root<E> root, CriteriaBuilder builder, E search, List<Predicate> predicateList) {
+    private void addCreateAndUpdateTimePredicate(
+            Root<E> root, CriteriaBuilder builder, E search, List<Predicate> predicateList
+    ) {
         if (Objects.nonNull(search.getCreateTimeFrom())) {
-            predicateList.add(builder.greaterThanOrEqualTo(root.get(Constant.CREATE_TIME_FIELD), search.getCreateTimeFrom()));
+            predicateList.add(
+                    builder.greaterThanOrEqualTo(root.get(Constant.CREATE_TIME_FIELD), search.getCreateTimeFrom())
+            );
         }
         if (Objects.nonNull(search.getCreateTimeTo())) {
-            predicateList.add(builder.lessThan(root.get(Constant.CREATE_TIME_FIELD), search.getCreateTimeTo()));
+            predicateList.add(
+                    builder.lessThan(root.get(Constant.CREATE_TIME_FIELD), search.getCreateTimeTo())
+            );
         }
         if (Objects.nonNull(search.getUpdateTimeFrom())) {
-            predicateList.add(builder.greaterThanOrEqualTo(root.get(Constant.UPDATE_TIME_FIELD), search.getUpdateTimeFrom()));
+            predicateList.add(
+                    builder.greaterThanOrEqualTo(root.get(Constant.UPDATE_TIME_FIELD), search.getUpdateTimeFrom())
+            );
         }
         if (Objects.nonNull(search.getUpdateTimeTo())) {
-            predicateList.add(builder.lessThan(root.get(Constant.UPDATE_TIME_FIELD), search.getUpdateTimeTo()));
+            predicateList.add(
+                    builder.lessThan(root.get(Constant.UPDATE_TIME_FIELD), search.getUpdateTimeTo())
+            );
         }
     }
 
@@ -821,7 +833,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 查询对象
      */
     private Specification<E> createSpecification(E filter, boolean isEqual) {
-        return (root, criteriaQuery, criteriaBuilder) -> createPredicate(root, criteriaQuery, criteriaBuilder, filter, isEqual);
+        return (root, criteriaQuery, criteriaBuilder) ->
+                createPredicate(root, criteriaQuery, criteriaBuilder, filter, isEqual);
     }
 
     /**
@@ -833,7 +846,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param filter        过滤器实体
      * @return 查询条件
      */
-    private Predicate createPredicate(Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E filter, boolean isEqual) {
+    private Predicate createPredicate(
+            Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E filter, boolean isEqual
+    ) {
         List<Predicate> predicateList = this.getPredicateList(root, builder, filter, true, isEqual);
         predicateList.addAll(addSearchPredicate(root, builder, filter));
         addCreateAndUpdateTimePredicate(root, builder, filter, predicateList);

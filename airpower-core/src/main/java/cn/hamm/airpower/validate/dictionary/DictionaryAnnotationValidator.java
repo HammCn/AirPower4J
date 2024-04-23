@@ -20,9 +20,7 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
         if (null == value) {
             return true;
         }
-
-        IDictionary dictionary = DictionaryUtil.getDictionaryByKey(enumClazz, value);
-        return Objects.nonNull(dictionary);
+        return Objects.nonNull(DictionaryUtil.getDictionaryByKey(enumClazz, value));
     }
 
     @Override

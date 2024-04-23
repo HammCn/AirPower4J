@@ -270,7 +270,9 @@ public class ApiDocument {
         Class<?> paramClass = parameter.getType();
         if (!parameter.getParameterizedType().getTypeName().contains(PACKAGE_SPLIT)) {
             // 泛型
-            paramClass = (Class<?>) ((((ParameterizedType) currentClass.getGenericSuperclass()).getActualTypeArguments())[0]);
+            paramClass = (Class<?>) ((((ParameterizedType) currentClass
+                    .getGenericSuperclass())
+                    .getActualTypeArguments())[0]);
         }
 
         List<Field> fields = ReflectUtil.getFieldList(paramClass);
@@ -296,14 +298,18 @@ public class ApiDocument {
 
             // 获取字段的泛型类型
             if (!field.getGenericType().getTypeName().contains(PACKAGE_SPLIT)) {
-                Class<?> clazz = (Class<?>) (((ParameterizedType) currentClass.getGenericSuperclass()).getActualTypeArguments())[0];
+                Class<?> clazz = (Class<?>) (((ParameterizedType) currentClass
+                        .getGenericSuperclass())
+                        .getActualTypeArguments())[0];
                 apiRequestParam.setType(clazz.getSimpleName());
                 if (ReflectUtil.isModel(clazz)) {
                     apiRequestParam.setLink(clazz.getName());
                 }
             }
 
-            jakarta.validation.constraints.NotNull notNull = field.getAnnotation(jakarta.validation.constraints.NotNull.class);
+            jakarta.validation.constraints.NotNull notNull = field.getAnnotation(
+                    jakarta.validation.constraints.NotNull.class
+            );
             NotBlank notBlank = field.getAnnotation(NotBlank.class);
 
             if (!action.equals(Void.class)) {

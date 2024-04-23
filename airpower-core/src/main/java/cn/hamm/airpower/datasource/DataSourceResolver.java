@@ -22,29 +22,26 @@ import java.util.Map;
 @Slf4j
 public class DataSourceResolver extends AbstractRoutingDataSource {
     /**
+     * <h2>数据源列表</h2>
+     */
+    public static final Map<Object, Object> DATA_SOURCE_LIST = new HashMap<>();
+    /**
      * <h2>数据库驱动协议</h2>
      */
     private static final String DATASOURCE_SCHEME = "jdbc:mysql://";
-
     /**
      * <h2>驱动类名称</h2>
      */
     private static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
-
     /**
      * <h2>其他信息配置</h2>
      */
-    private static final String DATASOURCE_CONFIG = "?allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false";
-
+    private static final String DATASOURCE_CONFIG =
+            "?allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false";
     /**
      * <h2>线程</h2>
      */
     private static final ThreadLocal<String> THREAD_LOCAL = new ThreadLocal<>();
-
-    /**
-     * <h2>数据源列表</h2>
-     */
-    public static final Map<Object, Object> DATA_SOURCE_LIST = new HashMap<>();
 
     /**
      * <h2>初始化空列表</h2>
@@ -85,7 +82,9 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      * @return 数据源地址
      */
     private static String getDataSourceUrl(DataSource dataSource) {
-        return getServerUrl(dataSource) + "/" + GlobalConfig.databasePrefix + dataSource.getDatabase() + DATASOURCE_CONFIG;
+        return getServerUrl(dataSource) + "/" +
+                GlobalConfig.databasePrefix + dataSource.getDatabase() +
+                DATASOURCE_CONFIG;
     }
 
     /**

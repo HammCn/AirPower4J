@@ -137,15 +137,8 @@ public class ReflectUtil {
      * @see Description
      */
     public static String getDescription(Class<?> clazz) {
-        Description description = clazz.getAnnotation(Description.class);
-        if (Objects.nonNull(description)) {
-            return description.value();
-        }
-        if (isTheRootClass(clazz)) {
-            return clazz.getSimpleName();
-        }
-        Class<?> superClass = clazz.getSuperclass();
-        return getDescription(superClass);
+        Description description = ReflectUtil.getAnnotation(Description.class, clazz);
+        return Objects.isNull(description) ? clazz.getSimpleName() : description.value();
     }
 
     /**
@@ -156,7 +149,8 @@ public class ReflectUtil {
      * @see Description
      */
     public static String getDescription(Method method) {
-        return getDescription(method, method.getDeclaringClass());
+        Description description = getAnnotation(Description.class, method, method.getDeclaringClass());
+        return Objects.isNull(description) ? method.getName() : description.value();
     }
 
     /**
@@ -167,7 +161,7 @@ public class ReflectUtil {
      * @see Description
      */
     public static String getDescription(Field field) {
-        Description description = field.getAnnotation(Description.class);
+        Description description = getAnnotation(Description.class, field);
         return Objects.isNull(description) ? field.getName() : description.value();
     }
 
@@ -179,15 +173,8 @@ public class ReflectUtil {
      * @see Document
      */
     public static String getDocument(Class<?> clazz) {
-        Document document = clazz.getAnnotation(Document.class);
-        if (Objects.nonNull(document)) {
-            return document.value();
-        }
-        if (isTheRootClass(clazz)) {
-            return "";
-        }
-        Class<?> superClass = clazz.getSuperclass();
-        return getDocument(superClass);
+        Document document = getAnnotation(Document.class, clazz);
+        return Objects.isNull(document) ? "" : document.value();
     }
 
     /**
@@ -198,7 +185,8 @@ public class ReflectUtil {
      * @see Document
      */
     public static String getDocument(Method method) {
-        return getDocument(method, method.getDeclaringClass());
+        Document document = getAnnotation(Document.class, method);
+        return Objects.isNull(document) ? "" : document.value();
     }
 
 
@@ -210,11 +198,8 @@ public class ReflectUtil {
      * @see Document
      */
     public static String getDocument(Field field) {
-        Document document = field.getAnnotation(Document.class);
-        if (Objects.nonNull(document)) {
-            return document.value();
-        }
-        return "";
+        Document document = getAnnotation(Document.class, field);
+        return Objects.isNull(document) ? "" : document.value();
     }
 
     /**
@@ -247,98 +232,6 @@ public class ReflectUtil {
             return true;
         }
         return isModel(clazz.getSuperclass());
-    }
-
-
-    /**
-     * <h2>递归获取方法的注解</h2>
-     *
-     * @param <A>             注解泛型
-     * @param annotationClass 注解类
-     * @param method          方法
-     * @param currentClass    所在类
-     * @return 装配的注解
-     */
-    private static <A extends Annotation> A getAnnotation(Class<A> annotationClass, Method method, Class<?> currentClass) {
-        A annotation = method.getAnnotation(annotationClass);
-        if (Objects.nonNull(annotation)) {
-            return annotation;
-        }
-        if (isTheRootClass(currentClass)) {
-            return null;
-        }
-        Class<?> superClass = currentClass.getSuperclass();
-        if (Objects.isNull(superClass)) {
-            return null;
-        }
-        try {
-            Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
-            return getAnnotation(annotationClass, superMethod, superClass);
-        } catch (NoSuchMethodException e) {
-            superClass = superClass.getSuperclass();
-            if (Objects.isNull(superClass)) {
-                return null;
-            }
-            return getAnnotation(annotationClass, method, superClass);
-        }
-    }
-
-    /**
-     * <h2>递归获取方法的描述</h2>
-     *
-     * @param method       方法
-     * @param currentClass 所在类
-     * @return 描述
-     * @see Description
-     */
-    private static String getDescription(Method method, Class<?> currentClass) {
-        Description description = method.getAnnotation(Description.class);
-        if (Objects.nonNull(description)) {
-            return description.value();
-        }
-        if (isTheRootClass(currentClass)) {
-            return method.getName();
-        }
-        Class<?> superClass = currentClass.getSuperclass();
-        if (Objects.isNull(superClass)) {
-            return method.getName();
-        }
-        try {
-            Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
-            return getDescription(superMethod, superClass);
-        } catch (NoSuchMethodException e) {
-            superClass = superClass.getSuperclass();
-            return getDescription(method, superClass);
-        }
-    }
-
-    /**
-     * <h2>递归获取方法的描述</h2>
-     *
-     * @param method       方法
-     * @param currentClass 所在类
-     * @return 装配的文档内容
-     * @see Document
-     */
-    private static String getDocument(Method method, Class<?> currentClass) {
-        Document document = method.getAnnotation(Document.class);
-        if (Objects.nonNull(document)) {
-            return document.value();
-        }
-        if (isTheRootClass(currentClass)) {
-            return "";
-        }
-        Class<?> superClass = currentClass.getSuperclass();
-        if (Objects.isNull(superClass)) {
-            return "";
-        }
-        try {
-            Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
-            return getDocument(superMethod, superClass);
-        } catch (NoSuchMethodException exception) {
-            superClass = superClass.getSuperclass();
-            return getDocument(method, superClass);
-        }
     }
 
     /**
@@ -383,4 +276,36 @@ public class ReflectUtil {
         return fieldNames;
     }
 
+    /**
+     * <h2>递归获取方法的注解</h2>
+     *
+     * @param <A>             注解泛型
+     * @param annotationClass 注解类
+     * @param method          方法
+     * @param currentClass    所在类
+     * @return 装配的注解
+     */
+    private static <A extends Annotation> A getAnnotation(Class<A> annotationClass, Method method, Class<?> currentClass) {
+        A annotation = method.getAnnotation(annotationClass);
+        if (Objects.nonNull(annotation)) {
+            return annotation;
+        }
+        if (isTheRootClass(currentClass)) {
+            return null;
+        }
+        Class<?> superClass = currentClass.getSuperclass();
+        if (Objects.isNull(superClass)) {
+            return null;
+        }
+        try {
+            Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
+            return getAnnotation(annotationClass, superMethod, superClass);
+        } catch (NoSuchMethodException e) {
+            superClass = superClass.getSuperclass();
+            if (Objects.isNull(superClass)) {
+                return null;
+            }
+            return getAnnotation(annotationClass, method, superClass);
+        }
+    }
 }
