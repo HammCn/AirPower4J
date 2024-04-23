@@ -11,6 +11,7 @@ import cn.hamm.airpower.util.ReflectUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.Field;
@@ -68,7 +69,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filter 过滤器
      * @param field  字段
      */
-    private void excludeBy(Class<?> filter, Field field) {
+    private void excludeBy(Class<?> filter, @NotNull Field field) {
         Exclude fieldExclude = field.getAnnotation(Exclude.class);
         if (Objects.isNull(fieldExclude)) {
             filterFieldPayload(field);
@@ -96,7 +97,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filter 过滤器
      * @param field  字段
      */
-    private void exposeBy(Class<?> filter, Field field) {
+    private void exposeBy(Class<?> filter, @NotNull Field field) {
         Expose fieldExpose = field.getAnnotation(Expose.class);
         if (Objects.isNull(fieldExpose)) {
             // 没有标记 则直接移除掉
@@ -123,7 +124,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      *
      * @param field 字段
      */
-    private void filterFieldPayload(Field field) {
+    private void filterFieldPayload(@NotNull Field field) {
         Payload payload = field.getAnnotation(Payload.class);
         if (Objects.isNull(payload)) {
             return;

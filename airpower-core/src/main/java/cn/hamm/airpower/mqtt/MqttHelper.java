@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.MqttConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -67,7 +68,7 @@ public class MqttHelper {
      * @param topic   主题
      * @param message 消息内容
      */
-    public void publish(String topic, String message) throws MqttException {
+    public void publish(String topic, @NotNull String message) throws MqttException {
         MqttClient client = createClient();
         client.connect(createOption());
         MqttMessage mqttMessage = new MqttMessage();

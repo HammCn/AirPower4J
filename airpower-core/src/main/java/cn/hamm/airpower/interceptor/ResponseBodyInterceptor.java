@@ -8,6 +8,7 @@ import cn.hamm.airpower.util.CollectionUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -114,7 +115,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
      * @param key KEY
      * @return VALUE
      */
-    protected final Object getShareData(String key) {
+    protected final @Nullable Object getShareData(String key) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (Objects.isNull(requestAttributes)) {
             return null;
@@ -130,7 +131,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
      * @param data   数据
      * @return 过滤后的数据
      */
-    private <M extends RootModel<M>> M filterResponseBy(Filter filter, M data) {
+    private <M extends RootModel<M>> M filterResponseBy(Filter filter, @NotNull M data) {
         // 如果 responseFilter 是空 使用Void类进行转换
         return data.filterResponseDataBy(Objects.isNull(filter) ? Void.class : filter.value());
     }

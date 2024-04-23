@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.GlobalConfig;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +82,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      * @param dataSource 数据源
      * @return 数据源地址
      */
-    private static String getDataSourceUrl(DataSource dataSource) {
+    private static @NotNull String getDataSourceUrl(DataSource dataSource) {
         return getServerUrl(dataSource) + "/" +
                 GlobalConfig.databasePrefix + dataSource.getDatabase() +
                 DATASOURCE_CONFIG;
@@ -93,7 +94,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      * @param dataSource 数据源
      * @return 数据源地址
      */
-    private static String getServerUrl(DataSource dataSource) {
+    private static @NotNull String getServerUrl(@NotNull DataSource dataSource) {
         return DATASOURCE_SCHEME + dataSource.getHost() + ":" + dataSource.getPort();
     }
 

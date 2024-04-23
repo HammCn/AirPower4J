@@ -19,6 +19,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -142,7 +144,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #afterSaved(long, E)
      * @see #update(E)
      */
-    public final void updateWithNull(E source) {
+    public final void updateWithNull(@NotNull E source) {
         Result.PARAM_MISSING.whenNull(source.getId(),
                 "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
         );
@@ -304,7 +306,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param filter 全匹配过滤器
      * @return List数据
      */
-    public final List<E> filter(E filter) {
+    public final @NotNull List<E> filter(E filter) {
         QueryRequest<E> queryRequest = new QueryRequest<>();
         queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), filter));
         return repository.findAll(createSpecification(filter, true), createSort(queryRequest.getSort()));
@@ -667,7 +669,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param data 分页数据
      * @return 输出分页对象
      */
-    private QueryPageResponse<E> getResponsePageList(org.springframework.data.domain.Page<E> data) {
+    private QueryPageResponse<E> getResponsePageList(@NotNull org.springframework.data.domain.Page<E> data) {
         return new QueryPageResponse<E>()
                 .setList(data.getContent())
                 .setTotal(Math.toIntExact(data.getTotalElements()))
@@ -684,7 +686,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param sort 排序对象
      * @return Sort Spring的排序对象
      */
-    private org.springframework.data.domain.Sort createSort(Sort sort) {
+    private @NotNull org.springframework.data.domain.Sort createSort(Sort sort) {
         sort = Objects.requireNonNullElse(sort, new Sort());
 
         if (!StringUtils.hasText(sort.getField())) {
@@ -710,7 +712,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param queryPageData 查询请求
      * @return Pageable
      */
-    private Pageable createPageable(QueryPageRequest<E> queryPageData) {
+    private @NotNull Pageable createPageable(@NotNull QueryPageRequest<E> queryPageData) {
         Page page = Objects.requireNonNullElse(queryPageData.getPage(), new Page());
         page.setPageNum(Objects.requireNonNullElse(page.getPageNum(), 1));
         page.setPageSize(Objects.requireNonNullElse(page.getPageSize(), globalConfig.getDefaultPageSize()));
@@ -729,8 +731,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param isEqual 是否强匹配
      * @return 搜索条件
      */
-    private List<Predicate> getPredicateList(
-            Object root, CriteriaBuilder builder, Object search, boolean isRoot, boolean isEqual
+    private @NotNull List<Predicate> getPredicateList(
+            Object root, CriteriaBuilder builder, @NotNull Object search, boolean isRoot, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
@@ -805,7 +807,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param predicateList 查询条件列表
      */
     private void addCreateAndUpdateTimePredicate(
-            Root<E> root, CriteriaBuilder builder, E search, List<Predicate> predicateList
+            Root<E> root, CriteriaBuilder builder, @NotNull E search, List<Predicate> predicateList
     ) {
         if (Objects.nonNull(search.getCreateTimeFrom())) {
             predicateList.add(
@@ -836,7 +838,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param isEqual 是否强匹配
      * @return 查询对象
      */
-    private Specification<E> createSpecification(E filter, boolean isEqual) {
+    @Contract(pure = true)
+    private @NotNull Specification<E> createSpecification(E filter, boolean isEqual) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 createPredicate(root, criteriaQuery, criteriaBuilder, filter, isEqual);
     }
@@ -851,7 +854,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 查询条件
      */
     private Predicate createPredicate(
-            Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E filter, boolean isEqual
+            Root<E> root, @NotNull CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E filter, boolean isEqual
     ) {
         List<Predicate> predicateList = this.getPredicateList(root, builder, filter, true, isEqual);
         predicateList.addAll(addSearchPredicate(root, builder, filter));

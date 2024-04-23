@@ -5,6 +5,8 @@ import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -23,17 +25,19 @@ public class RequestBodyCacheWrapper extends HttpServletRequestWrapper {
         cachedBody = inputStreamToBytes(request.getInputStream());
     }
 
+    @Contract(" -> new")
     @Override
-    public ServletInputStream getInputStream() {
+    public final @NotNull ServletInputStream getInputStream() {
         return new CachedServletInputStream(new ByteArrayInputStream(cachedBody));
     }
 
+    @Contract(" -> new")
     @Override
-    public BufferedReader getReader() {
+    public final @NotNull BufferedReader getReader() {
         return new BufferedReader(new InputStreamReader(getInputStream(), StandardCharsets.UTF_8));
     }
 
-    private byte[] inputStreamToBytes(InputStream in) throws IOException {
+    private byte[] inputStreamToBytes(@NotNull InputStream in) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int read;

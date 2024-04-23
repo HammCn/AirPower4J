@@ -2,6 +2,7 @@ package cn.hamm.airpower.security;
 
 import cn.hamm.airpower.result.Result;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <h1>密码助手类</h1>
@@ -16,7 +17,7 @@ public class PasswordUtil {
      * @param salt     盐
      * @return sha1散列摘要
      */
-    public static String encode(String password, String salt) {
+    public static @NotNull String encode(String password, String salt) {
         Result.PARAM_MISSING.whenEmpty(password, "密码不能为空");
         Result.PARAM_MISSING.whenEmpty(salt, "盐不能为空");
         return DigestUtils.sha1Hex(

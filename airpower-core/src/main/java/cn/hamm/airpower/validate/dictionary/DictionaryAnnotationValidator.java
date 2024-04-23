@@ -4,6 +4,7 @@ import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.util.DictionaryUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
     Class<? extends IDictionary> enumClazz = null;
 
     @Override
-    public boolean isValid(Integer value, ConstraintValidatorContext context) {
+    public final boolean isValid(Integer value, ConstraintValidatorContext context) {
         if (null == value) {
             return true;
         }
@@ -24,7 +25,7 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
     }
 
     @Override
-    public void initialize(Dictionary dictionary) {
+    public final void initialize(@NotNull Dictionary dictionary) {
         enumClazz = dictionary.value();
     }
 }

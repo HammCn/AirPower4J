@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <h1>简单JSON对象</h1>
@@ -47,7 +48,7 @@ public class Json implements IResult {
      *
      * @param result 枚举
      */
-    public Json(Result result) {
+    public Json(@NotNull Result result) {
         this.code = result.getCode();
         this.message = result.getMessage();
     }
@@ -58,7 +59,7 @@ public class Json implements IResult {
      * @param result  枚举
      * @param message 错误信息
      */
-    public Json(Result result, String message) {
+    public Json(@NotNull Result result, String message) {
         this.code = result.getCode();
         this.message = message;
     }
@@ -69,7 +70,7 @@ public class Json implements IResult {
      * @param result  自定义响应类
      * @param message 错误信息
      */
-    public Json(ResultException result, String message) {
+    public Json(@NotNull ResultException result, String message) {
         this.code = result.getCode();
         this.message = message;
     }
@@ -112,7 +113,7 @@ public class Json implements IResult {
      *
      * @return ObjectMapper
      */
-    private static ObjectMapper getObjectMapper() {
+    private static @NotNull ObjectMapper getObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         // 忽略未声明的属性
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

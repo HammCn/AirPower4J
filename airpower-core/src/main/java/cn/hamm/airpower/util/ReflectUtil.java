@@ -7,6 +7,7 @@ import cn.hamm.airpower.root.RootController;
 import cn.hamm.airpower.root.RootEntity;
 import cn.hamm.airpower.root.RootModel;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
@@ -30,7 +31,7 @@ public class ReflectUtil {
      * @param field  属性
      * @return 值
      */
-    public static @Nullable Object getFieldValue(Object object, Field field) {
+    public static @Nullable Object getFieldValue(Object object, @NotNull Field field) {
         try {
             field.setAccessible(true);
             return field.get(object);
@@ -49,7 +50,7 @@ public class ReflectUtil {
      * @param field  属性
      * @param value  值
      */
-    public static void setFieldValue(Object object, Field field, Object value) {
+    public static void setFieldValue(Object object, @NotNull Field field, Object value) {
         try {
             field.setAccessible(true);
             field.set(object, value);
@@ -76,7 +77,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 判断结果
      */
-    public static boolean isTheRootClass(Class<?> clazz) {
+    public static boolean isTheRootClass(@NotNull Class<?> clazz) {
         return clazz.getName().equals(RootController.class.getName()) ||
                 clazz.getName().equals(RootEntity.class.getName()) ||
                 clazz.getName().equals(Object.class.getName());
@@ -102,7 +103,7 @@ public class ReflectUtil {
      * @param <A>             泛型
      * @return 注解
      */
-    public static <A extends Annotation> A getAnnotation(Class<A> annotationClass, Class<?> clazz) {
+    public static <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Class<?> clazz) {
         A annotation = clazz.getAnnotation(annotationClass);
         if (Objects.nonNull(annotation)) {
             return annotation;
@@ -122,7 +123,7 @@ public class ReflectUtil {
      * @param <A>             泛型
      * @return 注解
      */
-    public static <A extends Annotation> A getAnnotation(Class<A> annotationClass, Field field) {
+    public static <A extends Annotation> A getAnnotation(Class<A> annotationClass, @NotNull Field field) {
         return field.getAnnotation(annotationClass);
     }
 
@@ -237,7 +238,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 字段数组
      */
-    public static List<Field> getFieldList(Class<?> clazz) {
+    public static @NotNull List<Field> getFieldList(Class<?> clazz) {
         List<Field> fieldList = new LinkedList<>();
         if (Objects.isNull(clazz)) {
             return fieldList;
@@ -264,7 +265,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 属性名数组
      */
-    public static List<String> getFieldNameList(Class<?> clazz) {
+    public static @NotNull List<String> getFieldNameList(@NotNull Class<?> clazz) {
         Field[] fields = clazz.getDeclaredFields();
         List<String> fieldNames = new ArrayList<>();
         for (Field field : fields) {
@@ -282,7 +283,7 @@ public class ReflectUtil {
      * @param currentClass    所在类
      * @return 装配的注解
      */
-    private static <A extends Annotation> A getAnnotation(Class<A> annotationClass, Method method, Class<?> currentClass) {
+    private static <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Method method, Class<?> currentClass) {
         A annotation = method.getAnnotation(annotationClass);
         if (Objects.nonNull(annotation)) {
             return annotation;

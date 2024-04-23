@@ -1,6 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.interfaces.ITree;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class TreeUtil {
      * @param <E>  泛型
      * @return 树结构数组
      */
-    public <E extends ITree<E>> List<E> buildTreeList(List<E> list) {
+    public final <E extends ITree<E>> List<E> buildTreeList(List<E> list) {
         return buildTreeList(list, 0L);
     }
 
@@ -32,7 +33,7 @@ public class TreeUtil {
      * @param <E>      泛型
      * @return 数结构数组
      */
-    private <E extends ITree<E>> List<E> buildTreeList(List<E> list, Long parentId) {
+    private <E extends ITree<E>> List<E> buildTreeList(@NotNull List<E> list, Long parentId) {
         return list.stream()
                 .filter(item -> parentId.equals(item.getParentId()))
                 .peek(item -> {

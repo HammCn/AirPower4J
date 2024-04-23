@@ -5,6 +5,8 @@ import cn.hamm.airpower.result.ResultException;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
@@ -53,7 +55,7 @@ public class RsaHelper {
      * @param sourceContent 原文
      * @return 密文
      */
-    public String publicKeyEncode(String sourceContent) {
+    public final String publicKeyEncode(String sourceContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
             PublicKey publicKey = getPublicKey(this.publicKey);
@@ -71,7 +73,7 @@ public class RsaHelper {
      * @param encryptedContent 密文
      * @return 原文
      */
-    public String privateKeyDecode(String encryptedContent) {
+    public final @NotNull String privateKeyDecode(String encryptedContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
             PrivateKey privateKey = getPrivateKey(this.privateKey);
@@ -88,7 +90,7 @@ public class RsaHelper {
      * @param sourceContent 原文
      * @return 密文
      */
-    public String privateKeyEncode(String sourceContent) {
+    public final String privateKeyEncode(String sourceContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
             PrivateKey privateKey = getPrivateKey(this.privateKey);
@@ -106,7 +108,7 @@ public class RsaHelper {
      * @param encryptedContent 密文
      * @return 原文
      */
-    public String publicKeyDecode(String encryptedContent) {
+    public final @NotNull String publicKeyDecode(String encryptedContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
             PublicKey publicKey = getPublicKey(this.publicKey);
@@ -125,7 +127,8 @@ public class RsaHelper {
      * @param blockSize        分块大小
      * @return 明文
      */
-    private String decodeByKey(String encryptedContent, Key key, int blockSize) throws Exception {
+    @Contract("_, _, _ -> new")
+    private @NotNull String decodeByKey(String encryptedContent, Key key, int blockSize) throws Exception {
         byte[] srcBytes = Base64.getDecoder().decode(encryptedContent);
         Cipher deCipher;
         deCipher = Cipher.getInstance(CRYPT_METHOD);
@@ -143,7 +146,7 @@ public class RsaHelper {
      * @param blockSize     区块大小
      * @return 密文
      */
-    private String encodeByKey(String sourceContent, Key key, int blockSize) throws Exception {
+    private String encodeByKey(@NotNull String sourceContent, Key key, int blockSize) throws Exception {
         byte[] srcBytes = sourceContent.getBytes();
         Cipher cipher;
         cipher = Cipher.getInstance(CRYPT_METHOD);
@@ -189,7 +192,7 @@ public class RsaHelper {
      * @return 加解密结果
      * @throws Exception 加解密异常
      */
-    private byte[] rsaDoFinal(Cipher cipher, byte[] sourceBytes, int blockSize) throws Exception {
+    private byte[] rsaDoFinal(Cipher cipher, byte @NotNull [] sourceBytes, int blockSize) throws Exception {
         Result.ERROR.when(blockSize <= 0, "分段大小必须大于0");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int inputLength = sourceBytes.length;

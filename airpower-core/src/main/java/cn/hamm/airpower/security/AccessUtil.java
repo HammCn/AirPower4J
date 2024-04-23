@@ -1,5 +1,6 @@
 package cn.hamm.airpower.security;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -18,7 +19,7 @@ public class AccessUtil {
      * @param method 方法
      * @return 需要授权的选项
      */
-    public static AccessConfig getWhatNeedAccess(Class<?> clazz, Method method) {
+    public static @NotNull AccessConfig getWhatNeedAccess(@NotNull Class<?> clazz, Method method) {
         //默认无标记时，不需要登录和授权
         AccessConfig accessConfig = new AccessConfig();
 
@@ -48,7 +49,7 @@ public class AccessUtil {
      * @param method 方法
      * @return 权限标识
      */
-    public static String getPermissionIdentity(Class<?> clazz, Method method) {
+    public static @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
         return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll("Controller", "")) +
                 "_" +
                 method.getName();

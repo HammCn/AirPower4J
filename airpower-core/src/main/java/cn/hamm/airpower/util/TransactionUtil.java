@@ -1,5 +1,6 @@
 package cn.hamm.airpower.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,7 @@ public class TransactionUtil {
      * @param function 事务包含的方法集合体
      */
     @Transactional(rollbackFor = Exception.class)
-    public void run(Function function) {
+    public void run(@NotNull Function function) {
         function.run();
     }
 

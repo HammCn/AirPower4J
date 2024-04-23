@@ -33,7 +33,7 @@ public class SecurityUtil {
      *
      * @param accessToken accessToken
      */
-    public long getUserIdFromAccessToken(String accessToken) {
+    public final long getUserIdFromAccessToken(String accessToken) {
         Object data = redisUtil.get(ACCESS_TOKEN_PREFIX + accessToken);
         if (Objects.nonNull(data)) {
             return Long.parseLong(data.toString());
@@ -47,7 +47,7 @@ public class SecurityUtil {
      * @param userId 用户ID
      * @return AccessToken
      */
-    public String createAccessToken(Long userId) {
+    public final String createAccessToken(Long userId) {
         String accessToken = RandomUtil.randomString();
         try {
             getUserIdFromAccessToken(accessToken);

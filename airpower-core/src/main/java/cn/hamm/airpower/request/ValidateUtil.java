@@ -1,5 +1,7 @@
 package cn.hamm.airpower.request;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -205,7 +207,7 @@ public class ValidateUtil {
      * @param pattern 正则
      * @return 验证结果
      */
-    public static boolean validRegex(String value, Pattern pattern) {
+    public static boolean validRegex(String value, @NotNull Pattern pattern) {
         Matcher emailMatcher = pattern.matcher(value);
         return emailMatcher.matches();
     }

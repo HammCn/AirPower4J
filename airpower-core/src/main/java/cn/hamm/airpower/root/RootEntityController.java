@@ -13,6 +13,7 @@ import cn.hamm.airpower.result.ResultException;
 import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.result.json.JsonData;
 import cn.hamm.airpower.security.Permission;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -85,7 +86,7 @@ public class RootEntityController<
     @Description("修改")
     @RequestMapping("update")
     @Filter(WhenGetDetail.class)
-    public JsonData update(@RequestBody @Validated(WhenUpdate.class) E entity) {
+    public JsonData update(@RequestBody @Validated(WhenUpdate.class) @NotNull E entity) {
         checkApiAvailableStatus(Api.Update);
         long updateId = entity.getId();
         service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)));
@@ -105,7 +106,7 @@ public class RootEntityController<
      */
     @Description("删除")
     @RequestMapping("delete")
-    public Json delete(@RequestBody @Validated(WhenIdRequired.class) E entity) {
+    public Json delete(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
         checkApiAvailableStatus(Api.Delete);
         long deleteId = entity.getId();
         beforeDelete(deleteId);
@@ -125,7 +126,7 @@ public class RootEntityController<
     @Description("查询详情")
     @RequestMapping("getDetail")
     @Filter(WhenGetDetail.class)
-    public JsonData getDetail(@RequestBody @Validated(WhenIdRequired.class) E entity) {
+    public JsonData getDetail(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
         checkApiAvailableStatus(Api.GetDetail);
         return jsonData(afterGetDetail(service.get(entity.getId())));
     }
@@ -139,7 +140,7 @@ public class RootEntityController<
      */
     @Description("禁用")
     @RequestMapping("disable")
-    public Json disable(@RequestBody @Validated(WhenIdRequired.class) E entity) {
+    public Json disable(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
         checkApiAvailableStatus(Api.Disable);
         beforeDisable(entity.getId());
         service.disable(entity.getId());
@@ -158,7 +159,7 @@ public class RootEntityController<
      */
     @Description("启用")
     @RequestMapping("enable")
-    public Json enable(@RequestBody @Validated(WhenIdRequired.class) E entity) {
+    public Json enable(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
         checkApiAvailableStatus(Api.Enable);
         beforeEnable(entity.getId());
         service.enable(entity.getId());
@@ -355,7 +356,7 @@ public class RootEntityController<
      * @param <T>          QueryRequest子类
      * @return 处理后的查询请求
      */
-    private <T extends QueryRequest<E>> T getQueryRequest(T queryRequest) {
+    private <T extends QueryRequest<E>> @NotNull T getQueryRequest(T queryRequest) {
         //noinspection unchecked
         queryRequest = Objects.requireNonNullElse(queryRequest, (T) new QueryRequest<E>());
         queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));

@@ -23,7 +23,7 @@ public class CookieUtil {
      * @return Cookie
      * @see CookieConfig
      */
-    public Cookie getCookie(String key, String value) {
+    public final Cookie getCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setHttpOnly(cookieConfig.isCookieHttpOnly());
         cookie.setMaxAge(cookieConfig.getCookieMaxAge());
@@ -39,7 +39,7 @@ public class CookieUtil {
      * @return Cookie
      * @see CookieConfig
      */
-    public Cookie getAuthorizeCookie(String value) {
+    public final Cookie getAuthorizeCookie(String value) {
         return getCookie(cookieConfig.getAuthCookieName(), value);
     }
 }

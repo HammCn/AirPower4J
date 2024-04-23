@@ -3,6 +3,7 @@ package cn.hamm.airpower.result;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <h1>自定义异常包装类</h1>
@@ -42,7 +43,7 @@ public class ResultException extends RuntimeException implements IResult {
      *
      * @param error 异常
      */
-    public ResultException(Result error) {
+    public ResultException(@NotNull Result error) {
         this.setCode(error.getCode()).setMessage(error.getMessage());
     }
 

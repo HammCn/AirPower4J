@@ -1,5 +1,6 @@
 package cn.hamm.airpower.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
 import java.util.Random;
@@ -37,7 +38,7 @@ public class RandomUtil {
      *
      * @return 随机字符串
      */
-    public static String randomString() {
+    public static @NotNull String randomString() {
         return randomString(32);
     }
 
@@ -47,7 +48,7 @@ public class RandomUtil {
      * @param length 字符串的长度
      * @return 随机字符串
      */
-    public static String randomString(final int length) {
+    public static @NotNull String randomString(final int length) {
         return randomString(BASE_CHAR_NUMBER, length);
     }
 
@@ -57,7 +58,7 @@ public class RandomUtil {
      * @param length 字符串的长度
      * @return 随机字符串
      */
-    public static String randomNumbers(final int length) {
+    public static @NotNull String randomNumbers(final int length) {
         return randomString(BASE_NUMBER, length);
     }
 
@@ -68,7 +69,7 @@ public class RandomUtil {
      * @param length     字符串的长度
      * @return 随机字符串
      */
-    public static String randomString(final String baseString, int length) {
+    public static @NotNull String randomString(final String baseString, int length) {
         if (!StringUtils.hasText(baseString)) {
             return "";
         }

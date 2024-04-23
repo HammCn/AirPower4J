@@ -1,6 +1,7 @@
 package cn.hamm.airpower.result;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -29,7 +30,8 @@ public interface IResult {
      *
      * @return 异常
      */
-    private ResultException create() {
+    @Contract(" -> new")
+    private @NotNull ResultException create() {
         return new ResultException(getCode(), getMessage());
     }
 
@@ -132,7 +134,7 @@ public interface IResult {
      * @param obj2    被验证的数据
      * @param message 返回信息
      */
-    default void whenEquals(Object obj1, Object obj2, String message) {
+    default void whenEquals(@NotNull Object obj1, Object obj2, String message) {
         when(obj1.equals(obj2), message);
     }
 
@@ -153,7 +155,7 @@ public interface IResult {
      * @param str2    被验证的数据
      * @param message 返回信息
      */
-    default void whenEquals(String str1, String str2, String message) {
+    default void whenEquals(@NotNull String str1, String str2, String message) {
         when(str1.equals(str2), message);
     }
 
@@ -174,7 +176,7 @@ public interface IResult {
      * @param str2    被验证的数据
      * @param message 返回信息
      */
-    default void whenEqualsIgnoreCase(String str1, String str2, String message) {
+    default void whenEqualsIgnoreCase(@NotNull String str1, String str2, String message) {
         when(str1.equalsIgnoreCase(str2), message);
     }
 
@@ -195,7 +197,7 @@ public interface IResult {
      * @param obj2    被验证的数据
      * @param message 返回信息
      */
-    default void whenNotEquals(Object obj1, Object obj2, String message) {
+    default void whenNotEquals(@NotNull Object obj1, Object obj2, String message) {
         when(!obj1.equals(obj2), message);
     }
 
@@ -216,7 +218,7 @@ public interface IResult {
      * @param str2    被验证的数据
      * @param message 返回信息
      */
-    default void whenNotEquals(String str1, String str2, String message) {
+    default void whenNotEquals(@NotNull String str1, String str2, String message) {
         when(!str1.equals(str2), message);
     }
 
@@ -237,7 +239,7 @@ public interface IResult {
      * @param str2    被验证的数据
      * @param message 返回信息
      */
-    default void whenNotEqualsIgnoreCase(String str1, String str2, String message) {
+    default void whenNotEqualsIgnoreCase(@NotNull String str1, String str2, String message) {
         when(!str1.equalsIgnoreCase(str2), message);
     }
 

@@ -3,6 +3,7 @@ package cn.hamm.airpower.security;
 import cn.hamm.airpower.config.GlobalConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
     private GlobalConfig globalConfig;
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {
+    public final boolean supportsParameter(@NotNull MethodParameter parameter) {
         Class<?> clazz = parameter.getParameterType();
         return clazz == Long.class;
     }
@@ -37,10 +38,10 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
      * <h2>ACCESS_TOKEN换用户ID</h2>
      */
     @Override
-    public Object resolveArgument(
+    public final @NotNull @Unmodifiable Object resolveArgument(
             @NotNull MethodParameter parameter,
             ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest,
+            @NotNull NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
     ) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);

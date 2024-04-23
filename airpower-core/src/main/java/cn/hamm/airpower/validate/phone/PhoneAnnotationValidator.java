@@ -3,6 +3,7 @@ package cn.hamm.airpower.validate.phone;
 import cn.hamm.airpower.request.ValidateUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
 
@@ -23,7 +24,7 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
     boolean tel = true;
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public final boolean isValid(String value, ConstraintValidatorContext context) {
         if (!StringUtils.hasLength(value)) {
             return true;
         }
@@ -44,7 +45,7 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
     }
 
     @Override
-    public void initialize(Phone constraintAnnotation) {
+    public final void initialize(@NotNull Phone constraintAnnotation) {
         mobile = constraintAnnotation.mobile();
         tel = constraintAnnotation.tel();
     }

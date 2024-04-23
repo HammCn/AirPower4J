@@ -10,6 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @AutoConfiguration
 @ComponentScan("cn.hamm.airpower")
-public class CoreAutoConfiguration {
+public class ConfigurationAuto {
 
 }

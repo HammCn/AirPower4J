@@ -3,6 +3,7 @@ package cn.hamm.airpower;
 import cn.hamm.airpower.interceptor.AbstractRequestInterceptor;
 import cn.hamm.airpower.interceptor.cache.RequestCacheFilter;
 import cn.hamm.airpower.security.AccessResolver;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +41,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public final void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+    public final void addArgumentResolvers(@NotNull List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(accessResolver);
     }
 

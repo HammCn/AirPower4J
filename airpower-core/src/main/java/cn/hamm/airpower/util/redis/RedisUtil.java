@@ -6,6 +6,8 @@ import cn.hamm.airpower.result.json.Json;
 import cn.hamm.airpower.root.RootEntity;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -34,7 +36,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @return 缓存实体
      */
-    public final E getEntity(E entity) {
+    public final @Nullable E getEntity(E entity) {
         Object object = get(getCacheKey(entity));
         if (Objects.isNull(object)) {
             return null;
@@ -54,7 +56,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @return 缓存的实体
      */
-    public final E getEntity(String key, E entity) {
+    public final @Nullable E getEntity(String key, E entity) {
         Object object = get(key);
         if (Objects.isNull(object)) {
             return null;
@@ -202,7 +204,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param key 缓存的Key
      * @return 值
      */
-    public final Object get(String key) {
+    public final @Nullable Object get(String key) {
         try {
             return redisTemplate.opsForValue().get(key);
         } catch (Exception exception) {
@@ -259,7 +261,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @return key
      */
-    private String getCacheKey(E entity) {
+    private @NotNull String getCacheKey(@NotNull E entity) {
         return entity.getClass().getSimpleName() + "_" + entity.getId().toString();
     }
 }

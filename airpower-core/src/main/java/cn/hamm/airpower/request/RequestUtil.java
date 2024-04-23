@@ -5,6 +5,7 @@ import cn.hamm.airpower.result.Result;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -37,7 +38,7 @@ public class RequestUtil {
      * @param request 请求
      * @return 是否是上传请求
      */
-    public static boolean isUploadRequest(HttpServletRequest request) {
+    public static boolean isUploadRequest(@NotNull HttpServletRequest request) {
         return isUploadFileContentType(request.getContentType());
     }
 
@@ -48,7 +49,7 @@ public class RequestUtil {
      * @param request 请求
      * @return 是否是上传请求
      */
-    public static boolean isUploadRequest(ServletRequest request) {
+    public static boolean isUploadRequest(@NotNull ServletRequest request) {
         return isUploadFileContentType(request.getContentType());
     }
 
