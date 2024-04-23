@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * <h1>数据根模型</h1>
@@ -63,15 +64,10 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @return 实体
      */
     public final M exclude(List<String> fieldNames) {
-        List<Field> fieldList = ReflectUtil.getFieldList(this.getClass());
-        for (Field field : fieldList) {
-            for (String fieldName : fieldNames) {
-                if (field.getName().equals(fieldName)) {
-                    ReflectUtil.clearFieldValue(this, field);
-                    break;
-                }
-            }
-        }
+        ReflectUtil.getFieldList(this.getClass())
+                .stream()
+                .filter(field -> fieldNames.contains(field.getName()))
+                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
         return (M) this;
     }
 
@@ -82,19 +78,12 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @return 实体
      */
     public final M expose(String... fieldNames) {
-        List<Field> fieldList = ReflectUtil.getFieldList(this.getClass());
-        for (Field field : fieldList) {
-            boolean needReturn = false;
-            for (String fieldName : fieldNames) {
-                if (field.getName().equals(fieldName)) {
-                    needReturn = true;
-                    break;
-                }
-            }
-            if (!needReturn) {
-                ReflectUtil.clearFieldValue(this, field);
-            }
-        }
+        final List<String> fieldNameList = Arrays.asList(fieldNames);
+        ReflectUtil.getFieldList(this.getClass()).stream()
+                .filter(
+                        field -> !fieldNameList.contains(field.getName())
+                )
+                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
         return (M) this;
     }
 
@@ -107,16 +96,10 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     public final M filterResponseDataBy(Class<?> filter) {
         Class<M> clazz = (Class<M>) this.getClass();
         List<Field> allFields = ReflectUtil.getFieldList(clazz);
-
         Exclude exclude = clazz.getAnnotation(Exclude.class);
-        if (Objects.nonNull(exclude)) {
-            // 整个类过滤 判断哪些字段走白名单
-            allFields.forEach(field -> exposeBy(filter, field));
-            return (M) this;
-        }
         // 类中没有标排除 则所有字段全暴露 走黑名单
-        allFields.forEach(field -> excludeBy(filter, field));
-
+        BiConsumer<Class<?>, Field> task = Objects.nonNull(exclude) ? this::exposeBy : this::excludeBy;
+        allFields.forEach(field -> task.accept(filter, field));
         return (M) this;
     }
 
@@ -133,24 +116,15 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return;
         }
         Class<?>[] excludeClasses = fieldExclude.filters();
-        if (excludeClasses.length == 0) {
-            // 字段标记排除 但没有指定场景 则所有场景都排除
-            ReflectUtil.clearFieldValue(this, field);
-            //如果是挂载数据
-            filterFieldPayload(field);
-            return;
-        }
 
-        boolean isExclude = false;
-        // 标了指定场景排除
-        for (Class<?> excludeClass : excludeClasses) {
-            if (!Void.class.equals(filter) && filter.equals(excludeClass)) {
-                // 响应场景也被标在排除场景列表中
-                isExclude = true;
-                break;
-            }
+        boolean isNeedClear = true;
+        if (excludeClasses.length > 0) {
+            isNeedClear = Arrays.stream(excludeClasses)
+                    .anyMatch(excludeClass ->
+                            !Void.class.equals(filter) && filter.equals(excludeClass)
+                    );
         }
-        if (isExclude) {
+        if (isNeedClear) {
             ReflectUtil.clearFieldValue(this, field);
         }
         //如果是挂载数据
@@ -171,24 +145,16 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             filterFieldPayload(field);
             return;
         }
-        boolean isExpose = false;
         Class<?>[] exposeClasses = fieldExpose.filters();
 
-        if (exposeClasses.length == 0) {
-            // 没有指定暴露的过滤器
-            filterFieldPayload(field);
-            return;
-        }
-        // 标了指定场景暴露
-        for (Class<?> exposeClass : exposeClasses) {
-            if (Void.class.equals(filter) || filter.equals(exposeClass)) {
-                // 响应场景也被标在暴露场景列表中
-                isExpose = true;
-                break;
+        if (exposeClasses.length > 0) {
+            boolean isExpose = Arrays.stream(exposeClasses).anyMatch(
+                    // Void 或者标记了暴露
+                    exposeClass -> Void.class.equals(filter) || filter.equals(exposeClass)
+            );
+            if (!isExpose) {
+                ReflectUtil.clearFieldValue(this, field);
             }
-        }
-        if (!isExpose) {
-            ReflectUtil.clearFieldValue(this, field);
         }
         filterFieldPayload(field);
     }

@@ -655,15 +655,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         PropertyDescriptor[] propertyDescriptors = srcBean.getPropertyDescriptors();
         // 获取Bean的空属性
         Set<String> properties = new HashSet<>();
-        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-            String propertyName = propertyDescriptor.getName();
-            Object propertyValue = srcBean.getPropertyValue(propertyName);
-
-            // null 不更新到数据库 添加到忽略名单
-            if (Objects.isNull(propertyValue)) {
-                properties.add(propertyName);
-            }
-        }
+        Arrays.stream(propertyDescriptors)
+                .filter(propertyDescriptor -> Objects.isNull(propertyDescriptor.getValue(propertyDescriptor.getName())))
+                .map(PropertyDescriptor::getName)
+                .forEach(properties::add);
         return properties.toArray(new String[0]);
     }
 
