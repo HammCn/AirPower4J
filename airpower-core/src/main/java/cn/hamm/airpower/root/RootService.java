@@ -89,9 +89,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         }
         long id = saveToDatabase(source);
         E finalSource = source;
-        tryCatch(
-                () -> afterAdd(id, finalSource)
-        );
+        tryCatch(() -> afterAdd(id, finalSource));
         return id;
     }
 
@@ -128,10 +126,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         source = beforeUpdate(source);
         updateToDatabase(source);
         E finalSource = source;
-        tryCatch(
-                () -> afterUpdate(finalSource.getId(), finalSource),
-                () -> afterSaved(finalSource.getId(), finalSource)
-        );
+        tryCatch(() -> afterUpdate(finalSource.getId(), finalSource), () -> afterSaved(finalSource.getId(), finalSource));
     }
 
     /**
@@ -149,10 +144,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         source = beforeUpdate(source);
         updateToDatabase(source, true);
         E finalSource = source;
-        tryCatch(
-                () -> afterUpdate(finalSource.getId(), finalSource),
-                () -> afterSaved(finalSource.getId(), finalSource)
-        );
+        tryCatch(() -> afterUpdate(finalSource.getId(), finalSource), () -> afterSaved(finalSource.getId(), finalSource));
     }
 
     /**
@@ -200,9 +192,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void disable(long id) {
         beforeDisable(id);
         disableById(id);
-        tryCatch(
-                () -> afterDisable(id)
-        );
+        tryCatch(() -> afterDisable(id));
     }
 
     /**
@@ -231,9 +221,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void enable(long id) {
         beforeEnable(id);
         enableById(id);
-        tryCatch(
-                () -> afterEnable(id)
-        );
+        tryCatch(() -> afterEnable(id));
     }
 
     /**
@@ -262,9 +250,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void delete(long id) {
         beforeDelete(id);
         deleteById(id);
-        tryCatch(
-                () -> afterDelete(id)
-        );
+        tryCatch(() -> afterDelete(id));
     }
 
     /**
@@ -481,13 +467,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
             if (Objects.isNull(annotation)) {
                 continue;
             }
-            try {
-                field.setAccessible(true);
-                field.set(entity, null);
-            } catch (Exception exception) {
-                log.error("忽略只读属性失败", exception);
-                Result.ERROR.show();
-            }
+            ReflectUtil.clearFieldValue(entity, field);
         }
         return entity;
     }
@@ -619,31 +599,24 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 没标注解 或者标了 但不做唯一校验
                 continue;
             }
-            Object fieldValue = "";
-            try {
-                field.setAccessible(true);
-                fieldValue = field.get(entity);
-                if (Objects.isNull(fieldValue)) {
-                    // 没有值 不校验
-                    continue;
-                }
-                E search = getNewInstance();
-                field.set(search, fieldValue);
-                Example<E> example = Example.of(search);
-                Optional<E> exist = repository.findOne(example);
-                if (exist.isEmpty()) {
-                    // 没查到 不校验
-                    continue;
-                }
-                if (Objects.nonNull(entity.getId()) && exist.get().getId().equals(entity.getId())) {
-                    // 是修改 且查到的是自己 就不校验重复了
-                    continue;
-                }
-            } catch (Exception exception) {
-                log.error("唯一校验失败", exception);
-                Result.ERROR.show();
+            Object fieldValue = ReflectUtil.getFieldValue(entity, field);
+            if (Objects.isNull(fieldValue)) {
+                // 没有值 不校验
+                continue;
             }
-            Result.FORBIDDEN_EXIST.show(fieldName + "(" + fieldValue.toString() + ")已经存在！");
+            E search = getNewInstance();
+            ReflectUtil.setFieldValue(search, field, fieldValue);
+            Example<E> example = Example.of(search);
+            Optional<E> exist = repository.findOne(example);
+            if (exist.isEmpty()) {
+                // 没查到 不校验
+                continue;
+            }
+            if (Objects.nonNull(entity.getId()) && exist.get().getId().equals(entity.getId())) {
+                // 是修改 且查到的是自己 就不校验重复了
+                continue;
+            }
+            Result.FORBIDDEN_EXIST.show(fieldName + "(" + fieldValue + ")已经存在！");
         }
     }
 
@@ -765,64 +738,59 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
         for (Field field : fields) {
-            try {
-                field.setAccessible(true);
-                Object fieldValue = field.get(search);
-                if (Objects.isNull(fieldValue) || !StringUtils.hasText(fieldValue.toString())) {
-                    // 没有传入查询值 跳过
-                    continue;
+            Object fieldValue = ReflectUtil.getFieldValue(search, field);
+            if (Objects.isNull(fieldValue) || !StringUtils.hasText(fieldValue.toString())) {
+                // 没有传入查询值 跳过
+                continue;
+            }
+            Search searchMode = field.getAnnotation(Search.class);
+            if (Objects.isNull(searchMode)) {
+                // 没有配置查询注解 跳过
+                continue;
+            }
+            if (searchMode.value() == Search.Mode.JOIN) {
+                // Join
+                if (isRoot) {
+                    Join<E, ?> payload = ((Root<E>) root).join(field.getName(), JoinType.INNER);
+                    predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
+                } else {
+                    Join<?, ?> payload = ((Join<?, ?>) root).join(field.getName(), JoinType.INNER);
+                    predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
                 }
-                Search searchMode = field.getAnnotation(Search.class);
-                if (Objects.isNull(searchMode)) {
-                    // 没有配置查询注解 跳过
-                    continue;
-                }
-                if (searchMode.value() == Search.Mode.JOIN) {
-                    // Join
-                    if (isRoot) {
-                        Join<E, ?> payload = ((Root<E>) root).join(field.getName(), JoinType.INNER);
-                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
-                    } else {
-                        Join<?, ?> payload = ((Join<?, ?>) root).join(field.getName(), JoinType.INNER);
-                        predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
-                    }
-                    continue;
-                }
-                Predicate predicate;
-                String searchValue = fieldValue.toString();
-                // Boolean强匹配
-                if (Boolean.class.equals(fieldValue.getClass())) {
-                    // Boolean搜索
-                    if (isRoot) {
-                        predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
-                    } else {
-                        predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
-                    }
-                    predicateList.add(predicate);
-                    continue;
-                }
-                if (Search.Mode.LIKE.equals(searchMode.value()) && !isEqual) {
-                    // LIKE 模糊搜索 且没有声明强匹配
-                    searchValue = searchValue + Constant.SQL_LIKE_PERCENT;
-                    if (isRoot) {
-                        predicate = builder.like(((Root<E>) root).get(field.getName()), searchValue);
-                    } else {
-                        predicate = builder.like(((Join<?, ?>) root).get(field.getName()), searchValue);
-                    }
-                    predicateList.add(predicate);
-                    continue;
-                }
-
-                // 强匹配
+                continue;
+            }
+            Predicate predicate;
+            String searchValue = fieldValue.toString();
+            // Boolean强匹配
+            if (Boolean.class.equals(fieldValue.getClass())) {
+                // Boolean搜索
                 if (isRoot) {
                     predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
                 } else {
                     predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
                 }
                 predicateList.add(predicate);
-            } catch (IllegalAccessException exception) {
-                log.error("读取属性失败,无法添加查询条件", exception);
+                continue;
             }
+            if (Search.Mode.LIKE.equals(searchMode.value()) && !isEqual) {
+                // LIKE 模糊搜索 且没有声明强匹配
+                searchValue = searchValue + Constant.SQL_LIKE_PERCENT;
+                if (isRoot) {
+                    predicate = builder.like(((Root<E>) root).get(field.getName()), searchValue);
+                } else {
+                    predicate = builder.like(((Join<?, ?>) root).get(field.getName()), searchValue);
+                }
+                predicateList.add(predicate);
+                continue;
+            }
+
+            // 强匹配
+            if (isRoot) {
+                predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
+            } else {
+                predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
+            }
+            predicateList.add(predicate);
         }
         return predicateList;
     }

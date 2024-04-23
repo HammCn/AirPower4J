@@ -104,7 +104,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
     @Setter
     private String text;
 
-
     /**
      * <h2>设置ID</h2>
      *

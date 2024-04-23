@@ -3,6 +3,7 @@ package cn.hamm.airpower.response;
 import cn.hamm.airpower.query.QueryPageResponse;
 import cn.hamm.airpower.result.json.JsonData;
 import cn.hamm.airpower.root.RootModel;
+import cn.hamm.airpower.util.CollectionUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -13,9 +14,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <h1>API请求的响应拦截器</h1>
@@ -45,16 +44,10 @@ public class ResponseAspect {
             return result;
         }
         JsonData jsonData = (JsonData) result;
-        Class<?> dataCls = jsonData.getData().getClass();
-
-        if (ArrayList.class.equals(dataCls)) {
-            // 如果 data 是 Model列表
-            //noinspection unchecked
-            List<M> list = (List<M>) jsonData.getData();
-            jsonData.setData(filterResponseListBy(filter, list));
-            return jsonData;
+        if (Objects.isNull(jsonData.getData())) {
+            return result;
         }
-        if (QueryPageResponse.class.equals(dataCls)) {
+        if (jsonData.getData() instanceof QueryPageResponse<?>) {
             // 如果 data 分页对象
             //noinspection unchecked
             QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) jsonData.getData();
@@ -63,10 +56,19 @@ public class ResponseAspect {
             jsonData.setData(queryPageResponse.setList(list));
             return jsonData;
         }
+
+        Class<?> dataCls = jsonData.getData().getClass();
+        if (jsonData.getData() instanceof Collection<?>) {
+            @SuppressWarnings("unchecked")
+            Collection<M> collection = CollectionUtil.getCollectWithoutNull((Collection<M>) jsonData.getData(), dataCls);
+            jsonData.setData(filterResponseListBy(filter, collection.stream().toList()));
+            return jsonData;
+        }
         if (ReflectUtil.isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
             jsonData.setData(filterResponseBy(filter, (M) jsonData.getData()));
+            return jsonData;
         }
 
         // 其他数据 原样返回
