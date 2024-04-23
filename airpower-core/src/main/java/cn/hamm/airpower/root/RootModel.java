@@ -143,34 +143,4 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             );
         }
     }
-
-    /**
-     * <h2>排除传入的字段列表</h2>
-     *
-     * @param fieldNames 字段列表
-     * @return 实体
-     */
-    private M exclude(List<String> fieldNames) {
-        ReflectUtil.getFieldList(this.getClass())
-                .stream()
-                .filter(field -> fieldNames.contains(field.getName()))
-                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
-        return (M) this;
-    }
-
-    /**
-     * <h2>只暴露传入的字段列表</h2>
-     *
-     * @param fieldNames 字段列表
-     * @return 实体
-     */
-    private M expose(String... fieldNames) {
-        final List<String> fieldNameList = Arrays.asList(fieldNames);
-        ReflectUtil.getFieldList(this.getClass()).stream()
-                .filter(
-                        field -> !fieldNameList.contains(field.getName())
-                )
-                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
-        return (M) this;
-    }
 }
