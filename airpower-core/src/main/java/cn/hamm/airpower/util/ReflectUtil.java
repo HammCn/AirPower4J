@@ -13,10 +13,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <h1>反射工具类</h1>
@@ -297,15 +294,11 @@ public class ReflectUtil {
         if (Objects.isNull(superClass)) {
             return null;
         }
-        try {
-            Method superMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
-            return getAnnotation(annotationClass, superMethod, superClass);
-        } catch (NoSuchMethodException e) {
-            superClass = superClass.getSuperclass();
-            if (Objects.isNull(superClass)) {
-                return null;
-            }
-            return getAnnotation(annotationClass, method, superClass);
+        List<Method> superMethods = Arrays.stream(superClass.getMethods()).toList();
+        Method superMethod = superMethods.stream().filter(m -> m.getName().equals(method.getName())).findFirst().orElse(null);
+        if (Objects.isNull(superMethod)) {
+            return null;
         }
+        return getAnnotation(annotationClass, superMethod, superClass);
     }
 }

@@ -1,7 +1,6 @@
 package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Description;
-import cn.hamm.airpower.annotation.Document;
 import cn.hamm.airpower.api.Api;
 import cn.hamm.airpower.api.Extends;
 import cn.hamm.airpower.interfaces.IEntityAction;
@@ -56,12 +55,7 @@ public class RootEntityController<
     /**
      * <h2>添加一条新数据接口</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略
-     * <hr/>
-     * <p>
-     * 除修改接口的 {@link Permission} 之外，一般不建议重写！
-     * 如有重写必要，请自行标记 {@link Description}、{@link Filter}、{@link Document}、{@link RequestBody}、{@link Validated} 等
-     * </p>
+     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeAdd(E)
      * @see #afterAdd(long, E)
      * @see #afterSaved(long, E)
@@ -83,12 +77,7 @@ public class RootEntityController<
     /**
      * <h2>修改一条已存在的数据接口</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略
-     * <hr/>
-     * <p>
-     * 除修改接口的 {@link Permission} 之外，一般不建议重写！
-     * 如有重写必要，请自行标记 {@link Description}、{@link Filter}、{@link Document}、{@link RequestBody}、{@link Validated} 等
-     * </p>
+     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeUpdate(E)
      * @see #afterUpdate(long, E)
      * @see #afterSaved(long, E)
@@ -110,12 +99,7 @@ public class RootEntityController<
     /**
      * <h2>删除一条已存在的数据接口</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略
-     * <hr/>
-     * <p>
-     * 除修改接口的 {@link Permission} 之外，一般不建议重写！
-     * 如有重写必要，请自行标记 {@link Description}、{@link Filter}、{@link Document}、{@link RequestBody}、{@link Validated} 等
-     * </p>
+     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeDelete(long)
      * @see #afterDelete(long)
      */
@@ -135,12 +119,7 @@ public class RootEntityController<
     /**
      * <h2>查询一条详情数据</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略
-     * <hr/>
-     * <p>
-     * 除修改接口的 {@link Permission} 之外，一般不建议重写！
-     * 如有重写必要，请自行标记 {@link Description}、{@link Filter}、{@link Document}、{@link RequestBody}、{@link Validated} 等
-     * </p>
+     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #afterGetDetail(E)
      */
     @Description("查询详情")
@@ -154,12 +133,7 @@ public class RootEntityController<
     /**
      * <h2>禁用一条已存在的数据</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略
-     * <hr/>
-     * <p>
-     * 除修改接口的 {@link Permission} 之外，一般不建议重写！
-     * 如有重写必要，请自行标记 {@link Description}、{@link Filter}、{@link Document}、{@link RequestBody}、{@link Validated} 等
-     * </p>
+     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeDisable(long)
      * @see #afterDisable(long)
      */
@@ -178,12 +152,7 @@ public class RootEntityController<
     /**
      * <h2>启用一条已存在的数据</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略
-     * <hr/>
-     * <p>
-     * 除修改接口的 {@link Permission} 之外，一般不建议重写！
-     * 如有重写必要，请自行标记 {@link Description}、{@link Filter}、{@link Document}、{@link RequestBody}、{@link Validated} 等
-     * </p>
+     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeEnable(long)
      * @see #afterEnable(long)
      */
@@ -202,12 +171,7 @@ public class RootEntityController<
     /**
      * <h2>不分页查询</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略
-     * <hr/>
-     * <p>
-     * 除修改接口的 {@link Permission} 之外，一般不建议重写！
-     * 如有重写必要，请自行标记 {@link Description}、{@link Filter}、{@link Document}、{@link RequestBody}、{@link Validated} 等
-     * </p>
+     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeGetList(QueryRequest)
      * @see #afterGetList(List)
      */
@@ -223,12 +187,7 @@ public class RootEntityController<
     /**
      * <h2>分页查询</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略
-     * <hr/>
-     * <p>
-     * 除修改接口的 {@link Permission} 之外，一般不建议重写！
-     * 如有重写必要，请自行标记 {@link Description}、{@link Filter}、{@link Document}、{@link RequestBody}、{@link Validated} 等
-     * </p>
+     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeGetPage(QueryPageRequest)
      * @see #afterGetPage(QueryPageResponse)
      */
