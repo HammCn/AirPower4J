@@ -47,12 +47,16 @@ import java.util.*;
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> implements ITry {
     @Autowired
     protected R repository;
+
     @Autowired
     protected RedisUtil<E> redisUtil;
+
     @Autowired
     protected SecurityUtil secureUtil;
+
     @Autowired
     private GlobalConfig globalConfig;
+
     @Autowired
     private EntityManager entityManager;
 

@@ -14,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
@@ -41,48 +44,6 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             log.error("复制到实例失败", exception);
             throw new ResultException(Result.ERROR.getCode(), exception.getMessage());
         }
-    }
-
-    /**
-     * <h2>排除传入的字段列表</h2>
-     *
-     * @param fieldNames 字段列表
-     * @return 实体
-     */
-    public final M exclude(String... fieldNames) {
-        List<String> list = new ArrayList<>(fieldNames.length);
-        Collections.addAll(list, fieldNames);
-        return exclude(list);
-    }
-
-    /**
-     * <h2>排除传入的字段列表</h2>
-     *
-     * @param fieldNames 字段列表
-     * @return 实体
-     */
-    public final M exclude(List<String> fieldNames) {
-        ReflectUtil.getFieldList(this.getClass())
-                .stream()
-                .filter(field -> fieldNames.contains(field.getName()))
-                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
-        return (M) this;
-    }
-
-    /**
-     * <h2>只暴露传入的字段列表</h2>
-     *
-     * @param fieldNames 字段列表
-     * @return 实体
-     */
-    public final M expose(String... fieldNames) {
-        final List<String> fieldNameList = Arrays.asList(fieldNames);
-        ReflectUtil.getFieldList(this.getClass()).stream()
-                .filter(
-                        field -> !fieldNameList.contains(field.getName())
-                )
-                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
-        return (M) this;
     }
 
     /**
@@ -181,5 +142,35 @@ public class RootModel<M extends RootModel<M>> implements IAction {
                     ((RootModel<?>) fieldValue).filterResponseDataBy(WhenPayLoad.class)
             );
         }
+    }
+
+    /**
+     * <h2>排除传入的字段列表</h2>
+     *
+     * @param fieldNames 字段列表
+     * @return 实体
+     */
+    private M exclude(List<String> fieldNames) {
+        ReflectUtil.getFieldList(this.getClass())
+                .stream()
+                .filter(field -> fieldNames.contains(field.getName()))
+                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
+        return (M) this;
+    }
+
+    /**
+     * <h2>只暴露传入的字段列表</h2>
+     *
+     * @param fieldNames 字段列表
+     * @return 实体
+     */
+    private M expose(String... fieldNames) {
+        final List<String> fieldNameList = Arrays.asList(fieldNames);
+        ReflectUtil.getFieldList(this.getClass()).stream()
+                .filter(
+                        field -> !fieldNameList.contains(field.getName())
+                )
+                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
+        return (M) this;
     }
 }
