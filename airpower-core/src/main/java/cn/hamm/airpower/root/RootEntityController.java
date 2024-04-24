@@ -68,7 +68,7 @@ public class RootEntityController<
         checkApiAvailableStatus(Api.Add);
         service.ignoreReadOnlyFields(entity);
         long insertId = service.add(beforeAdd(entity));
-        tryCatch(
+        execute(
                 () -> afterAdd(insertId, entity),
                 () -> afterSaved(insertId, entity)
         );
@@ -90,7 +90,7 @@ public class RootEntityController<
         checkApiAvailableStatus(Api.Update);
         long updateId = entity.getId();
         service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)));
-        tryCatch(
+        execute(
                 () -> afterUpdate(updateId, entity),
                 () -> afterSaved(updateId, entity)
         );
@@ -111,7 +111,7 @@ public class RootEntityController<
         long deleteId = entity.getId();
         beforeDelete(deleteId);
         service.delete(deleteId);
-        tryCatch(
+        execute(
                 () -> afterDelete(deleteId)
         );
         return jsonId(deleteId, "删除成功");
@@ -144,7 +144,7 @@ public class RootEntityController<
         checkApiAvailableStatus(Api.Disable);
         beforeDisable(entity.getId());
         service.disable(entity.getId());
-        tryCatch(
+        execute(
                 () -> afterDisable(entity.getId())
         );
         return jsonId(entity.getId(), "禁用成功");
@@ -163,7 +163,7 @@ public class RootEntityController<
         checkApiAvailableStatus(Api.Enable);
         beforeEnable(entity.getId());
         service.enable(entity.getId());
-        tryCatch(
+        execute(
                 () -> afterEnable(entity.getId())
         );
         return jsonId(entity.getId(), "启用成功");

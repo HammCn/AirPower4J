@@ -17,7 +17,7 @@ public interface ITry {
      * @param moreRunnable 更多的执行代码
      * @apiNote 任一代码段抛出异常，不影响其他代码段的执行
      */
-    default void tryCatch(Runnable runnable, Runnable... moreRunnable) {
+    default void execute(Runnable runnable, Runnable... moreRunnable) {
         List<Runnable> runnableList = new ArrayList<>();
         runnableList.add(runnable);
         runnableList.addAll(Arrays.stream(moreRunnable).toList());

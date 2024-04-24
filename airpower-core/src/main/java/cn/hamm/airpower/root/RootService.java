@@ -91,7 +91,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         }
         long id = saveToDatabase(source);
         E finalSource = source;
-        tryCatch(() -> afterAdd(id, finalSource));
+        execute(() -> afterAdd(id, finalSource));
         return id;
     }
 
@@ -128,7 +128,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         source = beforeUpdate(source);
         updateToDatabase(source);
         E finalSource = source;
-        tryCatch(
+        execute(
                 () -> afterUpdate(finalSource.getId(), finalSource),
                 () -> afterSaved(finalSource.getId(), finalSource)
         );
@@ -151,7 +151,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         source = beforeUpdate(source);
         updateToDatabase(source, true);
         E finalSource = source;
-        tryCatch(
+        execute(
                 () -> afterUpdate(finalSource.getId(), finalSource),
                 () -> afterSaved(finalSource.getId(), finalSource)
         );
@@ -202,7 +202,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void disable(long id) {
         beforeDisable(id);
         disableById(id);
-        tryCatch(() -> afterDisable(id));
+        execute(() -> afterDisable(id));
     }
 
     /**
@@ -231,7 +231,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void enable(long id) {
         beforeEnable(id);
         enableById(id);
-        tryCatch(() -> afterEnable(id));
+        execute(() -> afterEnable(id));
     }
 
     /**
@@ -260,7 +260,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void delete(long id) {
         beforeDelete(id);
         deleteById(id);
-        tryCatch(() -> afterDelete(id));
+        execute(() -> afterDelete(id));
     }
 
     /**
