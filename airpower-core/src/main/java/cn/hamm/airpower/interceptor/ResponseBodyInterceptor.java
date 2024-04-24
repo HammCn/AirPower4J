@@ -55,8 +55,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
         if (Objects.isNull(method)) {
             return beforeResponseFinished(body, request, response);
         }
-        Object result = getResult(body, method);
-        return beforeResponseFinished(result, request, response);
+        return beforeResponseFinished(getResult(body, method), request, response);
     }
 
     @Contract("null, _ -> null")
