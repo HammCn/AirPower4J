@@ -20,7 +20,7 @@ public interface ITry {
     default void execute(Runnable runnable, Runnable... moreRunnable) {
         List<Runnable> runnableList = new ArrayList<>();
         runnableList.add(runnable);
-        runnableList.addAll(Arrays.stream(moreRunnable).toList());
+        runnableList.addAll(Arrays.asList(moreRunnable));
         for (Runnable run : runnableList) {
             try {
                 run.run();
