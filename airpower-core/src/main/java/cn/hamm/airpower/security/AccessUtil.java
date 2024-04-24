@@ -27,17 +27,17 @@ public class AccessUtil {
         Permission permissionClass = clazz.getAnnotation(Permission.class);
         if (Objects.nonNull(permissionClass)) {
             //类有AccessRequire标记
-            accessConfig.login = permissionClass.login();
+            accessConfig.setLogin(permissionClass.login());
             //需要登录时 RBAC选项才能启用
-            accessConfig.authorize = permissionClass.login() && permissionClass.authorize();
+            accessConfig.setAuthorize(permissionClass.login() && permissionClass.authorize());
         }
         //如果方法也标注了 方法将覆盖类的注解配置
         Permission permissionMethod = method.getAnnotation(Permission.class);
         if (Objects.nonNull(permissionMethod)) {
             //方法有AccessRequire标记
-            accessConfig.login = permissionMethod.login();
+            accessConfig.setLogin(permissionMethod.login());
             //需要登录时 RBAC选项才能启用
-            accessConfig.authorize = permissionMethod.login() && permissionMethod.authorize();
+            accessConfig.setAuthorize(permissionMethod.login() && permissionMethod.authorize());
         }
         return accessConfig;
     }

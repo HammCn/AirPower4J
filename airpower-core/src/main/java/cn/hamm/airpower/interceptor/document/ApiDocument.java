@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -54,7 +55,7 @@ public class ApiDocument {
      * @param response 响应
      */
     @SuppressWarnings("AlibabaMethodTooLong")
-    public static void writeApiDocument(HttpServletResponse response, Class<?> clazz, Method method) {
+    public static void writeApiDocument(@NotNull HttpServletResponse response, Class<?> clazz, Method method) {
         ApiDocument apiDocument = new ApiDocument();
         String className = ReflectUtil.getDescription(clazz);
         String methodName = ReflectUtil.getDescription(method);
@@ -198,7 +199,7 @@ public class ApiDocument {
                           <script src="//cdn.hamm.cn/js/vue-clipboard.min.js"></script>
                           <script>
                           const json =
-                          """
+                """
                 + json +
                 """
                                    </script>
@@ -227,7 +228,6 @@ public class ApiDocument {
                                        methods: {}
                                    });
                                    </script>
-                               
                                </html>
                         """;
         try {
@@ -489,7 +489,7 @@ public class ApiDocument {
                               <script src="//cdn.hamm.cn/js/vue-clipboard.min.js"></script>
                               <script>
                               const json =
-                              """
+                    """
                     + json +
                     """
                                        </script>
@@ -509,7 +509,6 @@ public class ApiDocument {
                                            methods: {}
                                        });
                                        </script>
-                                   
                                    </html>
                             """;
             try {

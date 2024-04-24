@@ -463,6 +463,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param entity 实体
      * @return 忽略只读字段之后的实体
      */
+    @Contract("_ -> param1")
     protected final E ignoreReadOnlyFields(E entity) {
         ReflectUtil.getFieldList(getEntityClass()).stream()
                 .filter(field -> Objects.nonNull(ReflectUtil.getAnnotation(ReadOnly.class, field)))
@@ -505,7 +506,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param id 主键ID
      * @return 实体
      */
-    private E getById(long id) {
+    private @NotNull E getById(long id) {
         Result.PARAM_MISSING.whenNull(id,
                 "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
         );
@@ -581,6 +582,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param existEntity  已存在实体
      * @return 目标实体
      */
+    @Contract("_, _ -> param2")
     private E getEntityForSave(E sourceEntity, E existEntity) {
         String[] nullProperties = getNullProperties(sourceEntity);
         BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
@@ -631,7 +633,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @return 实体
      */
-    private E getNewInstance() {
+    private @NotNull E getNewInstance() {
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (Exception ignored) {
@@ -654,7 +656,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param sourceEntity 来源对象
      * @return 非空属性列表
      */
-    private String[] getNullProperties(E sourceEntity) {
+    private String @NotNull [] getNullProperties(E sourceEntity) {
         // 获取Bean
         BeanWrapper srcBean = new BeanWrapperImpl(sourceEntity);
         return Arrays.stream(srcBean.getPropertyDescriptors())
@@ -727,12 +729,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param root    root
      * @param builder builder
      * @param search  搜索实体
-     * @param isRoot  是否根查询条件
      * @param isEqual 是否强匹配
      * @return 搜索条件
      */
+    @SuppressWarnings("AlibabaSwitchStatement")
     private @NotNull List<Predicate> getPredicateList(
-            Object root, CriteriaBuilder builder, @NotNull Object search, boolean isRoot, boolean isEqual
+            From<?, ?> root, CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
@@ -751,52 +753,25 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 没有配置查询注解 跳过
                 continue;
             }
-            if (searchMode.value() == Search.Mode.JOIN) {
-                // Join
-                if (isRoot) {
-                    Join<E, ?> payload = ((Root<E>) root).join(field.getName(), JoinType.INNER);
-                    predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
-                } else {
-                    Join<?, ?> payload = ((Join<?, ?>) root).join(field.getName(), JoinType.INNER);
-                    predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, false, isEqual));
-                }
-                continue;
-            }
             Predicate predicate;
-            String searchValue = fieldValue.toString();
-            // Boolean强匹配
-            if (Boolean.class.equals(fieldValue.getClass())) {
-                // Boolean搜索
-                if (isRoot) {
-                    predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
-                } else {
-                    predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
-                }
-                predicateList.add(predicate);
-                continue;
+            switch (searchMode.value()) {
+                case JOIN:
+                    Join<?, ?> payload = root.join(field.getName(), JoinType.INNER);
+                    predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, isEqual));
+                    break;
+                case LIKE:
+                    if (!isEqual) {
+                        predicateList.add(builder.like(root.get(field.getName()), fieldValue + Constant.SQL_LIKE_PERCENT));
+                    }
+                default:
+                    // 强匹配
+                    predicate = builder.equal(root.get(field.getName()), fieldValue);
+                    predicateList.add(predicate);
             }
-            if (Search.Mode.LIKE.equals(searchMode.value()) && !isEqual) {
-                // LIKE 模糊搜索 且没有声明强匹配
-                searchValue = searchValue + Constant.SQL_LIKE_PERCENT;
-                if (isRoot) {
-                    predicate = builder.like(((Root<E>) root).get(field.getName()), searchValue);
-                } else {
-                    predicate = builder.like(((Join<?, ?>) root).get(field.getName()), searchValue);
-                }
-                predicateList.add(predicate);
-                continue;
-            }
-
-            // 强匹配
-            if (isRoot) {
-                predicate = builder.equal(((Root<E>) root).get(field.getName()), fieldValue);
-            } else {
-                predicate = builder.equal(((Join<?, ?>) root).get(field.getName()), fieldValue);
-            }
-            predicateList.add(predicate);
         }
         return predicateList;
     }
+
 
     /**
      * <h2>添加创建时间和更新时间的查询条件</h2>
@@ -856,7 +831,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     private Predicate createPredicate(
             Root<E> root, @NotNull CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E filter, boolean isEqual
     ) {
-        List<Predicate> predicateList = this.getPredicateList(root, builder, filter, true, isEqual);
+        List<Predicate> predicateList = this.getPredicateList(root, builder, filter, isEqual);
         predicateList.addAll(addSearchPredicate(root, builder, filter));
         addCreateAndUpdateTimePredicate(root, builder, filter, predicateList);
         Predicate[] predicates = new Predicate[predicateList.size()];

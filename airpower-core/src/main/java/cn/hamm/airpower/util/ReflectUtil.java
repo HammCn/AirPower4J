@@ -7,6 +7,7 @@ import cn.hamm.airpower.root.RootController;
 import cn.hamm.airpower.root.RootEntity;
 import cn.hamm.airpower.root.RootModel;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,6 +124,7 @@ public class ReflectUtil {
      * @param <A>             泛型
      * @return 注解
      */
+    @Contract(pure = true)
     public static <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Field field) {
         return field.getAnnotation(annotationClass);
     }

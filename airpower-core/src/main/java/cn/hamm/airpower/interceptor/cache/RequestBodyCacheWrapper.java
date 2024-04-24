@@ -37,7 +37,7 @@ public class RequestBodyCacheWrapper extends HttpServletRequestWrapper {
         return new BufferedReader(new InputStreamReader(getInputStream(), StandardCharsets.UTF_8));
     }
 
-    private byte[] inputStreamToBytes(@NotNull InputStream in) throws IOException {
+    private byte @NotNull [] inputStreamToBytes(@NotNull InputStream in) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int read;
@@ -56,22 +56,25 @@ public class RequestBodyCacheWrapper extends HttpServletRequestWrapper {
         }
 
         @Override
-        public int read() {
+        public final int read() {
             return inputStream.read();
         }
 
+        @Contract(pure = true)
         @Override
-        public boolean isFinished() {
+        public final boolean isFinished() {
             return false;
         }
 
+        @Contract(pure = true)
         @Override
-        public boolean isReady() {
+        public final boolean isReady() {
             return true;
         }
 
+        @Contract(pure = true)
         @Override
-        public void setReadListener(ReadListener readListener) {
+        public final void setReadListener(ReadListener readListener) {
 
         }
     }

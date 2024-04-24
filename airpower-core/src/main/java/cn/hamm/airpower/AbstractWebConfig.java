@@ -33,7 +33,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
     public abstract AbstractRequestInterceptor getAccessInterceptor();
 
     @Override
-    public final void addInterceptors(InterceptorRegistry registry) {
+    public final void addInterceptors(@NotNull InterceptorRegistry registry) {
         //添加身份校验拦截器
         registry.addInterceptor(getAccessInterceptor()).addPathPatterns("/**");
         addCustomInterceptors(registry);

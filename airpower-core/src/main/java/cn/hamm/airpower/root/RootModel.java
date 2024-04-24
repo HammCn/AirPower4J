@@ -36,7 +36,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      *
      * @return 返回实例
      */
-    public final M copy() {
+    public final @NotNull M copy() {
         try {
             M target = (M) getClass().getConstructor().newInstance();
             BeanUtils.copyProperties(this, target);

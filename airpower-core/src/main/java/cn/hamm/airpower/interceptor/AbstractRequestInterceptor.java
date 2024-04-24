@@ -74,7 +74,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
 
         beforeHandleRequest(request, response, clazz, method);
         AccessConfig accessConfig = AccessUtil.getWhatNeedAccess(clazz, method);
-        if (!accessConfig.login) {
+        if (!accessConfig.isLogin()) {
             // 不需要登录 直接返回有权限
             return true;
         }
@@ -89,7 +89,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         Result.UNAUTHORIZED.whenEmpty(accessToken);
         Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
         //需要RBAC
-        if (accessConfig.authorize) {
+        if (accessConfig.isAuthorize()) {
             //验证用户是否有接口的访问权限
             return checkPermissionAccess(userId, AccessUtil.getPermissionIdentity(clazz, method), request);
         }
@@ -142,7 +142,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param request 请求
      * @return 包体字符串
      */
-    protected final String getRequestBody(HttpServletRequest request) {
+    protected final @NotNull String getRequestBody(HttpServletRequest request) {
         // 文件上传的请求 返回空
         if (RequestUtil.isUploadRequest(request)) {
             return "";

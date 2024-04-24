@@ -7,6 +7,7 @@ import cn.hamm.airpower.root.RootModel;
 import cn.hamm.airpower.util.CollectionUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.core.MethodParameter;
@@ -57,6 +58,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
         return beforeResponseFinished(result, request, response);
     }
 
+    @Contract("null, _ -> null")
     @SuppressWarnings("unchecked")
     private <M extends RootModel<M>> Object getResult(Object result, Method method) {
         if (!(result instanceof JsonData jsonData)) {

@@ -5,6 +5,7 @@ import cn.hamm.airpower.result.Result;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetAddress;
@@ -59,6 +60,7 @@ public class RequestUtil {
      * @param contentType 请求类型头
      * @return 判断结果
      */
+    @Contract(value = "null -> false", pure = true)
     private static boolean isUploadFileContentType(String contentType) {
         return contentType != null && contentType.startsWith(MULTIPART_FORM_DATA);
     }

@@ -192,7 +192,7 @@ public class RsaHelper {
      * @return 加解密结果
      * @throws Exception 加解密异常
      */
-    private byte[] rsaDoFinal(Cipher cipher, byte @NotNull [] sourceBytes, int blockSize) throws Exception {
+    private byte @NotNull [] rsaDoFinal(Cipher cipher, byte @NotNull [] sourceBytes, int blockSize) throws Exception {
         Result.ERROR.when(blockSize <= 0, "分段大小必须大于0");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int inputLength = sourceBytes.length;
