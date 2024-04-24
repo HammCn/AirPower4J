@@ -68,7 +68,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param source 原始实体
      * @return 处理后的实体
      */
-    protected E beforeAdd(E source) {
+    protected @NotNull E beforeAdd(@NotNull E source) {
         return source;
     }
 
@@ -82,7 +82,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #afterAdd(long, E)
      * @see #afterSaved(long, E)
      */
-    public final long add(E source) {
+    public final long add(@NotNull E source) {
         source = beforeAdd(source);
         Result.ERROR.whenNull(source, "新增的数据不能为空");
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
@@ -101,7 +101,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param id     主键ID
      * @param source 原始实体
      */
-    protected void afterAdd(long id, E source) {
+    protected void afterAdd(long id, @NotNull E source) {
     }
 
     /**
@@ -111,7 +111,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 处理后的实体
      * @apiNote 如此处将属性设置为 <code>null</code>，实体将被保存为 <code>null</code>，其他类型的属性将不被修改
      */
-    protected E beforeUpdate(E source) {
+    protected @NotNull E beforeUpdate(@NotNull E source) {
         return source;
     }
 
@@ -124,7 +124,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #afterSaved(long, E)
      * @see #updateWithNull(E)
      */
-    public final void update(E source) {
+    public final void update(@NotNull E source) {
         source = beforeUpdate(source);
         updateToDatabase(source);
         E finalSource = source;
@@ -170,7 +170,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param id     主键ID
      * @param source 原始实体
      */
-    protected void afterUpdate(long id, E source) {
+    protected void afterUpdate(long id, @NotNull E source) {
     }
 
     /**
@@ -180,7 +180,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param source 保存前的原数据
      * @apiNote 添加或修改后最后触发
      */
-    protected void afterSaved(long id, E source) {
+    protected void afterSaved(long id, @NotNull E source) {
 
     }
 
@@ -278,7 +278,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 处理后的查询条件
      * @see #getList(QueryRequest)
      */
-    protected <T extends QueryRequest<E>> T beforeGetList(T sourceRequestData) {
+    protected <T extends QueryRequest<E>> @NotNull T beforeGetList(@NotNull T sourceRequestData) {
         return sourceRequestData;
     }
 
@@ -290,7 +290,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #beforeGetList(QueryRequest)
      * @see #afterGetList(List)
      */
-    public final List<E> getList(QueryRequest<E> queryRequest) {
+    public final @NotNull List<E> getList(QueryRequest<E> queryRequest) {
         queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
         queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
         queryRequest = beforeGetList(queryRequest);
@@ -319,7 +319,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 处理后的数据
      * @see #getPage(QueryPageRequest)
      */
-    protected List<E> afterGetList(List<E> list) {
+    protected @NotNull List<E> afterGetList(@NotNull List<E> list) {
         return list;
     }
 
@@ -329,7 +329,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param sourceRequestData 原始请求的数据
      * @return 处理后的请求数据
      */
-    protected <T extends QueryPageRequest<E>> T beforeGetPage(T sourceRequestData) {
+    protected <T extends QueryPageRequest<E>> @NotNull T beforeGetPage(@NotNull T sourceRequestData) {
         return sourceRequestData;
     }
 
@@ -339,7 +339,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param queryPageResponse 查询到的数据
      * @return 处理后的数据
      */
-    protected QueryPageResponse<E> afterGetPage(QueryPageResponse<E> queryPageResponse) {
+    protected @NotNull QueryPageResponse<E> afterGetPage(@NotNull QueryPageResponse<E> queryPageResponse) {
         return queryPageResponse;
     }
 
@@ -349,7 +349,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @return 当前实体
      */
-    protected E beforeSaveToDatabase(E entity) {
+    protected @NotNull E beforeSaveToDatabase(@NotNull E entity) {
         return entity;
     }
 
@@ -361,7 +361,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param search  原始查询对象
      * @return 查询条件列表
      */
-    protected List<Predicate> addSearchPredicate(Root<E> root, CriteriaBuilder builder, E search) {
+    protected @NotNull List<Predicate> addSearchPredicate(@NotNull Root<E> root, @NotNull CriteriaBuilder builder, @NotNull E search) {
         return new ArrayList<>();
     }
 
@@ -372,7 +372,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 实体
      * @see #getMaybeNull(long)
      */
-    public final E get(long id) {
+    public final @NotNull E get(long id) {
         return afterGet(getById(id));
     }
 
@@ -407,7 +407,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #beforeGetPage(QueryPageRequest)
      * @see #afterGetPage(QueryPageResponse)
      */
-    public final QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
+    public final @NotNull QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
         queryPageRequest = Objects.requireNonNullElse(queryPageRequest, new QueryPageRequest<>());
         queryPageRequest.setFilter(Objects.requireNonNullElse(queryPageRequest.getFilter(), getNewInstance()));
         queryPageRequest = beforeGetPage(queryPageRequest);
@@ -464,7 +464,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 忽略只读字段之后的实体
      */
     @Contract("_ -> param1")
-    protected final E ignoreReadOnlyFields(E entity) {
+    protected final @NotNull E ignoreReadOnlyFields(@NotNull E entity) {
         ReflectUtil.getFieldList(getEntityClass()).stream()
                 .filter(field -> Objects.nonNull(ReflectUtil.getAnnotation(ReadOnly.class, field)))
                 .forEach(field -> ReflectUtil.clearFieldValue(entity, field));
@@ -479,7 +479,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #update(E)
      * @see #updateWithNull(E)
      */
-    protected final void updateToDatabase(E source) {
+    protected final void updateToDatabase(@NotNull E source) {
         updateToDatabase(source, false);
     }
 
@@ -492,7 +492,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #update(E)
      * @see #updateWithNull(E)
      */
-    protected final void updateToDatabase(E source, boolean withNull) {
+    protected final void updateToDatabase(@NotNull E source, boolean withNull) {
         Result.ERROR.whenNull(source, "更新的数据不能为空");
         Result.PARAM_MISSING.whenNull(source.getId(),
                 "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
@@ -541,7 +541,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param entity 待保存实体
      * @return 保存后的实体
      */
-    private long saveToDatabase(E entity) {
+    private long saveToDatabase(@NotNull E entity) {
         return saveToDatabase(entity, false);
     }
 
@@ -552,7 +552,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param withNull 是否保存空值
      * @return 保存后的实体
      */
-    private long saveToDatabase(E entity, boolean withNull) {
+    private long saveToDatabase(@NotNull E entity, boolean withNull) {
         checkUnique(entity);
         entity.setUpdateTime(System.currentTimeMillis());
         if (Objects.nonNull(entity.getId())) {
@@ -583,7 +583,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 目标实体
      */
     @Contract("_, _ -> param2")
-    private E getEntityForSave(E sourceEntity, E existEntity) {
+    private @NotNull E getEntityForSave(@NotNull E sourceEntity, @NotNull E existEntity) {
         String[] nullProperties = getNullProperties(sourceEntity);
         BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
         return existEntity;
@@ -594,7 +594,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param entity 实体
      */
-    private void checkUnique(E entity) {
+    private void checkUnique(@NotNull E entity) {
         List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
         for (Field field : fields) {
             String fieldName = ReflectUtil.getDescription(field);
@@ -646,7 +646,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @return 类
      */
-    private Class<E> getEntityClass() {
+    private @NotNull Class<E> getEntityClass() {
         return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
@@ -656,7 +656,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param sourceEntity 来源对象
      * @return 非空属性列表
      */
-    private String @NotNull [] getNullProperties(E sourceEntity) {
+    private String @NotNull [] getNullProperties(@NotNull E sourceEntity) {
         // 获取Bean
         BeanWrapper srcBean = new BeanWrapperImpl(sourceEntity);
         return Arrays.stream(srcBean.getPropertyDescriptors())
@@ -671,7 +671,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param data 分页数据
      * @return 输出分页对象
      */
-    private QueryPageResponse<E> getResponsePageList(@NotNull org.springframework.data.domain.Page<E> data) {
+    private @NotNull QueryPageResponse<E> getResponsePageList(@NotNull org.springframework.data.domain.Page<E> data) {
         return new QueryPageResponse<E>()
                 .setList(data.getContent())
                 .setTotal(Math.toIntExact(data.getTotalElements()))
@@ -734,7 +734,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     @SuppressWarnings("AlibabaSwitchStatement")
     private @NotNull List<Predicate> getPredicateList(
-            From<?, ?> root, CriteriaBuilder builder, @NotNull Object search, boolean isEqual
+            @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
@@ -761,7 +761,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                     break;
                 case LIKE:
                     if (!isEqual) {
-                        predicateList.add(builder.like(root.get(field.getName()), fieldValue + Constant.SQL_LIKE_PERCENT));
+                        predicateList.add(
+                                builder.like(root.get(field.getName()), fieldValue + Constant.SQL_LIKE_PERCENT)
+                        );
                     }
                 default:
                     // 强匹配
@@ -782,7 +784,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param predicateList 查询条件列表
      */
     private void addCreateAndUpdateTimePredicate(
-            Root<E> root, CriteriaBuilder builder, @NotNull E search, List<Predicate> predicateList
+            @NotNull Root<E> root, @NotNull CriteriaBuilder builder,
+            @NotNull E search, @NotNull List<Predicate> predicateList
     ) {
         if (Objects.nonNull(search.getCreateTimeFrom())) {
             predicateList.add(
@@ -814,7 +817,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 查询对象
      */
     @Contract(pure = true)
-    private @NotNull Specification<E> createSpecification(E filter, boolean isEqual) {
+    private @NotNull Specification<E> createSpecification(@NotNull E filter, boolean isEqual) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 createPredicate(root, criteriaQuery, criteriaBuilder, filter, isEqual);
     }
@@ -829,7 +832,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 查询条件
      */
     private Predicate createPredicate(
-            Root<E> root, @NotNull CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder, E filter, boolean isEqual
+            @NotNull Root<E> root, @NotNull CriteriaQuery<?> criteriaQuery,
+            @NotNull CriteriaBuilder builder, @NotNull E filter, boolean isEqual
     ) {
         List<Predicate> predicateList = this.getPredicateList(root, builder, filter, isEqual);
         predicateList.addAll(addSearchPredicate(root, builder, filter));
