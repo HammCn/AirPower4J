@@ -40,9 +40,9 @@ public class EmailUtil {
                     上面是你的验证码，请注意不要转发给他人，五分钟内有效，请尽快使用。
                 </div>
                 <div style='margin-top:10px;font-size:12px;color:#aaa;font-weight:300'>
-                    """ + sign + """
+                """ + sign + """
                 </div></div>
-                        """;
+                """;
         sendEmail(email, title, content);
     }
 

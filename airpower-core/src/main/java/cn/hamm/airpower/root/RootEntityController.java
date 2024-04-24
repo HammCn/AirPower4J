@@ -393,7 +393,7 @@ public class RootEntityController<
      *
      * @return 实体
      */
-    private E getNewInstance() {
+    private @NotNull E getNewInstance() {
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (Exception exception) {

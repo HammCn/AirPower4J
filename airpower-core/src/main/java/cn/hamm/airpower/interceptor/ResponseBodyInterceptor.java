@@ -33,6 +33,7 @@ import java.util.Objects;
 @ControllerAdvice
 @Slf4j
 public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
+    @Contract(pure = true)
     @Override
     public final boolean supports(
             @NotNull MethodParameter returnType,
@@ -145,6 +146,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
      * @param list   数据列表
      * @return 列表
      */
+    @Contract("_, _ -> param2")
     private <M extends RootModel<M>> List<M> filterResponseListBy(@NotNull Filter filter, List<M> list) {
         try {
             list.forEach(item -> filterResponseBy(filter, item));
