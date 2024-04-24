@@ -85,7 +85,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取指定方法的注解</h2>
+     * <h2>递归获取指定方法的注解</h2>
      *
      * @param annotationClass 注解类
      * @param method          方法
@@ -97,7 +97,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取指定类的注解</h2>
+     * <h2>递归获取指定类的注解</h2>
      *
      * @param annotationClass 注解类
      * @param clazz           类
@@ -117,7 +117,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取字段的注解</h2>
+     * <h2>递归获取字段的注解</h2>
      *
      * @param annotationClass 注解类
      * @param field           字段
@@ -130,7 +130,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取类描述</h2>
+     * <h2>递归获取类描述</h2>
      *
      * @param clazz 类
      * @return 描述
@@ -142,7 +142,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取方法描述</h2>
+     * <h2>递归获取方法描述</h2>
      *
      * @param method 方法
      * @return 描述
@@ -154,7 +154,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取字段描述</h2>
+     * <h2>递归获取字段描述</h2>
      *
      * @param field 字段
      * @return 描述
@@ -166,7 +166,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取类的文档</h2>
+     * <h2>递归获取类的文档</h2>
      *
      * @param clazz 类
      * @return 文档
@@ -178,7 +178,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取方法的文档</h2>
+     * <h2>递归获取方法的文档</h2>
      *
      * @param method 方法
      * @return 文档
@@ -191,7 +191,7 @@ public class ReflectUtil {
 
 
     /**
-     * <h2>获取字段的文档</h2>
+     * <h2>递归获取字段的文档</h2>
      *
      * @param field 字段
      * @return 文档

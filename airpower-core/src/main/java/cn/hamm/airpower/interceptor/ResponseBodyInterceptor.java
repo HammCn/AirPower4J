@@ -59,19 +59,26 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     }
 
     @Contract("null, _ -> null")
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "RedundantSuppression"})
     private <M extends RootModel<M>> Object getResult(Object result, Method method) {
         if (!(result instanceof JsonData jsonData)) {
             // 返回不是JsonData 原样返回
             return result;
         }
+
+        if (Objects.isNull(jsonData.getData())) {
+            return result;
+        }
+
         Filter filter = ReflectUtil.getAnnotation(Filter.class, method);
         if (Objects.isNull(filter)) {
             return result;
         }
-        if (Objects.isNull(jsonData.getData())) {
+
+        if (Void.class.equals(filter.value())) {
             return result;
         }
+
         if (jsonData.getData() instanceof QueryPageResponse) {
             QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) jsonData.getData();
             // 如果 data 分页对象
