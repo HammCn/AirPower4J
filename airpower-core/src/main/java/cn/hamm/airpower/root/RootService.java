@@ -36,6 +36,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.function.BiFunction;
 
 /**
  * <h1>服务根类</h1>
@@ -787,25 +788,29 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
             @NotNull Root<E> root, @NotNull CriteriaBuilder builder,
             @NotNull E search, @NotNull List<Predicate> predicateList
     ) {
-        if (Objects.nonNull(search.getCreateTimeFrom())) {
-            predicateList.add(
-                    builder.greaterThanOrEqualTo(root.get(Constant.CREATE_TIME_FIELD), search.getCreateTimeFrom())
-            );
-        }
-        if (Objects.nonNull(search.getCreateTimeTo())) {
-            predicateList.add(
-                    builder.lessThan(root.get(Constant.CREATE_TIME_FIELD), search.getCreateTimeTo())
-            );
-        }
-        if (Objects.nonNull(search.getUpdateTimeFrom())) {
-            predicateList.add(
-                    builder.greaterThanOrEqualTo(root.get(Constant.UPDATE_TIME_FIELD), search.getUpdateTimeFrom())
-            );
-        }
-        if (Objects.nonNull(search.getUpdateTimeTo())) {
-            predicateList.add(
-                    builder.lessThan(root.get(Constant.UPDATE_TIME_FIELD), search.getUpdateTimeTo())
-            );
+        addPredicateNonNull(root, predicateList, Constant.CREATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getCreateTimeFrom());
+        addPredicateNonNull(root, predicateList, Constant.CREATE_TIME_FIELD, builder::lessThan, search.getCreateTimeTo());
+        addPredicateNonNull(root, predicateList, Constant.UPDATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getUpdateTimeFrom());
+        addPredicateNonNull(root, predicateList, Constant.UPDATE_TIME_FIELD, builder::lessThan, search.getUpdateTimeTo());
+    }
+
+    /**
+     * <h2>添加查询条件</h2>
+     *
+     * @param root          ROOT
+     * @param predicateList 查询条件列表
+     * @param fieldName     所属的字段名称
+     * @param expression    表达式
+     * @param value         条件的值
+     */
+    protected final <Y extends Comparable<? super Y>> void addPredicateNonNull(
+            @NotNull Root<E> root,
+            List<Predicate> predicateList,
+            String fieldName,
+            BiFunction<Expression<? extends Y>, Y, Predicate> expression,
+            Y value) {
+        if (Objects.nonNull(value)) {
+            predicateList.add(expression.apply(root.get(fieldName), value));
         }
     }
 
