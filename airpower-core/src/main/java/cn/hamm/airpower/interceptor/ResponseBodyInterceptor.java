@@ -75,10 +75,8 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
         if (jsonData.getData() instanceof QueryPageResponse) {
             QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) jsonData.getData();
             // 如果 data 分页对象
-            List<M> list = queryPageResponse.getList();
-            filterResponseListBy(filter, list);
-            jsonData.setData(queryPageResponse.setList(list));
-            return jsonData;
+            filterResponseListBy(filter, queryPageResponse.getList());
+            return jsonData.setData(queryPageResponse);
         }
 
         Class<?> dataCls = jsonData.getData().getClass();
@@ -86,14 +84,12 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             Collection<M> collection = CollectionUtil.getCollectWithoutNull(
                     (Collection<M>) jsonData.getData(), dataCls
             );
-            jsonData.setData(filterResponseListBy(filter, collection.stream().toList()));
-            return jsonData;
+            return jsonData.setData(filterResponseListBy(filter, collection.stream().toList()));
         }
         if (ReflectUtil.isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
-            jsonData.setData(filterResponseBy(filter, (M) jsonData.getData()));
-            return jsonData;
+            return jsonData.setData(filterResponseBy(filter, (M) jsonData.getData()));
         }
 
         // 其他数据 原样返回
