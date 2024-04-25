@@ -1,7 +1,7 @@
 package cn.hamm.airpower.datasource;
 
 import cn.hamm.airpower.config.GlobalConfig;
-import cn.hamm.airpower.result.Result;
+import cn.hamm.airpower.enums.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

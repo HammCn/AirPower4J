@@ -1,6 +1,6 @@
 package cn.hamm.airpower.validate.phone;
 
-import cn.hamm.airpower.request.ValidateUtil;
+import cn.hamm.airpower.util.ValidateUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.NotNull;

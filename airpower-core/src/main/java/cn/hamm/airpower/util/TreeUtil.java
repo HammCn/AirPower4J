@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Component
 public class TreeUtil {
-
     /**
      * <h2>生成树结构</h2>
      *

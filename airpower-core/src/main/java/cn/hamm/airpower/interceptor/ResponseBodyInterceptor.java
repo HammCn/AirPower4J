@@ -1,8 +1,8 @@
 package cn.hamm.airpower.interceptor;
 
-import cn.hamm.airpower.query.QueryPageResponse;
-import cn.hamm.airpower.response.Filter;
-import cn.hamm.airpower.result.json.JsonData;
+import cn.hamm.airpower.model.query.QueryPageResponse;
+import cn.hamm.airpower.annotation.Filter;
+import cn.hamm.airpower.model.json.JsonData;
 import cn.hamm.airpower.root.RootModel;
 import cn.hamm.airpower.util.CollectionUtil;
 import cn.hamm.airpower.util.ReflectUtil;

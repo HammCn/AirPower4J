@@ -2,11 +2,11 @@ package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
-import cn.hamm.airpower.request.RequestUtil;
-import cn.hamm.airpower.result.Result;
-import cn.hamm.airpower.security.AccessConfig;
-import cn.hamm.airpower.security.AccessUtil;
-import cn.hamm.airpower.security.SecurityUtil;
+import cn.hamm.airpower.util.RequestUtil;
+import cn.hamm.airpower.enums.Result;
+import cn.hamm.airpower.model.Access;
+import cn.hamm.airpower.util.AccessUtil;
+import cn.hamm.airpower.util.SecurityUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -73,8 +73,8 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         }
 
         beforeHandleRequest(request, response, clazz, method);
-        AccessConfig accessConfig = AccessUtil.getWhatNeedAccess(clazz, method);
-        if (!accessConfig.isLogin()) {
+        Access access = AccessUtil.getWhatNeedAccess(clazz, method);
+        if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
             return true;
         }
@@ -89,7 +89,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         Result.UNAUTHORIZED.whenEmpty(accessToken);
         Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
         //需要RBAC
-        if (accessConfig.isAuthorize()) {
+        if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
             return checkPermissionAccess(userId, AccessUtil.getPermissionIdentity(clazz, method), request);
         }

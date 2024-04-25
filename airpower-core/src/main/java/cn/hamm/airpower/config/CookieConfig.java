@@ -1,6 +1,6 @@
 package cn.hamm.airpower.config;
 
-import cn.hamm.airpower.security.CookieUtil;
+import cn.hamm.airpower.util.CookieUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;

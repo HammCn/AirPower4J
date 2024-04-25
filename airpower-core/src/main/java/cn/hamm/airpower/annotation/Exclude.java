@@ -1,7 +1,5 @@
 package cn.hamm.airpower.annotation;
 
-import cn.hamm.airpower.response.Filter;
-
 import java.lang.annotation.*;
 
 /**

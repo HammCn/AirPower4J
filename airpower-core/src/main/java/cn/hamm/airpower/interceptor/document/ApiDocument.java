@@ -1,7 +1,7 @@
 package cn.hamm.airpower.interceptor.document;
 
 import cn.hamm.airpower.annotation.ReadOnly;
-import cn.hamm.airpower.result.json.Json;
+import cn.hamm.airpower.model.json.Json;
 import cn.hamm.airpower.util.DictionaryUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.validate.dictionary.Dictionary;

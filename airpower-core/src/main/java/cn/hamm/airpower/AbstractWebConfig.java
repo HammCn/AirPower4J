@@ -2,7 +2,7 @@ package cn.hamm.airpower;
 
 import cn.hamm.airpower.interceptor.AbstractRequestInterceptor;
 import cn.hamm.airpower.interceptor.cache.RequestCacheFilter;
-import cn.hamm.airpower.security.AccessResolver;
+import cn.hamm.airpower.resolver.AccessResolver;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

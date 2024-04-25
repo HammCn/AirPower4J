@@ -1,7 +1,6 @@
 package cn.hamm.airpower.annotation;
 
 import cn.hamm.airpower.interfaces.IAction;
-import cn.hamm.airpower.response.Filter;
 
 import java.lang.annotation.*;
 

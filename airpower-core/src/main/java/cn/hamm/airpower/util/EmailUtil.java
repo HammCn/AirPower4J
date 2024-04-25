@@ -1,6 +1,6 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.result.Result;
+import cn.hamm.airpower.enums.Result;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
