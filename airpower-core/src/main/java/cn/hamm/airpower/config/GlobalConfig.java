@@ -30,7 +30,7 @@ public class GlobalConfig {
     /**
      * <h2>多数据源数据库前缀</h2>
      */
-    public static String databasePrefix = "tenant_";
+    public String databasePrefix = "tenant_";
 
     /**
      * <h2>服务全局拦截</h2>

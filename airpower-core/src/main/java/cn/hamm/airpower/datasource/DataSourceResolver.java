@@ -1,6 +1,6 @@
 package cn.hamm.airpower.datasource;
 
-import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.config.AirConfig;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +84,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      */
     private static @NotNull String getDataSourceUrl(DataSource dataSource) {
         return getServerUrl(dataSource) + "/" +
-                GlobalConfig.databasePrefix + dataSource.getDatabase() +
+                AirConfig.getGlobalConfig().databasePrefix + dataSource.getDatabase() +
                 DATASOURCE_CONFIG;
     }
 
@@ -114,7 +114,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
             statement = connection.createStatement();
             //noinspection SqlSourceToSinkFlow
             statement.execute(
-                    "CREATE DATABASE IF NOT EXISTS " + GlobalConfig.databasePrefix + dataSource.getDatabase() +
+                    "CREATE DATABASE IF NOT EXISTS " + AirConfig.getGlobalConfig().databasePrefix + dataSource.getDatabase() +
                             " DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci"
             );
         } catch (Exception exception) {
@@ -144,7 +144,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
         dataSource.setUrl(getDataSourceUrl(dataSourceInfo));
         dataSource.setUsername(dataSourceInfo.getUser());
         dataSource.setPassword(dataSourceInfo.getPassword());
-        DATA_SOURCE_LIST.put(GlobalConfig.databasePrefix + dataSourceInfo.getDatabase(), dataSource);
+        DATA_SOURCE_LIST.put(AirConfig.getGlobalConfig().databasePrefix + dataSourceInfo.getDatabase(), dataSource);
         super.afterPropertiesSet();
     }
 
