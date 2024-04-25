@@ -1,7 +1,9 @@
 package cn.hamm.airpower.util;
 
+import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -110,6 +112,18 @@ public class AirUtil {
     @Getter
     private static ValidateUtil validateUtil;
 
+    /**
+     * <h2>环境变量</h2>
+     */
+    @Getter
+    private static Environment environment;
+
+    /**
+     * <h2>JPA实体管理器</h2>
+     */
+    @Getter
+    private static EntityManager entityManager;
+
     @Autowired
     AirUtil(
             RedisUtil redisUtil,
@@ -127,7 +141,9 @@ public class AirUtil {
             RandomUtil randomUtil,
             ReflectUtil reflectUtil,
             RequestUtil requestUtil,
-            ValidateUtil validateUtil
+            ValidateUtil validateUtil,
+            Environment environment,
+            EntityManager entityManager
     ) {
         AirUtil.redisUtil = redisUtil;
         AirUtil.emailUtil = emailUtil;
@@ -145,5 +161,16 @@ public class AirUtil {
         AirUtil.reflectUtil = reflectUtil;
         AirUtil.requestUtil = requestUtil;
         AirUtil.validateUtil = validateUtil;
+        AirUtil.environment = environment;
+        AirUtil.entityManager = entityManager;
+    }
+
+    /**
+     * <h2>获取当前的环境变量</h2>
+     *
+     * @return 当前环境变量
+     */
+    public static String getCurrentEnvironment() {
+        return getEnvironment().getActiveProfiles()[0];
     }
 }
