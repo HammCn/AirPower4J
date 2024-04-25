@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Slf4j
-public class RedisUtil<E extends RootEntity<E>> {
+public class RedisUtil {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -36,7 +36,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @return 缓存实体
      */
-    public final @Nullable E getEntity(E entity) {
+    public final @Nullable <E extends RootEntity<E>> E getEntity(E entity) {
         Object object = get(getCacheKey(entity));
         if (Objects.isNull(object)) {
             return null;
@@ -56,7 +56,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @return 缓存的实体
      */
-    public final @Nullable E getEntity(String key, E entity) {
+    public final @Nullable <E extends RootEntity<E>> E getEntity(String key, E entity) {
         Object object = get(key);
         if (Objects.isNull(object)) {
             return null;
@@ -74,7 +74,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      *
      * @param entity 实体
      */
-    public final void deleteEntity(E entity) {
+    public final <E extends RootEntity<E>> void deleteEntity(E entity) {
         del(getCacheKey(entity));
     }
 
@@ -83,7 +83,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      *
      * @param entity 实体
      */
-    public final void saveEntity(E entity) {
+    public final <E extends RootEntity<E>> void saveEntity(E entity) {
         saveEntity(entity, globalConfig.getCacheExpireSecond());
     }
 
@@ -93,7 +93,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @param second 缓存时间(秒)
      */
-    public final void saveEntity(E entity, long second) {
+    public final <E extends RootEntity<E>> void saveEntity(E entity, long second) {
         set(getCacheKey(entity), Json.toString(entity), second);
     }
 
@@ -103,7 +103,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param key    缓存的Key
      * @param entity 实体
      */
-    public final void saveEntity(String key, E entity) {
+    public final <E extends RootEntity<E>> void saveEntity(String key, E entity) {
         saveEntity(key, entity, globalConfig.getCacheExpireSecond());
     }
 
@@ -114,7 +114,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @param second 缓存时间(秒)
      */
-    public final void saveEntity(String key, E entity, long second) {
+    public final <E extends RootEntity<E>> void saveEntity(String key, E entity, long second) {
         set(key, Json.toString(entity), second);
     }
 
@@ -261,7 +261,7 @@ public class RedisUtil<E extends RootEntity<E>> {
      * @param entity 实体
      * @return key
      */
-    private @NotNull String getCacheKey(@NotNull E entity) {
+    private @NotNull <E extends RootEntity<E>> String getCacheKey(@NotNull E entity) {
         return entity.getClass().getSimpleName() + "_" + entity.getId().toString();
     }
 }

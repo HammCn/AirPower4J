@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * <h3>🔥按 <code>A</code>、<code>I</code>、<code>R</code> 打开新大陆🔥</h3>
  * <hr/>
  *
- * @author 🌏Hamm.cn
+ * @author Hamm.cn
  */
 @Component
 public class AirConfig {

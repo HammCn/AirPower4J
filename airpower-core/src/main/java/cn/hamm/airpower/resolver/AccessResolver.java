@@ -39,7 +39,9 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
             WebDataBinderFactory binderFactory
     ) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        String accessToken = Objects.nonNull(request) ? request.getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader()) : null;
+        String accessToken = Objects.nonNull(request) ?
+                request.getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader()) :
+                null;
         return AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
     }
 }

@@ -1,11 +1,10 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.MqttConfig;
+import cn.hamm.airpower.config.AirConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.UUID;
@@ -18,8 +17,6 @@ import java.util.UUID;
 @Configuration
 @Slf4j
 public class MqttUtil {
-    @Autowired
-    private MqttConfig mqttConfig;
 
     /**
      * <h2>创建MQTT客户端</h2>
@@ -40,7 +37,7 @@ public class MqttUtil {
      */
     public MqttClient createClient(String id) throws MqttException {
         return new MqttClient(
-                "tcp://" + mqttConfig.getHost() + ":" + mqttConfig.getPort(),
+                "tcp://" + AirConfig.getMqttConfig().getHost() + ":" + AirConfig.getMqttConfig().getPort(),
                 id,
                 new MemoryPersistence()
         );
@@ -55,8 +52,8 @@ public class MqttUtil {
     public MqttConnectOptions createOption() {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(false);
-        options.setUserName(mqttConfig.getUser());
-        options.setPassword(mqttConfig.getPass().toCharArray());
+        options.setUserName(AirConfig.getMqttConfig().getUser());
+        options.setPassword(AirConfig.getMqttConfig().getPass().toCharArray());
         options.setConnectionTimeout(30);
         options.setKeepAliveInterval(10);
         return options;

@@ -1,9 +1,9 @@
 package cn.hamm.airpower.interceptor;
 
-import cn.hamm.airpower.config.GlobalConfig;
-import cn.hamm.airpower.interceptor.document.ApiDocument;
+import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.json.Json;
 import cn.hamm.airpower.model.json.JsonData;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +11,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -47,9 +46,6 @@ import java.util.Set;
 @ResponseBody
 @Slf4j
 public class ExceptionInterceptor {
-    @Autowired
-    private GlobalConfig globalConfig;
-
     /**
      * <h2>参数验证失败</h2>
      */
@@ -93,7 +89,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
     public Json deleteUsingDataException(@NotNull Exception exception) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("删除时的数据关联校验异常", exception);
         }
         return new Json(Result.FORBIDDEN_DELETE_USED, "数据正在使用中,无法被删除!");
@@ -106,7 +102,7 @@ public class ExceptionInterceptor {
     public Json notFoundHandle(@NotNull NoHandlerFoundException exception, HttpServletResponse response) {
         log.error(exception.getMessage());
 
-        if (globalConfig.isEnableDocument()) {
+        if (AirConfig.getGlobalConfig().isEnableDocument()) {
             String[] arr = exception.getRequestURL().split("/");
             if (arr.length > 1) {
                 String packageName = arr[arr.length - 1];
@@ -148,7 +144,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("不支持的数据类型", exception);
         }
         return new Json(Result.REQUEST_CONTENT_TYPE_UNSUPPORTED,
@@ -162,7 +158,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(CannotCreateTransactionException.class)
     public Json databaseExceptionHandle(@NotNull CannotCreateTransactionException exception) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("数据库连接发生错误", exception);
         }
         return new Json(Result.DATABASE_ERROR);
@@ -174,7 +170,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(RedisConnectionFailureException.class)
     public Json redisExceptionHandle(@NotNull RedisConnectionFailureException exception) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("REDIS连接发生错误", exception);
         }
         return new Json(Result.REDIS_ERROR);
@@ -186,7 +182,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(ResultException.class)
     public JsonData customExceptionHandle(@NotNull ResultException exception) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("自定义业务异常", exception);
         }
         return new JsonData(exception.getData(), exception.getMessage(), exception.getCode());
@@ -198,7 +194,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = PropertyReferenceException.class)
     public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("数据字段不存在", exception);
         }
         return new Json(Result.DATABASE_UNKNOWN_FIELD, "不支持的数据字段" + exception.getPropertyName());
@@ -212,7 +208,7 @@ public class ExceptionInterceptor {
             @NotNull InvalidDataAccessResourceUsageException exception
     ) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("数据表或字段异常", exception);
         }
         return new Json(Result.DATABASE_TABLE_OR_FIELD_ERROR);
@@ -224,7 +220,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = MaxUploadSizeExceededException.class)
     public Json maxUploadSizeExceededExceptionHandle(@NotNull MaxUploadSizeExceededException exception) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("上传超过最大限制", exception);
         }
         return new Json(Result.FORBIDDEN_UPLOAD_MAX_SIZE.getCode(), "上传的文件大小超过最大限制");
@@ -236,7 +232,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public Object otherExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
-        if (globalConfig.isDebug()) {
+        if (AirConfig.getGlobalConfig().isDebug()) {
             log.error("其他异常", exception);
         }
         return new Json(Result.ERROR);

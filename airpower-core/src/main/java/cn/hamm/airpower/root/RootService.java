@@ -2,8 +2,8 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
+import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.ITry;
@@ -13,8 +13,6 @@ import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
 import cn.hamm.airpower.util.AirUtil;
-import cn.hamm.airpower.util.RedisUtil;
-import cn.hamm.airpower.util.SecurityUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
@@ -50,15 +48,6 @@ import java.util.function.BiFunction;
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> implements ITry {
     @Autowired
     protected R repository;
-
-    @Autowired
-    protected RedisUtil<E> redisUtil;
-
-    @Autowired
-    protected SecurityUtil secureUtil;
-
-    @Autowired
-    private GlobalConfig globalConfig;
 
     @Autowired
     private EntityManager entityManager;
@@ -362,7 +351,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param search  原始查询对象
      * @return 查询条件列表
      */
-    protected @NotNull List<Predicate> addSearchPredicate(@NotNull Root<E> root, @NotNull CriteriaBuilder builder, @NotNull E search) {
+    protected @NotNull List<Predicate> addSearchPredicate(
+            @NotNull Root<E> root, @NotNull CriteriaBuilder builder, @NotNull E search
+    ) {
         return new ArrayList<>();
     }
 
@@ -693,13 +684,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         sort = Objects.requireNonNullElse(sort, new Sort());
 
         if (!StringUtils.hasText(sort.getField())) {
-            sort.setField(globalConfig.getDefaultSortField());
+            sort.setField(AirConfig.getGlobalConfig().getDefaultSortField());
         }
 
         if (!StringUtils.hasText(sort.getDirection())) {
-            sort.setDirection(globalConfig.getDefaultSortDirection());
+            sort.setDirection(AirConfig.getGlobalConfig().getDefaultSortDirection());
         }
-        if (!globalConfig.getDefaultSortDirection().equals(sort.getDirection())) {
+        if (!AirConfig.getGlobalConfig().getDefaultSortDirection().equals(sort.getDirection())) {
             return org.springframework.data.domain.Sort.by(
                     org.springframework.data.domain.Sort.Order.asc(sort.getField())
             );
@@ -718,7 +709,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     private @NotNull Pageable createPageable(@NotNull QueryPageRequest<E> queryPageData) {
         Page page = Objects.requireNonNullElse(queryPageData.getPage(), new Page());
         page.setPageNum(Objects.requireNonNullElse(page.getPageNum(), 1));
-        page.setPageSize(Objects.requireNonNullElse(page.getPageSize(), globalConfig.getDefaultPageSize()));
+        page.setPageSize(Objects.requireNonNullElse(page.getPageSize(), AirConfig.getGlobalConfig().getDefaultPageSize()));
         int pageNumber = Math.max(0, page.getPageNum() - 1);
         int pageSize = Math.max(1, queryPageData.getPage().getPageSize());
         return PageRequest.of(pageNumber, pageSize, createSort(queryPageData.getSort()));

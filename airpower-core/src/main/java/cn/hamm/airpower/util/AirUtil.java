@@ -18,7 +18,7 @@ public class AirUtil {
      * <h2>Redis工具类</h2>
      */
     @Getter
-    private static RedisUtil<?> redisUtil;
+    private static RedisUtil redisUtil;
 
     /**
      * <h2>邮件相关服务</h2>
@@ -112,7 +112,7 @@ public class AirUtil {
 
     @Autowired
     AirUtil(
-            RedisUtil<?> redisUtil,
+            RedisUtil redisUtil,
             EmailUtil emailUtil,
             TransactionUtil transactionUtil,
             TreeUtil treeUtil,

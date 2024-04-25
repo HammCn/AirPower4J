@@ -1,15 +1,14 @@
 package cn.hamm.airpower.interceptor;
 
-import cn.hamm.airpower.config.GlobalConfig;
-import cn.hamm.airpower.interceptor.document.ApiDocument;
-import cn.hamm.airpower.util.*;
+import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.enums.Result;
+import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.Access;
+import cn.hamm.airpower.util.AirUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -40,12 +39,6 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     public static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
 
-    @Autowired
-    private SecurityUtil securityUtil;
-
-    @Autowired
-    private GlobalConfig globalConfig;
-
     @Override
     public final boolean preHandle(
             @NotNull HttpServletRequest request,
@@ -59,7 +52,8 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
 
         setShareData(REQUEST_METHOD_KEY, method);
 
-        if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) && globalConfig.isEnableDocument()) {
+        if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) &&
+                AirConfig.getGlobalConfig().isEnableDocument()) {
             // 如果是GET 方法，并且开启了文档
             GetMapping getMapping = AirUtil.getReflectUtil().getAnnotation(GetMapping.class, method);
             if (Objects.isNull(getMapping)) {
@@ -76,15 +70,15 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             return true;
         }
         //需要登录
-        String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
+        String accessToken = request.getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader());
 
         // 优先使用 Get 参数传入的身份
-        String accessTokenFromParam = request.getParameter(globalConfig.getAuthorizeHeader());
+        String accessTokenFromParam = request.getParameter(AirConfig.getGlobalConfig().getAuthorizeHeader());
         if (StringUtils.hasText(accessTokenFromParam)) {
             accessToken = accessTokenFromParam;
         }
         Result.UNAUTHORIZED.whenEmpty(accessToken);
-        Long userId = securityUtil.getUserIdFromAccessToken(accessToken);
+        Long userId = AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限

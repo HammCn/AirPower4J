@@ -127,7 +127,9 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         Collection<RootModel<?>> collection;
         if (fieldValue instanceof Collection<?>) {
             Class<?> fieldClass = field.getType();
-            collection = AirUtil.getCollectionUtil().getCollectWithoutNull((Collection<RootModel<?>>) fieldValue, fieldClass);
+            collection = AirUtil.getCollectionUtil().getCollectWithoutNull(
+                    (Collection<RootModel<?>>) fieldValue, fieldClass
+            );
             collection.forEach(item -> item.filterResponseDataBy(WhenPayLoad.class));
             AirUtil.getReflectUtil().setFieldValue(this, field, collection);
             return;
