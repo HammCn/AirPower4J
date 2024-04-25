@@ -1,14 +1,14 @@
 package cn.hamm.airpower.root;
 
-import cn.hamm.airpower.config.GlobalConfig;
-import cn.hamm.airpower.interfaces.IAction;
-import cn.hamm.airpower.interfaces.ITry;
+import cn.hamm.airpower.annotation.Permission;
+import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.interfaces.IAction;
+import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.json.Json;
 import cn.hamm.airpower.model.json.JsonData;
-import cn.hamm.airpower.annotation.Permission;
-import cn.hamm.airpower.util.SecurityUtil;
+import cn.hamm.airpower.util.AirUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +30,6 @@ public class RootController implements IAction, ITry {
      */
     @Autowired
     protected HttpServletRequest request;
-
-    /**
-     * <h2>全局配置</h2>
-     */
-    @Autowired
-    protected GlobalConfig globalConfig;
-
-    /**
-     * <h2>安全工具</h2>
-     */
-    @Autowired
-    private SecurityUtil securityUtil;
 
     /**
      * <h2>响应一个JSON</h2>
@@ -85,8 +73,8 @@ public class RootController implements IAction, ITry {
      */
     protected final long getCurrentUserId() {
         try {
-            String accessToken = request.getHeader(globalConfig.getAuthorizeHeader());
-            return securityUtil.getUserIdFromAccessToken(accessToken);
+            String accessToken = request.getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader());
+            return AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             log.error("获取当前用户信息失败", exception);
             throw new ResultException(Result.UNAUTHORIZED);

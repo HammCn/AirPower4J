@@ -1,6 +1,6 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.model.json.Json;
 import cn.hamm.airpower.root.RootEntity;
@@ -8,7 +8,6 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +25,6 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-
-    @Autowired
-    private GlobalConfig globalConfig;
 
     /**
      * <h2>从缓存中获取实体</h2>
@@ -84,7 +80,7 @@ public class RedisUtil {
      * @param entity 实体
      */
     public final <E extends RootEntity<E>> void saveEntity(E entity) {
-        saveEntity(entity, globalConfig.getCacheExpireSecond());
+        saveEntity(entity, AirConfig.getGlobalConfig().getCacheExpireSecond());
     }
 
     /**
@@ -104,7 +100,7 @@ public class RedisUtil {
      * @param entity 实体
      */
     public final <E extends RootEntity<E>> void saveEntity(String key, E entity) {
-        saveEntity(key, entity, globalConfig.getCacheExpireSecond());
+        saveEntity(key, entity, AirConfig.getGlobalConfig().getCacheExpireSecond());
     }
 
     /**
@@ -221,7 +217,7 @@ public class RedisUtil {
      * @param value 值
      */
     public final void set(String key, Object value) {
-        set(key, value, globalConfig.getCacheExpireSecond());
+        set(key, value, AirConfig.getGlobalConfig().getCacheExpireSecond());
     }
 
     /**
