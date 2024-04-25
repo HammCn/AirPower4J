@@ -14,7 +14,6 @@ import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
 import cn.hamm.airpower.util.AirUtil;
 import jakarta.persistence.Column;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
@@ -48,9 +47,6 @@ import java.util.function.BiFunction;
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> implements ITry {
     @Autowired
     protected R repository;
-
-    @Autowired
-    private EntityManager entityManager;
 
     /**
      * <h2>🟢添加前置方法</h2>
@@ -549,7 +545,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         entity.setUpdateTime(System.currentTimeMillis());
         if (Objects.nonNull(entity.getId())) {
             // 修改前清掉JPA缓存，避免查询到旧数据
-            entityManager.clear();
+            AirUtil.getEntityManager().clear();
             // 有ID 走修改 且不允许修改下列字段
             E existEntity = getById(entity.getId());
             if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
@@ -563,7 +559,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
         // 新增完毕，清掉查询缓存，避免查询到旧数据
-        entityManager.clear();
+        AirUtil.getEntityManager().clear();
         return target.getId();
     }
 
