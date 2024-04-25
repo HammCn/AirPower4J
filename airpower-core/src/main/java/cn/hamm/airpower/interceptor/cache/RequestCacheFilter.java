@@ -43,7 +43,7 @@ public class RequestCacheFilter implements Filter {
             RequestBodyCacheWrapper wrapper = new RequestBodyCacheWrapper(httpServletRequest);
             filterChain.doFilter(wrapper, servletResponse);
         } catch (Exception exception) {
-            log.error("缓存请求发生异常", exception);
+            log.error(exception.getMessage(), exception);
         }
     }
 }

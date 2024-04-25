@@ -1,6 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.MessageConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -79,7 +80,7 @@ public class MqttUtil {
             client.disconnect();
             client.close();
         } catch (MqttException exception) {
-            log.error("MQTT发布失败", exception);
+            log.error(MessageConstant.EXCEPTION_WHEN_MQTT_PUBLISH, exception);
         }
     }
 }

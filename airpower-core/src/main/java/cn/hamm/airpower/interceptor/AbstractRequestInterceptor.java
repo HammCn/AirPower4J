@@ -1,6 +1,7 @@
 package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.Access;
@@ -37,7 +38,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     /**
      * <h2>缓存的REQUEST_METHOD_KEY</h2>
      */
-    public static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
+    protected static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
 
     @Override
     public final boolean preHandle(
@@ -147,9 +148,9 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             }
             return requestBody.toString();
         } catch (Exception exception) {
-            log.error("获取请求包体失败", exception);
+            log.error(exception.getMessage(), exception);
         }
-        return "";
+        return Constant.EMPTY_STRING;
 
     }
 }

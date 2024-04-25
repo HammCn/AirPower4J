@@ -3,6 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Expose;
 import cn.hamm.airpower.annotation.Payload;
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.IAction;
@@ -30,6 +31,7 @@ import java.util.function.BiConsumer;
 @EqualsAndHashCode
 @SuppressWarnings("unchecked")
 public class RootModel<M extends RootModel<M>> implements IAction {
+
     /**
      * <h2>复制一个新对象</h2>
      *
@@ -41,7 +43,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             BeanUtils.copyProperties(this, target);
             return target;
         } catch (Exception exception) {
-            log.error("复制到实例失败", exception);
+            log.error(MessageConstant.EXCEPTION_WHEN_CREATE_INSTANCE, exception);
             throw new ResultException(Result.ERROR.getCode(), exception.getMessage());
         }
     }

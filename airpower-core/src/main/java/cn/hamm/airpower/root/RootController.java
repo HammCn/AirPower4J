@@ -2,6 +2,7 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.IAction;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("")
 @Slf4j
 public class RootController implements IAction, ITry {
+
     /**
      * <h2>当前请求的实例</h2>
      */
@@ -76,7 +78,7 @@ public class RootController implements IAction, ITry {
             String accessToken = request.getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader());
             return AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
         } catch (Exception exception) {
-            log.error("获取当前用户信息失败", exception);
+            log.error(MessageConstant.FAILED_TO_LOAD_CURRENT_USER_INFO, exception);
             throw new ResultException(Result.UNAUTHORIZED);
         }
     }

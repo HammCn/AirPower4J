@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -68,173 +69,173 @@ public class ApiDocument {
 
 
         String html = """
-<!DOCTYPE html>
-<html>
-  <head>
-      <title>AirPower4J 接口文档</title>
-      <meta name="referrer" content="never">
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-      <link rel="stylesheet" href="//at.alicdn.com/t/c/font_666204_kf3f5tzpd8f.css">
-      <link rel="stylesheet" href="//cdn.hamm.cn/css/element.css">
-      <link rel="icon" href="//cdn.hamm.cn/favicon.ico">
-      <style>
-      .dictionary{
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          min-width: 200px;
-      }
-      .dictionary .key{
-          color: red;
-      }
-      .dictionary .label{
-          flex: 1;
-          width: 0;
-      }
-      .body{
-          position: absolute;
-          left: 10%;
-          right: 10%;
-          top: 0;
-          bottom: 0;
-          display: flex;
-          flex-direction: column;
-          padding: 40px;
-      }
-      .body .card{
-          flex: 1;
-          height: 0;
-          overflow: hidden;
-          overflow-y: auto;
-      }
-      .body .header{
-          font-size: 24px;
-          font-weight: bold;
-          padding: 20px 0px;
-      }
-      .body .desc{
-          font-size: 14px;
-          color: #999;
-          background: #f5f5f5;
-          padding: 10px 20px;
-          margin-bottom: 20px;
-          border-radius: 8px;
-      }
-      h2 {
-          font-size: 16px;
-          font-weight: bold;
-          margin-top: 40px;
-      }
-      .content{
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-      }
-      .content .method{
-          background: #666;
-          color: white;
-          padding: 2px 8px;
-          font-size: 12px;
-          border-radius: 5px;
-      }
-      .content .url{
-          margin-left: 20px;
-          color: #159;
-      }
-      a{
-        color: orangered;
-        text-decoration: none;
-      }
-      </style>
-  </head>
-  <body>
-      <div id="app" v-cloak>
-          <div class="body">
-              <div class="header">{{api.title}} <a href="javascript:history.go(-1);"> 返回 </a></div>
-              <div class="desc" v-if="api.document">{{api.document}}</div>
-              <div class="card">
-                  <h2>请求方式</h2>
-                  <div class="content">
-                      <div class="method">POST</div> <div class="url">{{url}}</div>
-                  </div>
-                  <h2>请求参数</h2>
-                  <el-table class="table" stripe size="medium" :data="api.requestParamList" default-expand-all
-                   :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-                      <el-table-column prop="name" label="参数Key" ></el-table-column>
-                      <el-table-column prop="description" label="参数名称" width="200"></el-table-column>
-                      <el-table-column prop="type" width="150" label="数据类型">
-                          <template slot-scope="scope">
-                            <el-link :href="scope.row.link" v-if="scope.row.link">{{ scope.row.type }}</el-link>
-                            <template v-else>{{ scope.row.type }}</template>
-                          </template>
-                      </el-table-column>
-                      <el-table-column label="其他说明">
-                          <template slot-scope="scope">
-                              <el-tag size="small" v-if="scope.row.required">必填</el-tag>
-                              <el-tag size="small" v-if="scope.row.phone">电话</el-tag>
-                              <el-tag size="small" v-if="scope.row.email">邮箱</el-tag>
-                              <el-dropdown v-if="scope.row.dictionary.length>0">
-                                  <el-tag size="small">字典</el-tag>
-                                  <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item v-for="item in scope.row.dictionary">
-                                          <div class="dictionary">
-                                              <div class="label">{{item.label}}</div>
-                                              <div class="key">{{item.key}}</div>
-                                          </div>
-                                      </el-dropdown-item>
-                                  </el-dropdown-menu>
-                              </el-dropdown>
-                          </template>
-                      </el-table-column>
-                      <el-table-column prop="document" label="备注说明"></el-table-column>
-                  </el-table>
-              </div>
-          </div>
-      </div>
-  </body>
-  <script src="//cdn.hamm.cn/js/vue-2.6.10.min.js"></script>
-  <script src="//cdn.hamm.cn/js/axios.min.js"></script>
-  <script src="//cdn.hamm.cn/js/element.js"></script>
-  <script src="//cdn.hamm.cn/js/vue-clipboard.min.js"></script>
-  <script>
-  const json =
-"""
-+ json +
-"""
-   </script>
-   <script>
-   new Vue({
-       el: '#app',
-       data() {
-           return {
-               url: window.location.pathname,
-               api: json,
-           }
-       },
-       created() {
-           console.log(this.api)
-           window.document.title = this.api.title + " - AirPower4J"
-           this.api.requestParamList.sort((a,b)=>{
-                       if(a.required){
-                           return -1;
-                       }
-                       if(b.required){
-                           return 1;
-                       }
-                   })
-       },
-       updated() {},
-       methods: {}
-   });
-   </script>
-</html>
-""";
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                      <title>AirPower4J 接口文档</title>
+                      <meta name="referrer" content="never">
+                      <meta charset="UTF-8">
+                      <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+                      <link rel="stylesheet" href="//at.alicdn.com/t/c/font_666204_kf3f5tzpd8f.css">
+                      <link rel="stylesheet" href="//cdn.hamm.cn/css/element.css">
+                      <link rel="icon" href="//cdn.hamm.cn/favicon.ico">
+                      <style>
+                      .dictionary{
+                          display: flex;
+                          flex-direction: row;
+                          align-items: center;
+                          min-width: 200px;
+                      }
+                      .dictionary .key{
+                          color: red;
+                      }
+                      .dictionary .label{
+                          flex: 1;
+                          width: 0;
+                      }
+                      .body{
+                          position: absolute;
+                          left: 10%;
+                          right: 10%;
+                          top: 0;
+                          bottom: 0;
+                          display: flex;
+                          flex-direction: column;
+                          padding: 40px;
+                      }
+                      .body .card{
+                          flex: 1;
+                          height: 0;
+                          overflow: hidden;
+                          overflow-y: auto;
+                      }
+                      .body .header{
+                          font-size: 24px;
+                          font-weight: bold;
+                          padding: 20px 0px;
+                      }
+                      .body .desc{
+                          font-size: 14px;
+                          color: #999;
+                          background: #f5f5f5;
+                          padding: 10px 20px;
+                          margin-bottom: 20px;
+                          border-radius: 8px;
+                      }
+                      h2 {
+                          font-size: 16px;
+                          font-weight: bold;
+                          margin-top: 40px;
+                      }
+                      .content{
+                          display: flex;
+                          flex-direction: row;
+                          align-items: center;
+                      }
+                      .content .method{
+                          background: #666;
+                          color: white;
+                          padding: 2px 8px;
+                          font-size: 12px;
+                          border-radius: 5px;
+                      }
+                      .content .url{
+                          margin-left: 20px;
+                          color: #159;
+                      }
+                      a{
+                        color: orangered;
+                        text-decoration: none;
+                      }
+                      </style>
+                  </head>
+                  <body>
+                      <div id="app" v-cloak>
+                          <div class="body">
+                              <div class="header">{{api.title}} <a href="javascript:history.go(-1);"> 返回 </a></div>
+                              <div class="desc" v-if="api.document">{{api.document}}</div>
+                              <div class="card">
+                                  <h2>请求方式</h2>
+                                  <div class="content">
+                                      <div class="method">POST</div> <div class="url">{{url}}</div>
+                                  </div>
+                                  <h2>请求参数</h2>
+                                  <el-table class="table" stripe size="medium" :data="api.requestParamList" default-expand-all
+                                   :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+                                      <el-table-column prop="name" label="参数Key" ></el-table-column>
+                                      <el-table-column prop="description" label="参数名称" width="200"></el-table-column>
+                                      <el-table-column prop="type" width="150" label="数据类型">
+                                          <template slot-scope="scope">
+                                            <el-link :href="scope.row.link" v-if="scope.row.link">{{ scope.row.type }}</el-link>
+                                            <template v-else>{{ scope.row.type }}</template>
+                                          </template>
+                                      </el-table-column>
+                                      <el-table-column label="其他说明">
+                                          <template slot-scope="scope">
+                                              <el-tag size="small" v-if="scope.row.required">必填</el-tag>
+                                              <el-tag size="small" v-if="scope.row.phone">电话</el-tag>
+                                              <el-tag size="small" v-if="scope.row.email">邮箱</el-tag>
+                                              <el-dropdown v-if="scope.row.dictionary.length>0">
+                                                  <el-tag size="small">字典</el-tag>
+                                                  <el-dropdown-menu slot="dropdown">
+                                                      <el-dropdown-item v-for="item in scope.row.dictionary">
+                                                          <div class="dictionary">
+                                                              <div class="label">{{item.label}}</div>
+                                                              <div class="key">{{item.key}}</div>
+                                                          </div>
+                                                      </el-dropdown-item>
+                                                  </el-dropdown-menu>
+                                              </el-dropdown>
+                                          </template>
+                                      </el-table-column>
+                                      <el-table-column prop="document" label="备注说明"></el-table-column>
+                                  </el-table>
+                              </div>
+                          </div>
+                      </div>
+                  </body>
+                  <script src="//cdn.hamm.cn/js/vue-2.6.10.min.js"></script>
+                  <script src="//cdn.hamm.cn/js/axios.min.js"></script>
+                  <script src="//cdn.hamm.cn/js/element.js"></script>
+                  <script src="//cdn.hamm.cn/js/vue-clipboard.min.js"></script>
+                  <script>
+                  const json =
+                """
+                + json +
+                """
+                           </script>
+                           <script>
+                           new Vue({
+                               el: '#app',
+                               data() {
+                                   return {
+                                       url: window.location.pathname,
+                                       api: json,
+                                   }
+                               },
+                               created() {
+                                   console.log(this.api)
+                                   window.document.title = this.api.title + " - AirPower4J"
+                                   this.api.requestParamList.sort((a,b)=>{
+                                               if(a.required){
+                                                   return -1;
+                                               }
+                                               if(b.required){
+                                                   return 1;
+                                               }
+                                           })
+                               },
+                               updated() {},
+                               methods: {}
+                           });
+                           </script>
+                        </html>
+                        """;
         try {
-            response.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.getWriter().write(html);
         } catch (IOException exception) {
-            log.error("输出文档失败", exception);
+            log.error(exception.getMessage(), exception);
         }
     }
 
@@ -365,157 +366,157 @@ public class ApiDocument {
             String json = Json.toString(apiDocument);
 
             String html = """
-<!DOCTYPE html>
-<html>
-  <head>
-      <title>AirPower4J 类文档</title>
-      <meta name="referrer" content="never">
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-      <link rel="stylesheet" href="//at.alicdn.com/t/c/font_666204_kf3f5tzpd8f.css">
-      <link rel="stylesheet" href="//cdn.hamm.cn/css/element.css">
-      <link rel="icon" href="//cdn.hamm.cn/favicon.ico">
-      <style>
-      .dictionary{
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          min-width: 200px;
-      }
-      .dictionary .key{
-          color: red;
-      }
-      .dictionary .label{
-          flex: 1;
-          width: 0;
-      }
-      .body{
-          position: absolute;
-          left: 10%;
-          right: 10%;
-          top: 0;
-          bottom: 0;
-          display: flex;
-          flex-direction: column;
-          padding: 40px;
-      }
-      .body .card{
-          flex: 1;
-          height: 0;
-          overflow: hidden;
-          overflow-y: auto;
-      }
-      .body .header{
-          font-size: 24px;
-          font-weight: bold;
-          padding: 20px 0px;
-      }
-      .body .desc{
-          font-size: 14px;
-          color: #999;
-          background: #f5f5f5;
-          padding: 10px 20px;
-          margin-bottom: 20px;
-          border-radius: 8px;
-      }
-      h2 {
-          font-size: 16px;
-          font-weight: bold;
-          margin-top: 40px;
-      }
-      .content{
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-      }
-      .content .method{
-          background: #666;
-          color: white;
-          padding: 2px 8px;
-          font-size: 12px;
-          border-radius: 5px;
-      }
-      .content .url{
-          margin-left: 20px;
-          color: #159;
-      }
-      a{
-        color: orangered;
-        text-decoration: none;
-      }
-      </style>
-  </head>
-  <body>
-      <div id="app" v-cloak>
-          <div class="body">
-            <div class="header">{{api.title}} <a href="javascript:history.go(-1);"> 返回 </a></div>
-              <div class="desc" v-if="api.document">{{api.document}}</div>
-              <div class="card">
-                  <h2>属性列表</h2>
-                  <el-table class="table" stripe size="medium" :data="api.requestParamList" default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-                      <el-table-column prop="name" label="属性" ></el-table-column>
-                      <el-table-column prop="description" label="属性说明" width="200"></el-table-column>
-                      <el-table-column prop="type" width="150" label="数据类型">
-                          <template slot-scope="scope">
-                            <el-link :href="scope.row.link" v-if="scope.row.link">{{ scope.row.type }}</el-link>
-                            <template v-else>{{ scope.row.type }}</template>
-                          </template>
-                      </el-table-column>
-                      <el-table-column label="其他说明">
-                          <template slot-scope="scope">
-                              <el-tag size="small" v-if="scope.row.required">必填</el-tag>
-                              <el-tag size="small" v-if="scope.row.phone">电话</el-tag>
-                              <el-tag size="small" v-if="scope.row.email">邮箱</el-tag>
-                              <el-dropdown v-if="scope.row.dictionary.length>0">
-                                  <el-tag size="small">字典</el-tag>
-                                  <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item v-for="item in scope.row.dictionary">
-                                          <div class="dictionary">
-                                              <div class="label">{{item.label}}</div>
-                                              <div class="key">{{item.key}}</div>
-                                          </div>
-                                      </el-dropdown-item>
-                                  </el-dropdown-menu>
-                              </el-dropdown>
-                          </template>
-                      </el-table-column>
-                      <el-table-column prop="document" label="备注说明"></el-table-column>
-                  </el-table>
-              </div>
-          </div>
-      </div>
-  </body>
-  <script src="//cdn.hamm.cn/js/vue-2.6.10.min.js"></script>
-  <script src="//cdn.hamm.cn/js/axios.min.js"></script>
-  <script src="//cdn.hamm.cn/js/element.js"></script>
-  <script src="//cdn.hamm.cn/js/vue-clipboard.min.js"></script>
-  <script>
-  const json =
-"""
-+ json +
-"""
-   </script>
-   <script>
-   new Vue({
-       el: '#app',
-       data() {
-           return {
-               url: window.location.pathname,
-               api: json,
-           }
-       },
-       created() {
-           console.log(this.api)
-       },
-       updated() {},
-       methods: {}
-   });
-   </script>
-</html>
-""";
+                    <!DOCTYPE html>
+                    <html>
+                      <head>
+                          <title>AirPower4J 类文档</title>
+                          <meta name="referrer" content="never">
+                          <meta charset="UTF-8">
+                          <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+                          <link rel="stylesheet" href="//at.alicdn.com/t/c/font_666204_kf3f5tzpd8f.css">
+                          <link rel="stylesheet" href="//cdn.hamm.cn/css/element.css">
+                          <link rel="icon" href="//cdn.hamm.cn/favicon.ico">
+                          <style>
+                          .dictionary{
+                              display: flex;
+                              flex-direction: row;
+                              align-items: center;
+                              min-width: 200px;
+                          }
+                          .dictionary .key{
+                              color: red;
+                          }
+                          .dictionary .label{
+                              flex: 1;
+                              width: 0;
+                          }
+                          .body{
+                              position: absolute;
+                              left: 10%;
+                              right: 10%;
+                              top: 0;
+                              bottom: 0;
+                              display: flex;
+                              flex-direction: column;
+                              padding: 40px;
+                          }
+                          .body .card{
+                              flex: 1;
+                              height: 0;
+                              overflow: hidden;
+                              overflow-y: auto;
+                          }
+                          .body .header{
+                              font-size: 24px;
+                              font-weight: bold;
+                              padding: 20px 0px;
+                          }
+                          .body .desc{
+                              font-size: 14px;
+                              color: #999;
+                              background: #f5f5f5;
+                              padding: 10px 20px;
+                              margin-bottom: 20px;
+                              border-radius: 8px;
+                          }
+                          h2 {
+                              font-size: 16px;
+                              font-weight: bold;
+                              margin-top: 40px;
+                          }
+                          .content{
+                              display: flex;
+                              flex-direction: row;
+                              align-items: center;
+                          }
+                          .content .method{
+                              background: #666;
+                              color: white;
+                              padding: 2px 8px;
+                              font-size: 12px;
+                              border-radius: 5px;
+                          }
+                          .content .url{
+                              margin-left: 20px;
+                              color: #159;
+                          }
+                          a{
+                            color: orangered;
+                            text-decoration: none;
+                          }
+                          </style>
+                      </head>
+                      <body>
+                          <div id="app" v-cloak>
+                              <div class="body">
+                                <div class="header">{{api.title}} <a href="javascript:history.go(-1);"> 返回 </a></div>
+                                  <div class="desc" v-if="api.document">{{api.document}}</div>
+                                  <div class="card">
+                                      <h2>属性列表</h2>
+                                      <el-table class="table" stripe size="medium" :data="api.requestParamList" default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+                                          <el-table-column prop="name" label="属性" ></el-table-column>
+                                          <el-table-column prop="description" label="属性说明" width="200"></el-table-column>
+                                          <el-table-column prop="type" width="150" label="数据类型">
+                                              <template slot-scope="scope">
+                                                <el-link :href="scope.row.link" v-if="scope.row.link">{{ scope.row.type }}</el-link>
+                                                <template v-else>{{ scope.row.type }}</template>
+                                              </template>
+                                          </el-table-column>
+                                          <el-table-column label="其他说明">
+                                              <template slot-scope="scope">
+                                                  <el-tag size="small" v-if="scope.row.required">必填</el-tag>
+                                                  <el-tag size="small" v-if="scope.row.phone">电话</el-tag>
+                                                  <el-tag size="small" v-if="scope.row.email">邮箱</el-tag>
+                                                  <el-dropdown v-if="scope.row.dictionary.length>0">
+                                                      <el-tag size="small">字典</el-tag>
+                                                      <el-dropdown-menu slot="dropdown">
+                                                          <el-dropdown-item v-for="item in scope.row.dictionary">
+                                                              <div class="dictionary">
+                                                                  <div class="label">{{item.label}}</div>
+                                                                  <div class="key">{{item.key}}</div>
+                                                              </div>
+                                                          </el-dropdown-item>
+                                                      </el-dropdown-menu>
+                                                  </el-dropdown>
+                                              </template>
+                                          </el-table-column>
+                                          <el-table-column prop="document" label="备注说明"></el-table-column>
+                                      </el-table>
+                                  </div>
+                              </div>
+                          </div>
+                      </body>
+                      <script src="//cdn.hamm.cn/js/vue-2.6.10.min.js"></script>
+                      <script src="//cdn.hamm.cn/js/axios.min.js"></script>
+                      <script src="//cdn.hamm.cn/js/element.js"></script>
+                      <script src="//cdn.hamm.cn/js/vue-clipboard.min.js"></script>
+                      <script>
+                      const json =
+                    """
+                    + json +
+                    """
+                               </script>
+                               <script>
+                               new Vue({
+                                   el: '#app',
+                                   data() {
+                                       return {
+                                           url: window.location.pathname,
+                                           api: json,
+                                       }
+                                   },
+                                   created() {
+                                       console.log(this.api)
+                                   },
+                                   updated() {},
+                                   methods: {}
+                               });
+                               </script>
+                            </html>
+                            """;
             try {
                 response.reset();
-                response.setCharacterEncoding("UTF-8");
+                response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.getWriter().write(html);
                 response.flushBuffer();
             } catch (IOException exception) {

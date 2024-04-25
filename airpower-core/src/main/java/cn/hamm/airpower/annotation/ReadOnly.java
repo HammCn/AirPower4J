@@ -12,7 +12,7 @@ import java.lang.annotation.*;
  * @apiNote 可在控制器调用Service前先调用 {@link RootService#ignoreReadOnlyFields(RootEntity)} 将标记了此注解的字段移除
  */
 @SuppressWarnings("JavadocReference")
-@Target({ElementType.FIELD})
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ReadOnly {

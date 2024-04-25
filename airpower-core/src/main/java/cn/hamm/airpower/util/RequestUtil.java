@@ -1,12 +1,14 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Constant;
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
@@ -21,7 +23,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class RequestUtil {
-    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+
     /**
      * <h2>多IP分割字符</h2>
      */
@@ -30,10 +32,6 @@ public class RequestUtil {
      * <h2>IP地址字符串最大的长度</h2>
      */
     private static final int MAX_IP_ADDRESS_CHAR_LENGTH = 15;
-    /**
-     * <h2>错误信息</h2>
-     */
-    private static final String ERROR_MESSAGE = "你的IP地址异常";
 
     /**
      * <h2>判断是否是上传请求</h2>
@@ -89,16 +87,16 @@ public class RequestUtil {
                         return ipAddress;
                     }
                 } catch (UnknownHostException exception) {
-                    log.error("获取IP地址失败", exception);
-                    Result.FORBIDDEN.show(ERROR_MESSAGE);
+                    log.error(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR, exception);
+                    Result.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
                 }
             }
             return Constant.LOCAL_IP_ADDRESS;
         } catch (Exception exception) {
-            log.error("获取IP地址失败", exception);
-            Result.FORBIDDEN.show(ERROR_MESSAGE);
+            log.error(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR, exception);
+            Result.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
         }
-        return "";
+        return Constant.EMPTY_STRING;
     }
 
     /**
@@ -109,7 +107,7 @@ public class RequestUtil {
      */
     @Contract(value = "null -> false", pure = true)
     private boolean isUploadFileContentType(String contentType) {
-        return contentType != null && contentType.startsWith(MULTIPART_FORM_DATA);
+        return contentType != null && contentType.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE);
     }
 
     /**
@@ -135,7 +133,7 @@ public class RequestUtil {
                 ipAddress.length() > MAX_IP_ADDRESS_CHAR_LENGTH &&
                 ipAddress.indexOf(MULTI_IP_ADDRESS_SPLITTER) > 0
         ) {
-            ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
+            ipAddress = ipAddress.substring(0, ipAddress.indexOf(MULTI_IP_ADDRESS_SPLITTER));
         }
         return ipAddress;
     }

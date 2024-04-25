@@ -1,6 +1,7 @@
 package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.*;
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.interfaces.IEntity;
 import cn.hamm.airpower.interfaces.IEntityAction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -82,22 +83,22 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
 
     @Transient
     @Description("创建时间开始")
-    @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
+    @Document(MessageConstant.GET_PAGE_OR_GET_LIST_USE_ONLY)
     private Long createTimeFrom;
 
     @Transient
     @Description("创建时间结束")
-    @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
+    @Document(MessageConstant.GET_PAGE_OR_GET_LIST_USE_ONLY)
     private Long createTimeTo;
 
     @Transient
     @Description("修改时间开始")
-    @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
+    @Document(MessageConstant.GET_PAGE_OR_GET_LIST_USE_ONLY)
     private Long updateTimeFrom;
 
     @Transient
     @Description("修改时间结束")
-    @Document("该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用")
+    @Document(MessageConstant.GET_PAGE_OR_GET_LIST_USE_ONLY)
     private Long updateTimeTo;
 
     @Transient

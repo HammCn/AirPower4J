@@ -1,5 +1,6 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.config.Constant;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -15,24 +16,23 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class RandomUtil {
     /**
-     * <h2>数字</h2>
-     */
-    public static final String BASE_NUMBER = "0123456789";
-
-    /**
      * <h2>小写字母</h2>
      */
-    public static final String BASE_CHAR = "abcdefghijklmnopqrstuvwxyz";
+    private static final String BASE_CHAR = "abcdefghijklmnopqrstuvwxyz";
 
+    /**
+     * <h2>数字</h2>
+     */
+    private static final String BASE_NUMBER = "0123456789";
     /**
      * <h2>小写字母和数字</h2>
      */
-    public static final String BASE_CHAR_NUMBER_LOWER = BASE_CHAR + BASE_NUMBER;
+    private static final String BASE_CHAR_NUMBER_LOWER = BASE_CHAR + BASE_NUMBER;
 
     /**
      * <h2>大写和小写字母</h2>
      */
-    public static final String BASE_CHAR_NUMBER = BASE_CHAR.toUpperCase() + BASE_CHAR_NUMBER_LOWER;
+    private static final String BASE_CHAR_NUMBER = BASE_CHAR.toUpperCase() + BASE_CHAR_NUMBER_LOWER;
 
 
     /**
@@ -73,7 +73,7 @@ public class RandomUtil {
      */
     public final @NotNull String randomString(final String baseString, int length) {
         if (!StringUtils.hasText(baseString)) {
-            return "";
+            return Constant.EMPTY_STRING;
         }
         if (length < 1) {
             length = 1;

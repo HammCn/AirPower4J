@@ -126,7 +126,7 @@ public class RedisUtil {
                 redisTemplate.expire(key, second, TimeUnit.SECONDS);
             }
         } catch (Exception exception) {
-            log.error("Redis服务器连接失败", exception);
+            log.error(Result.REDIS_ERROR.getMessage(), exception);
             Result.REDIS_ERROR.show();
         }
     }
@@ -143,7 +143,7 @@ public class RedisUtil {
                 redisTemplate.delete(keys);
             }
         } catch (Exception exception) {
-            log.error("Redis服务器连接失败", exception);
+            log.error(Result.REDIS_ERROR.getMessage(), exception);
             Result.REDIS_ERROR.show();
         }
     }
@@ -159,7 +159,7 @@ public class RedisUtil {
             //noinspection ConstantConditions
             return redisTemplate.getExpire(key, TimeUnit.SECONDS);
         } catch (Exception exception) {
-            log.error("Redis服务器连接失败", exception);
+            log.error(Result.REDIS_ERROR.getMessage(), exception);
             Result.REDIS_ERROR.show();
         }
         return 0;
@@ -189,7 +189,7 @@ public class RedisUtil {
         try {
             redisTemplate.delete(key);
         } catch (Exception exception) {
-            log.error("Redis服务器连接失败", exception);
+            log.error(Result.REDIS_ERROR.getMessage(), exception);
             Result.REDIS_ERROR.show();
         }
     }
@@ -204,7 +204,7 @@ public class RedisUtil {
         try {
             return redisTemplate.opsForValue().get(key);
         } catch (Exception exception) {
-            log.error("Redis服务器连接失败", exception);
+            log.error(Result.REDIS_ERROR.getMessage(), exception);
             Result.REDIS_ERROR.show();
         }
         return null;
@@ -236,7 +236,7 @@ public class RedisUtil {
                 set(key, value);
             }
         } catch (Exception exception) {
-            log.error("Redis服务器连接失败", exception);
+            log.error(Result.REDIS_ERROR.getMessage(), exception);
             Result.REDIS_ERROR.show();
         }
     }
@@ -260,4 +260,6 @@ public class RedisUtil {
     private @NotNull <E extends RootEntity<E>> String getCacheKey(@NotNull E entity) {
         return entity.getClass().getSimpleName() + "_" + entity.getId().toString();
     }
+
+
 }

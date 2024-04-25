@@ -1,8 +1,9 @@
 package cn.hamm.airpower.model.json;
 
-import cn.hamm.airpower.interfaces.IResult;
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.interfaces.IResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,11 +68,11 @@ public class Json implements IResult {
     /**
      * <h2>实例化JSON</h2>
      *
-     * @param result  自定义响应类
-     * @param message 错误信息
+     * @param exception 自定义响应类
+     * @param message   错误信息
      */
-    public Json(@NotNull ResultException result, String message) {
-        this.code = result.getCode();
+    public Json(@NotNull ResultException exception, String message) {
+        this.code = exception.getCode();
         this.message = message;
     }
 
@@ -87,8 +88,8 @@ public class Json implements IResult {
         try {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
-            log.error("JSON字符串转对象失败", exception);
-            throw new ResultException(Result.ERROR.getCode(), "JSON字符串转对象失败(" + exception.getMessage() + ")");
+            log.error(MessageConstant.EXCEPTION_WHEN_JSON_PARSE, exception);
+            throw new ResultException(Result.ERROR.getCode(), exception.getMessage());
         }
     }
 
@@ -103,7 +104,7 @@ public class Json implements IResult {
         try {
             return getObjectMapper().writeValueAsString(object);
         } catch (JsonProcessingException exception) {
-            log.error("对象转JSON字符串失败", exception);
+            log.error(MessageConstant.EXCEPTION_WHEN_JSON_TO_STRING, exception);
             return "";
         }
     }

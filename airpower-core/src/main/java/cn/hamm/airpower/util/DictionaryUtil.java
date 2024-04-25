@@ -1,5 +1,6 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.interfaces.IDictionary;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class DictionaryUtil {
                 }
             }
         } catch (Exception exception) {
-            log.error("获取字典信息失败", exception);
+            log.error(MessageConstant.FAILED_TO_LOAD_DICTIONARY, exception);
         }
         return null;
     }
@@ -79,7 +80,7 @@ public class DictionaryUtil {
                     Method method = clazz.getMethod("get" + StringUtils.capitalize(param));
                     item.put(param, method.invoke(obj).toString());
                 } catch (Exception exception) {
-                    log.error("获取枚举字典数据失败", exception);
+                    log.error(MessageConstant.FAILED_TO_LOAD_DICTIONARY, exception);
                 }
             }
             mapList.add(item);

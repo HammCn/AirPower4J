@@ -18,20 +18,17 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower")
 public class GlobalConfig {
     /**
+     * <h2>多数据源数据库前缀</h2>
+     */
+    public String databasePrefix = "tenant_";
+    /**
      * <h2>是否开启文档</h2>
      */
     private boolean enableDocument = false;
-
     /**
      * <h2>默认分页条数</h2>
      */
     private int defaultPageSize = 20;
-
-    /**
-     * <h2>多数据源数据库前缀</h2>
-     */
-    public String databasePrefix = "tenant_";
-
     /**
      * <h2>服务全局拦截</h2>
      */
@@ -60,7 +57,7 @@ public class GlobalConfig {
     /**
      * <h2>身份令牌header的key</h2>
      */
-    private String authorizeHeader = "authorization";
+    private String authorizeHeader = Constant.AUTHORIZATION;
 
     /**
      * <h2>身份令牌有效期</h2>
@@ -70,7 +67,7 @@ public class GlobalConfig {
     /**
      * <h2>多租户的header的key</h2>
      */
-    private String tenantHeader = "tenant-code";
+    private String tenantHeader = Constant.TENANT_CODE;
 
     /**
      * <h2>是否开启调试模式</h2>

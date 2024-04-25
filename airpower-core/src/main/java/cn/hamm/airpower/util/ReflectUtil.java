@@ -2,6 +2,7 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.annotation.Document;
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.root.RootController;
 import cn.hamm.airpower.root.RootEntity;
@@ -27,6 +28,7 @@ import java.util.*;
 @Slf4j
 @Component
 public class ReflectUtil {
+
     /**
      * <h2>获取对象指定属性的值</h2>
      *
@@ -39,7 +41,7 @@ public class ReflectUtil {
             field.setAccessible(true);
             return field.get(object);
         } catch (IllegalAccessException exception) {
-            log.error("反射获取值失败", exception);
+            log.error(MessageConstant.EXCEPTION_WHEN_REFLECT_FIELD, exception);
             return null;
         } finally {
             field.setAccessible(false);
@@ -58,7 +60,7 @@ public class ReflectUtil {
             field.setAccessible(true);
             field.set(object, value);
         } catch (IllegalAccessException exception) {
-            log.error("反射设置值失败", exception);
+            log.error(MessageConstant.EXCEPTION_WHEN_REFLECT_FIELD, exception);
         } finally {
             field.setAccessible(false);
         }

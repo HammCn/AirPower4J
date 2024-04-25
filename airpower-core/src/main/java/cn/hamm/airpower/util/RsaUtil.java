@@ -1,5 +1,6 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
 import lombok.Setter;
@@ -36,6 +37,7 @@ public class RsaUtil {
      * <h2>加密方式</h2>
      */
     private final String CRYPT_METHOD = "RSA";
+
 
     /**
      * <h2>公钥</h2>
@@ -80,7 +82,7 @@ public class RsaUtil {
             PrivateKey privateKey = getPrivateKey(this.privateKey);
             return decodeByKey(encryptedContent, privateKey, blockSize);
         } catch (Exception exception) {
-            log.error("私钥解密失败", exception);
+            log.error(MessageConstant.EXCEPTION_WHEN_RSA_CRYPTO, exception);
             throw new ResultException(Result.ERROR);
         }
     }
@@ -194,7 +196,7 @@ public class RsaUtil {
      * @throws Exception 加解密异常
      */
     private byte @NotNull [] rsaDoFinal(Cipher cipher, byte @NotNull [] sourceBytes, int blockSize) throws Exception {
-        Result.ERROR.when(blockSize <= 0, "分段大小必须大于0");
+        Result.ERROR.when(blockSize <= 0, MessageConstant.BLOCK_SIZE_MUST_BE_GREATER_THAN_ZERO);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int inputLength = sourceBytes.length;
         int currentOffSet = 0;

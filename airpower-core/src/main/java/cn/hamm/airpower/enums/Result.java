@@ -32,7 +32,7 @@ public enum Result implements IResult {
     FORBIDDEN_EXIST(4031, "唯一约束,无权重复"),
     FORBIDDEN_EDIT(4032, "无权修改"),
     FORBIDDEN_DELETE(4033, "无权删除"),
-    FORBIDDEN_DELETE_USED(4034, "无权删除被使用中的数据"),
+    FORBIDDEN_DELETE_USED(4034, "数据正在使用中,无法被删除!"),
     FORBIDDEN_UPLOAD_MAX_SIZE(4035, "上传的文件大小超过最大限制"),
 
     // 404 没有查到数据代码

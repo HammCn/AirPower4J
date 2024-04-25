@@ -1,6 +1,7 @@
 package cn.hamm.airpower.datasource;
 
 import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -21,7 +22,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Component
 public class DataSourceAspect {
-
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.GetMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.RequestMapping)")
@@ -34,7 +34,7 @@ public class DataSourceAspect {
      */
     @Around("pointCut()")
     public Object multipleDataSource(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Result.ERROR.when(!AirConfig.getGlobalConfig().isServiceRunning(), "服务短暂维护中,请稍后再试：）");
+        Result.ERROR.when(!AirConfig.getGlobalConfig().isServiceRunning(), MessageConstant.SERVICE_MAINTAINING_AND_TRY_LATER);
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes()))
                 .getRequest();
         String database = request.getHeader(AirConfig.getGlobalConfig().getTenantHeader());

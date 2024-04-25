@@ -1,18 +1,19 @@
 package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Description;
-import cn.hamm.airpower.enums.Api;
 import cn.hamm.airpower.annotation.Extends;
+import cn.hamm.airpower.annotation.Filter;
+import cn.hamm.airpower.annotation.Permission;
+import cn.hamm.airpower.config.MessageConstant;
+import cn.hamm.airpower.enums.Api;
+import cn.hamm.airpower.enums.Result;
+import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.IEntityAction;
+import cn.hamm.airpower.model.json.Json;
+import cn.hamm.airpower.model.json.JsonData;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
-import cn.hamm.airpower.annotation.Filter;
-import cn.hamm.airpower.enums.Result;
-import cn.hamm.airpower.exception.ResultException;
-import cn.hamm.airpower.model.json.Json;
-import cn.hamm.airpower.model.json.JsonData;
-import cn.hamm.airpower.annotation.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -72,7 +73,7 @@ public class RootEntityController<
                 () -> afterAdd(insertId, entity),
                 () -> afterSaved(insertId, entity)
         );
-        return jsonId(insertId, "添加成功");
+        return jsonId(insertId, MessageConstant.SUCCESS_TO_ADD);
     }
 
     /**
@@ -94,7 +95,7 @@ public class RootEntityController<
                 () -> afterUpdate(updateId, entity),
                 () -> afterSaved(updateId, entity)
         );
-        return jsonId(updateId, "修改成功");
+        return jsonId(updateId, MessageConstant.SUCCESS_TO_UPDATE);
     }
 
     /**
@@ -114,7 +115,7 @@ public class RootEntityController<
         execute(
                 () -> afterDelete(deleteId)
         );
-        return jsonId(deleteId, "删除成功");
+        return jsonId(deleteId, MessageConstant.SUCCESS_TO_DELETE);
     }
 
     /**
@@ -147,7 +148,7 @@ public class RootEntityController<
         execute(
                 () -> afterDisable(entity.getId())
         );
-        return jsonId(entity.getId(), "禁用成功");
+        return jsonId(entity.getId(), MessageConstant.SUCCESS_TO_DISABLE);
     }
 
     /**
@@ -166,7 +167,7 @@ public class RootEntityController<
         execute(
                 () -> afterEnable(entity.getId())
         );
-        return jsonId(entity.getId(), "启用成功");
+        return jsonId(entity.getId(), MessageConstant.SUCCESS_TO_ENABLE);
     }
 
     /**
@@ -385,7 +386,7 @@ public class RootEntityController<
             return;
         }
 
-        Result.API_SERVICE_UNSUPPORTED.show("该接口暂未提供");
+        Result.API_SERVICE_UNSUPPORTED.show();
     }
 
     /**
@@ -397,7 +398,7 @@ public class RootEntityController<
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (Exception exception) {
-            throw new ResultException("初始化实体失败");
+            throw new ResultException(MessageConstant.EXCEPTION_WHEN_CREATE_INSTANCE);
         }
     }
 

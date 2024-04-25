@@ -4,6 +4,7 @@ import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.config.Constant;
+import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.ITry;
@@ -70,10 +71,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     public final long add(@NotNull E source) {
         source = beforeAdd(source);
-        Result.ERROR.whenNull(source, "新增的数据不能为空");
+        Result.ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
-            source.setRemark("");
+            source.setRemark(Constant.EMPTY_STRING);
         }
         long id = saveToDatabase(source);
         E finalSource = source;
@@ -131,9 +132,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #update(E)
      */
     public final void updateWithNull(@NotNull E source) {
-        Result.PARAM_MISSING.whenNull(source.getId(),
-                "修改失败, 请传入" + AirUtil.getReflectUtil().getDescription(getEntityClass()) + "ID!"
-        );
+        Result.PARAM_MISSING.whenNull(source.getId(), String.format(
+                MessageConstant.MISSING_ID_WHEN_UPDATE,
+                AirUtil.getReflectUtil().getDescription(getEntityClass())
+        ));
         source = beforeUpdate(source);
         updateToDatabase(source, true);
         E finalSource = source;
@@ -481,10 +483,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #updateWithNull(E)
      */
     protected final void updateToDatabase(@NotNull E source, boolean withNull) {
-        Result.ERROR.whenNull(source, "更新的数据不能为空");
-        Result.PARAM_MISSING.whenNull(source.getId(),
-                "修改失败, 请传入" + AirUtil.getReflectUtil().getDescription(getEntityClass()) + "ID!"
-        );
+        Result.ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
+        Result.PARAM_MISSING.whenNull(source.getId(), String.format(
+                MessageConstant.MISSING_ID_WHEN_UPDATE,
+                AirUtil.getReflectUtil().getDescription(getEntityClass())
+        ));
         saveToDatabase(source, withNull);
     }
 
@@ -495,17 +498,17 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 实体
      */
     private @NotNull E getById(long id) {
-        Result.PARAM_MISSING.whenNull(id,
-                "查询失败, 请传入" + AirUtil.getReflectUtil().getDescription(getEntityClass()) + "ID!"
-        );
+        Result.PARAM_MISSING.whenNull(id, String.format(
+                MessageConstant.MISSING_ID_WHEN_QUERY,
+                AirUtil.getReflectUtil().getDescription(getEntityClass())
+        ));
         Optional<E> optional = repository.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
-        throw new ResultException(
-                Result.DATA_NOT_FOUND.getCode(),
-                "没有查到ID为" + id + "的" + AirUtil.getReflectUtil().getDescription(getEntityClass()) + "!"
-        );
+        throw new ResultException(Result.DATA_NOT_FOUND.getCode(), String.format(
+                MessageConstant.QUERY_DATA_NOT_FOUND, id, AirUtil.getReflectUtil().getDescription(getEntityClass())
+        ));
     }
 
     /**
@@ -550,7 +553,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
             E existEntity = getById(entity.getId());
             if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
                 // 如果数据库是null 且 传入的也是null 签名给空字符串
-                entity.setRemark("");
+                entity.setRemark(Constant.EMPTY_STRING);
             }
             entity = withNull ? entity : getEntityForSave(entity, existEntity);
         }
@@ -612,7 +615,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 修改自己 不校验
                 continue;
             }
-            Result.FORBIDDEN_EXIST.show(fieldName + "(" + fieldValue + ")已经存在！");
+            Result.FORBIDDEN_EXIST.show(String.format(MessageConstant.TARGET_DATA_EXIST, fieldName, fieldValue));
         }
     }
 
@@ -624,8 +627,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     private @NotNull E getNewInstance() {
         try {
             return getEntityClass().getConstructor().newInstance();
-        } catch (Exception ignored) {
-            throw new ResultException("初始化实体失败");
+        } catch (Exception exception) {
+            throw new ResultException(exception.getMessage());
         }
     }
 
