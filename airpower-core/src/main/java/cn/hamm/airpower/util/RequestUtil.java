@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -18,6 +19,7 @@ import java.util.Objects;
  * @author Hamm.cn
  */
 @Slf4j
+@Component
 public class RequestUtil {
     public static final String MULTIPART_FORM_DATA = "multipart/form-data";
     /**
@@ -39,7 +41,7 @@ public class RequestUtil {
      * @param request 请求
      * @return 是否是上传请求
      */
-    public static boolean isUploadRequest(@NotNull HttpServletRequest request) {
+    public final boolean isUploadRequest(@NotNull HttpServletRequest request) {
         return isUploadFileContentType(request.getContentType());
     }
 
@@ -50,19 +52,8 @@ public class RequestUtil {
      * @param request 请求
      * @return 是否是上传请求
      */
-    public static boolean isUploadRequest(@NotNull ServletRequest request) {
+    public final boolean isUploadRequest(@NotNull ServletRequest request) {
         return isUploadFileContentType(request.getContentType());
-    }
-
-    /**
-     * <h2>判断是否上传文件的请求类型头</h2>
-     *
-     * @param contentType 请求类型头
-     * @return 判断结果
-     */
-    @Contract(value = "null -> false", pure = true)
-    private static boolean isUploadFileContentType(String contentType) {
-        return contentType != null && contentType.startsWith(MULTIPART_FORM_DATA);
     }
 
 
@@ -72,7 +63,7 @@ public class RequestUtil {
      * @param request 请求
      * @return IP地址
      */
-    public static String getIpAddress(HttpServletRequest request) {
+    public final String getIpAddress(HttpServletRequest request) {
         String ipAddress;
         try {
             ipAddress = request.getHeader("x-forwarded-for");
@@ -111,12 +102,23 @@ public class RequestUtil {
     }
 
     /**
+     * <h2>判断是否上传文件的请求类型头</h2>
+     *
+     * @param contentType 请求类型头
+     * @return 判断结果
+     */
+    @Contract(value = "null -> false", pure = true)
+    private boolean isUploadFileContentType(String contentType) {
+        return contentType != null && contentType.startsWith(MULTIPART_FORM_DATA);
+    }
+
+    /**
      * <h2>是否是有效的IP地址</h2>
      *
      * @param ipAddress IP地址
      * @return 判定结果
      */
-    private static boolean isValidAddress(String ipAddress) {
+    private boolean isValidAddress(String ipAddress) {
         return Objects.nonNull(ipAddress) &&
                 !ipAddress.isEmpty() &&
                 !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
@@ -128,7 +130,7 @@ public class RequestUtil {
      * @param ipAddress 原始IP地址
      * @return 处理之后的真实IP
      */
-    private static String getRealIpAddress(String ipAddress) {
+    private String getRealIpAddress(String ipAddress) {
         if (Objects.nonNull(ipAddress) &&
                 ipAddress.length() > MAX_IP_ADDRESS_CHAR_LENGTH &&
                 ipAddress.indexOf(MULTI_IP_ADDRESS_SPLITTER) > 0

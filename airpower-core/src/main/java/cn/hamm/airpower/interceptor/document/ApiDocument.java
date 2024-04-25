@@ -2,8 +2,7 @@ package cn.hamm.airpower.interceptor.document;
 
 import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.model.json.Json;
-import cn.hamm.airpower.util.DictionaryUtil;
-import cn.hamm.airpower.util.ReflectUtil;
+import cn.hamm.airpower.util.AirUtil;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import cn.hamm.airpower.validate.phone.Phone;
 import jakarta.servlet.http.HttpServletResponse;
@@ -57,11 +56,11 @@ public class ApiDocument {
     @SuppressWarnings("AlibabaMethodTooLong")
     public static void writeApiDocument(@NotNull HttpServletResponse response, Class<?> clazz, Method method) {
         ApiDocument apiDocument = new ApiDocument();
-        String className = ReflectUtil.getDescription(clazz);
-        String methodName = ReflectUtil.getDescription(method);
+        String className = AirUtil.getReflectUtil().getDescription(clazz);
+        String methodName = AirUtil.getReflectUtil().getDescription(method);
         apiDocument.setTitle(className + " " + methodName + " Api接口文档");
 
-        apiDocument.setDocument(ReflectUtil.getDocument(method));
+        apiDocument.setDocument(AirUtil.getReflectUtil().getDocument(method));
 
         apiDocument.setRequestParamList(getRequestParamList(clazz, method));
 
@@ -276,7 +275,7 @@ public class ApiDocument {
                     .getActualTypeArguments())[0]);
         }
 
-        List<Field> fields = ReflectUtil.getFieldList(paramClass);
+        List<Field> fields = AirUtil.getReflectUtil().getFieldList(paramClass);
 
         return getFieldList(fields, currentClass, action);
     }
@@ -286,16 +285,16 @@ public class ApiDocument {
     ) {
         List<ApiRequestParam> params = new ArrayList<>();
         for (Field field : fields) {
-            ReadOnly readOnly = ReflectUtil.getAnnotation(ReadOnly.class, field);
+            ReadOnly readOnly = AirUtil.getReflectUtil().getAnnotation(ReadOnly.class, field);
             if (Objects.nonNull(readOnly)) {
                 continue;
             }
             ApiRequestParam apiRequestParam = new ApiRequestParam();
             apiRequestParam.setName(field.getName());
-            apiRequestParam.setDescription(ReflectUtil.getDescription(field));
-            apiRequestParam.setDocument(ReflectUtil.getDocument(field));
+            apiRequestParam.setDescription(AirUtil.getReflectUtil().getDescription(field));
+            apiRequestParam.setDocument(AirUtil.getReflectUtil().getDocument(field));
             apiRequestParam.setType(field.getType().getSimpleName());
-            if (ReflectUtil.isModel(field.getType())) {
+            if (AirUtil.getReflectUtil().isModel(field.getType())) {
                 apiRequestParam.setLink(field.getType().getName());
             }
 
@@ -305,15 +304,15 @@ public class ApiDocument {
                         .getGenericSuperclass())
                         .getActualTypeArguments())[0];
                 apiRequestParam.setType(clazz.getSimpleName());
-                if (ReflectUtil.isModel(clazz)) {
+                if (AirUtil.getReflectUtil().isModel(clazz)) {
                     apiRequestParam.setLink(clazz.getName());
                 }
             }
 
-            jakarta.validation.constraints.NotNull notNull = ReflectUtil.getAnnotation(
+            jakarta.validation.constraints.NotNull notNull = AirUtil.getReflectUtil().getAnnotation(
                     jakarta.validation.constraints.NotNull.class, field
             );
-            NotBlank notBlank = ReflectUtil.getAnnotation(NotBlank.class, field);
+            NotBlank notBlank = AirUtil.getReflectUtil().getAnnotation(NotBlank.class, field);
 
             if (!action.equals(Void.class)) {
                 if (Objects.nonNull(notBlank) && Arrays.stream(notBlank.groups()).toList().contains(action)) {
@@ -324,19 +323,19 @@ public class ApiDocument {
                 }
             }
 
-            Dictionary dictionary = ReflectUtil.getAnnotation(Dictionary.class, field);
+            Dictionary dictionary = AirUtil.getReflectUtil().getAnnotation(Dictionary.class, field);
             if (Objects.nonNull(dictionary) && Arrays.stream(dictionary.groups()).toList().contains(action)) {
-                apiRequestParam.setDictionary(DictionaryUtil.getDictionaryList(dictionary.value()));
+                apiRequestParam.setDictionary(AirUtil.getDictionaryUtil().getDictionaryList(dictionary.value()));
             }
 
-            Phone phone = ReflectUtil.getAnnotation(Phone.class, field);
+            Phone phone = AirUtil.getReflectUtil().getAnnotation(Phone.class, field);
             if (Objects.nonNull(phone) && Arrays.stream(phone.groups()).toList().contains(action)) {
                 if (phone.mobile() || phone.tel()) {
                     apiRequestParam.setPhone(true);
                 }
             }
 
-            Email email = ReflectUtil.getAnnotation(Email.class, field);
+            Email email = AirUtil.getReflectUtil().getAnnotation(Email.class, field);
             if (Objects.nonNull(email) && Arrays.stream(email.groups()).toList().contains(action)) {
                 apiRequestParam.setEmail(true);
             }
@@ -350,15 +349,15 @@ public class ApiDocument {
         System.out.println(packageName);
         try {
             Class<?> clazz = Class.forName(packageName);
-            if (!ReflectUtil.isModel(clazz)) {
+            if (!AirUtil.getReflectUtil().isModel(clazz)) {
                 return false;
             }
-            List<ApiRequestParam> params = getFieldList(ReflectUtil.getFieldList(clazz), clazz, Void.class);
+            List<ApiRequestParam> params = getFieldList(AirUtil.getReflectUtil().getFieldList(clazz), clazz, Void.class);
 
             ApiDocument apiDocument = new ApiDocument();
-            apiDocument.setTitle(ReflectUtil.getDescription(clazz) + " " + clazz.getSimpleName());
+            apiDocument.setTitle(AirUtil.getReflectUtil().getDescription(clazz) + " " + clazz.getSimpleName());
 
-            apiDocument.setDocument(ReflectUtil.getDocument(clazz));
+            apiDocument.setDocument(AirUtil.getReflectUtil().getDocument(clazz));
 
             apiDocument.setRequestParamList(params);
 

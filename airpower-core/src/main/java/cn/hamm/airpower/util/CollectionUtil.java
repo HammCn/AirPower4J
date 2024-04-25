@@ -1,5 +1,7 @@
 package cn.hamm.airpower.util;
 
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 
 /**
@@ -7,6 +9,7 @@ import java.util.*;
  *
  * @author Hamm.cn
  */
+@Component
 public class CollectionUtil {
     /**
      * <h2>获取集合中的非null元素</h2>
@@ -16,7 +19,7 @@ public class CollectionUtil {
      * @param <T>        数据类型
      * @return 处理后的集合
      */
-    public static <T> Collection<T> getCollectWithoutNull(Collection<T> list, Class<?> fieldClass) {
+    public final <T> Collection<T> getCollectWithoutNull(Collection<T> list, Class<?> fieldClass) {
         if (Set.class.equals(fieldClass)) {
             return Objects.isNull(list) ? new HashSet<>() : list;
         }

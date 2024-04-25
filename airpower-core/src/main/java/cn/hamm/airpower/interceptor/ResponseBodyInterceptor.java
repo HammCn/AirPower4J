@@ -1,11 +1,10 @@
 package cn.hamm.airpower.interceptor;
 
-import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.model.json.JsonData;
+import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.root.RootModel;
-import cn.hamm.airpower.util.CollectionUtil;
-import cn.hamm.airpower.util.ReflectUtil;
+import cn.hamm.airpower.util.AirUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +69,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             return result;
         }
 
-        Filter filter = ReflectUtil.getAnnotation(Filter.class, method);
+        Filter filter = AirUtil.getReflectUtil().getAnnotation(Filter.class, method);
         if (Objects.isNull(filter)) {
             return result;
         }
@@ -88,12 +87,12 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
 
         Class<?> dataCls = jsonData.getData().getClass();
         if (jsonData.getData() instanceof Collection) {
-            Collection<M> collection = CollectionUtil.getCollectWithoutNull(
+            Collection<M> collection = AirUtil.getCollectionUtil().getCollectWithoutNull(
                     (Collection<M>) jsonData.getData(), dataCls
             );
             return jsonData.setData(filterResponseListBy(filter, collection.stream().toList()));
         }
-        if (ReflectUtil.isModel(dataCls)) {
+        if (AirUtil.getReflectUtil().isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
             return jsonData.setData(filterResponseBy(filter, (M) jsonData.getData()));

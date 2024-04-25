@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * <h1>邮件助手类</h1>
  *
  * @author Hamm.cn
  */
-@Service
+@Component
 public class EmailUtil {
     @Autowired(required = false)
     private JavaMailSender javaMailSender;

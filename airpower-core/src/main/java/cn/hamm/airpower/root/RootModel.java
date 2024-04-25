@@ -3,11 +3,10 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Expose;
 import cn.hamm.airpower.annotation.Payload;
-import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
-import cn.hamm.airpower.util.CollectionUtil;
-import cn.hamm.airpower.util.ReflectUtil;
+import cn.hamm.airpower.interfaces.IAction;
+import cn.hamm.airpower.util.AirUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      */
     public final M filterResponseDataBy(@NotNull Class<?> filter) {
         Class<M> clazz = (Class<M>) this.getClass();
-        List<Field> allFields = ReflectUtil.getFieldList(clazz);
+        List<Field> allFields = AirUtil.getReflectUtil().getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
         // 类中没有标排除 则所有字段全暴露 走黑名单
         BiConsumer<Class<?>, Field> task = Objects.nonNull(exclude) ? this::exposeBy : this::excludeBy;
@@ -70,7 +69,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param field  字段
      */
     private void excludeBy(@NotNull Class<?> filter, @NotNull Field field) {
-        Exclude fieldExclude = ReflectUtil.getAnnotation(Exclude.class, field);
+        Exclude fieldExclude = AirUtil.getReflectUtil().getAnnotation(Exclude.class, field);
         if (Objects.isNull(fieldExclude)) {
             filterFieldPayload(field);
             return;
@@ -82,7 +81,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             isNeedClear = Arrays.asList(excludeClasses).contains(filter);
         }
         if (isNeedClear) {
-            ReflectUtil.clearFieldValue(this, field);
+            AirUtil.getReflectUtil().clearFieldValue(this, field);
         }
         //如果是挂载数据
         filterFieldPayload(field);
@@ -95,10 +94,10 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param field  字段
      */
     private void exposeBy(@NotNull Class<?> filter, @NotNull Field field) {
-        Expose fieldExpose = ReflectUtil.getAnnotation(Expose.class, field);
+        Expose fieldExpose = AirUtil.getReflectUtil().getAnnotation(Expose.class, field);
         if (Objects.isNull(fieldExpose)) {
             // 没有标记 则直接移除掉
-            ReflectUtil.clearFieldValue(this, field);
+            AirUtil.getReflectUtil().clearFieldValue(this, field);
             filterFieldPayload(field);
             return;
         }
@@ -108,7 +107,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             // 标记了暴露
             boolean isExpose = Arrays.asList(exposeClasses).contains(filter);
             if (!isExpose) {
-                ReflectUtil.clearFieldValue(this, field);
+                AirUtil.getReflectUtil().clearFieldValue(this, field);
             }
         }
         filterFieldPayload(field);
@@ -120,21 +119,21 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param field 字段
      */
     private void filterFieldPayload(@NotNull Field field) {
-        Payload payload = ReflectUtil.getAnnotation(Payload.class, field);
+        Payload payload = AirUtil.getReflectUtil().getAnnotation(Payload.class, field);
         if (Objects.isNull(payload)) {
             return;
         }
-        Object fieldValue = ReflectUtil.getFieldValue(this, field);
+        Object fieldValue = AirUtil.getReflectUtil().getFieldValue(this, field);
         Collection<RootModel<?>> collection;
         if (fieldValue instanceof Collection<?>) {
             Class<?> fieldClass = field.getType();
-            collection = CollectionUtil.getCollectWithoutNull((Collection<RootModel<?>>) fieldValue, fieldClass);
+            collection = AirUtil.getCollectionUtil().getCollectWithoutNull((Collection<RootModel<?>>) fieldValue, fieldClass);
             collection.forEach(item -> item.filterResponseDataBy(WhenPayLoad.class));
-            ReflectUtil.setFieldValue(this, field, collection);
+            AirUtil.getReflectUtil().setFieldValue(this, field, collection);
             return;
         }
         if (Objects.nonNull(fieldValue)) {
-            ReflectUtil.setFieldValue(this, field,
+            AirUtil.getReflectUtil().setFieldValue(this, field,
                     ((RootModel<?>) fieldValue).filterResponseDataBy(WhenPayLoad.class)
             );
         }

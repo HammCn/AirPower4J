@@ -4,6 +4,7 @@ import cn.hamm.airpower.interfaces.IDictionary;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -18,6 +19,7 @@ import java.util.Map;
  * @author Hamm.cn
  */
 @Slf4j
+@Component
 public class DictionaryUtil {
     /**
      * <h2>查询指定key的枚举字典项目</h2>
@@ -28,7 +30,7 @@ public class DictionaryUtil {
      * @return 指定的枚举字典项目
      */
 
-    public static <D extends IDictionary> @Nullable D getDictionaryByKey(Class<D> enumClass, int key) {
+    public final <D extends IDictionary> @Nullable D getDictionaryByKey(Class<D> enumClass, int key) {
         try {
             Method getKey = enumClass.getMethod("getKey");
             // 取出所有枚举类型
@@ -52,7 +54,7 @@ public class DictionaryUtil {
      * @param clazz 枚举类
      * @return 返回结果
      */
-    public static <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(Class<D> clazz) {
+    public final <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(Class<D> clazz) {
         return getDictionaryList(clazz, "key", "label");
     }
 
@@ -64,7 +66,7 @@ public class DictionaryUtil {
      * @param params 参数列表
      * @return 返回结果
      */
-    public static <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(
+    public final <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(
             @NotNull Class<D> clazz, String... params
     ) {
         List<Map<String, String>> mapList = new ArrayList<>();

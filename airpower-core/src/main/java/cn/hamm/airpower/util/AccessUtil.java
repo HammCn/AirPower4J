@@ -3,6 +3,7 @@ package cn.hamm.airpower.util;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.model.Access;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -13,6 +14,7 @@ import java.util.Objects;
  *
  * @author Hamm.cn
  */
+@Component
 public class AccessUtil {
     /**
      * <h2>获取需要被授权的类型</h2>
@@ -21,7 +23,7 @@ public class AccessUtil {
      * @param method 方法
      * @return 需要授权的选项
      */
-    public static @NotNull Access getWhatNeedAccess(@NotNull Class<?> clazz, Method method) {
+    public final @NotNull Access getWhatNeedAccess(@NotNull Class<?> clazz, Method method) {
         //默认无标记时，不需要登录和授权
         Access access = new Access();
 
@@ -51,7 +53,7 @@ public class AccessUtil {
      * @param method 方法
      * @return 权限标识
      */
-    public static @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
+    public final @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
         return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll("Controller", "")) +
                 "_" +
                 method.getName();

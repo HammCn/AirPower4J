@@ -1,7 +1,7 @@
 package cn.hamm.airpower.validate.dictionary;
 
 import cn.hamm.airpower.interfaces.IDictionary;
-import cn.hamm.airpower.util.DictionaryUtil;
+import cn.hamm.airpower.util.AirUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.Contract;
@@ -23,7 +23,7 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
         if (null == value) {
             return true;
         }
-        return Objects.nonNull(DictionaryUtil.getDictionaryByKey(enumClazz, value));
+        return Objects.nonNull(AirUtil.getDictionaryUtil().getDictionaryByKey(enumClazz, value));
     }
 
     @Contract(mutates = "this")

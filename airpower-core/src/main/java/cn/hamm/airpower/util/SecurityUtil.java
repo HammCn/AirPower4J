@@ -46,7 +46,7 @@ public class SecurityUtil {
      * @return AccessToken
      */
     public final String createAccessToken(Long userId) {
-        String accessToken = RandomUtil.randomString();
+        String accessToken = AirUtil.getRandomUtil().randomString();
         try {
             getUserIdFromAccessToken(accessToken);
             return createAccessToken(userId);

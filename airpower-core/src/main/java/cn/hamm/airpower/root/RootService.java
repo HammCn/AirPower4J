@@ -4,17 +4,17 @@ import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.GlobalConfig;
+import cn.hamm.airpower.enums.Result;
+import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
-import cn.hamm.airpower.enums.Result;
-import cn.hamm.airpower.exception.ResultException;
-import cn.hamm.airpower.util.SecurityUtil;
-import cn.hamm.airpower.util.ReflectUtil;
+import cn.hamm.airpower.util.AirUtil;
 import cn.hamm.airpower.util.RedisUtil;
+import cn.hamm.airpower.util.SecurityUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
@@ -147,7 +147,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     public final void updateWithNull(@NotNull E source) {
         Result.PARAM_MISSING.whenNull(source.getId(),
-                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
+                "修改失败, 请传入" + AirUtil.getReflectUtil().getDescription(getEntityClass()) + "ID!"
         );
         source = beforeUpdate(source);
         updateToDatabase(source, true);
@@ -466,9 +466,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     @Contract("_ -> param1")
     protected final @NotNull E ignoreReadOnlyFields(@NotNull E entity) {
-        ReflectUtil.getFieldList(getEntityClass()).stream()
-                .filter(field -> Objects.nonNull(ReflectUtil.getAnnotation(ReadOnly.class, field)))
-                .forEach(field -> ReflectUtil.clearFieldValue(entity, field));
+        AirUtil.getReflectUtil().getFieldList(getEntityClass()).stream()
+                .filter(field -> Objects.nonNull(AirUtil.getReflectUtil().getAnnotation(ReadOnly.class, field)))
+                .forEach(field -> AirUtil.getReflectUtil().clearFieldValue(entity, field));
         return entity;
     }
 
@@ -496,7 +496,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     protected final void updateToDatabase(@NotNull E source, boolean withNull) {
         Result.ERROR.whenNull(source, "更新的数据不能为空");
         Result.PARAM_MISSING.whenNull(source.getId(),
-                "修改失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
+                "修改失败, 请传入" + AirUtil.getReflectUtil().getDescription(getEntityClass()) + "ID!"
         );
         saveToDatabase(source, withNull);
     }
@@ -509,7 +509,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     private @NotNull E getById(long id) {
         Result.PARAM_MISSING.whenNull(id,
-                "查询失败, 请传入" + ReflectUtil.getDescription(getEntityClass()) + "ID!"
+                "查询失败, 请传入" + AirUtil.getReflectUtil().getDescription(getEntityClass()) + "ID!"
         );
         Optional<E> optional = repository.findById(id);
         if (optional.isPresent()) {
@@ -517,7 +517,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         }
         throw new ResultException(
                 Result.DATA_NOT_FOUND.getCode(),
-                "没有查到ID为" + id + "的" + ReflectUtil.getDescription(getEntityClass()) + "!"
+                "没有查到ID为" + id + "的" + AirUtil.getReflectUtil().getDescription(getEntityClass()) + "!"
         );
     }
 
@@ -596,10 +596,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param entity 实体
      */
     private void checkUnique(@NotNull E entity) {
-        List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
+        List<Field> fields = AirUtil.getReflectUtil().getFieldList(getEntityClass());
         for (Field field : fields) {
-            String fieldName = ReflectUtil.getDescription(field);
-            Column annotation = ReflectUtil.getAnnotation(Column.class, field);
+            String fieldName = AirUtil.getReflectUtil().getDescription(field);
+            Column annotation = AirUtil.getReflectUtil().getAnnotation(Column.class, field);
             if (Objects.isNull(annotation)) {
                 // 不是数据库列 不校验
                 continue;
@@ -608,13 +608,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 没有标唯一 不校验
                 continue;
             }
-            Object fieldValue = ReflectUtil.getFieldValue(entity, field);
+            Object fieldValue = AirUtil.getReflectUtil().getFieldValue(entity, field);
             if (Objects.isNull(fieldValue)) {
                 // 没有值 不校验
                 continue;
             }
             E search = getNewInstance();
-            ReflectUtil.setFieldValue(search, field, fieldValue);
+            AirUtil.getReflectUtil().setFieldValue(search, field, fieldValue);
             Example<E> example = Example.of(search);
             Optional<E> exist = repository.findOne(example);
             if (exist.isEmpty()) {
@@ -738,9 +738,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();
-        List<Field> fields = ReflectUtil.getFieldList(search.getClass());
+        List<Field> fields = AirUtil.getReflectUtil().getFieldList(search.getClass());
         for (Field field : fields) {
-            Object fieldValue = ReflectUtil.getFieldValue(search, field);
+            Object fieldValue = AirUtil.getReflectUtil().getFieldValue(search, field);
             if (Objects.isNull(fieldValue)) {
                 // 没有传入查询值 跳过
                 continue;
@@ -749,7 +749,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 空字符串 跳过
                 continue;
             }
-            Search searchMode = ReflectUtil.getAnnotation(Search.class, field);
+            Search searchMode = AirUtil.getReflectUtil().getAnnotation(Search.class, field);
             if (Objects.isNull(searchMode)) {
                 // 没有配置查询注解 跳过
                 continue;

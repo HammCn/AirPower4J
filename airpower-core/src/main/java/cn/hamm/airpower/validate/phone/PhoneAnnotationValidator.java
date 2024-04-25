@@ -1,6 +1,6 @@
 package cn.hamm.airpower.validate.phone;
 
-import cn.hamm.airpower.util.ValidateUtil;
+import cn.hamm.airpower.util.AirUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.NotNull;
@@ -34,14 +34,14 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
         }
         if (!mobile) {
             // 只允许座机
-            return ValidateUtil.isTelPhone(value);
+            return AirUtil.getValidateUtil().isTelPhone(value);
         }
         if (!tel) {
             // 只允许手机
-            return ValidateUtil.isMobilePhone(value);
+            return AirUtil.getValidateUtil().isMobilePhone(value);
         }
         // 手机座机均可
-        return ValidateUtil.isMobilePhone(value) || ValidateUtil.isTelPhone(value);
+        return AirUtil.getValidateUtil().isMobilePhone(value) || AirUtil.getValidateUtil().isTelPhone(value);
     }
 
     @Override

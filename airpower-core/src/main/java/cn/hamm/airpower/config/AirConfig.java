@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * <h1>AirPower提供的配置项</h1>
+ * <h1>🇨🇳AirPower配置类</h1>
+ * <hr/>
+ * <h3>🔥按 <code>A</code>、<code>I</code>、<code>R</code> 打开新大陆🔥</h3>
+ * <hr/>
  *
- * @author Hamm.cn
+ * @author 🌏Hamm.cn
  */
 @Component
-public class Configs {
+public class AirConfig {
     /**
      * <h2>全局Cookie配置</h2>
      */
@@ -30,13 +33,13 @@ public class Configs {
     private static MqttConfig mqttConfig;
 
     @Autowired
-    Configs(
+    AirConfig(
             CookieConfig cookieConfig,
             GlobalConfig globalConfig,
             MqttConfig mqttConfig
     ) {
-        Configs.cookieConfig = cookieConfig;
-        Configs.globalConfig = globalConfig;
-        Configs.mqttConfig = mqttConfig;
+        AirConfig.cookieConfig = cookieConfig;
+        AirConfig.globalConfig = globalConfig;
+        AirConfig.mqttConfig = mqttConfig;
     }
 }

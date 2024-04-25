@@ -1,6 +1,7 @@
 package cn.hamm.airpower.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.Random;
@@ -11,6 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Hamm.cn
  */
+@Component
 public class RandomUtil {
     /**
      * <h2>数字</h2>
@@ -38,7 +40,7 @@ public class RandomUtil {
      *
      * @return 随机字符串
      */
-    public static @NotNull String randomString() {
+    public final @NotNull String randomString() {
         return randomString(32);
     }
 
@@ -48,7 +50,7 @@ public class RandomUtil {
      * @param length 字符串的长度
      * @return 随机字符串
      */
-    public static @NotNull String randomString(final int length) {
+    public final @NotNull String randomString(final int length) {
         return randomString(BASE_CHAR_NUMBER, length);
     }
 
@@ -58,7 +60,7 @@ public class RandomUtil {
      * @param length 字符串的长度
      * @return 随机字符串
      */
-    public static @NotNull String randomNumbers(final int length) {
+    public final @NotNull String randomNumbers(final int length) {
         return randomString(BASE_NUMBER, length);
     }
 
@@ -69,7 +71,7 @@ public class RandomUtil {
      * @param length     字符串的长度
      * @return 随机字符串
      */
-    public static @NotNull String randomString(final String baseString, int length) {
+    public final @NotNull String randomString(final String baseString, int length) {
         if (!StringUtils.hasText(baseString)) {
             return "";
         }
@@ -92,7 +94,7 @@ public class RandomUtil {
      * @return 随机数
      * @see Random#nextInt()
      */
-    public static int randomInt() {
+    public final int randomInt() {
         return getRandom().nextInt();
     }
 
@@ -102,7 +104,7 @@ public class RandomUtil {
      * @param exclude 排除的数字
      * @return 随机数
      */
-    public static int randomInt(final int exclude) {
+    public final int randomInt(final int exclude) {
         return getRandom().nextInt(exclude);
     }
 
@@ -113,7 +115,7 @@ public class RandomUtil {
      * @param maxExclude 最大数（不包含）
      * @return 随机数
      */
-    public static int randomInt(final int minInclude, final int maxExclude) {
+    public final int randomInt(final int minInclude, final int maxExclude) {
         return randomInt(minInclude, maxExclude, true, false);
     }
 
@@ -126,7 +128,7 @@ public class RandomUtil {
      * @param includeMax 是否包含最大值
      * @return 随机数
      */
-    public static int randomInt(int min, int max, final boolean includeMin, final boolean includeMax) {
+    public final int randomInt(int min, int max, final boolean includeMin, final boolean includeMax) {
         if (!includeMin) {
             min++;
         }
@@ -137,7 +139,7 @@ public class RandomUtil {
     }
 
 
-    private static ThreadLocalRandom getRandom() {
+    private ThreadLocalRandom getRandom() {
         return ThreadLocalRandom.current();
     }
 }

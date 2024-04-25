@@ -2,12 +2,9 @@ package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.GlobalConfig;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
-import cn.hamm.airpower.util.RequestUtil;
+import cn.hamm.airpower.util.*;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.model.Access;
-import cn.hamm.airpower.util.AccessUtil;
-import cn.hamm.airpower.util.SecurityUtil;
-import cn.hamm.airpower.util.ReflectUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +61,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
 
         if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) && globalConfig.isEnableDocument()) {
             // 如果是GET 方法，并且开启了文档
-            GetMapping getMapping = ReflectUtil.getAnnotation(GetMapping.class, method);
+            GetMapping getMapping = AirUtil.getReflectUtil().getAnnotation(GetMapping.class, method);
             if (Objects.isNull(getMapping)) {
                 // 如果没有GetMapping注解，则直接返回文档
                 ApiDocument.writeApiDocument(response, clazz, method);
@@ -73,7 +70,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         }
 
         beforeHandleRequest(request, response, clazz, method);
-        Access access = AccessUtil.getWhatNeedAccess(clazz, method);
+        Access access = AirUtil.getAccessUtil().getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
             return true;
@@ -91,7 +88,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
-            return checkPermissionAccess(userId, AccessUtil.getPermissionIdentity(clazz, method), request);
+            return checkPermissionAccess(userId, AirUtil.getAccessUtil().getPermissionIdentity(clazz, method), request);
         }
         return true;
     }
@@ -144,7 +141,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     protected final @NotNull String getRequestBody(HttpServletRequest request) {
         // 文件上传的请求 返回空
-        if (RequestUtil.isUploadRequest(request)) {
+        if (AirUtil.getRequestUtil().isUploadRequest(request)) {
             return "";
         }
         try {
