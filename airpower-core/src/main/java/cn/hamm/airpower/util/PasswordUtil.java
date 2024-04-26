@@ -21,7 +21,7 @@ public class PasswordUtil {
      * @param salt     盐
      * @return sha1散列摘要
      */
-    public @NotNull String encode(String password, String salt) {
+    public @NotNull String encode(@NotNull String password, @NotNull String salt) {
         Result.PARAM_MISSING.whenEmpty(password, MessageConstant.PASSWORD_CAN_NOT_BE_NULL);
         Result.PARAM_MISSING.whenEmpty(salt, MessageConstant.PASSWORD_SALT_CAN_NOT_BE_NULL);
         return DigestUtils.sha1Hex(

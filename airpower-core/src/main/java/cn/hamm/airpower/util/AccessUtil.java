@@ -24,7 +24,7 @@ public class AccessUtil {
      * @param method 方法
      * @return 需要授权的选项
      */
-    public final @NotNull Access getWhatNeedAccess(@NotNull Class<?> clazz, Method method) {
+    public final @NotNull Access getWhatNeedAccess(@NotNull Class<?> clazz, @NotNull Method method) {
         //默认无标记时，不需要登录和授权
         Access access = new Access();
 

@@ -31,7 +31,7 @@ public class DictionaryUtil {
      * @return 指定的枚举字典项目
      */
 
-    public final <D extends IDictionary> @Nullable D getDictionaryByKey(Class<D> enumClass, int key) {
+    public final <D extends IDictionary> @Nullable D getDictionaryByKey(@NotNull Class<D> enumClass, int key) {
         try {
             Method getKey = enumClass.getMethod("getKey");
             // 取出所有枚举类型
@@ -55,7 +55,7 @@ public class DictionaryUtil {
      * @param clazz 枚举类
      * @return 返回结果
      */
-    public final <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(Class<D> clazz) {
+    public final <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(@NotNull Class<D> clazz) {
         return getDictionaryList(clazz, "key", "label");
     }
 

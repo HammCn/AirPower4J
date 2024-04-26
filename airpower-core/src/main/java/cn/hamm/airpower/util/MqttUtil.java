@@ -25,7 +25,7 @@ public class MqttUtil {
      * @return 配置
      * @throws MqttException 异常
      */
-    public MqttClient createClient() throws MqttException {
+    public @NotNull MqttClient createClient() throws MqttException {
         return createClient(UUID.randomUUID().toString());
     }
 
@@ -36,7 +36,7 @@ public class MqttUtil {
      * @return 配置
      * @throws MqttException 异常
      */
-    public MqttClient createClient(String id) throws MqttException {
+    public @NotNull MqttClient createClient(String id) throws MqttException {
         return new MqttClient(
                 "tcp://" + AirConfig.getMqttConfig().getHost() + ":" + AirConfig.getMqttConfig().getPort(),
                 id,
@@ -66,7 +66,7 @@ public class MqttUtil {
      * @param topic   主题
      * @param message 消息内容
      */
-    public void publish(String topic, @NotNull String message) throws MqttException {
+    public void publish(@NotNull String topic, @NotNull String message) throws MqttException {
         MqttClient client = createClient();
         client.connect(createOption());
         MqttMessage mqttMessage = new MqttMessage();

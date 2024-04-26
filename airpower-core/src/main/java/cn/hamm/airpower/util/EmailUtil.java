@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -32,7 +33,11 @@ public class EmailUtil {
      * @param code  验证码
      * @param sign  签名
      */
-    public final void sendCode(String email, String title, String code, String sign) throws MessagingException {
+    public final void sendCode(@NotNull String email,
+                               @NotNull String title,
+                               @NotNull String code,
+                               @NotNull String sign
+    ) throws MessagingException {
         String content = """
                 <div style='border-radius:20px;padding: 20px;background-color:#f5f5f5;color:#333;display:inline-block;'>
                 <div style='font-size:24px;font-weight:bold;color:orangered;'>
@@ -55,7 +60,7 @@ public class EmailUtil {
      * @param title   标题
      * @param content 内容
      */
-    public final void sendEmail(String email, String title, String content) throws MessagingException {
+    public final void sendEmail(@NotNull String email, @NotNull String title, @NotNull String content) throws MessagingException {
         Result.EMAIL_ERROR.whenNull(javaMailSender, MessageConstant.MAIL_SERVER_CONFIG_MISSING);
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
