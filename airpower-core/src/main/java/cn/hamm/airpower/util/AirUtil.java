@@ -136,6 +136,12 @@ public class AirUtil {
     @Getter
     private static HttpServletResponse response;
 
+    /**
+     * <h2>数字工具</h2>
+     */
+    @Getter
+    private static NumberUtil numberUtil;
+
     @Autowired
     AirUtil(
             RedisUtil redisUtil,
@@ -157,7 +163,8 @@ public class AirUtil {
             Environment environment,
             EntityManager entityManager,
             HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse
+            HttpServletResponse httpServletResponse,
+            NumberUtil numberUtil
     ) {
         AirUtil.redisUtil = redisUtil;
         AirUtil.emailUtil = emailUtil;
@@ -179,6 +186,7 @@ public class AirUtil {
         AirUtil.entityManager = entityManager;
         AirUtil.request = httpServletRequest;
         AirUtil.response = httpServletResponse;
+        AirUtil.numberUtil = numberUtil;
     }
 
     /**
