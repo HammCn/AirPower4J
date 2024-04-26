@@ -11,9 +11,7 @@ import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.json.Json;
 import cn.hamm.airpower.model.json.JsonData;
 import cn.hamm.airpower.util.AirUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,13 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(Constant.EMPTY_STRING)
 @Slf4j
 public class RootController implements IAction, ITry {
-
-    /**
-     * <h2>当前请求的实例</h2>
-     */
-    @Autowired
-    protected HttpServletRequest request;
-
     /**
      * <h2>响应一个JSON</h2>
      *
@@ -76,7 +67,7 @@ public class RootController implements IAction, ITry {
      */
     protected final long getCurrentUserId() {
         try {
-            String accessToken = request.getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader());
+            String accessToken = AirUtil.getRequest().getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader());
             return AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             log.error(MessageConstant.FAILED_TO_LOAD_CURRENT_USER_INFO, exception);

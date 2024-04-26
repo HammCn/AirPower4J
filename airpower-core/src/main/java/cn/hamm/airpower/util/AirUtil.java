@@ -1,6 +1,8 @@
 package cn.hamm.airpower.util;
 
 import jakarta.persistence.EntityManager;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -124,6 +126,19 @@ public class AirUtil {
     @Getter
     private static EntityManager entityManager;
 
+    /**
+     * <h2>当前的请求对象</h2>
+     */
+    @Getter
+    private static HttpServletRequest request;
+
+
+    /**
+     * <h2>当前的响应对象</h2>
+     */
+    @Getter
+    private static HttpServletResponse response;
+
     @Autowired
     AirUtil(
             RedisUtil redisUtil,
@@ -143,7 +158,9 @@ public class AirUtil {
             RequestUtil requestUtil,
             ValidateUtil validateUtil,
             Environment environment,
-            EntityManager entityManager
+            EntityManager entityManager,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse
     ) {
         AirUtil.redisUtil = redisUtil;
         AirUtil.emailUtil = emailUtil;
@@ -163,6 +180,8 @@ public class AirUtil {
         AirUtil.validateUtil = validateUtil;
         AirUtil.environment = environment;
         AirUtil.entityManager = entityManager;
+        AirUtil.request = httpServletRequest;
+        AirUtil.response = httpServletResponse;
     }
 
     /**
