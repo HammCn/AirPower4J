@@ -97,4 +97,34 @@ public class Constant {
      * <h2>空字符串</h2>
      */
     public static final String EMPTY_STRING = "";
+
+    /**
+     * <h2>Double 0</h2>
+     */
+    public static final double ZERO_DOUBLE = 0D;
+
+    /**
+     * <h2>Long 0</h2>
+     */
+    public static final long ZERO_LONG = 0L;
+
+    /**
+     * <h1>0</h1>
+     */
+    public static final int ZERO = 0;
+
+    /**
+     * <h2>下划线</h2>
+     */
+    public final static String UNDERLINE = "_";
+
+    /**
+     * <h2>横线</h2>
+     */
+    public final static String LINE = "-";
+
+    /**
+     * <h2>点</h2>
+     */
+    public final static String DOT = ".";
 }
