@@ -157,10 +157,9 @@ public class NumberUtil {
      * @param first  被除数
      * @param second 除数
      * @param values 更多除数
-     * @param <T>    泛型
      * @return 商
      */
-    private <T> BigDecimal div(BigDecimal first, BigDecimal second, BigDecimal[] values) {
+    private BigDecimal div(BigDecimal first, BigDecimal second, BigDecimal[] values) {
         try {
             BigDecimal result = first.divide(second, DEFAULT_SCALE, DEFAULT_ROUNDING_MODE);
             if (Objects.nonNull(values)) {
