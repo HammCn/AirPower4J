@@ -20,12 +20,12 @@ public class MqttConfig {
     /**
      * <h2>用户</h2>
      */
-    private String user = "";
+    private String user = Constant.EMPTY_STRING;
 
     /**
      * <h2>密码</h2>
      */
-    private String pass = "";
+    private String pass = Constant.EMPTY_STRING;
 
     /**
      * <h2>地址</h2>

@@ -1,6 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.annotation.Permission;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.model.Access;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -54,7 +55,7 @@ public class AccessUtil {
      * @return 权限标识
      */
     public final @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
-        return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll("Controller", "")) +
+        return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll("Controller", Constant.EMPTY_STRING)) +
                 "_" +
                 method.getName();
     }

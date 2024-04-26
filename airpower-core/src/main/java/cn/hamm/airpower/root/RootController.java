@@ -2,6 +2,7 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Permission(login = false)
 @RestController
-@RequestMapping("")
+@RequestMapping(Constant.EMPTY_STRING)
 @Slf4j
 public class RootController implements IAction, ITry {
 

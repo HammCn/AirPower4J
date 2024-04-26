@@ -137,7 +137,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     protected final @NotNull String getRequestBody(HttpServletRequest request) {
         // 文件上传的请求 返回空
         if (AirUtil.getRequestUtil().isUploadRequest(request)) {
-            return "";
+            return Constant.EMPTY_STRING;
         }
         try {
             StringBuilder requestBody = new StringBuilder();

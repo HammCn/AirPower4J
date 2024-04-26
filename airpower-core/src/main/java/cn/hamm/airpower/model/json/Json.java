@@ -1,5 +1,6 @@
 package cn.hamm.airpower.model.json;
 
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
@@ -105,7 +106,7 @@ public class Json implements IResult {
             return getObjectMapper().writeValueAsString(object);
         } catch (JsonProcessingException exception) {
             log.error(MessageConstant.EXCEPTION_WHEN_JSON_TO_STRING, exception);
-            return "";
+            return Constant.EMPTY_STRING;
         }
     }
 

@@ -1,5 +1,6 @@
 package cn.hamm.airpower.interfaces;
 
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ResultException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -260,7 +261,7 @@ public interface IResult {
      * @param message 返回信息
      */
     default void whenEmpty(Object obj, String message) {
-        when(Objects.isNull(obj) || "".equalsIgnoreCase(obj.toString()), message);
+        when(Objects.isNull(obj) || Constant.EMPTY_STRING.equalsIgnoreCase(obj.toString()), message);
     }
 
     /**

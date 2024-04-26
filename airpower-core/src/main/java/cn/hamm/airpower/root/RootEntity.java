@@ -1,6 +1,7 @@
 package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.*;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.interfaces.IEntity;
 import cn.hamm.airpower.interfaces.IEntityAction;
@@ -30,7 +31,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @DynamicInsert
 @DynamicUpdate
-@Description("")
+@Description(Constant.EMPTY_STRING)
 @SuppressWarnings("unchecked")
 public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
         implements Serializable, IEntity<E>, IEntityAction {
