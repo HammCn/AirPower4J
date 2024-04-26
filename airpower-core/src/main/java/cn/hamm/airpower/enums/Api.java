@@ -17,42 +17,42 @@ public enum Api implements IDictionary {
     /**
      * <h2>添加</h2>
      */
-    Add(1, "add"),
+    Add(1, "添加"),
 
     /**
      * <h2>删除</h2>
      */
-    Delete(2, "delete"),
+    Delete(2, "删除"),
 
     /**
      * <h2>禁用</h2>
      */
-    Disable(3, "disable"),
+    Disable(3, "禁用"),
 
     /**
      * <h2>启用</h2>
      */
-    Enable(4, "enable"),
+    Enable(4, "启用"),
 
     /**
      * <h2>查询详情</h2>
      */
-    GetDetail(5, "getDetail"),
+    GetDetail(5, "查询详情"),
 
     /**
      * <h2>列表查询</h2>
      */
-    GetList(6, "getList"),
+    GetList(6, "列表查询"),
 
     /**
      * <h2>分页查询</h2>
      */
-    GetPage(7, "getPage"),
+    GetPage(7, "分页查询"),
 
     /**
      * <h2>修改</h2>
      */
-    Update(8, "update");
+    Update(8, "修改");
 
     private final int key;
     private final String label;
