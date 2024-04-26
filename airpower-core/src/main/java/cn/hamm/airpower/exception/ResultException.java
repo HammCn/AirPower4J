@@ -52,6 +52,17 @@ public class ResultException extends RuntimeException implements IResult {
     /**
      * <h2>直接抛出一个异常</h2>
      *
+     * @param error   异常
+     * @param message 错误信息
+     */
+    public ResultException(@NotNull Result error, String message) {
+        this.setCode(error.getCode())
+                .setMessage(message);
+    }
+
+    /**
+     * <h2>直接抛出一个异常</h2>
+     *
      * @param code    错误代码
      * @param message 错误信息
      */
