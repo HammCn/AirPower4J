@@ -69,4 +69,13 @@ public class ResultException extends RuntimeException implements IResult {
     public ResultException(int code, String message) {
         this.setCode(code).setMessage(message);
     }
+
+    /**
+     * <h2>直接抛出一个异常</h2>
+     *
+     * @param exception 异常
+     */
+    public ResultException(Exception exception) {
+        this.setCode(Result.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
+    }
 }

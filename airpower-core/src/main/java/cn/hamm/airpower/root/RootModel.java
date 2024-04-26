@@ -4,7 +4,6 @@ import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Expose;
 import cn.hamm.airpower.annotation.Payload;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.util.AirUtil;
@@ -44,7 +43,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return target;
         } catch (Exception exception) {
             log.error(MessageConstant.EXCEPTION_WHEN_CREATE_INSTANCE, exception);
-            throw new ResultException(Result.ERROR, exception.getMessage());
+            throw new ResultException(exception);
         }
     }
 
