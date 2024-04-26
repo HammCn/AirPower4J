@@ -145,10 +145,10 @@ public class NumberUtil {
      * @param values 更多除数
      * @return 商
      */
-    public final long div(long first, long second, long... values) {
+    public final double div(long first, long second, long... values) {
         return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second),
                 Arrays.stream(values).mapToObj(BigDecimal::valueOf).toArray(BigDecimal[]::new)
-        ).longValue();
+        ).doubleValue();
     }
 
     /**
