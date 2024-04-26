@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * <h1>🇨🇳AirPower配置类</h1>
- * <hr/>
- * <h3>🔥按 <code>A</code>、<code>I</code>、<code>R</code> 打开新大陆🔥</h3>
- * <hr/>
+ * <h1>AirPower配置</h1>
  *
  * @author Hamm.cn
  */

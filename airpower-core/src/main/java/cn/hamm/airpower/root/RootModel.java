@@ -3,7 +3,6 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Expose;
 import cn.hamm.airpower.annotation.Payload;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.util.AirUtil;
@@ -42,7 +41,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             BeanUtils.copyProperties(this, target);
             return target;
         } catch (Exception exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_CREATE_INSTANCE, exception);
+            log.error(exception.getMessage(), exception);
             throw new ResultException(exception);
         }
     }

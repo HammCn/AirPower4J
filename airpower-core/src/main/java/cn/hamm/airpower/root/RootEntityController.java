@@ -398,7 +398,7 @@ public class RootEntityController<
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (Exception exception) {
-            throw new ResultException(MessageConstant.EXCEPTION_WHEN_CREATE_INSTANCE);
+            throw new ResultException(exception.getMessage());
         }
     }
 

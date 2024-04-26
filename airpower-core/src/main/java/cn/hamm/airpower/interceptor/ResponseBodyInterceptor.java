@@ -1,7 +1,6 @@
 package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.annotation.Filter;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.model.json.JsonData;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.root.RootModel;
@@ -153,7 +152,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
         try {
             list.forEach(item -> filterResponseBy(filter, item));
         } catch (Exception exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_FILTER_DATA, exception);
+            log.error(exception.getMessage(), exception);
         }
         return list;
     }

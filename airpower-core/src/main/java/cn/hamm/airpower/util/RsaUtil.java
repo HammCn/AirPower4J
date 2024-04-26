@@ -65,7 +65,7 @@ public class RsaUtil {
             PublicKey publicKey = getPublicKey(this.publicKey);
             return encodeByKey(sourceContent, publicKey, blockSize);
         } catch (Exception exception) {
-            log.error("公钥加密失败", exception);
+            log.error(exception.getMessage(), exception);
             throw new ResultException(exception);
         }
     }
@@ -82,7 +82,7 @@ public class RsaUtil {
             PrivateKey privateKey = getPrivateKey(this.privateKey);
             return decodeByKey(encryptedContent, privateKey, blockSize);
         } catch (Exception exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_RSA_CRYPTO, exception);
+            log.error(exception.getMessage(), exception);
             throw new ResultException(exception);
         }
     }
@@ -99,7 +99,7 @@ public class RsaUtil {
             PrivateKey privateKey = getPrivateKey(this.privateKey);
             return encodeByKey(sourceContent, privateKey, blockSize);
         } catch (Exception exception) {
-            log.error("私钥加密失败", exception);
+            log.error(exception.getMessage(), exception);
             throw new ResultException(exception);
         }
     }
@@ -117,7 +117,7 @@ public class RsaUtil {
             PublicKey publicKey = getPublicKey(this.publicKey);
             return decodeByKey(encryptedContent, publicKey, blockSize);
         } catch (Exception exception) {
-            log.error("公钥解密失败", exception);
+            log.error(exception.getMessage(), exception);
             throw new ResultException(exception);
         }
     }
