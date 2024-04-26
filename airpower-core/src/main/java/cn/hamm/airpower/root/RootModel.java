@@ -44,7 +44,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return target;
         } catch (Exception exception) {
             log.error(MessageConstant.EXCEPTION_WHEN_CREATE_INSTANCE, exception);
-            throw new ResultException(Result.ERROR.getCode(), exception.getMessage());
+            throw new ResultException(Result.ERROR, exception.getMessage());
         }
     }
 

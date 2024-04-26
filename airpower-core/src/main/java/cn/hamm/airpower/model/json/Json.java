@@ -90,7 +90,7 @@ public class Json implements IResult {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
             log.error(MessageConstant.EXCEPTION_WHEN_JSON_PARSE, exception);
-            throw new ResultException(Result.ERROR.getCode(), exception.getMessage());
+            throw new ResultException(Result.ERROR, exception.getMessage());
         }
     }
 

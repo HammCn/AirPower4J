@@ -37,7 +37,6 @@ public interface IResult {
         return new ResultException(getCode(), getMessage());
     }
 
-
     /**
      * <h2>抛出异常</h2>
      */

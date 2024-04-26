@@ -506,7 +506,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         if (optional.isPresent()) {
             return optional.get();
         }
-        throw new ResultException(Result.DATA_NOT_FOUND.getCode(), String.format(
+        throw new ResultException(Result.DATA_NOT_FOUND, String.format(
                 MessageConstant.QUERY_DATA_NOT_FOUND, id, AirUtil.getReflectUtil().getDescription(getEntityClass())
         ));
     }
