@@ -1,6 +1,7 @@
 package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Result;
 import cn.hamm.airpower.exception.ResultException;
@@ -47,6 +48,7 @@ import java.util.Set;
 @ResponseBody
 @Slf4j
 public class ExceptionInterceptor {
+
     /**
      * <h2>参数验证失败</h2>
      */
@@ -64,7 +66,7 @@ public class ExceptionInterceptor {
         List<FieldError> errors = result.getFieldErrors();
         for (FieldError error : errors) {
             stringBuilder.append(String.format(
-                    "%s(%s)", error.getDefaultMessage(), error.getField()
+                    MessageConstant.MESSAGE_AND_DESCRIPTION, error.getDefaultMessage(), error.getField()
             ));
             break;
         }
@@ -81,7 +83,7 @@ public class ExceptionInterceptor {
         Set<ConstraintViolation<?>> errors = exception.getConstraintViolations();
         for (ConstraintViolation<?> error : errors) {
             stringBuilder.append(String.format(
-                    "%s(%s)", error.getMessage(), error.getInvalidValue().toString()
+                    MessageConstant.MESSAGE_AND_DESCRIPTION, error.getMessage(), error.getInvalidValue().toString()
             ));
             break;
         }
@@ -108,7 +110,7 @@ public class ExceptionInterceptor {
         log.error(exception.getMessage());
 
         if (AirConfig.getGlobalConfig().isEnableDocument()) {
-            String[] arr = exception.getRequestURL().split("/");
+            String[] arr = exception.getRequestURL().split(Constant.SLASH);
             if (arr.length > 1) {
                 String packageName = arr[arr.length - 1];
                 boolean result = ApiDocument.writeEntityDocument(packageName, response);
@@ -137,9 +139,9 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
         log.error(exception.getMessage());
-        String supportedMethod = String.join("|", Objects.requireNonNull(exception.getSupportedMethods()));
+        String supportedMethod = String.join(Constant.SLASH, Objects.requireNonNull(exception.getSupportedMethods()));
         return new Json(Result.REQUEST_METHOD_UNSUPPORTED, String.format(
-                "%s 不被支持，请使用 %s 方法请求", exception.getMethod(), supportedMethod
+                MessageConstant.REQUEST_METHOD_NOT_SUPPORTED, exception.getMethod(), supportedMethod
         ));
     }
 

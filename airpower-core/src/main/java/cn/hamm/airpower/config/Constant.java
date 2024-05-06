@@ -104,6 +104,31 @@ public class Constant {
     public final static String UNDERLINE = "_";
 
     /**
+     * <h2>半角空格</h2>
+     */
+    public final static String SPACE = " ";
+
+    /**
+     * <h2>半角逗号</h2>
+     */
+    public final static String COMMA = ",";
+
+    /**
+     * <h2>半角冒号</h2>
+     */
+    public final static String COLON = ":";
+
+    /**
+     * <h2>竖线</h2>
+     */
+    public final static String VERTICAL_LINE = "|";
+
+    /**
+     * <h2>斜线</h2>
+     */
+    public final static String SLASH = "/";
+
+    /**
      * <h2>横线</h2>
      */
     public final static String LINE = "-";
@@ -114,12 +139,12 @@ public class Constant {
     public final static String DOT = ".";
 
     /**
-     * <h2>控制器字节码文件路径</h2>
-     */
-    public static final String CONTROLLER_CLASS_PATH = "/**/*Controller.class";
-
-    /**
      * <h2>控制器后缀</h2>
      */
     public static final String CONTROLLER_SUFFIX = "Controller";
+
+    /**
+     * <h2>控制器字节码文件路径</h2>
+     */
+    public static final String CONTROLLER_CLASS_PATH = "/**/*" + CONTROLLER_SUFFIX + ".class";
 }
