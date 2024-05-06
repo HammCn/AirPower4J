@@ -1,6 +1,7 @@
 package cn.hamm.airpower.interceptor.document;
 
 import cn.hamm.airpower.annotation.ReadOnly;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.model.json.Json;
 import cn.hamm.airpower.util.AirUtil;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
@@ -31,10 +32,7 @@ import java.util.*;
 @Data
 @Accessors(chain = true)
 @Slf4j
-public class ApiDocument {
-    private static final String PACKAGE_SPLIT = ".";
-
-    /**
+public class ApiDocument {    /**
      * <h2>标题</h2>
      */
     private String title;
@@ -269,7 +267,7 @@ public class ApiDocument {
         }
 
         Class<?> paramClass = parameter.getType();
-        if (!parameter.getParameterizedType().getTypeName().contains(PACKAGE_SPLIT)) {
+        if (!parameter.getParameterizedType().getTypeName().contains(Constant.DOT)) {
             // 泛型
             paramClass = (Class<?>) ((((ParameterizedType) currentClass
                     .getGenericSuperclass())
@@ -300,7 +298,7 @@ public class ApiDocument {
             }
 
             // 获取字段的泛型类型
-            if (!field.getGenericType().getTypeName().contains(PACKAGE_SPLIT)) {
+            if (!field.getGenericType().getTypeName().contains(Constant.DOT)) {
                 Class<?> clazz = (Class<?>) (((ParameterizedType) currentClass
                         .getGenericSuperclass())
                         .getActualTypeArguments())[0];

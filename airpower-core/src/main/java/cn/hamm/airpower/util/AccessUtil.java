@@ -57,7 +57,7 @@ public class AccessUtil {
      */
     public final @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
         return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING)) +
-                "_" +
+                Constant.UNDERLINE +
                 method.getName();
     }
 }
