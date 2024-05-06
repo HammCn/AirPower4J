@@ -22,7 +22,7 @@ public class CookieConfig {
     /**
      * <h2>Cookie的路径</h2>
      */
-    private String cookiePath = "/";
+    private String cookiePath = Constant.SLASH;
 
     /**
      * <h2>身份验证的Cookie名称</h2>

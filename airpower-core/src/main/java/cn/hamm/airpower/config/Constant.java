@@ -79,11 +79,6 @@ public class Constant {
     public static final String AUTHORIZATION = HttpHeaders.AUTHORIZATION;
 
     /**
-     * <h2>租户编码</h2>
-     */
-    public static final String TENANT_CODE = "tenant-code";
-
-    /**
      * <h2>ROOT</h2>
      */
     public static final String ROOT = "root";
