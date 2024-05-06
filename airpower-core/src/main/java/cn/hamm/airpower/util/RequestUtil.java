@@ -23,11 +23,6 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class RequestUtil {
-
-    /**
-     * <h2>多IP分割字符</h2>
-     */
-    private static final String MULTI_IP_ADDRESS_SPLITTER = ",";
     /**
      * <h2>IP地址字符串最大的长度</h2>
      */
@@ -131,9 +126,9 @@ public class RequestUtil {
     private String getRealIpAddress(String ipAddress) {
         if (Objects.nonNull(ipAddress) &&
                 ipAddress.length() > MAX_IP_ADDRESS_CHAR_LENGTH &&
-                ipAddress.indexOf(MULTI_IP_ADDRESS_SPLITTER) > 0
+                ipAddress.indexOf(Constant.COMMA) > 0
         ) {
-            ipAddress = ipAddress.substring(0, ipAddress.indexOf(MULTI_IP_ADDRESS_SPLITTER));
+            ipAddress = ipAddress.substring(0, ipAddress.indexOf(Constant.COMMA));
         }
         return ipAddress;
     }

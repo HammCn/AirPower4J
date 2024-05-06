@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 /**
@@ -55,12 +56,12 @@ public class GlobalConfig {
     /**
      * <h2>默认排序方向</h2>
      */
-    private String defaultSortDirection = Constant.SORT_DESC;
+    private String defaultSortDirection = "desc";
 
     /**
      * <h2>身份令牌header的key</h2>
      */
-    private String authorizeHeader = Constant.AUTHORIZATION;
+    private String authorizeHeader = HttpHeaders.AUTHORIZATION;
 
     /**
      * <h2>身份令牌有效期</h2>

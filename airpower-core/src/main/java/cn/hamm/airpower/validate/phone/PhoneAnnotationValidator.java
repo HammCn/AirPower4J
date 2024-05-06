@@ -14,14 +14,13 @@ import org.springframework.util.StringUtils;
  */
 public class PhoneAnnotationValidator implements ConstraintValidator<Phone, String> {
     /**
-     * 是否手机号
-     */
-    boolean mobile = true;
-
-    /**
      * 是否座机
      */
-    boolean tel = true;
+    private boolean tel = true;
+    /**
+     * 是否手机号
+     */
+    private boolean mobile = true;
 
     @Override
     public final boolean isValid(String value, ConstraintValidatorContext context) {

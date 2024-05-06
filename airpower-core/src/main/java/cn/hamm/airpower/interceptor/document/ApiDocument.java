@@ -32,7 +32,8 @@ import java.util.*;
 @Data
 @Accessors(chain = true)
 @Slf4j
-public class ApiDocument {    /**
+public class ApiDocument {
+    /**
      * <h2>标题</h2>
      */
     private String title;
@@ -57,7 +58,7 @@ public class ApiDocument {    /**
         ApiDocument apiDocument = new ApiDocument();
         String className = AirUtil.getReflectUtil().getDescription(clazz);
         String methodName = AirUtil.getReflectUtil().getDescription(method);
-        apiDocument.setTitle(className + " " + methodName + " Api接口文档");
+        apiDocument.setTitle(className + Constant.SPACE + methodName + " Api接口文档");
 
         apiDocument.setDocument(AirUtil.getReflectUtil().getDocument(method));
 

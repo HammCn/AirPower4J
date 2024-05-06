@@ -25,12 +25,12 @@ public class DataSource {
     /**
      * <h2>数据库端口</h2>
      */
-    private int port = Constant.MYSQL_DEFAULT_PORT;
+    private int port = 3306;
 
     /**
      * <h2>数据库用户名</h2>
      */
-    private String user = Constant.ROOT;
+    private String user = "root";
 
     /**
      * <h2>数据库密码</h2>

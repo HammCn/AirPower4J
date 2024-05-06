@@ -1,7 +1,5 @@
 package cn.hamm.airpower.config;
 
-import org.springframework.http.HttpHeaders;
-
 /**
  * <h1>内置常量</h1>
  *
@@ -27,21 +25,6 @@ public class Constant {
      * <h2>主键ID字段名</h2>
      */
     public static final String ID_FIELD = "id";
-
-    /**
-     * <h2>排序降序</h2>
-     */
-    public static final String SORT_DESC = "desc";
-
-    /**
-     * <h2>排序升序</h2>
-     */
-    public static final String SORT_ASC = "asc";
-
-    /**
-     * <h2>SQL语句中like的前缀</h2>
-     */
-    public static final String SQL_LIKE_PERCENT = "%";
 
     /**
      * <h2>一分钟</h2>
@@ -72,21 +55,6 @@ public class Constant {
      * <h2>本机IP地址</h2>
      */
     public static final String LOCAL_IP_ADDRESS = "127.0.0.1";
-
-    /**
-     * <h2>AUTHORIZATION</h2>
-     */
-    public static final String AUTHORIZATION = HttpHeaders.AUTHORIZATION;
-
-    /**
-     * <h2>ROOT</h2>
-     */
-    public static final String ROOT = "root";
-
-    /**
-     * <h2>MySQL默认端口</h2>
-     */
-    public static final int MYSQL_DEFAULT_PORT = 3306;
 
     /**
      * <h2>空字符串</h2>
@@ -137,9 +105,4 @@ public class Constant {
      * <h2>控制器后缀</h2>
      */
     public static final String CONTROLLER_SUFFIX = "Controller";
-
-    /**
-     * <h2>控制器字节码文件路径</h2>
-     */
-    public static final String CONTROLLER_CLASS_PATH = "/**/*" + CONTROLLER_SUFFIX + ".class";
 }
