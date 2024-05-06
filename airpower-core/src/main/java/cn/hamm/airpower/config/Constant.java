@@ -105,4 +105,74 @@ public class Constant {
      * <h2>控制器后缀</h2>
      */
     public static final String CONTROLLER_SUFFIX = "Controller";
+
+    /**
+     * <h2>Key</h2>
+     */
+    public static final String KEY = "key";
+
+    /**
+     * <h2>Label</h2>
+     */
+    public static final String LABEL = "label";
+
+    /**
+     * <h2>Error</h2>
+     */
+    public static final String ERROR = "error";
+
+    /**
+     * <h2>Name</h2>
+     */
+    public static final String NAME = "name";
+
+    /**
+     * <h2>Code</h2>
+     */
+    public static final String CODE = "code";
+
+    /**
+     * <h2>Message</h2>
+     */
+    public static final String MESSAGE = "message";
+
+    /**
+     * <h2>Success</h2>
+     */
+    public static final String SUCCESS = "success";
+
+    /**
+     * <h2>Value</h2>
+     */
+    public static final String VALUE = "value";
+
+    /**
+     * <h2>Double 0</h2>
+     */
+    public static final double ZERO_DOUBLE = 0D;
+
+    /**
+     * <h2>Long 0</h2>
+     */
+    public static final long ZERO_LONG = 0L;
+
+    /**
+     * <h2>String 0</h2>
+     */
+    public static final String ZERO_STRING = "0";
+
+    /**
+     * <h2>String 1</h2>
+     */
+    public static final String ONE_STRING = "1";
+
+    /**
+     * <h2>String true</h2>
+     */
+    public static final String TRUE_STRING = "true";
+
+    /**
+     * <h2>String false</h2>
+     */
+    public static final String FALSE_STRING = "false";
 }
