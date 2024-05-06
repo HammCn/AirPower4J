@@ -99,21 +99,6 @@ public class Constant {
     public static final String EMPTY_STRING = "";
 
     /**
-     * <h2>Double 0</h2>
-     */
-    public static final double ZERO_DOUBLE = 0D;
-
-    /**
-     * <h2>Long 0</h2>
-     */
-    public static final long ZERO_LONG = 0L;
-
-    /**
-     * <h1>0</h1>
-     */
-    public static final int ZERO = 0;
-
-    /**
      * <h2>下划线</h2>
      */
     public final static String UNDERLINE = "_";
@@ -127,4 +112,14 @@ public class Constant {
      * <h2>点</h2>
      */
     public final static String DOT = ".";
+
+    /**
+     * <h2>控制器字节码文件路径</h2>
+     */
+    public static final String CONTROLLER_CLASS_PATH = "/**/*Controller.class";
+
+    /**
+     * <h2>控制器后缀</h2>
+     */
+    public static final String CONTROLLER_SUFFIX = "Controller";
 }

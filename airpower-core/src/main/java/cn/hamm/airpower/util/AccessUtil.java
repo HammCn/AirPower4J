@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+
 /**
  * <h1>权限处理助手</h1>
  *
@@ -55,7 +56,7 @@ public class AccessUtil {
      * @return 权限标识
      */
     public final @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
-        return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll("Controller", Constant.EMPTY_STRING)) +
+        return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING)) +
                 "_" +
                 method.getName();
     }
