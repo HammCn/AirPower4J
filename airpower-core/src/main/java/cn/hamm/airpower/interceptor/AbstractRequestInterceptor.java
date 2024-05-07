@@ -109,6 +109,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param clazz    控制器类
      * @param method   执行方法
      */
+    @SuppressWarnings({"EmptyMethod", "unused"})
     protected void beforeHandleRequest(
             HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method
     ) {

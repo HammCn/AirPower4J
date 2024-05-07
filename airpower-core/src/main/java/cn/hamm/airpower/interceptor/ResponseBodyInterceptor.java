@@ -109,6 +109,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
      * @return 响应体
      * @apiNote 如无其他操作，请直接返回<code>body</code>参数即可
      */
+    @SuppressWarnings("unused")
     protected Object beforeResponseFinished(Object body, ServerHttpRequest request, ServerHttpResponse response) {
         return body;
     }

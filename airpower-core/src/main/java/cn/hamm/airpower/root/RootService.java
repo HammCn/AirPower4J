@@ -154,7 +154,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * <h2>🟢修改后置方法</h2>
      *
      * <p>
-     * 🔴请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以避免循环调用
+     * <code>🔴请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以避免循环调用</code>
      * </p>
      * <p>
      * 🟢如需再次保存，请调用 {@link #updateToDatabase(E)}
@@ -346,7 +346,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
 
 
     /**
-     * <h2>🟢数据库操作前的最后一次确认</h2>
+     * <h2>🟢数据库操作前的<code>最后一次</code>确认</h2>
      *
      * @return 当前实体
      */
@@ -372,7 +372,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>🟡根据ID查询对应的实体</h2>
+     * <h2>🟡根据<code>ID</code>查询对应的实体</h2>
      *
      * @param id 主键ID
      * @return 实体
@@ -383,7 +383,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>🟡根据ID查询对应的实体</h2>
+     * <h2>🟡根据<code>ID</code>查询对应的实体</h2>
      *
      * @param id 主键ID
      * @return 实体
@@ -508,7 +508,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>根据ID查询对应的实体</h2>
+     * <h2>根据<code>ID</code>查询对应的实体</h2>
      *
      * @param id 主键ID
      * @return 实体
@@ -658,7 +658,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>获取null属性</h2>
+     * <h2>获取值为<code>null</code>的属性</h2>
      *
      * @param sourceEntity 来源对象
      * @return 非空属性列表
@@ -690,7 +690,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>创建Sort</h2>
+     * <h2>创建<code>Sort</code></h2>
      *
      * @param sort 排序对象
      * @return Sort Spring的排序对象
@@ -716,7 +716,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>创建Pageable</h2>
+     * <h2>创建<code>Pageable</code></h2>
      *
      * @param queryPageData 查询请求
      * @return Pageable
@@ -801,7 +801,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>添加查询条件</h2>
+     * <h2>添加查询条件(<code>value</code>不为<code>null</code>时)</h2>
      *
      * @param root          ROOT
      * @param predicateList 查询条件列表

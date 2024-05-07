@@ -366,8 +366,8 @@ public class RootEntityController<
      * @param <T>          QueryRequest子类
      * @return 处理后的查询请求
      */
+    @SuppressWarnings("unchecked")
     private <T extends QueryRequest<E>> @NotNull T getQueryRequest(T queryRequest) {
-        //noinspection unchecked
         queryRequest = Objects.requireNonNullElse(queryRequest, (T) new QueryRequest<E>());
         queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
         return queryRequest;
