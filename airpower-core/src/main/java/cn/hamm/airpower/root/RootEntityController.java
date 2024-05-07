@@ -264,6 +264,7 @@ public class RootEntityController<
      * @param source 原始实体
      * @apiNote 可重写后执行新增后的其他业务
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterAdd(long id, E source) {
     }
 
@@ -285,6 +286,7 @@ public class RootEntityController<
      * @param source 原始实体
      * @apiNote 可重写后执行修改之后的其他业务
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterUpdate(long id, E source) {
     }
 
@@ -295,6 +297,7 @@ public class RootEntityController<
      * @param source 原始实体
      * @apiNote 新增和修改最后触发
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterSaved(long id, E source) {
     }
 
@@ -304,6 +307,7 @@ public class RootEntityController<
      * @param id 主键ID
      * @apiNote 可重写后执行删除之前的业务处理或拦截
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeDelete(long id) {
     }
 
@@ -313,6 +317,7 @@ public class RootEntityController<
      * @param id 主键ID
      * @apiNote 可重写后执行删除之后的其他业务
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterDelete(long id) {
     }
 
@@ -322,6 +327,7 @@ public class RootEntityController<
      * @param id 主键ID
      * @apiNote 可重写后执行禁用之前的业务处理或拦截
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeDisable(long id) {
     }
 
@@ -331,6 +337,7 @@ public class RootEntityController<
      * @param id 主键ID
      * @apiNote 可重写后执行禁用之后的其他业务
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterDisable(long id) {
     }
 
@@ -339,6 +346,7 @@ public class RootEntityController<
      *
      * @param id 主键ID
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeEnable(long id) {
     }
 
@@ -347,6 +355,7 @@ public class RootEntityController<
      *
      * @param id 主键ID
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterEnable(long id) {
     }
 

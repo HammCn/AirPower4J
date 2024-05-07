@@ -22,6 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Component
 public class DataSourceAspect {
+    @SuppressWarnings("EmptyMethod")
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.GetMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.RequestMapping)")

@@ -92,6 +92,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param id     主键ID
      * @param source 原始实体
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterAdd(long id, @NotNull E source) {
     }
 
@@ -100,7 +101,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param source 原始实体
      * @return 处理后的实体
-     * @apiNote 如此处将属性设置为 <code>null</code>，实体将被保存为 <code>null</code>，其他类型的属性将不被修改
      */
     protected @NotNull E beforeUpdate(@NotNull E source) {
         return source;
@@ -135,6 +135,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #afterSaved(long, E)
      * @see #update(E)
      */
+    @SuppressWarnings("unused")
     public final void updateWithNull(@NotNull E source) {
         Result.PARAM_MISSING.whenNull(source.getId(), String.format(
                 MessageConstant.MISSING_ID_WHEN_UPDATE,
@@ -162,6 +163,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param id     主键ID
      * @param source 原始实体
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterUpdate(long id, @NotNull E source) {
     }
 
@@ -172,6 +174,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param source 保存前的原数据
      * @apiNote 添加或修改后最后触发
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterSaved(long id, @NotNull E source) {
 
     }
@@ -181,6 +184,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param id 主键ID
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeDisable(long id) {
     }
 
@@ -202,6 +206,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param id 主键ID
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterDisable(long id) {
     }
 
@@ -210,6 +215,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param id 主键ID
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeEnable(long id) {
     }
 
@@ -231,6 +237,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param id 主键ID
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterEnable(long id) {
     }
 
@@ -239,6 +246,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param id 主键ID
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeDelete(long id) {
     }
 
@@ -260,6 +268,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param id 主键ID
      */
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterDelete(long id) {
     }
 
@@ -353,8 +362,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param search  原始查询对象
      * @return 查询条件列表
      */
+    @SuppressWarnings("unused")
     protected @NotNull List<Predicate> addSearchPredicate(
-            @NotNull Root<E> root, @NotNull CriteriaBuilder builder, @NotNull E search
+            @NotNull Root<E> root,
+            @NotNull CriteriaBuilder builder,
+            @NotNull E search
     ) {
         return new ArrayList<>();
     }

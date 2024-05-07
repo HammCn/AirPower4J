@@ -3,6 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.*;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
+import cn.hamm.airpower.exception.ResultException;
 import cn.hamm.airpower.interfaces.IEntity;
 import cn.hamm.airpower.interfaces.IEntityAction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Length;
@@ -28,10 +30,12 @@ import java.io.Serializable;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @MappedSuperclass
 @Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @DynamicInsert
 @DynamicUpdate
 @Description(Constant.EMPTY_STRING)
+@Slf4j
 @SuppressWarnings("unchecked")
 public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
         implements Serializable, IEntity<E>, IEntityAction {
@@ -186,54 +190,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置创建时间起点</h2>
-     *
-     * @param createTimeFrom 创建时间起点
-     * @return 实体
-     */
-    public E setCreateTimeFrom(Long createTimeFrom) {
-        this.createTimeFrom = createTimeFrom;
-        return (E) this;
-    }
-
-    /**
-     * <h2>设置创建时间终点</h2>
-     *
-     * @param createTimeTo 创建时间终点
-     * @return 实体
-     */
-    public E setCreateTimeTo(Long createTimeTo) {
-        this.createTimeTo = createTimeTo;
-        return (E) this;
-    }
-
-    /**
-     * <h2>设置更新时间起点</h2>
-     *
-     * @param updateTimeFrom 更新时间起点
-     * @return 实体
-     */
-    public E setUpdateTimeFrom(Long updateTimeFrom) {
-        this.updateTimeFrom = updateTimeFrom;
-        return (E) this;
-    }
-
-    /**
-     * <h2>设置更新时间终点</h2>
-     *
-     * @param updateTimeTo 更新时间终点
-     * @return 实体
-     */
-    public E setUpdateTimeTo(Long updateTimeTo) {
-        this.updateTimeTo = updateTimeTo;
-        return (E) this;
-    }
-
-    /**
      * <h2>获取简单实体对象</h2>
-     * <p>
-     * 一般来说会舍弃一些基础数据
-     * </p>
+     *
+     * @apiNote 舍弃一些基础数据
      */
     public void excludeBaseData() {
         this.setCreateTime(null)
@@ -242,5 +201,21 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
                 .setUpdateUserId(null)
                 .setRemark(null)
                 .setIsDisabled(null);
+    }
+
+    /**
+     * <h2>复制一个只包含ID的实体</h2>
+     *
+     * @return 只复制ID的实体
+     */
+    public final @org.jetbrains.annotations.NotNull E copyOnlyId() {
+        try {
+            E target = (E) getClass().getConstructor().newInstance();
+            target.setId(this.getId());
+            return target;
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            throw new ResultException(exception);
+        }
     }
 }

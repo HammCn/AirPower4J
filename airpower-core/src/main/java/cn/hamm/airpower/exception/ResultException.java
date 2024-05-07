@@ -75,7 +75,7 @@ public class ResultException extends RuntimeException implements IResult {
      *
      * @param exception 异常
      */
-    public ResultException(Exception exception) {
+    public ResultException(@NotNull Exception exception) {
         this.setCode(Result.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
     }
 }

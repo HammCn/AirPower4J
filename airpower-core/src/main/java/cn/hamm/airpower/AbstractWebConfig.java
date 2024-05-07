@@ -50,6 +50,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
      *
      * @param registry 拦截器管理器
      */
+    @SuppressWarnings({"EmptyMethod", "unused"})
     public void addCustomInterceptors(InterceptorRegistry registry) {
     }
 
