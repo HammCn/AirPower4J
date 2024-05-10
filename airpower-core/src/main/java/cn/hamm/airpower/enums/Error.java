@@ -1,20 +1,19 @@
 package cn.hamm.airpower.enums;
 
-import cn.hamm.airpower.interfaces.IResult;
+import cn.hamm.airpower.interfaces.IJson;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * <h1>系统异常代码字典</h1>
+ * <h1>系统错误代码字典</h1>
  *
  * @author Hamm.cn
- * @apiNote 如需自定义业务异常，可自行创建一个新业务异常枚举类并实现 {@link IResult} 接口即可。
+ * @apiNote 如需自定义业务异常，可自行创建一个新业务异常枚举类并实现 {@link IJson} 接口即可。
  */
 @SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
 @Getter
 @AllArgsConstructor
-public enum Result implements IResult {
-    SUCCESS(200, "成功"),
+public enum Error implements IJson {
     CONTINUE(201, "请继续"),
 
     UPGRADE_CLIENT_NECESSARY(301, "请更新客户端"),

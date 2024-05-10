@@ -1,8 +1,8 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Result;
-import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.exception.SystemException;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +66,7 @@ public class RsaUtil {
             return encodeByKey(sourceContent, publicKey, blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
-            throw new ResultException(exception);
+            throw new SystemException(exception);
         }
     }
 
@@ -83,7 +83,7 @@ public class RsaUtil {
             return decodeByKey(encryptedContent, privateKey, blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
-            throw new ResultException(exception);
+            throw new SystemException(exception);
         }
     }
 
@@ -100,7 +100,7 @@ public class RsaUtil {
             return encodeByKey(sourceContent, privateKey, blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
-            throw new ResultException(exception);
+            throw new SystemException(exception);
         }
     }
 
@@ -118,7 +118,7 @@ public class RsaUtil {
             return decodeByKey(encryptedContent, publicKey, blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
-            throw new ResultException(exception);
+            throw new SystemException(exception);
         }
     }
 
@@ -196,7 +196,7 @@ public class RsaUtil {
      * @throws Exception 加解密异常
      */
     private byte @NotNull [] rsaDoFinal(Cipher cipher, byte @NotNull [] sourceBytes, int blockSize) throws Exception {
-        Result.ERROR.when(blockSize <= 0, MessageConstant.BLOCK_SIZE_MUST_BE_GREATER_THAN_ZERO);
+        Error.ERROR.when(blockSize <= 0, MessageConstant.BLOCK_SIZE_MUST_BE_GREATER_THAN_ZERO);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int inputLength = sourceBytes.length;
         int currentOffSet = 0;

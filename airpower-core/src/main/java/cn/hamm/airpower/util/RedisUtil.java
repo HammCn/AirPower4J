@@ -1,8 +1,8 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.AirConfig;
-import cn.hamm.airpower.enums.Result;
-import cn.hamm.airpower.model.json.Json;
+import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootEntity;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -126,8 +126,8 @@ public class RedisUtil {
                 redisTemplate.expire(key, second, TimeUnit.SECONDS);
             }
         } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+            log.error(Error.REDIS_ERROR.getMessage(), exception);
+            Error.REDIS_ERROR.show();
         }
     }
 
@@ -143,8 +143,8 @@ public class RedisUtil {
                 redisTemplate.delete(keys);
             }
         } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+            log.error(Error.REDIS_ERROR.getMessage(), exception);
+            Error.REDIS_ERROR.show();
         }
     }
 
@@ -159,8 +159,8 @@ public class RedisUtil {
             //noinspection ConstantConditions
             return redisTemplate.getExpire(key, TimeUnit.SECONDS);
         } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+            log.error(Error.REDIS_ERROR.getMessage(), exception);
+            Error.REDIS_ERROR.show();
         }
         return 0;
     }
@@ -189,8 +189,8 @@ public class RedisUtil {
         try {
             redisTemplate.delete(key);
         } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+            log.error(Error.REDIS_ERROR.getMessage(), exception);
+            Error.REDIS_ERROR.show();
         }
     }
 
@@ -204,8 +204,8 @@ public class RedisUtil {
         try {
             return redisTemplate.opsForValue().get(key);
         } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+            log.error(Error.REDIS_ERROR.getMessage(), exception);
+            Error.REDIS_ERROR.show();
         }
         return null;
     }
@@ -236,8 +236,8 @@ public class RedisUtil {
                 set(key, value);
             }
         } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+            log.error(Error.REDIS_ERROR.getMessage(), exception);
+            Error.REDIS_ERROR.show();
         }
     }
 

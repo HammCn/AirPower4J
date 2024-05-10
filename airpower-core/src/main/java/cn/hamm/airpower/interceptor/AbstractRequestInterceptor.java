@@ -2,7 +2,7 @@ package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.enums.Result;
+import cn.hamm.airpower.enums.Error;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.Access;
 import cn.hamm.airpower.util.AirUtil;
@@ -78,7 +78,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         if (StringUtils.hasText(accessTokenFromParam)) {
             accessToken = accessTokenFromParam;
         }
-        Result.UNAUTHORIZED.whenEmpty(accessToken);
+        Error.UNAUTHORIZED.whenEmpty(accessToken);
         Long userId = AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
         //需要RBAC
         if (access.isAuthorize()) {

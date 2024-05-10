@@ -3,7 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Exclude;
 import cn.hamm.airpower.annotation.Expose;
 import cn.hamm.airpower.annotation.Payload;
-import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.exception.SystemException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.util.AirUtil;
 import lombok.EqualsAndHashCode;
@@ -42,7 +42,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return target;
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
-            throw new ResultException(exception);
+            throw new SystemException(exception);
         }
     }
 

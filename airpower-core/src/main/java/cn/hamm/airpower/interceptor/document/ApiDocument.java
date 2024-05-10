@@ -2,7 +2,7 @@ package cn.hamm.airpower.interceptor.document;
 
 import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.model.json.Json;
+import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.AirUtil;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import cn.hamm.airpower.validate.phone.Phone;

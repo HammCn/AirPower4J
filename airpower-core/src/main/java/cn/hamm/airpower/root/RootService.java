@@ -5,8 +5,8 @@ import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Result;
-import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.exception.SystemException;
 import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
@@ -75,7 +75,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     public final long add(@NotNull E source) {
         source = beforeAdd(source);
-        Result.ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
+        Error.ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark(Constant.EMPTY_STRING);
@@ -137,7 +137,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     @SuppressWarnings("unused")
     public final void updateWithNull(@NotNull E source) {
-        Result.PARAM_MISSING.whenNull(source.getId(), String.format(
+        Error.PARAM_MISSING.whenNull(source.getId(), String.format(
                 MessageConstant.MISSING_ID_WHEN_UPDATE,
                 AirUtil.getReflectUtil().getDescription(getEntityClass())
         ));
@@ -499,8 +499,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #updateWithNull(E)
      */
     protected final void updateToDatabase(@NotNull E source, boolean withNull) {
-        Result.ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
-        Result.PARAM_MISSING.whenNull(source.getId(), String.format(
+        Error.ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
+        Error.PARAM_MISSING.whenNull(source.getId(), String.format(
                 MessageConstant.MISSING_ID_WHEN_UPDATE,
                 AirUtil.getReflectUtil().getDescription(getEntityClass())
         ));
@@ -514,7 +514,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 实体
      */
     private @NotNull E getById(long id) {
-        Result.PARAM_MISSING.whenNull(id, String.format(
+        Error.PARAM_MISSING.whenNull(id, String.format(
                 MessageConstant.MISSING_ID_WHEN_QUERY,
                 AirUtil.getReflectUtil().getDescription(getEntityClass())
         ));
@@ -522,7 +522,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         if (optional.isPresent()) {
             return optional.get();
         }
-        throw new ResultException(Result.DATA_NOT_FOUND, String.format(
+        throw new SystemException(Error.DATA_NOT_FOUND, String.format(
                 MessageConstant.QUERY_DATA_NOT_FOUND, id, AirUtil.getReflectUtil().getDescription(getEntityClass())
         ));
     }
@@ -631,7 +631,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 修改自己 不校验
                 continue;
             }
-            Result.FORBIDDEN_EXIST.show(String.format(MessageConstant.TARGET_DATA_EXIST, fieldName, fieldValue));
+            Error.FORBIDDEN_EXIST.show(String.format(MessageConstant.TARGET_DATA_EXIST, fieldName, fieldValue));
         }
     }
 
@@ -644,7 +644,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (Exception exception) {
-            throw new ResultException(exception.getMessage());
+            throw new SystemException(exception.getMessage());
         }
     }
 

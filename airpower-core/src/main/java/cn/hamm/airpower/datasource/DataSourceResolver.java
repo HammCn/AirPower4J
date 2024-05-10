@@ -85,7 +85,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      */
     private static @NotNull String getDataSourceUrl(DataSource dataSource) {
         return getServerUrl(dataSource) + Constant.SLASH +
-                AirConfig.getGlobalConfig().databasePrefix + dataSource.getDatabase() +
+                AirConfig.getGlobalConfig().getDatabasePrefix() + dataSource.getDatabase() +
                 DATASOURCE_CONFIG;
     }
 
@@ -115,7 +115,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
             statement = connection.createStatement();
             //noinspection SqlSourceToSinkFlow
             statement.execute(
-                    "CREATE DATABASE IF NOT EXISTS " + AirConfig.getGlobalConfig().databasePrefix + dataSource.getDatabase() +
+                    "CREATE DATABASE IF NOT EXISTS " + AirConfig.getGlobalConfig().getDatabasePrefix() + dataSource.getDatabase() +
                             " DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci"
             );
         } catch (Exception exception) {
@@ -145,7 +145,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
         dataSource.setUrl(getDataSourceUrl(dataSourceInfo));
         dataSource.setUsername(dataSourceInfo.getUser());
         dataSource.setPassword(dataSourceInfo.getPassword());
-        DATA_SOURCE_LIST.put(AirConfig.getGlobalConfig().databasePrefix + dataSourceInfo.getDatabase(), dataSource);
+        DATA_SOURCE_LIST.put(AirConfig.getGlobalConfig().getDatabasePrefix() + dataSourceInfo.getDatabase(), dataSource);
         super.afterPropertiesSet();
     }
 

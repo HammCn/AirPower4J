@@ -1,30 +1,30 @@
 package cn.hamm.airpower.exception;
 
-import cn.hamm.airpower.enums.Result;
-import cn.hamm.airpower.interfaces.IResult;
+import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.interfaces.IJson;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * <h1>自定义异常包装类</h1>
+ * <h1>系统异常包装类</h1>
  *
  * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-public class ResultException extends RuntimeException implements IResult {
+public class SystemException extends RuntimeException implements IJson {
     /**
      * <h2>错误代码</h2>
      */
-    private int code = Result.ERROR.getCode();
+    private int code = Error.ERROR.getCode();
 
     /**
      * <h2>错误信息</h2>
      */
-    private String message = Result.ERROR.getMessage();
+    private String message = Error.ERROR.getMessage();
 
     /**
      * <h2>错误数据</h2>
@@ -36,8 +36,8 @@ public class ResultException extends RuntimeException implements IResult {
      *
      * @param message 错误信息
      */
-    public ResultException(String message) {
-        this.setCode(Result.ERROR.getCode()).setMessage(message);
+    public SystemException(String message) {
+        this.setCode(Error.ERROR.getCode()).setMessage(message);
     }
 
     /**
@@ -45,7 +45,7 @@ public class ResultException extends RuntimeException implements IResult {
      *
      * @param error 异常
      */
-    public ResultException(@NotNull Result error) {
+    public SystemException(@NotNull Error error) {
         this.setCode(error.getCode()).setMessage(error.getMessage());
     }
 
@@ -55,7 +55,7 @@ public class ResultException extends RuntimeException implements IResult {
      * @param error   异常
      * @param message 错误信息
      */
-    public ResultException(@NotNull Result error, String message) {
+    public SystemException(@NotNull Error error, String message) {
         this.setCode(error.getCode())
                 .setMessage(message);
     }
@@ -66,7 +66,7 @@ public class ResultException extends RuntimeException implements IResult {
      * @param code    错误代码
      * @param message 错误信息
      */
-    public ResultException(int code, String message) {
+    public SystemException(int code, String message) {
         this.setCode(code).setMessage(message);
     }
 
@@ -75,7 +75,7 @@ public class ResultException extends RuntimeException implements IResult {
      *
      * @param exception 异常
      */
-    public ResultException(@NotNull Exception exception) {
-        this.setCode(Result.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
+    public SystemException(@NotNull Exception exception) {
+        this.setCode(Error.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
     }
 }

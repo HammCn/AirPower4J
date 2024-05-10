@@ -1,5 +1,7 @@
 package cn.hamm.airpower.config;
 
+import org.springframework.http.HttpStatus;
+
 /**
  * <h1>内置常量</h1>
  *
@@ -175,4 +177,14 @@ public class Constant {
      * <h2>String false</h2>
      */
     public static final String FALSE_STRING = "false";
+
+    /**
+     * <h2>JSON成功状态码</h2>
+     */
+    public static final int JSON_SUCCESS_CODE = HttpStatus.OK.value();
+
+    /**
+     * <h2>JSON成功信息</h2>
+     */
+    public static final String JSON_SUCCESS_MESSAGE = "操作成功";
 }

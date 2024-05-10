@@ -21,7 +21,7 @@ public class GlobalConfig {
     /**
      * <h2>多数据源数据库前缀</h2>
      */
-    public String databasePrefix = "tenant_";
+    private String databasePrefix = "tenant_";
 
     /**
      * <h2>是否开启文档</h2>
