@@ -1,7 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.enums.SystemError;
 import cn.hamm.airpower.exception.SystemException;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -196,7 +196,7 @@ public class RsaUtil {
      * @throws Exception 加解密异常
      */
     private byte @NotNull [] rsaDoFinal(Cipher cipher, byte @NotNull [] sourceBytes, int blockSize) throws Exception {
-        Error.ERROR.when(blockSize <= 0, MessageConstant.BLOCK_SIZE_MUST_BE_GREATER_THAN_ZERO);
+        SystemError.SERVICE_ERROR.when(blockSize <= 0, MessageConstant.BLOCK_SIZE_MUST_BE_GREATER_THAN_ZERO);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int inputLength = sourceBytes.length;
         int currentOffSet = 0;

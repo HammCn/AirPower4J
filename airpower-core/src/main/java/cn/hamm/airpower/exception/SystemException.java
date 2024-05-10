@@ -1,7 +1,7 @@
 package cn.hamm.airpower.exception;
 
-import cn.hamm.airpower.enums.Error;
-import cn.hamm.airpower.interfaces.IJson;
+import cn.hamm.airpower.enums.SystemError;
+import cn.hamm.airpower.interfaces.IException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -15,16 +15,16 @@ import org.jetbrains.annotations.NotNull;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-public class SystemException extends RuntimeException implements IJson {
+public class SystemException extends RuntimeException implements IException {
     /**
      * <h2>错误代码</h2>
      */
-    private int code = Error.ERROR.getCode();
+    private int code = SystemError.SERVICE_ERROR.getCode();
 
     /**
      * <h2>错误信息</h2>
      */
-    private String message = Error.ERROR.getMessage();
+    private String message = SystemError.SERVICE_ERROR.getMessage();
 
     /**
      * <h2>错误数据</h2>
@@ -37,26 +37,26 @@ public class SystemException extends RuntimeException implements IJson {
      * @param message 错误信息
      */
     public SystemException(String message) {
-        this.setCode(Error.ERROR.getCode()).setMessage(message);
+        this.setCode(SystemError.SERVICE_ERROR.getCode()).setMessage(message);
     }
 
     /**
      * <h2>直接抛出一个异常</h2>
      *
-     * @param error 异常
+     * @param errorCode 异常
      */
-    public SystemException(@NotNull Error error) {
-        this.setCode(error.getCode()).setMessage(error.getMessage());
+    public SystemException(@NotNull SystemError errorCode) {
+        this.setCode(errorCode.getCode()).setMessage(errorCode.getMessage());
     }
 
     /**
      * <h2>直接抛出一个异常</h2>
      *
-     * @param error   异常
-     * @param message 错误信息
+     * @param errorCode 异常
+     * @param message   错误信息
      */
-    public SystemException(@NotNull Error error, String message) {
-        this.setCode(error.getCode())
+    public SystemException(@NotNull SystemError errorCode, String message) {
+        this.setCode(errorCode.getCode())
                 .setMessage(message);
     }
 
@@ -76,6 +76,6 @@ public class SystemException extends RuntimeException implements IJson {
      * @param exception 异常
      */
     public SystemException(@NotNull Exception exception) {
-        this.setCode(Error.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
+        this.setCode(SystemError.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
     }
 }

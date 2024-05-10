@@ -152,7 +152,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     private <M extends RootModel<M>> List<M> filterResponseListBy(@NotNull Filter filter, List<M> list) {
         try {
             list.forEach(item -> filterResponseBy(filter, item));
-        } catch (Exception exception) {
+        } catch (java.lang.Exception exception) {
             log.error(exception.getMessage(), exception);
         }
         return list;

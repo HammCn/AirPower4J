@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * <h1>Json</h1>
+ * <h1>响应结果</h1>
  *
  * @author Hamm.cn
  */
-public interface IJson {
+public interface IException {
     /**
      * <h2>获取错误代码</h2>
      *

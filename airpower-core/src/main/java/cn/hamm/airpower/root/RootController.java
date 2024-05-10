@@ -4,7 +4,7 @@ import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.enums.SystemError;
 import cn.hamm.airpower.exception.SystemException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.interfaces.ITry;
@@ -34,7 +34,7 @@ public class RootController implements IAction, ITry {
             return AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             log.error(MessageConstant.FAILED_TO_LOAD_CURRENT_USER_INFO, exception);
-            throw new SystemException(Error.UNAUTHORIZED);
+            throw new SystemException(SystemError.UNAUTHORIZED);
         }
     }
 }

@@ -1,7 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.enums.SystemError;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +61,7 @@ public class EmailUtil {
      * @param content 内容
      */
     public final void sendEmail(@NotNull String email, @NotNull String title, @NotNull String content) throws MessagingException {
-        Error.EMAIL_ERROR.whenNull(javaMailSender, MessageConstant.MAIL_SERVER_CONFIG_MISSING);
+        SystemError.EMAIL_ERROR.whenNull(javaMailSender, MessageConstant.MAIL_SERVER_CONFIG_MISSING);
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(email);

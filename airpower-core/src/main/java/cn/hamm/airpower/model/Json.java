@@ -3,15 +3,14 @@ package cn.hamm.airpower.model;
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
+import cn.hamm.airpower.enums.SystemError;
 import cn.hamm.airpower.exception.SystemException;
-import cn.hamm.airpower.interfaces.IJson;
+import cn.hamm.airpower.interfaces.IException;
 import cn.hamm.airpower.root.RootEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +22,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @Data
 @Accessors(chain = true)
-@AllArgsConstructor
-@NoArgsConstructor
 @Slf4j
-public class Json implements IJson {
+public class Json {
     /**
      * <h2>错误代码</h2>
      */
@@ -44,16 +41,6 @@ public class Json implements IJson {
      */
     @Description("返回数据")
     private Object data;
-
-    /**
-     * <h2>实例化JSON</h2>
-     *
-     * @param message 错误信息
-     */
-    public Json(String message) {
-        this.message = message;
-    }
-
 
     /**
      * <h2>输出提示信息</h2>
@@ -109,30 +96,36 @@ public class Json implements IJson {
         return newJson().setData(data).setMessage(message);
     }
 
-    public static Json error(IJson error) {
+    /**
+     * <h2>输出错误</h2>
+     *
+     * @param error 错误枚举
+     * @return Json
+     */
+    public static Json error(IException error) {
         return error(error, error.getMessage());
-    }
-
-    public static Json error(IJson error, String message) {
-        return error(error.getCode(), message);
-    }
-
-    public static Json error(int code, String message) {
-        return newJson().setCode(code).setMessage(message);
     }
 
     /**
      * <h2>输出错误</h2>
      *
-     * @param code    错误代码
+     * @param error   错误枚举
      * @param message 错误信息
-     * @param data    输出数据
      * @return Json
      */
-    public static Json error(int code, String message, Object data) {
-        return show(code, message, data);
+    public static Json error(IException error, String message) {
+        return show(error.getCode(), message, null);
     }
 
+    /**
+     * <h2>输出错误</h2>
+     *
+     * @param message 错误信息
+     * @return Json
+     */
+    public static Json error(String message) {
+        return error(SystemError.SERVICE_ERROR, message);
+    }
 
     /**
      * <h2>输出Json</h2>

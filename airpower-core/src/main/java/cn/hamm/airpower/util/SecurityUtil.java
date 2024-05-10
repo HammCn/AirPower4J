@@ -1,7 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.AirConfig;
-import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.enums.SystemError;
 import cn.hamm.airpower.exception.SystemException;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ public class SecurityUtil {
         if (Objects.nonNull(data)) {
             return Long.parseLong(data.toString());
         }
-        throw new SystemException(Error.UNAUTHORIZED);
+        throw new SystemException(SystemError.UNAUTHORIZED);
     }
 
     /**

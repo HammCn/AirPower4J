@@ -3,7 +3,7 @@ package cn.hamm.airpower.interceptor;
 import cn.hamm.airpower.config.AirConfig;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Error;
+import cn.hamm.airpower.enums.SystemError;
 import cn.hamm.airpower.exception.SystemException;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.Json;
@@ -40,7 +40,7 @@ import java.util.Set;
  * <h1>全局异常处理拦截器</h1>
  *
  * @author Hamm.cn
- * @see Error
+ * @see SystemError
  */
 @ControllerAdvice
 @ResponseStatus(HttpStatus.OK)
@@ -57,10 +57,10 @@ public class ExceptionInterceptor {
         BindingResult result = exception.getBindingResult();
         StringBuilder stringBuilder = new StringBuilder();
         if (!result.hasErrors()) {
-            return Json.error(Error.PARAM_INVALID);
+            return Json.error(SystemError.PARAM_INVALID);
         }
         if (!result.hasFieldErrors()) {
-            return Json.error(Error.PARAM_INVALID);
+            return Json.error(SystemError.PARAM_INVALID);
         }
         List<FieldError> errors = result.getFieldErrors();
         for (FieldError error : errors) {
@@ -69,7 +69,7 @@ public class ExceptionInterceptor {
             ));
             break;
         }
-        return Json.error(Error.PARAM_INVALID, stringBuilder.toString());
+        return Json.error(SystemError.PARAM_INVALID, stringBuilder.toString());
     }
 
     /**
@@ -86,19 +86,19 @@ public class ExceptionInterceptor {
             ));
             break;
         }
-        return Json.error(Error.PARAM_INVALID, stringBuilder.toString());
+        return Json.error(SystemError.PARAM_INVALID, stringBuilder.toString());
     }
 
     /**
      * <h2>删除时的数据关联校验异常</h2>
      */
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
-    public Json deleteUsingDataException(@NotNull Exception exception) {
+    public Json deleteUsingDataException(@NotNull java.lang.Exception exception) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.FORBIDDEN_DELETE_USED.getMessage(), exception);
+            log.error(SystemError.FORBIDDEN_DELETE_USED.getMessage(), exception);
         }
-        return Json.error(Error.FORBIDDEN_DELETE_USED);
+        return Json.error(SystemError.FORBIDDEN_DELETE_USED);
     }
 
     /**
@@ -115,12 +115,12 @@ public class ExceptionInterceptor {
                 boolean result = ApiDocument.writeEntityDocument(packageName, response);
                 if (!result) {
                     response.reset();
-                    return Json.error(Error.API_SERVICE_UNSUPPORTED);
+                    return Json.error(SystemError.API_SERVICE_UNSUPPORTED);
                 }
 
             }
         }
-        return Json.error(Error.API_SERVICE_UNSUPPORTED);
+        return Json.error(SystemError.API_SERVICE_UNSUPPORTED);
     }
 
     /**
@@ -129,7 +129,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Json dataExceptionHandle(@NotNull HttpMessageNotReadableException exception) {
         log.error(exception.getMessage());
-        return Json.error(Error.REQUEST_CONTENT_TYPE_UNSUPPORTED, MessageConstant.PARAM_INVALID_MAY_BE_NOT_JSON);
+        return Json.error(SystemError.REQUEST_CONTENT_TYPE_UNSUPPORTED, MessageConstant.PARAM_INVALID_MAY_BE_NOT_JSON);
     }
 
     /**
@@ -139,7 +139,7 @@ public class ExceptionInterceptor {
     public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
         log.error(exception.getMessage());
         String supportedMethod = String.join(Constant.SLASH, Objects.requireNonNull(exception.getSupportedMethods()));
-        return Json.error(Error.REQUEST_METHOD_UNSUPPORTED, String.format(
+        return Json.error(SystemError.REQUEST_METHOD_UNSUPPORTED, String.format(
                 MessageConstant.REQUEST_METHOD_NOT_SUPPORTED, exception.getMethod(), supportedMethod
         ));
     }
@@ -151,9 +151,9 @@ public class ExceptionInterceptor {
     public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.REQUEST_CONTENT_TYPE_UNSUPPORTED.getMessage(), exception);
+            log.error(SystemError.REQUEST_CONTENT_TYPE_UNSUPPORTED.getMessage(), exception);
         }
-        return Json.error(Error.REQUEST_CONTENT_TYPE_UNSUPPORTED, String.format(
+        return Json.error(SystemError.REQUEST_CONTENT_TYPE_UNSUPPORTED, String.format(
                 MessageConstant.ONLY_CONTENT_TYPE_JSON_SUPPORTED, Objects.requireNonNull(exception.getContentType()).getType()
         ));
     }
@@ -165,9 +165,9 @@ public class ExceptionInterceptor {
     public Json databaseExceptionHandle(@NotNull CannotCreateTransactionException exception) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.DATABASE_ERROR.getMessage(), exception);
+            log.error(SystemError.DATABASE_ERROR.getMessage(), exception);
         }
-        return Json.error(Error.DATABASE_ERROR);
+        return Json.error(SystemError.DATABASE_ERROR);
     }
 
     /**
@@ -177,9 +177,9 @@ public class ExceptionInterceptor {
     public Json redisExceptionHandle(@NotNull RedisConnectionFailureException exception) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.REDIS_ERROR.getMessage(), exception);
+            log.error(SystemError.REDIS_ERROR.getMessage(), exception);
         }
-        return Json.error(Error.REDIS_ERROR);
+        return Json.error(SystemError.REDIS_ERROR);
     }
 
     /**
@@ -189,7 +189,7 @@ public class ExceptionInterceptor {
     public Json systemExceptionHandle(@NotNull SystemException exception) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.ERROR.getMessage(), exception);
+            log.error(SystemError.SERVICE_ERROR.getMessage(), exception);
         }
         return Json.error(exception).setData(exception.getData());
     }
@@ -201,9 +201,9 @@ public class ExceptionInterceptor {
     public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.DATABASE_UNKNOWN_FIELD.getMessage(), exception);
+            log.error(SystemError.DATABASE_UNKNOWN_FIELD.getMessage(), exception);
         }
-        return Json.error(Error.DATABASE_UNKNOWN_FIELD, String.format(
+        return Json.error(SystemError.DATABASE_UNKNOWN_FIELD, String.format(
                 MessageConstant.MISSING_FIELD_IN_DATABASE, exception.getPropertyName()
         ));
     }
@@ -217,9 +217,9 @@ public class ExceptionInterceptor {
     ) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.DATABASE_TABLE_OR_FIELD_ERROR.getMessage(), exception);
+            log.error(SystemError.DATABASE_TABLE_OR_FIELD_ERROR.getMessage(), exception);
         }
-        return Json.error(Error.DATABASE_TABLE_OR_FIELD_ERROR);
+        return Json.error(SystemError.DATABASE_TABLE_OR_FIELD_ERROR);
     }
 
     /**
@@ -229,20 +229,20 @@ public class ExceptionInterceptor {
     public Json maxUploadSizeExceededExceptionHandle(@NotNull MaxUploadSizeExceededException exception) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.FORBIDDEN_UPLOAD_MAX_SIZE.getMessage(), exception);
+            log.error(SystemError.FORBIDDEN_UPLOAD_MAX_SIZE.getMessage(), exception);
         }
-        return Json.error(Error.FORBIDDEN_UPLOAD_MAX_SIZE);
+        return Json.error(SystemError.FORBIDDEN_UPLOAD_MAX_SIZE);
     }
 
     /**
      * <h2>其他异常</h2>
      */
-    @ExceptionHandler(value = {Exception.class, RuntimeException.class})
-    public Object otherExceptionHandle(@NotNull Exception exception) {
+    @ExceptionHandler(value = {java.lang.Exception.class, RuntimeException.class})
+    public Object otherExceptionHandle(@NotNull java.lang.Exception exception) {
         log.error(exception.getMessage());
         if (AirConfig.getGlobalConfig().isDebug()) {
-            log.error(Error.ERROR.getMessage(), exception);
+            log.error(SystemError.SERVICE_ERROR.getMessage(), exception);
         }
-        return Json.error(Error.ERROR);
+        return Json.error(SystemError.SERVICE_ERROR);
     }
 }
