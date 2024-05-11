@@ -546,7 +546,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * <h2>保存到数据库</h2>
      *
      * @param entity 待保存实体
-     * @return 保存后的实体
+     * @return 实体ID
      */
     private long saveToDatabase(@NotNull E entity) {
         return saveToDatabase(entity, false);
@@ -557,7 +557,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      *
      * @param entity   待保存实体
      * @param withNull 是否保存空值
-     * @return 保存后的实体
+     * @return 实体ID
      */
     private long saveToDatabase(@NotNull E entity, boolean withNull) {
         checkUnique(entity);
@@ -573,6 +573,36 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
             }
             entity = withNull ? entity : getEntityForSave(entity, existEntity);
         }
+        if (Objects.isNull(entity.getCreateUserId())) {
+            entity.setCreateUserId(tryToGetCurrentUserId());
+        }
+        if (Objects.isNull(entity.getId())) {
+            // 新增
+            return saveAndFlush(entity);
+        }
+        // 修改前清掉JPA缓存，避免查询到旧数据
+        Utils.getEntityManager().clear();
+        // 有ID 走修改 且不允许修改下列字段
+        E existEntity = getById(entity.getId());
+        if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
+            // 如果数据库是null 且 传入的也是null 签名给空字符串
+            entity.setRemark(Constant.EMPTY_STRING);
+        }
+        if (Objects.isNull(entity.getUpdateUserId())) {
+            entity.setUpdateUserId(tryToGetCurrentUserId());
+        }
+        entity = withNull ? entity : getEntityForSave(entity, existEntity);
+        return saveAndFlush(entity);
+    }
+
+    /**
+     * <h2>🔴保存并强刷到数据库</h2>
+     *
+     * @param entity 保存的实体
+     * @return 实体ID
+     * @apiNote 🔴 仅供 {@link #saveToDatabase(E, boolean)} 调用
+     */
+    private long saveAndFlush(@NotNull E entity) {
         E target = getNewInstance();
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
@@ -852,5 +882,19 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
+    }
+
+    /**
+     * <h2>尝试获取当前登录用户ID</h2>
+     *
+     * @return 用户ID
+     */
+    protected final long tryToGetCurrentUserId() {
+        try {
+            String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
+            return Utils.getSecurityUtil().getUserIdFromAccessToken(accessToken);
+        } catch (Exception exception) {
+            return Constant.ZERO_LONG;
+        }
     }
 }
