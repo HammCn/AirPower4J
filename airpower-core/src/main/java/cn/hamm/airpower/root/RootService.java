@@ -2,18 +2,18 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
-import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.SystemError;
-import cn.hamm.airpower.exception.SystemException;
+import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
-import cn.hamm.airpower.util.AirUtil;
+import cn.hamm.airpower.util.Utils;
 import jakarta.persistence.Column;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +75,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     public final long add(@NotNull E source) {
         source = beforeAdd(source);
-        SystemError.SERVICE_ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
+        ServiceError.SERVICE_ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark(Constant.EMPTY_STRING);
@@ -137,9 +137,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     @SuppressWarnings("unused")
     public final void updateWithNull(@NotNull E source) {
-        SystemError.PARAM_MISSING.whenNull(source.getId(), String.format(
+        ServiceError.PARAM_MISSING.whenNull(source.getId(), String.format(
                 MessageConstant.MISSING_ID_WHEN_UPDATE,
-                AirUtil.getReflectUtil().getDescription(getEntityClass())
+                Utils.getReflectUtil().getDescription(getEntityClass())
         ));
         source = beforeUpdate(source);
         updateToDatabase(source, true);
@@ -471,9 +471,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     @Contract("_ -> param1")
     protected final @NotNull E ignoreReadOnlyFields(@NotNull E entity) {
-        AirUtil.getReflectUtil().getFieldList(getEntityClass()).stream()
-                .filter(field -> Objects.nonNull(AirUtil.getReflectUtil().getAnnotation(ReadOnly.class, field)))
-                .forEach(field -> AirUtil.getReflectUtil().clearFieldValue(entity, field));
+        Utils.getReflectUtil().getFieldList(getEntityClass()).stream()
+                .filter(field -> Objects.nonNull(Utils.getReflectUtil().getAnnotation(ReadOnly.class, field)))
+                .forEach(field -> Utils.getReflectUtil().clearFieldValue(entity, field));
         return entity;
     }
 
@@ -499,10 +499,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #updateWithNull(E)
      */
     protected final void updateToDatabase(@NotNull E source, boolean withNull) {
-        SystemError.SERVICE_ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
-        SystemError.PARAM_MISSING.whenNull(source.getId(), String.format(
+        ServiceError.SERVICE_ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
+        ServiceError.PARAM_MISSING.whenNull(source.getId(), String.format(
                 MessageConstant.MISSING_ID_WHEN_UPDATE,
-                AirUtil.getReflectUtil().getDescription(getEntityClass())
+                Utils.getReflectUtil().getDescription(getEntityClass())
         ));
         saveToDatabase(source, withNull);
     }
@@ -514,16 +514,16 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return 实体
      */
     private @NotNull E getById(long id) {
-        SystemError.PARAM_MISSING.whenNull(id, String.format(
+        ServiceError.PARAM_MISSING.whenNull(id, String.format(
                 MessageConstant.MISSING_ID_WHEN_QUERY,
-                AirUtil.getReflectUtil().getDescription(getEntityClass())
+                Utils.getReflectUtil().getDescription(getEntityClass())
         ));
         Optional<E> optional = repository.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
-        throw new SystemException(SystemError.DATA_NOT_FOUND, String.format(
-                MessageConstant.QUERY_DATA_NOT_FOUND, id, AirUtil.getReflectUtil().getDescription(getEntityClass())
+        throw new ServiceException(ServiceError.DATA_NOT_FOUND, String.format(
+                MessageConstant.QUERY_DATA_NOT_FOUND, id, Utils.getReflectUtil().getDescription(getEntityClass())
         ));
     }
 
@@ -564,7 +564,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         entity.setUpdateTime(System.currentTimeMillis());
         if (Objects.nonNull(entity.getId())) {
             // 修改前清掉JPA缓存，避免查询到旧数据
-            AirUtil.getEntityManager().clear();
+            Utils.getEntityManager().clear();
             // 有ID 走修改 且不允许修改下列字段
             E existEntity = getById(entity.getId());
             if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
@@ -578,7 +578,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
         // 新增完毕，清掉查询缓存，避免查询到旧数据
-        AirUtil.getEntityManager().clear();
+        Utils.getEntityManager().clear();
         return target.getId();
     }
 
@@ -602,10 +602,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @param entity 实体
      */
     private void checkUnique(@NotNull E entity) {
-        List<Field> fields = AirUtil.getReflectUtil().getFieldList(getEntityClass());
+        List<Field> fields = Utils.getReflectUtil().getFieldList(getEntityClass());
         for (Field field : fields) {
-            String fieldName = AirUtil.getReflectUtil().getDescription(field);
-            Column annotation = AirUtil.getReflectUtil().getAnnotation(Column.class, field);
+            String fieldName = Utils.getReflectUtil().getDescription(field);
+            Column annotation = Utils.getReflectUtil().getAnnotation(Column.class, field);
             if (Objects.isNull(annotation)) {
                 // 不是数据库列 不校验
                 continue;
@@ -614,13 +614,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 没有标唯一 不校验
                 continue;
             }
-            Object fieldValue = AirUtil.getReflectUtil().getFieldValue(entity, field);
+            Object fieldValue = Utils.getReflectUtil().getFieldValue(entity, field);
             if (Objects.isNull(fieldValue)) {
                 // 没有值 不校验
                 continue;
             }
             E search = getNewInstance();
-            AirUtil.getReflectUtil().setFieldValue(search, field, fieldValue);
+            Utils.getReflectUtil().setFieldValue(search, field, fieldValue);
             Example<E> example = Example.of(search);
             Optional<E> exist = repository.findOne(example);
             if (exist.isEmpty()) {
@@ -631,7 +631,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 修改自己 不校验
                 continue;
             }
-            SystemError.FORBIDDEN_EXIST.show(String.format(MessageConstant.TARGET_DATA_EXIST, fieldName, fieldValue));
+            ServiceError.FORBIDDEN_EXIST.show(String.format(MessageConstant.TARGET_DATA_EXIST, fieldName, fieldValue));
         }
     }
 
@@ -644,7 +644,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (Exception exception) {
-            throw new SystemException(exception.getMessage());
+            throw new ServiceException(exception.getMessage());
         }
     }
 
@@ -699,13 +699,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         sort = Objects.requireNonNullElse(sort, new Sort());
 
         if (!StringUtils.hasText(sort.getField())) {
-            sort.setField(AirConfig.getGlobalConfig().getDefaultSortField());
+            sort.setField(Configs.getServiceConfig().getDefaultSortField());
         }
 
         if (!StringUtils.hasText(sort.getDirection())) {
-            sort.setDirection(AirConfig.getGlobalConfig().getDefaultSortDirection());
+            sort.setDirection(Configs.getServiceConfig().getDefaultSortDirection());
         }
-        if (!AirConfig.getGlobalConfig().getDefaultSortDirection().equals(sort.getDirection())) {
+        if (!Configs.getServiceConfig().getDefaultSortDirection().equals(sort.getDirection())) {
             return org.springframework.data.domain.Sort.by(
                     org.springframework.data.domain.Sort.Order.asc(sort.getField())
             );
@@ -724,7 +724,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     private @NotNull Pageable createPageable(@NotNull QueryPageRequest<E> queryPageData) {
         Page page = Objects.requireNonNullElse(queryPageData.getPage(), new Page());
         page.setPageNum(Objects.requireNonNullElse(page.getPageNum(), 1));
-        page.setPageSize(Objects.requireNonNullElse(page.getPageSize(), AirConfig.getGlobalConfig().getDefaultPageSize()));
+        page.setPageSize(Objects.requireNonNullElse(page.getPageSize(), Configs.getServiceConfig().getDefaultPageSize()));
         int pageNumber = Math.max(0, page.getPageNum() - 1);
         int pageSize = Math.max(1, queryPageData.getPage().getPageSize());
         return PageRequest.of(pageNumber, pageSize, createSort(queryPageData.getSort()));
@@ -744,9 +744,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();
-        List<Field> fields = AirUtil.getReflectUtil().getFieldList(search.getClass());
+        List<Field> fields = Utils.getReflectUtil().getFieldList(search.getClass());
         for (Field field : fields) {
-            Object fieldValue = AirUtil.getReflectUtil().getFieldValue(search, field);
+            Object fieldValue = Utils.getReflectUtil().getFieldValue(search, field);
             if (Objects.isNull(fieldValue)) {
                 // 没有传入查询值 跳过
                 continue;
@@ -755,7 +755,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 // 空字符串 跳过
                 continue;
             }
-            Search searchMode = AirUtil.getReflectUtil().getAnnotation(Search.class, field);
+            Search searchMode = Utils.getReflectUtil().getAnnotation(Search.class, field);
             if (Objects.isNull(searchMode)) {
                 // 没有配置查询注解 跳过
                 continue;

@@ -1,8 +1,8 @@
 package cn.hamm.airpower.datasource;
 
-import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.SystemError;
+import cn.hamm.airpower.enums.ServiceError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -35,10 +35,10 @@ public class DataSourceAspect {
      */
     @Around("pointCut()")
     public Object multipleDataSource(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        SystemError.SERVICE_ERROR.when(!AirConfig.getGlobalConfig().isServiceRunning(), MessageConstant.SERVICE_MAINTAINING_AND_TRY_LATER);
+        ServiceError.SERVICE_ERROR.when(!Configs.getServiceConfig().isServiceRunning(), MessageConstant.SERVICE_MAINTAINING_AND_TRY_LATER);
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes()))
                 .getRequest();
-        String database = request.getHeader(AirConfig.getGlobalConfig().getTenantHeader());
+        String database = request.getHeader(Configs.getServiceConfig().getTenantHeader());
         if (!StringUtils.hasText(database)) {
             return proceedingJoinPoint.proceed();
         }

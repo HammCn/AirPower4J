@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @author Hamm.cn
  */
 @Component
-public class AirUtil {
+public class Utils {
     /**
      * <h2>Redis工具类</h2>
      */
@@ -143,7 +143,7 @@ public class AirUtil {
     private static NumberUtil numberUtil;
 
     @Autowired
-    AirUtil(
+    Utils(
             RedisUtil redisUtil,
             EmailUtil emailUtil,
             TransactionUtil transactionUtil,
@@ -166,27 +166,27 @@ public class AirUtil {
             HttpServletResponse httpServletResponse,
             NumberUtil numberUtil
     ) {
-        AirUtil.redisUtil = redisUtil;
-        AirUtil.emailUtil = emailUtil;
-        AirUtil.transactionUtil = transactionUtil;
-        AirUtil.treeUtil = treeUtil;
-        AirUtil.securityUtil = securityUtil;
-        AirUtil.rsaUtil = rsaUtil;
-        AirUtil.cookieUtil = cookieUtil;
-        AirUtil.mqttUtil = mqttUtil;
-        AirUtil.passwordUtil = passwordUtil;
-        AirUtil.accessUtil = accessUtil;
-        AirUtil.collectionUtil = collectionUtil;
-        AirUtil.dictionaryUtil = dictionaryUtil;
-        AirUtil.randomUtil = randomUtil;
-        AirUtil.reflectUtil = reflectUtil;
-        AirUtil.requestUtil = requestUtil;
-        AirUtil.validateUtil = validateUtil;
-        AirUtil.environment = environment;
-        AirUtil.entityManager = entityManager;
-        AirUtil.request = httpServletRequest;
-        AirUtil.response = httpServletResponse;
-        AirUtil.numberUtil = numberUtil;
+        Utils.redisUtil = redisUtil;
+        Utils.emailUtil = emailUtil;
+        Utils.transactionUtil = transactionUtil;
+        Utils.treeUtil = treeUtil;
+        Utils.securityUtil = securityUtil;
+        Utils.rsaUtil = rsaUtil;
+        Utils.cookieUtil = cookieUtil;
+        Utils.mqttUtil = mqttUtil;
+        Utils.passwordUtil = passwordUtil;
+        Utils.accessUtil = accessUtil;
+        Utils.collectionUtil = collectionUtil;
+        Utils.dictionaryUtil = dictionaryUtil;
+        Utils.randomUtil = randomUtil;
+        Utils.reflectUtil = reflectUtil;
+        Utils.requestUtil = requestUtil;
+        Utils.validateUtil = validateUtil;
+        Utils.environment = environment;
+        Utils.entityManager = entityManager;
+        Utils.request = httpServletRequest;
+        Utils.response = httpServletResponse;
+        Utils.numberUtil = numberUtil;
     }
 
     /**

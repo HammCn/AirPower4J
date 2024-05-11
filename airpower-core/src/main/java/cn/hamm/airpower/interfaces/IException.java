@@ -1,7 +1,7 @@
 package cn.hamm.airpower.interfaces;
 
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.exception.SystemException;
+import cn.hamm.airpower.exception.ServiceException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,8 +33,8 @@ public interface IException {
      * @return 异常
      */
     @Contract(" -> new")
-    private @NotNull SystemException create() {
-        return new SystemException(getCode(), getMessage());
+    private @NotNull ServiceException create() {
+        return new ServiceException(getCode(), getMessage());
     }
 
     /**

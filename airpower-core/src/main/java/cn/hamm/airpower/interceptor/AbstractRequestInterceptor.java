@@ -1,11 +1,11 @@
 package cn.hamm.airpower.interceptor;
 
-import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.enums.SystemError;
+import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.Access;
-import cn.hamm.airpower.util.AirUtil;
+import cn.hamm.airpower.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +54,9 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         setShareData(REQUEST_METHOD_KEY, method);
 
         if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) &&
-                AirConfig.getGlobalConfig().isEnableDocument()) {
+                Configs.getServiceConfig().isEnableDocument()) {
             // 如果是GET 方法，并且开启了文档
-            GetMapping getMapping = AirUtil.getReflectUtil().getAnnotation(GetMapping.class, method);
+            GetMapping getMapping = Utils.getReflectUtil().getAnnotation(GetMapping.class, method);
             if (Objects.isNull(getMapping)) {
                 // 如果没有GetMapping注解，则直接返回文档
                 ApiDocument.writeApiDocument(response, clazz, method);
@@ -65,25 +65,25 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         }
 
         beforeHandleRequest(request, response, clazz, method);
-        Access access = AirUtil.getAccessUtil().getWhatNeedAccess(clazz, method);
+        Access access = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
             return true;
         }
         //需要登录
-        String accessToken = request.getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader());
+        String accessToken = request.getHeader(Configs.getServiceConfig().getAuthorizeHeader());
 
         // 优先使用 Get 参数传入的身份
-        String accessTokenFromParam = request.getParameter(AirConfig.getGlobalConfig().getAuthorizeHeader());
+        String accessTokenFromParam = request.getParameter(Configs.getServiceConfig().getAuthorizeHeader());
         if (StringUtils.hasText(accessTokenFromParam)) {
             accessToken = accessTokenFromParam;
         }
-        SystemError.UNAUTHORIZED.whenEmpty(accessToken);
-        Long userId = AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
+        ServiceError.UNAUTHORIZED.whenEmpty(accessToken);
+        Long userId = Utils.getSecurityUtil().getUserIdFromAccessToken(accessToken);
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
-            return checkPermissionAccess(userId, AirUtil.getAccessUtil().getPermissionIdentity(clazz, method), request);
+            return checkPermissionAccess(userId, Utils.getAccessUtil().getPermissionIdentity(clazz, method), request);
         }
         return true;
     }
@@ -137,7 +137,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     protected final @NotNull String getRequestBody(HttpServletRequest request) {
         // 文件上传的请求 返回空
-        if (AirUtil.getRequestUtil().isUploadRequest(request)) {
+        if (Utils.getRequestUtil().isUploadRequest(request)) {
             return Constant.EMPTY_STRING;
         }
         try {

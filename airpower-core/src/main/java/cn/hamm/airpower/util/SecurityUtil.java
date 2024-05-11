@@ -1,8 +1,8 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.AirConfig;
-import cn.hamm.airpower.enums.SystemError;
-import cn.hamm.airpower.exception.SystemException;
+import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceException;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -25,11 +25,11 @@ public class SecurityUtil {
      * @param accessToken accessToken
      */
     public final long getUserIdFromAccessToken(String accessToken) {
-        Object data = AirUtil.getRedisUtil().get(ACCESS_TOKEN_PREFIX + accessToken);
+        Object data = Utils.getRedisUtil().get(ACCESS_TOKEN_PREFIX + accessToken);
         if (Objects.nonNull(data)) {
             return Long.parseLong(data.toString());
         }
-        throw new SystemException(SystemError.UNAUTHORIZED);
+        throw new ServiceException(ServiceError.UNAUTHORIZED);
     }
 
     /**
@@ -39,15 +39,15 @@ public class SecurityUtil {
      * @return AccessToken
      */
     public final String createAccessToken(Long userId) {
-        String accessToken = AirUtil.getRandomUtil().randomString();
+        String accessToken = Utils.getRandomUtil().randomString();
         try {
             getUserIdFromAccessToken(accessToken);
             return createAccessToken(userId);
         } catch (Exception ignored) {
             // 不存在 存储
-            AirUtil.getRedisUtil().set(
+            Utils.getRedisUtil().set(
                     ACCESS_TOKEN_PREFIX + accessToken, userId,
-                    AirConfig.getGlobalConfig().getAuthorizeExpireTime()
+                    Configs.getServiceConfig().getAuthorizeExpireTime()
             );
             return accessToken;
         }

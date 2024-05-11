@@ -3,7 +3,7 @@ package cn.hamm.airpower.interceptor.document;
 import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.model.Json;
-import cn.hamm.airpower.util.AirUtil;
+import cn.hamm.airpower.util.Utils;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import cn.hamm.airpower.validate.phone.Phone;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,11 +56,11 @@ public class ApiDocument {
     @SuppressWarnings("AlibabaMethodTooLong")
     public static void writeApiDocument(@NotNull HttpServletResponse response, Class<?> clazz, Method method) {
         ApiDocument apiDocument = new ApiDocument();
-        String className = AirUtil.getReflectUtil().getDescription(clazz);
-        String methodName = AirUtil.getReflectUtil().getDescription(method);
+        String className = Utils.getReflectUtil().getDescription(clazz);
+        String methodName = Utils.getReflectUtil().getDescription(method);
         apiDocument.setTitle(className + Constant.SPACE + methodName + " Api接口文档");
 
-        apiDocument.setDocument(AirUtil.getReflectUtil().getDocument(method));
+        apiDocument.setDocument(Utils.getReflectUtil().getDocument(method));
 
         apiDocument.setRequestParamList(getRequestParamList(clazz, method));
 
@@ -275,7 +275,7 @@ public class ApiDocument {
                     .getActualTypeArguments())[0]);
         }
 
-        List<Field> fields = AirUtil.getReflectUtil().getFieldList(paramClass);
+        List<Field> fields = Utils.getReflectUtil().getFieldList(paramClass);
 
         return getFieldList(fields, currentClass, action);
     }
@@ -285,16 +285,16 @@ public class ApiDocument {
     ) {
         List<ApiRequestParam> params = new ArrayList<>();
         for (Field field : fields) {
-            ReadOnly readOnly = AirUtil.getReflectUtil().getAnnotation(ReadOnly.class, field);
+            ReadOnly readOnly = Utils.getReflectUtil().getAnnotation(ReadOnly.class, field);
             if (Objects.nonNull(readOnly)) {
                 continue;
             }
             ApiRequestParam apiRequestParam = new ApiRequestParam();
             apiRequestParam.setName(field.getName());
-            apiRequestParam.setDescription(AirUtil.getReflectUtil().getDescription(field));
-            apiRequestParam.setDocument(AirUtil.getReflectUtil().getDocument(field));
+            apiRequestParam.setDescription(Utils.getReflectUtil().getDescription(field));
+            apiRequestParam.setDocument(Utils.getReflectUtil().getDocument(field));
             apiRequestParam.setType(field.getType().getSimpleName());
-            if (AirUtil.getReflectUtil().isModel(field.getType())) {
+            if (Utils.getReflectUtil().isModel(field.getType())) {
                 apiRequestParam.setLink(field.getType().getName());
             }
 
@@ -304,15 +304,15 @@ public class ApiDocument {
                         .getGenericSuperclass())
                         .getActualTypeArguments())[0];
                 apiRequestParam.setType(clazz.getSimpleName());
-                if (AirUtil.getReflectUtil().isModel(clazz)) {
+                if (Utils.getReflectUtil().isModel(clazz)) {
                     apiRequestParam.setLink(clazz.getName());
                 }
             }
 
-            jakarta.validation.constraints.NotNull notNull = AirUtil.getReflectUtil().getAnnotation(
+            jakarta.validation.constraints.NotNull notNull = Utils.getReflectUtil().getAnnotation(
                     jakarta.validation.constraints.NotNull.class, field
             );
-            NotBlank notBlank = AirUtil.getReflectUtil().getAnnotation(NotBlank.class, field);
+            NotBlank notBlank = Utils.getReflectUtil().getAnnotation(NotBlank.class, field);
 
             if (!action.equals(Void.class)) {
                 if (Objects.nonNull(notBlank) && Arrays.stream(notBlank.groups()).toList().contains(action)) {
@@ -323,19 +323,19 @@ public class ApiDocument {
                 }
             }
 
-            Dictionary dictionary = AirUtil.getReflectUtil().getAnnotation(Dictionary.class, field);
+            Dictionary dictionary = Utils.getReflectUtil().getAnnotation(Dictionary.class, field);
             if (Objects.nonNull(dictionary) && Arrays.stream(dictionary.groups()).toList().contains(action)) {
-                apiRequestParam.setDictionary(AirUtil.getDictionaryUtil().getDictionaryList(dictionary.value()));
+                apiRequestParam.setDictionary(Utils.getDictionaryUtil().getDictionaryList(dictionary.value()));
             }
 
-            Phone phone = AirUtil.getReflectUtil().getAnnotation(Phone.class, field);
+            Phone phone = Utils.getReflectUtil().getAnnotation(Phone.class, field);
             if (Objects.nonNull(phone) && Arrays.stream(phone.groups()).toList().contains(action)) {
                 if (phone.mobile() || phone.tel()) {
                     apiRequestParam.setPhone(true);
                 }
             }
 
-            Email email = AirUtil.getReflectUtil().getAnnotation(Email.class, field);
+            Email email = Utils.getReflectUtil().getAnnotation(Email.class, field);
             if (Objects.nonNull(email) && Arrays.stream(email.groups()).toList().contains(action)) {
                 apiRequestParam.setEmail(true);
             }
@@ -349,15 +349,15 @@ public class ApiDocument {
         System.out.println(packageName);
         try {
             Class<?> clazz = Class.forName(packageName);
-            if (!AirUtil.getReflectUtil().isModel(clazz)) {
+            if (!Utils.getReflectUtil().isModel(clazz)) {
                 return false;
             }
-            List<ApiRequestParam> params = getFieldList(AirUtil.getReflectUtil().getFieldList(clazz), clazz, Void.class);
+            List<ApiRequestParam> params = getFieldList(Utils.getReflectUtil().getFieldList(clazz), clazz, Void.class);
 
             ApiDocument apiDocument = new ApiDocument();
-            apiDocument.setTitle(AirUtil.getReflectUtil().getDescription(clazz) + " " + clazz.getSimpleName());
+            apiDocument.setTitle(Utils.getReflectUtil().getDescription(clazz) + " " + clazz.getSimpleName());
 
-            apiDocument.setDocument(AirUtil.getReflectUtil().getDocument(clazz));
+            apiDocument.setDocument(Utils.getReflectUtil().getDocument(clazz));
 
             apiDocument.setRequestParamList(params);
 

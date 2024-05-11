@@ -1,14 +1,14 @@
 package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Permission;
-import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.SystemError;
-import cn.hamm.airpower.exception.SystemException;
+import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.interfaces.ITry;
-import cn.hamm.airpower.util.AirUtil;
+import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,11 +30,11 @@ public class RootController implements IAction, ITry {
      */
     protected final long getCurrentUserId() {
         try {
-            String accessToken = AirUtil.getRequest().getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader());
-            return AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
+            String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
+            return Utils.getSecurityUtil().getUserIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             log.error(MessageConstant.FAILED_TO_LOAD_CURRENT_USER_INFO, exception);
-            throw new SystemException(SystemError.UNAUTHORIZED);
+            throw new ServiceException(ServiceError.UNAUTHORIZED);
         }
     }
 }

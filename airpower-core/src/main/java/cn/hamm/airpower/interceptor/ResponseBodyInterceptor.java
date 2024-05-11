@@ -4,7 +4,7 @@ import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.root.RootModel;
-import cn.hamm.airpower.util.AirUtil;
+import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -69,7 +69,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             return result;
         }
 
-        Filter filter = AirUtil.getReflectUtil().getAnnotation(Filter.class, method);
+        Filter filter = Utils.getReflectUtil().getAnnotation(Filter.class, method);
         if (Objects.isNull(filter)) {
             return result;
         }
@@ -87,12 +87,12 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
 
         Class<?> dataCls = json.getData().getClass();
         if (json.getData() instanceof Collection) {
-            Collection<M> collection = AirUtil.getCollectionUtil().getCollectWithoutNull(
+            Collection<M> collection = Utils.getCollectionUtil().getCollectWithoutNull(
                     (Collection<M>) json.getData(), dataCls
             );
             return json.setData(filterResponseListBy(filter, collection.stream().toList()));
         }
-        if (AirUtil.getReflectUtil().isModel(dataCls)) {
+        if (Utils.getReflectUtil().isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
             return json.setData(filterResponseBy(filter, (M) json.getData()));

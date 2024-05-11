@@ -6,8 +6,8 @@ import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Api;
-import cn.hamm.airpower.enums.SystemError;
-import cn.hamm.airpower.exception.SystemException;
+import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IEntityAction;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryPageRequest;
@@ -382,7 +382,7 @@ public class RootEntityController<
             return;
         }
 
-        SystemError.API_SERVICE_UNSUPPORTED.show();
+        ServiceError.API_SERVICE_UNSUPPORTED.show();
     }
 
     /**
@@ -394,7 +394,7 @@ public class RootEntityController<
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (java.lang.Exception exception) {
-            throw new SystemException(exception.getMessage());
+            throw new ServiceException(exception.getMessage());
         }
     }
 

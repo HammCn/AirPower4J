@@ -1,7 +1,7 @@
 package cn.hamm.airpower.resolver;
 
-import cn.hamm.airpower.config.AirConfig;
-import cn.hamm.airpower.util.AirUtil;
+import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -40,8 +40,8 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
     ) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String accessToken = Objects.nonNull(request) ?
-                request.getHeader(AirConfig.getGlobalConfig().getAuthorizeHeader()) :
+                request.getHeader(Configs.getServiceConfig().getAuthorizeHeader()) :
                 null;
-        return AirUtil.getSecurityUtil().getUserIdFromAccessToken(accessToken);
+        return Utils.getSecurityUtil().getUserIdFromAccessToken(accessToken);
     }
 }

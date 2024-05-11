@@ -1,7 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.SystemError;
+import cn.hamm.airpower.enums.ServiceError;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -22,8 +22,8 @@ public class PasswordUtil {
      * @return sha1散列摘要
      */
     public @NotNull String encode(@NotNull String password, @NotNull String salt) {
-        SystemError.PARAM_MISSING.whenEmpty(password, MessageConstant.PASSWORD_CAN_NOT_BE_NULL);
-        SystemError.PARAM_MISSING.whenEmpty(salt, MessageConstant.PASSWORD_SALT_CAN_NOT_BE_NULL);
+        ServiceError.PARAM_MISSING.whenEmpty(password, MessageConstant.PASSWORD_CAN_NOT_BE_NULL);
+        ServiceError.PARAM_MISSING.whenEmpty(salt, MessageConstant.PASSWORD_SALT_CAN_NOT_BE_NULL);
         return DigestUtils.sha1Hex(
                 DigestUtils.sha1Hex(password + salt) +
                         DigestUtils.sha1Hex(salt + password)

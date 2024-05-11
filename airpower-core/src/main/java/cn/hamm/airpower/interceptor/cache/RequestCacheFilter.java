@@ -1,6 +1,6 @@
 package cn.hamm.airpower.interceptor.cache;
 
-import cn.hamm.airpower.util.AirUtil;
+import cn.hamm.airpower.util.Utils;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ public class RequestCacheFilter implements Filter {
         }
         try {
             // 如果是上传 不做任何缓存
-            if (AirUtil.getRequestUtil().isUploadRequest(servletRequest)) {
+            if (Utils.getRequestUtil().isUploadRequest(servletRequest)) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }

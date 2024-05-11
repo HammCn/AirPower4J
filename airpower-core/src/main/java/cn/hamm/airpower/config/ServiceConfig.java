@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Accessors(chain = true)
 @Configuration
 @ConfigurationProperties("airpower")
-public class GlobalConfig {
+public class ServiceConfig {
     /**
      * <h2>多数据源数据库前缀</h2>
      */

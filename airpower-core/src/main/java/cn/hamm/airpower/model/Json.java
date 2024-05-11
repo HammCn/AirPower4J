@@ -3,8 +3,8 @@ package cn.hamm.airpower.model;
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.SystemError;
-import cn.hamm.airpower.exception.SystemException;
+import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IException;
 import cn.hamm.airpower.root.RootEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -124,7 +124,7 @@ public class Json {
      * @return Json
      */
     public static Json error(String message) {
-        return error(SystemError.SERVICE_ERROR, message);
+        return error(ServiceError.SERVICE_ERROR, message);
     }
 
     /**
@@ -152,7 +152,7 @@ public class Json {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
             log.error(MessageConstant.EXCEPTION_WHEN_JSON_PARSE, exception);
-            throw new SystemException(exception);
+            throw new ServiceException(exception);
         }
     }
 

@@ -1,6 +1,6 @@
 package cn.hamm.airpower.exception;
 
-import cn.hamm.airpower.enums.SystemError;
+import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.interfaces.IException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,16 +15,16 @@ import org.jetbrains.annotations.NotNull;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-public class SystemException extends RuntimeException implements IException {
+public class ServiceException extends RuntimeException implements IException {
     /**
      * <h2>错误代码</h2>
      */
-    private int code = SystemError.SERVICE_ERROR.getCode();
+    private int code = ServiceError.SERVICE_ERROR.getCode();
 
     /**
      * <h2>错误信息</h2>
      */
-    private String message = SystemError.SERVICE_ERROR.getMessage();
+    private String message = ServiceError.SERVICE_ERROR.getMessage();
 
     /**
      * <h2>错误数据</h2>
@@ -36,8 +36,8 @@ public class SystemException extends RuntimeException implements IException {
      *
      * @param message 错误信息
      */
-    public SystemException(String message) {
-        this.setCode(SystemError.SERVICE_ERROR.getCode()).setMessage(message);
+    public ServiceException(String message) {
+        this.setCode(ServiceError.SERVICE_ERROR.getCode()).setMessage(message);
     }
 
     /**
@@ -45,7 +45,7 @@ public class SystemException extends RuntimeException implements IException {
      *
      * @param errorCode 异常
      */
-    public SystemException(@NotNull SystemError errorCode) {
+    public ServiceException(@NotNull ServiceError errorCode) {
         this.setCode(errorCode.getCode()).setMessage(errorCode.getMessage());
     }
 
@@ -55,7 +55,7 @@ public class SystemException extends RuntimeException implements IException {
      * @param errorCode 异常
      * @param message   错误信息
      */
-    public SystemException(@NotNull SystemError errorCode, String message) {
+    public ServiceException(@NotNull ServiceError errorCode, String message) {
         this.setCode(errorCode.getCode())
                 .setMessage(message);
     }
@@ -66,7 +66,7 @@ public class SystemException extends RuntimeException implements IException {
      * @param code    错误代码
      * @param message 错误信息
      */
-    public SystemException(int code, String message) {
+    public ServiceException(int code, String message) {
         this.setCode(code).setMessage(message);
     }
 
@@ -75,7 +75,7 @@ public class SystemException extends RuntimeException implements IException {
      *
      * @param exception 异常
      */
-    public SystemException(@NotNull Exception exception) {
-        this.setCode(SystemError.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
+    public ServiceException(@NotNull Exception exception) {
+        this.setCode(ServiceError.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
     }
 }
