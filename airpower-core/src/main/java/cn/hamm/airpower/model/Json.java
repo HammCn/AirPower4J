@@ -13,7 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * <h1>简单JSON对象</h1>
@@ -24,23 +27,27 @@ import org.jetbrains.annotations.NotNull;
 @Accessors(chain = true)
 @Slf4j
 public class Json {
+    private static ObjectMapper objectMapper = null;
     /**
      * <h2>错误代码</h2>
      */
     @Description("错误代码")
     private int code = Constant.JSON_SUCCESS_CODE;
-
     /**
      * <h2>错误信息</h2>
      */
     @Description("错误信息")
     private String message = Constant.JSON_SUCCESS_MESSAGE;
-
     /**
      * <h2>返回数据</h2>
      */
     @Description("返回数据")
     private Object data;
+
+    @Contract(pure = true)
+    private Json() {
+        // 禁止外部实例化
+    }
 
     /**
      * <h2>输出提示信息</h2>
@@ -113,7 +120,7 @@ public class Json {
      * @param message 错误信息
      * @return Json
      */
-    public static Json error(IException error, String message) {
+    public static Json error(@NotNull IException error, String message) {
         return show(error.getCode(), message, null);
     }
 
@@ -178,9 +185,11 @@ public class Json {
      * @return ObjectMapper
      */
     private static @NotNull ObjectMapper getObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        // 忽略未声明的属性
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        if (Objects.isNull(objectMapper)) {
+            objectMapper = new ObjectMapper();
+            // 忽略未声明的属性
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        }
         return objectMapper;
     }
 
@@ -189,7 +198,8 @@ public class Json {
      *
      * @return JSON对象
      */
-    private static Json newJson() {
+    @Contract(" -> new")
+    private static @NotNull Json newJson() {
         return new Json();
     }
 }
