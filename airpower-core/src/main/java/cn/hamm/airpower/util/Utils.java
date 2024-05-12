@@ -142,6 +142,12 @@ public class Utils {
     @Getter
     private static NumberUtil numberUtil;
 
+    /**
+     * <h2>HTTP请求工具</h2>
+     */
+    @Getter
+    private static HttpUtil httpUtil;
+
     @Autowired
     Utils(
             RedisUtil redisUtil,
@@ -164,7 +170,8 @@ public class Utils {
             EntityManager entityManager,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
-            NumberUtil numberUtil
+            NumberUtil numberUtil,
+            HttpUtil httpUtil
     ) {
         Utils.redisUtil = redisUtil;
         Utils.emailUtil = emailUtil;
@@ -187,6 +194,7 @@ public class Utils {
         Utils.request = httpServletRequest;
         Utils.response = httpServletResponse;
         Utils.numberUtil = numberUtil;
+        Utils.httpUtil = httpUtil;
     }
 
     /**

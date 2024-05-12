@@ -84,6 +84,11 @@ public class Constant {
     public final static String COLON = ":";
 
     /**
+     * <h2>分号</h2>
+     */
+    public final static String SEMICOLON = ";";
+
+    /**
      * <h2>竖线</h2>
      */
     public final static String VERTICAL_LINE = "|";
@@ -97,6 +102,11 @@ public class Constant {
      * <h2>横线</h2>
      */
     public final static String LINE = "-";
+
+    /**
+     * <h2>等号</h2>
+     */
+    public final static String EQUAL = "=";
 
     /**
      * <h2>点</h2>
@@ -187,4 +197,6 @@ public class Constant {
      * <h2>JSON成功信息</h2>
      */
     public static final String JSON_SUCCESS_MESSAGE = "操作成功";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String COOKIE = "Cookie";
 }
