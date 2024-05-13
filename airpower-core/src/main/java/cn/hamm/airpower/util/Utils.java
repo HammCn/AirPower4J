@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -143,10 +145,14 @@ public class Utils {
     private static NumberUtil numberUtil;
 
     /**
-     * <h2>HTTP请求工具</h2>
+     * <h2>获取HttpUtil</h2>
+     *
+     * @return HttpUtil
      */
-    @Getter
-    private static HttpUtil httpUtil;
+    @Contract(" -> new")
+    public static @NotNull HttpUtil getHttpUtil() {
+        return new HttpUtil();
+    }
 
     @Autowired
     Utils(
@@ -170,8 +176,7 @@ public class Utils {
             EntityManager entityManager,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
-            NumberUtil numberUtil,
-            HttpUtil httpUtil
+            NumberUtil numberUtil
     ) {
         Utils.redisUtil = redisUtil;
         Utils.emailUtil = emailUtil;
@@ -194,7 +199,6 @@ public class Utils {
         Utils.request = httpServletRequest;
         Utils.response = httpServletResponse;
         Utils.numberUtil = numberUtil;
-        Utils.httpUtil = httpUtil;
     }
 
     /**

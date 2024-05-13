@@ -6,7 +6,7 @@ import cn.hamm.airpower.enums.HttpMethod;
 import cn.hamm.airpower.exception.ServiceException;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.stereotype.Component;
+import org.jetbrains.annotations.Contract;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,7 +20,6 @@ import java.util.*;
  *
  * @author Hamm.cn
  */
-@Component
 @Data
 @Accessors(chain = true, makeFinal = true)
 public class HttpUtil {
@@ -110,41 +109,59 @@ public class HttpUtil {
      */
     public final HttpResponse<String> send() {
         try {
-            HttpClient.Builder httpClientBuilder = HttpClient.newBuilder();
-            if (connectTimeout > 0) {
-                httpClientBuilder.connectTimeout(Duration.ofSeconds(connectTimeout));
-            }
-            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-                    .uri(URI.create(url));
-            this.headers.forEach((key, value) -> requestBuilder.header(key, value.toString()));
-            HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofString(body);
-            switch (method) {
-                case GET:
-                    requestBuilder.GET();
-                    break;
-                case POST:
-                    requestBuilder.POST(bodyPublisher);
-                    break;
-                case PUT:
-                    requestBuilder.PUT(bodyPublisher);
-                    break;
-                case DELETE:
-                    requestBuilder.DELETE();
-                    break;
-                default:
-            }
-            if (Objects.nonNull(cookies)) {
-                List<String> cookieList = new ArrayList<>();
-                cookies.forEach((key, value) -> cookieList.add(key + Constant.EQUAL + value));
-                requestBuilder.setHeader(Constant.COOKIE, String.join(Constant.SEMICOLON + Constant.SPACE, cookieList));
-            }
-            if (Objects.nonNull(contentType)) {
-                requestBuilder.header(Constant.CONTENT_TYPE, contentType.getValue());
-            }
-            return httpClientBuilder.build().send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+            return getHttpClient().send(getHttpRequest(), HttpResponse.BodyHandlers.ofString());
         } catch (Exception exception) {
             throw new ServiceException(exception);
         }
+    }
+
+    /**
+     * <h2>获取HttpRequest对象</h2>
+     *
+     * @return HttpRequest
+     */
+    private HttpRequest getHttpRequest() {
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+                .uri(URI.create(url));
+        this.headers.forEach((key, value) -> requestBuilder.header(key, value.toString()));
+        HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofString(body);
+        switch (method) {
+            case GET:
+                requestBuilder.GET();
+                break;
+            case POST:
+                requestBuilder.POST(bodyPublisher);
+                break;
+            case PUT:
+                requestBuilder.PUT(bodyPublisher);
+                break;
+            case DELETE:
+                requestBuilder.DELETE();
+                break;
+            default:
+        }
+        if (Objects.nonNull(cookies)) {
+            List<String> cookieList = new ArrayList<>();
+            cookies.forEach((key, value) -> cookieList.add(key + Constant.EQUAL + value));
+            requestBuilder.setHeader(Constant.COOKIE, String.join(Constant.SEMICOLON + Constant.SPACE, cookieList));
+        }
+        if (Objects.nonNull(contentType)) {
+            requestBuilder.header(Constant.CONTENT_TYPE, contentType.getValue());
+        }
+        return requestBuilder.build();
+    }
+
+    /**
+     * <h2>获取HttpClient</h2>
+     *
+     * @return HttpClient
+     */
+    private HttpClient getHttpClient() {
+        HttpClient.Builder httpClientBuilder = HttpClient.newBuilder();
+        if (connectTimeout > 0) {
+            httpClientBuilder.connectTimeout(Duration.ofSeconds(connectTimeout));
+        }
+        return httpClientBuilder.build();
     }
 
     /**
@@ -154,6 +171,7 @@ public class HttpUtil {
      * @param value Value
      * @return HttpUtil
      */
+    @Contract("_, _ -> this")
     public final HttpUtil addHeader(String key, Object value) {
         headers.put(key, value);
         return this;
