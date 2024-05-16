@@ -31,7 +31,7 @@ public class RootController implements IAction, ITry {
     protected final long getCurrentUserId() {
         try {
             String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
-            return Utils.getSecurityUtil().getUserIdFromAccessToken(accessToken);
+            return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             log.error(MessageConstant.FAILED_TO_LOAD_CURRENT_USER_INFO, exception);
             throw new ServiceException(ServiceError.UNAUTHORIZED);

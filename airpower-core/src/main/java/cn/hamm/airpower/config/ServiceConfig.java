@@ -29,6 +29,11 @@ public class ServiceConfig {
     private boolean enableDocument = false;
 
     /**
+     * <h2>AccessToken的密钥</h2>
+     */
+    private String accessTokenSecret = Constant.AIRPOWER;
+
+    /**
      * <h2>默认分页条数</h2>
      */
     private int defaultPageSize = 20;
@@ -66,7 +71,7 @@ public class ServiceConfig {
     /**
      * <h2>身份令牌有效期</h2>
      */
-    private int authorizeExpireTime = Constant.SECOND_PER_DAY;
+    private long authorizeExpireSecond = Constant.SECOND_PER_DAY;
 
     /**
      * <h2>多租户的header的key</h2>

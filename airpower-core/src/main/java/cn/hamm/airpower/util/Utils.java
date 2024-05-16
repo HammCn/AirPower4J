@@ -154,6 +154,16 @@ public class Utils {
         return new HttpUtil();
     }
 
+    /**
+     * <h2>获取TokenUtil</h2>
+     *
+     * @return TokenUtil
+     */
+    @Contract(" -> new")
+    public static @NotNull TokenUtil getTokenUtil() {
+        return new TokenUtil();
+    }
+
     @Autowired
     Utils(
             RedisUtil redisUtil,

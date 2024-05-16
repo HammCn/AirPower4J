@@ -26,7 +26,7 @@ public class Constant {
     /**
      * <h2>主键ID字段名</h2>
      */
-    public static final String ID_FIELD = "id";
+    public static final String ID = "id";
 
     /**
      * <h2>一分钟</h2>

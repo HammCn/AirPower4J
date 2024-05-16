@@ -1,11 +1,9 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.enums.ServiceError;
-import cn.hamm.airpower.exception.ServiceException;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * <h1>安全助手类</h1>
@@ -15,41 +13,27 @@ import java.util.Objects;
 @Component
 public class SecurityUtil {
     /**
-     * <h2>AccessToken在Redis的存储前缀</h2>
-     */
-    private final String ACCESS_TOKEN_PREFIX = "access_token_";
-
-    /**
-     * <h2>从AccessToken中获取用户ID</h2>
+     * <h2>从AccessToken中获取ID</h2>
      *
      * @param accessToken accessToken
      */
-    public final long getUserIdFromAccessToken(String accessToken) {
-        Object data = Utils.getRedisUtil().get(ACCESS_TOKEN_PREFIX + accessToken);
-        if (Objects.nonNull(data)) {
-            return Long.parseLong(data.toString());
-        }
-        throw new ServiceException(ServiceError.UNAUTHORIZED);
+    public final long getIdFromAccessToken(String accessToken) {
+        Object userId = Utils.getTokenUtil()
+                .verify(accessToken, Configs.getServiceConfig().getAccessTokenSecret())
+                .getPayload(Constant.ID);
+        ServiceError.UNAUTHORIZED.whenNull(userId);
+        return Long.parseLong(userId.toString());
     }
 
     /**
      * <h2>创建一个AccessToken</h2>
      *
-     * @param userId 用户ID
+     * @param id TokenID
      * @return AccessToken
      */
-    public final String createAccessToken(Long userId) {
-        String accessToken = Utils.getRandomUtil().randomString();
-        try {
-            getUserIdFromAccessToken(accessToken);
-            return createAccessToken(userId);
-        } catch (Exception ignored) {
-            // 不存在 存储
-            Utils.getRedisUtil().set(
-                    ACCESS_TOKEN_PREFIX + accessToken, userId,
-                    Configs.getServiceConfig().getAuthorizeExpireTime()
-            );
-            return accessToken;
-        }
+    public final String createAccessToken(Long id) {
+        return Utils.getTokenUtil().addPayload(Constant.ID, id)
+                .setExpireMillisecond(Configs.getServiceConfig().getAuthorizeExpireSecond() * 1000)
+                .create(Configs.getServiceConfig().getAccessTokenSecret());
     }
 }

@@ -81,7 +81,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             accessToken = accessTokenFromParam;
         }
         ServiceError.UNAUTHORIZED.whenEmpty(accessToken);
-        Long userId = Utils.getSecurityUtil().getUserIdFromAccessToken(accessToken);
+        Long userId = Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限

@@ -892,7 +892,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     protected final long tryToGetCurrentUserId() {
         try {
             String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
-            return Utils.getSecurityUtil().getUserIdFromAccessToken(accessToken);
+            return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             return Constant.ZERO_LONG;
         }

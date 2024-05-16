@@ -42,6 +42,6 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
         String accessToken = Objects.nonNull(request) ?
                 request.getHeader(Configs.getServiceConfig().getAuthorizeHeader()) :
                 null;
-        return Utils.getSecurityUtil().getUserIdFromAccessToken(accessToken);
+        return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
     }
 }
