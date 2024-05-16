@@ -27,12 +27,16 @@ import java.util.Map;
 @SuppressWarnings("AlibabaUndefineMagicConstant")
 @Slf4j
 public class TokenUtil {
+    /**
+     * <h2>算法</h2>
+     */
     private static final String HMAC_SHA_256 = "HmacSHA256";
+
     private static final String PAYLOADS_IS_EMPTY = "payloads is empty";
     private static final String HMAC_SHA_256_ERROR = "hmacSha256 error";
 
     /**
-     * <h2>AccessToken</h2>
+     * <h2>验证后的Token</h2>
      */
     private final VerifiedToken verifiedToken;
 
@@ -47,6 +51,7 @@ public class TokenUtil {
      * @return AccessToken
      */
     public final String create(String secret) {
+        ServiceError.PARAM_INVALID.whenEquals(Constant.AIRPOWER, secret, "身份令牌创建失败，请在环境变量配置 airpower.accessTokenSecret");
         if (verifiedToken.getPayloads().isEmpty()) {
             throw new ServiceException(PAYLOADS_IS_EMPTY);
         }
@@ -86,6 +91,7 @@ public class TokenUtil {
      * @param millisecond 过期毫秒
      * @return TokenUtil
      */
+    @Contract("_ -> this")
     public final TokenUtil setExpireMillisecond(long millisecond) {
         if (millisecond <= 0) {
             throw new ServiceException(ServiceError.PARAM_INVALID, "过期毫秒数必须大于0");
@@ -97,14 +103,14 @@ public class TokenUtil {
     /**
      * <h2>验证AccessToken并返回一个已验证的Token</h2>
      *
-     * @param token  AccessToken
-     * @param secret 密钥
+     * @param accessToken AccessToken
+     * @param secret      密钥
      * @return VerifiedToken
      */
-    public final VerifiedToken verify(@NotNull String token, String secret) {
+    public final VerifiedToken verify(@NotNull String accessToken, String secret) {
         String source;
         try {
-            source = new String(Base64.getUrlDecoder().decode(token.getBytes(StandardCharsets.UTF_8)));
+            source = new String(Base64.getUrlDecoder().decode(accessToken.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception exception) {
             throw new ServiceException(ServiceError.UNAUTHORIZED, "身份令牌无效，请重新获取身份令牌");
         }

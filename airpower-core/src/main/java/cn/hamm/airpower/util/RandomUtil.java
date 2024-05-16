@@ -24,6 +24,7 @@ public class RandomUtil {
      * <h2>数字</h2>
      */
     private static final String BASE_NUMBER = "0123456789";
+
     /**
      * <h2>小写字母和数字</h2>
      */
