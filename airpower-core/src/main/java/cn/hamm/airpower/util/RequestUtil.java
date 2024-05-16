@@ -2,7 +2,7 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Result;
+import cn.hamm.airpower.enums.ServiceError;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -83,13 +83,13 @@ public class RequestUtil {
                     }
                 } catch (UnknownHostException exception) {
                     log.error(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR, exception);
-                    Result.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
+                    ServiceError.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
                 }
             }
             return Constant.LOCAL_IP_ADDRESS;
         } catch (Exception exception) {
             log.error(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR, exception);
-            Result.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
+            ServiceError.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
         }
         return Constant.EMPTY_STRING;
     }

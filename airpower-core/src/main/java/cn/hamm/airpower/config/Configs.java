@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @author Hamm.cn
  */
 @Component
-public class AirConfig {
+public class Configs {
     /**
      * <h2>全局Cookie配置</h2>
      */
@@ -21,7 +21,7 @@ public class AirConfig {
      * <h2>全局配置</h2>
      */
     @Getter
-    private static GlobalConfig globalConfig;
+    private static ServiceConfig serviceConfig;
 
     /**
      * <h2>MQTT配置</h2>
@@ -30,13 +30,13 @@ public class AirConfig {
     private static MqttConfig mqttConfig;
 
     @Autowired
-    AirConfig(
+    Configs(
             CookieConfig cookieConfig,
-            GlobalConfig globalConfig,
+            ServiceConfig serviceConfig,
             MqttConfig mqttConfig
     ) {
-        AirConfig.cookieConfig = cookieConfig;
-        AirConfig.globalConfig = globalConfig;
-        AirConfig.mqttConfig = mqttConfig;
+        Configs.cookieConfig = cookieConfig;
+        Configs.serviceConfig = serviceConfig;
+        Configs.mqttConfig = mqttConfig;
     }
 }

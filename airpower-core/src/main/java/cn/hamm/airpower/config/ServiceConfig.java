@@ -17,16 +17,21 @@ import org.springframework.stereotype.Component;
 @Accessors(chain = true)
 @Configuration
 @ConfigurationProperties("airpower")
-public class GlobalConfig {
+public class ServiceConfig {
     /**
      * <h2>多数据源数据库前缀</h2>
      */
-    public String databasePrefix = "tenant_";
+    private String databasePrefix = "tenant_";
 
     /**
      * <h2>是否开启文档</h2>
      */
     private boolean enableDocument = false;
+
+    /**
+     * <h2>AccessToken的密钥</h2>
+     */
+    private String accessTokenSecret = Constant.AIRPOWER;
 
     /**
      * <h2>默认分页条数</h2>
@@ -66,7 +71,7 @@ public class GlobalConfig {
     /**
      * <h2>身份令牌有效期</h2>
      */
-    private int authorizeExpireTime = Constant.SECOND_PER_DAY;
+    private long authorizeExpireSecond = Constant.SECOND_PER_DAY;
 
     /**
      * <h2>多租户的header的key</h2>

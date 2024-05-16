@@ -6,11 +6,10 @@ import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Api;
-import cn.hamm.airpower.enums.Result;
-import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IEntityAction;
-import cn.hamm.airpower.model.json.Json;
-import cn.hamm.airpower.model.json.JsonData;
+import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
@@ -43,18 +42,6 @@ public class RootEntityController<
     protected S service;
 
     /**
-     * <h2>响应一个JsonData(只返回ID)</h2>
-     *
-     * @param id      主键ID
-     * @param message 消息
-     * @return JsonData
-     * @apiNote 如需抛出异常, 直接使用 {@link Result}
-     */
-    protected JsonData jsonId(Long id, String message) {
-        return new JsonData(new RootEntity<>().setId(id), message);
-    }
-
-    /**
      * <h2>添加一条新数据接口</h2>
      *
      * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
@@ -65,7 +52,7 @@ public class RootEntityController<
     @Description("添加")
     @RequestMapping("add")
     @Filter(WhenGetDetail.class)
-    public JsonData add(@RequestBody @Validated(WhenAdd.class) E entity) {
+    public Json add(@RequestBody @Validated(WhenAdd.class) E entity) {
         checkApiAvailableStatus(Api.Add);
         service.ignoreReadOnlyFields(entity);
         long insertId = service.add(beforeAdd(entity));
@@ -73,7 +60,7 @@ public class RootEntityController<
                 () -> afterAdd(insertId, entity),
                 () -> afterSaved(insertId, entity)
         );
-        return jsonId(insertId, MessageConstant.SUCCESS_TO_ADD);
+        return Json.entity(insertId, MessageConstant.SUCCESS_TO_ADD);
     }
 
     /**
@@ -87,7 +74,7 @@ public class RootEntityController<
     @Description("修改")
     @RequestMapping("update")
     @Filter(WhenGetDetail.class)
-    public JsonData update(@RequestBody @Validated(WhenUpdate.class) @NotNull E entity) {
+    public Json update(@RequestBody @Validated(WhenUpdate.class) @NotNull E entity) {
         checkApiAvailableStatus(Api.Update);
         long updateId = entity.getId();
         service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)));
@@ -95,7 +82,7 @@ public class RootEntityController<
                 () -> afterUpdate(updateId, entity),
                 () -> afterSaved(updateId, entity)
         );
-        return jsonId(updateId, MessageConstant.SUCCESS_TO_UPDATE);
+        return Json.entity(updateId, MessageConstant.SUCCESS_TO_UPDATE);
     }
 
     /**
@@ -115,7 +102,7 @@ public class RootEntityController<
         execute(
                 () -> afterDelete(deleteId)
         );
-        return jsonId(deleteId, MessageConstant.SUCCESS_TO_DELETE);
+        return Json.entity(deleteId, MessageConstant.SUCCESS_TO_DELETE);
     }
 
     /**
@@ -127,9 +114,9 @@ public class RootEntityController<
     @Description("查询详情")
     @RequestMapping("getDetail")
     @Filter(WhenGetDetail.class)
-    public JsonData getDetail(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
+    public Json getDetail(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
         checkApiAvailableStatus(Api.GetDetail);
-        return jsonData(afterGetDetail(service.get(entity.getId())));
+        return Json.data(afterGetDetail(service.get(entity.getId())));
     }
 
     /**
@@ -148,7 +135,7 @@ public class RootEntityController<
         execute(
                 () -> afterDisable(entity.getId())
         );
-        return jsonId(entity.getId(), MessageConstant.SUCCESS_TO_DISABLE);
+        return Json.entity(entity.getId(), MessageConstant.SUCCESS_TO_DISABLE);
     }
 
     /**
@@ -167,7 +154,7 @@ public class RootEntityController<
         execute(
                 () -> afterEnable(entity.getId())
         );
-        return jsonId(entity.getId(), MessageConstant.SUCCESS_TO_ENABLE);
+        return Json.entity(entity.getId(), MessageConstant.SUCCESS_TO_ENABLE);
     }
 
     /**
@@ -180,10 +167,10 @@ public class RootEntityController<
     @Description("不分页查询")
     @RequestMapping("getList")
     @Filter(WhenGetList.class)
-    public JsonData getList(@RequestBody QueryRequest<E> queryRequest) {
+    public Json getList(@RequestBody QueryRequest<E> queryRequest) {
         queryRequest = getQueryRequest(queryRequest);
         checkApiAvailableStatus(Api.GetList);
-        return jsonData(afterGetList(service.getList(beforeGetList(queryRequest))));
+        return Json.data(afterGetList(service.getList(beforeGetList(queryRequest))));
     }
 
     /**
@@ -196,10 +183,10 @@ public class RootEntityController<
     @Description("分页查询")
     @RequestMapping("getPage")
     @Filter(WhenGetPage.class)
-    public JsonData getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
+    public Json getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         queryPageRequest = getQueryRequest(queryPageRequest);
         checkApiAvailableStatus(Api.GetPage);
-        return jsonData(afterGetPage(service.getPage(beforeGetPage(queryPageRequest))));
+        return Json.data(afterGetPage(service.getPage(beforeGetPage(queryPageRequest))));
     }
 
     /**
@@ -395,7 +382,7 @@ public class RootEntityController<
             return;
         }
 
-        Result.API_SERVICE_UNSUPPORTED.show();
+        ServiceError.API_SERVICE_UNSUPPORTED.show();
     }
 
     /**
@@ -406,8 +393,8 @@ public class RootEntityController<
     private @NotNull E getNewInstance() {
         try {
             return getEntityClass().getConstructor().newInstance();
-        } catch (Exception exception) {
-            throw new ResultException(exception.getMessage());
+        } catch (java.lang.Exception exception) {
+            throw new ServiceException(exception.getMessage());
         }
     }
 

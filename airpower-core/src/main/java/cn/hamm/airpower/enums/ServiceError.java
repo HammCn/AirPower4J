@@ -1,20 +1,19 @@
 package cn.hamm.airpower.enums;
 
-import cn.hamm.airpower.interfaces.IResult;
+import cn.hamm.airpower.interfaces.IException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * <h1>系统异常代码字典</h1>
+ * <h1>系统错误代码字典</h1>
  *
  * @author Hamm.cn
- * @apiNote 如需自定义业务异常，可自行创建一个新业务异常枚举类并实现 {@link IResult} 接口即可。
+ * @apiNote 如需自定义业务异常，可自行创建一个新业务异常枚举类并实现 {@link IException} 接口即可。
  */
 @SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
 @Getter
 @AllArgsConstructor
-public enum Result implements IResult {
-    SUCCESS(200, "成功"),
+public enum ServiceError implements IException {
     CONTINUE(201, "请继续"),
 
     UPGRADE_CLIENT_NECESSARY(301, "请更新客户端"),
@@ -43,7 +42,7 @@ public enum Result implements IResult {
     REQUEST_CONTENT_TYPE_UNSUPPORTED(415, "不支持的数据类型"),
 
     // 500 服务基础代码
-    ERROR(500, "服务发生错误,请稍后再试"),
+    SERVICE_ERROR(500, "服务发生错误,请稍后再试"),
     API_SERVICE_UNSUPPORTED(501, "请求的接口暂未实现"),
 
     // 502 内部错误代码

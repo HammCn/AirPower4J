@@ -1,10 +1,10 @@
 package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.annotation.Filter;
-import cn.hamm.airpower.model.json.JsonData;
+import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.root.RootModel;
-import cn.hamm.airpower.util.AirUtil;
+import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -60,16 +60,16 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     @Contract("null, _ -> null")
     @SuppressWarnings({"unchecked", "RedundantSuppression"})
     private <M extends RootModel<M>> Object getResult(Object result, Method method) {
-        if (!(result instanceof JsonData jsonData)) {
+        if (!(result instanceof Json json)) {
             // 返回不是JsonData 原样返回
             return result;
         }
 
-        if (Objects.isNull(jsonData.getData())) {
+        if (Objects.isNull(json.getData())) {
             return result;
         }
 
-        Filter filter = AirUtil.getReflectUtil().getAnnotation(Filter.class, method);
+        Filter filter = Utils.getReflectUtil().getAnnotation(Filter.class, method);
         if (Objects.isNull(filter)) {
             return result;
         }
@@ -78,28 +78,28 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             return result;
         }
 
-        if (jsonData.getData() instanceof QueryPageResponse) {
-            QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) jsonData.getData();
+        if (json.getData() instanceof QueryPageResponse) {
+            QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) json.getData();
             // 如果 data 分页对象
             filterResponseListBy(filter, queryPageResponse.getList());
-            return jsonData.setData(queryPageResponse);
+            return json.setData(queryPageResponse);
         }
 
-        Class<?> dataCls = jsonData.getData().getClass();
-        if (jsonData.getData() instanceof Collection) {
-            Collection<M> collection = AirUtil.getCollectionUtil().getCollectWithoutNull(
-                    (Collection<M>) jsonData.getData(), dataCls
+        Class<?> dataCls = json.getData().getClass();
+        if (json.getData() instanceof Collection) {
+            Collection<M> collection = Utils.getCollectionUtil().getCollectWithoutNull(
+                    (Collection<M>) json.getData(), dataCls
             );
-            return jsonData.setData(filterResponseListBy(filter, collection.stream().toList()));
+            return json.setData(filterResponseListBy(filter, collection.stream().toList()));
         }
-        if (AirUtil.getReflectUtil().isModel(dataCls)) {
+        if (Utils.getReflectUtil().isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
-            return jsonData.setData(filterResponseBy(filter, (M) jsonData.getData()));
+            return json.setData(filterResponseBy(filter, (M) json.getData()));
         }
 
         // 其他数据 原样返回
-        return jsonData;
+        return json;
     }
 
     /**
@@ -152,7 +152,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     private <M extends RootModel<M>> List<M> filterResponseListBy(@NotNull Filter filter, List<M> list) {
         try {
             list.forEach(item -> filterResponseBy(filter, item));
-        } catch (Exception exception) {
+        } catch (java.lang.Exception exception) {
             log.error(exception.getMessage(), exception);
         }
         return list;

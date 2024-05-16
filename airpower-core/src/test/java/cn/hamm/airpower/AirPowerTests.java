@@ -8,4 +8,8 @@ public class AirPowerTests {
     void init() {
         System.out.println("Hello AirPower Tests");
     }
+
+    @Test
+    void request() {
+    }
 }

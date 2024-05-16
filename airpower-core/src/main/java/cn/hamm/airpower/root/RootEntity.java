@@ -3,7 +3,7 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.*;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IEntity;
 import cn.hamm.airpower.interfaces.IEntityAction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -215,7 +215,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
             return target;
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
-            throw new ResultException(exception);
+            throw new ServiceException(exception);
         }
     }
 }

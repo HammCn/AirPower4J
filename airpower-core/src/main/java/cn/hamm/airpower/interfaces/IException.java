@@ -1,18 +1,18 @@
 package cn.hamm.airpower.interfaces;
 
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.exception.ResultException;
+import cn.hamm.airpower.exception.ServiceException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 /**
- * <h1>返回数据的接口</h1>
+ * <h1>响应结果</h1>
  *
  * @author Hamm.cn
  */
-public interface IResult {
+public interface IException {
     /**
      * <h2>获取错误代码</h2>
      *
@@ -33,8 +33,8 @@ public interface IResult {
      * @return 异常
      */
     @Contract(" -> new")
-    private @NotNull ResultException create() {
-        return new ResultException(getCode(), getMessage());
+    private @NotNull ServiceException create() {
+        return new ServiceException(getCode(), getMessage());
     }
 
     /**

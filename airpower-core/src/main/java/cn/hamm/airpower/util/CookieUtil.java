@@ -1,6 +1,6 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.AirConfig;
+import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.CookieConfig;
 import jakarta.servlet.http.Cookie;
 import org.jetbrains.annotations.NotNull;
@@ -24,9 +24,9 @@ public class CookieUtil {
      */
     public final @NotNull Cookie getCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
-        cookie.setHttpOnly(AirConfig.getCookieConfig().isCookieHttpOnly());
-        cookie.setMaxAge(AirConfig.getCookieConfig().getCookieMaxAge());
-        cookie.setSecure(AirConfig.getCookieConfig().isCookieSecurity());
+        cookie.setHttpOnly(Configs.getCookieConfig().isCookieHttpOnly());
+        cookie.setMaxAge(Configs.getCookieConfig().getCookieMaxAge());
+        cookie.setSecure(Configs.getCookieConfig().isCookieSecurity());
         cookie.setPath(cookie.getPath());
         return cookie;
     }
@@ -39,6 +39,6 @@ public class CookieUtil {
      * @see CookieConfig
      */
     public final @NotNull Cookie getAuthorizeCookie(String value) {
-        return getCookie(AirConfig.getCookieConfig().getAuthCookieName(), value);
+        return getCookie(Configs.getCookieConfig().getAuthCookieName(), value);
     }
 }

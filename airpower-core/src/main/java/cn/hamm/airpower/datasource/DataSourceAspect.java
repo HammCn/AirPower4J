@@ -1,8 +1,6 @@
 package cn.hamm.airpower.datasource;
 
-import cn.hamm.airpower.config.AirConfig;
-import cn.hamm.airpower.config.MessageConstant;
-import cn.hamm.airpower.enums.Result;
+import cn.hamm.airpower.config.Configs;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -35,10 +33,9 @@ public class DataSourceAspect {
      */
     @Around("pointCut()")
     public Object multipleDataSource(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Result.ERROR.when(!AirConfig.getGlobalConfig().isServiceRunning(), MessageConstant.SERVICE_MAINTAINING_AND_TRY_LATER);
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes()))
                 .getRequest();
-        String database = request.getHeader(AirConfig.getGlobalConfig().getTenantHeader());
+        String database = request.getHeader(Configs.getServiceConfig().getTenantHeader());
         if (!StringUtils.hasText(database)) {
             return proceedingJoinPoint.proceed();
         }
@@ -49,7 +46,6 @@ public class DataSourceAspect {
             // 销毁数据源 在执行方法之后
             DataSourceResolver.clearDataSourceParam();
         }
-
     }
 }
 

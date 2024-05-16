@@ -1,8 +1,8 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.AirConfig;
-import cn.hamm.airpower.enums.Result;
-import cn.hamm.airpower.model.json.Json;
+import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootEntity;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +80,7 @@ public class RedisUtil {
      * @param entity 实体
      */
     public final <E extends RootEntity<E>> void saveEntity(E entity) {
-        saveEntity(entity, AirConfig.getGlobalConfig().getCacheExpireSecond());
+        saveEntity(entity, Configs.getServiceConfig().getCacheExpireSecond());
     }
 
     /**
@@ -100,7 +100,7 @@ public class RedisUtil {
      * @param entity 实体
      */
     public final <E extends RootEntity<E>> void saveEntity(String key, E entity) {
-        saveEntity(key, entity, AirConfig.getGlobalConfig().getCacheExpireSecond());
+        saveEntity(key, entity, Configs.getServiceConfig().getCacheExpireSecond());
     }
 
     /**
@@ -125,9 +125,9 @@ public class RedisUtil {
             if (second > 0) {
                 redisTemplate.expire(key, second, TimeUnit.SECONDS);
             }
-        } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+        } catch (java.lang.Exception exception) {
+            log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
+            ServiceError.REDIS_ERROR.show();
         }
     }
 
@@ -142,9 +142,9 @@ public class RedisUtil {
             if (Objects.nonNull(keys)) {
                 redisTemplate.delete(keys);
             }
-        } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+        } catch (java.lang.Exception exception) {
+            log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
+            ServiceError.REDIS_ERROR.show();
         }
     }
 
@@ -158,9 +158,9 @@ public class RedisUtil {
         try {
             //noinspection ConstantConditions
             return redisTemplate.getExpire(key, TimeUnit.SECONDS);
-        } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+        } catch (java.lang.Exception exception) {
+            log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
+            ServiceError.REDIS_ERROR.show();
         }
         return 0;
     }
@@ -175,7 +175,7 @@ public class RedisUtil {
         try {
             //noinspection ConstantConditions
             return redisTemplate.hasKey(key);
-        } catch (Exception ignored) {
+        } catch (java.lang.Exception ignored) {
             return false;
         }
     }
@@ -188,9 +188,9 @@ public class RedisUtil {
     public final void del(String key) {
         try {
             redisTemplate.delete(key);
-        } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+        } catch (java.lang.Exception exception) {
+            log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
+            ServiceError.REDIS_ERROR.show();
         }
     }
 
@@ -203,9 +203,9 @@ public class RedisUtil {
     public final @Nullable Object get(String key) {
         try {
             return redisTemplate.opsForValue().get(key);
-        } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+        } catch (java.lang.Exception exception) {
+            log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
+            ServiceError.REDIS_ERROR.show();
         }
         return null;
     }
@@ -217,7 +217,7 @@ public class RedisUtil {
      * @param value 值
      */
     public final void set(String key, Object value) {
-        set(key, value, AirConfig.getGlobalConfig().getCacheExpireSecond());
+        set(key, value, Configs.getServiceConfig().getCacheExpireSecond());
     }
 
     /**
@@ -235,9 +235,9 @@ public class RedisUtil {
             } else {
                 set(key, value);
             }
-        } catch (Exception exception) {
-            log.error(Result.REDIS_ERROR.getMessage(), exception);
-            Result.REDIS_ERROR.show();
+        } catch (java.lang.Exception exception) {
+            log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
+            ServiceError.REDIS_ERROR.show();
         }
     }
 
