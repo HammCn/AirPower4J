@@ -7,7 +7,9 @@ import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IException;
 import cn.hamm.airpower.root.RootEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -16,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -163,6 +167,43 @@ public class Json {
         }
     }
 
+    /**
+     * <h2>Json反序列化位Map</h2>
+     *
+     * @param json 字符串
+     * @return Map
+     */
+    public static Map<String, Object> parse2Map(String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        try {
+            TypeReference<Map<String, Object>> typeRef = new TypeReference<>() {
+            };
+            return objectMapper.readValue(json, typeRef);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ServiceException(exception);
+        }
+    }
+
+    /**
+     * <h2>Json反序列化为ListMap</h2>
+     *
+     * @param json 字符串
+     * @return List<Map>
+     */
+    public static List<Map<String, Object>> parse2MapList(String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        try {
+            TypeReference<List<Map<String, Object>>> typeRef = new TypeReference<>() {
+            };
+            return objectMapper.readValue(json, typeRef);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ServiceException(exception);
+        }
+    }
 
     /**
      * <h2>Json序列化到字符串</h2>
