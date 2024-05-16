@@ -197,6 +197,14 @@ public class Constant {
      * <h2>JSON成功信息</h2>
      */
     public static final String JSON_SUCCESS_MESSAGE = "操作成功";
+
+    /**
+     * <h2>ContentType</h2>
+     */
     public static final String CONTENT_TYPE = "Content-Type";
+
+    /**
+     * <h2>Cookie</h2>
+     */
     public static final String COOKIE = "Cookie";
 }

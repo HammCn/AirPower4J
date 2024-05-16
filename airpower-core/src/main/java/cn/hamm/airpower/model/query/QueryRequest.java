@@ -42,7 +42,6 @@ public class QueryRequest<M extends RootModel<M>> extends RootModel<QueryRequest
      * @param filter 过滤器
      * @return 请求
      */
-    @SuppressWarnings("UnusedReturnValue")
     public QueryRequest<M> setFilter(M filter) {
         this.filter = filter;
         return this;

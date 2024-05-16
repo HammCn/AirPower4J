@@ -65,6 +65,7 @@ public class HttpUtil {
      * @param value Value
      * @return HttpUtil
      */
+    @Contract("_, _ -> this")
     public final HttpUtil addCookie(String key, String value) {
         cookies.put(key, value);
         return this;

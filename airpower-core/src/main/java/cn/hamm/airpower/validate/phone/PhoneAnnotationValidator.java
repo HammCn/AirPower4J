@@ -6,7 +6,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
-
 /**
  * <h1>电话验证实现类</h1>
  *
@@ -14,11 +13,12 @@ import org.springframework.util.StringUtils;
  */
 public class PhoneAnnotationValidator implements ConstraintValidator<Phone, String> {
     /**
-     * 是否座机
+     * <h2>是否座机</h2>
      */
     private boolean tel = true;
+
     /**
-     * 是否手机号
+     * <h2>是否手机号</h2>
      */
     private boolean mobile = true;
 

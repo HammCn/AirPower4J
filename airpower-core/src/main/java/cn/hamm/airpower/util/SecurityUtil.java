@@ -18,6 +18,7 @@ public class SecurityUtil {
      * @param accessToken accessToken
      */
     public final long getIdFromAccessToken(String accessToken) {
+        ServiceError.UNAUTHORIZED.whenNull(accessToken);
         Object userId = Utils.getTokenUtil()
                 .verify(accessToken, Configs.getServiceConfig().getAccessTokenSecret())
                 .getPayload(Constant.ID);

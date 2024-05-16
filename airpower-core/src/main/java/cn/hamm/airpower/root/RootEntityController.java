@@ -381,7 +381,6 @@ public class RootEntityController<
             // 不在黑名单里
             return;
         }
-
         ServiceError.API_SERVICE_UNSUPPORTED.show();
     }
 

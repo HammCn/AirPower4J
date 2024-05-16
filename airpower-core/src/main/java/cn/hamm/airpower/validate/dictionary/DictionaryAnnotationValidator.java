@@ -15,6 +15,9 @@ import java.util.Objects;
  * @author Hamm.cn
  */
 public class DictionaryAnnotationValidator implements ConstraintValidator<Dictionary, Integer> {
+    /**
+     * <h2>标记的枚举类</h2>
+     */
     private Class<? extends IDictionary> enumClazz = null;
 
     @Contract("null, _ -> true")
