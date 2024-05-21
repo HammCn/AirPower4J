@@ -36,6 +36,11 @@ public class TokenUtil {
     private static final String HMAC_SHA_256_ERROR = "hmacSha256 error";
 
     /**
+     * <h2>Token由3部分组成</h2>
+     */
+    private static final int TOKEN_PART_COUNT = 3;
+
+    /**
      * <h2>验证后的Token</h2>
      */
     private final VerifiedToken verifiedToken;
@@ -117,8 +122,8 @@ public class TokenUtil {
         if (!StringUtils.hasText(source)) {
             throw new ServiceException(ServiceError.UNAUTHORIZED, "身份令牌无效，请重新获取身份令牌");
         }
-        String[] list = source.split("\\.");
-        if (list.length != 3) {
+        String[] list = source.split(Constant.DOT_REGEX);
+        if (list.length != TOKEN_PART_COUNT) {
             throw new ServiceException(ServiceError.UNAUTHORIZED);
         }
         if (!hmacSha256(secret, list[0] + Constant.DOT + list[2]).equals(list[1])) {

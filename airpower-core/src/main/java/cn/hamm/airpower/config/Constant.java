@@ -114,6 +114,16 @@ public class Constant {
     public final static String DOT = ".";
 
     /**
+     * <h2>点的正则</h2>
+     */
+    public static final String DOT_REGEX = "\\.";
+
+    /**
+     * <h2>*</h2>
+     */
+    public final static String ASTERISK = "*";
+
+    /**
      * <h2>控制器后缀</h2>
      */
     public static final String CONTROLLER_SUFFIX = "Controller";
