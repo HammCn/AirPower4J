@@ -129,6 +129,11 @@ public class Constant {
     public static final String CONTROLLER_SUFFIX = "Controller";
 
     /**
+     * <h2>get</h2>
+     */
+    public static final String GET = "get";
+
+    /**
      * <h2>Key</h2>
      */
     public static final String KEY = "key";

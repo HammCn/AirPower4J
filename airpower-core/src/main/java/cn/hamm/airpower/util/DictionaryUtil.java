@@ -1,17 +1,17 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.interfaces.IDictionary;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * <h1>枚举字典助手</h1>
@@ -21,6 +21,7 @@ import java.util.Map;
 @Slf4j
 @Component
 public class DictionaryUtil {
+
     /**
      * <h2>查询指定key的枚举字典项目</h2>
      *
@@ -32,14 +33,11 @@ public class DictionaryUtil {
 
     public final <D extends IDictionary> @Nullable D getDictionaryByKey(@NotNull Class<D> enumClass, int key) {
         try {
-            Method getKey = enumClass.getMethod("getKey");
             // 取出所有枚举类型
-            Object[] objs = enumClass.getEnumConstants();
-            for (Object obj : objs) {
-                int exitValue = (int) getKey.invoke(obj);
-                if (exitValue == key) {
-                    //noinspection unchecked
-                    return (D) obj;
+            D[] objs = enumClass.getEnumConstants();
+            for (D obj : objs) {
+                if (obj.equalsKey(key)) {
+                    return obj;
                 }
             }
         } catch (Exception exception) {
@@ -54,36 +52,45 @@ public class DictionaryUtil {
      * @param clazz 枚举类
      * @return 返回结果
      */
-    public final <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(@NotNull Class<D> clazz) {
-        return getDictionaryList(clazz, "key", "label");
+    public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(@NotNull Class<D> clazz) {
+        return getDictionaryList(clazz, IDictionary::getKey, IDictionary::getLabel);
     }
-
 
     /**
      * <h2>获取指定枚举类的Map数据</h2>
      *
-     * @param clazz  枚举类
-     * @param params 参数列表
+     * @param clazz     枚举类
+     * @param functions 枚举类中的方法
      * @return 返回结果
      */
-    public final <D extends IDictionary> @NotNull List<Map<String, String>> getDictionaryList(
-            @NotNull Class<D> clazz, String... params
+    @SafeVarargs
+    public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(
+            @NotNull Class<D> clazz, Function<D, Object>... functions
     ) {
-        List<Map<String, String>> mapList = new ArrayList<>();
-        for (Object obj : clazz.getEnumConstants()) {
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        for (D d : clazz.getEnumConstants()) {
             //取出所有枚举类型
-            Map<String, String> item = new HashMap<>(params.length);
-            for (String param : params) {
-                // 依次取出参数的值
-                try {
-                    Method method = clazz.getMethod("get" + StringUtils.capitalize(param));
-                    item.put(param, method.invoke(obj).toString());
-                } catch (Exception exception) {
-                    log.error(exception.getMessage(), exception);
-                }
+            Map<String, Object> item = new HashMap<>(functions.length);
+            for (Function<D, Object> function : functions) {
+                item.put(function.toString().replace(Constant.GET, Constant.EMPTY_STRING).toLowerCase(), function.apply(d));
             }
             mapList.add(item);
         }
         return mapList;
+    }
+
+    public <D extends IDictionary> D getDictionary(@NotNull Class<D> enumClass, Function<D, Object> function, Object value) {
+        try {
+            // 取出所有枚举类型
+            D[] objs = enumClass.getEnumConstants();
+            for (D obj : objs) {
+                if (function.apply(obj).equals(value)) {
+                    return obj;
+                }
+            }
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+        }
+        return null;
     }
 }
