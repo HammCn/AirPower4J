@@ -260,6 +260,4 @@ public class RedisUtil {
     private @NotNull <E extends RootEntity<E>> String getCacheKey(@NotNull E entity) {
         return entity.getClass().getSimpleName() + "_" + entity.getId().toString();
     }
-
-
 }

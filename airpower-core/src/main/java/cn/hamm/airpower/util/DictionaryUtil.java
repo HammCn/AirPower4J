@@ -30,7 +30,6 @@ public class DictionaryUtil {
      * @param <D>       [泛型] 当前类型
      * @return 指定的枚举字典项目
      */
-
     public final <D extends IDictionary> @Nullable D getDictionaryByKey(@NotNull Class<D> enumClass, int key) {
         try {
             // 取出所有枚举类型

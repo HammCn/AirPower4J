@@ -1,5 +1,6 @@
 package cn.hamm.airpower.interceptor;
 
+import cn.hamm.airpower.annotation.DesensitizeExclude;
 import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryPageResponse;
@@ -69,10 +70,11 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
         }
 
         Filter filter = Utils.getReflectUtil().getAnnotation(Filter.class, method);
+        DesensitizeExclude desensitizeExclude = Utils.getReflectUtil().getAnnotation(DesensitizeExclude.class, method);
         if (json.getData() instanceof QueryPageResponse) {
             QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) json.getData();
             // 如果 data 分页对象
-            queryPageResponse.getList().forEach(item -> item.filter(filter));
+            queryPageResponse.getList().forEach(item -> item.filterAndDesensitize(filter, Objects.isNull(desensitizeExclude)));
             return json.setData(queryPageResponse);
         }
 
@@ -81,13 +83,13 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             Collection<M> collection = Utils.getCollectionUtil().getCollectWithoutNull(
                     (Collection<M>) json.getData(), dataCls
             );
-            collection.stream().toList().forEach(item -> item.filter(filter));
+            collection.stream().toList().forEach(item -> item.filterAndDesensitize(filter, Objects.isNull(desensitizeExclude)));
             return json.setData(collection);
         }
         if (Utils.getReflectUtil().isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
-            return json.setData(((M) json.getData()).filter(filter));
+            return json.setData(((M) json.getData()).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude)));
         }
 
         // 其他数据 原样返回
