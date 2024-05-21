@@ -26,8 +26,8 @@ import java.util.Objects;
 public class RequestCacheFilter implements Filter {
     @Override
     public final void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
-        HttpServletRequest request = ((HttpServletRequest) servletRequest);
         try {
+            HttpServletRequest request = ((HttpServletRequest) servletRequest);
             // 如果是上传 不做任何缓存
             if (!requestCacheRequired(request)) {
                 filterChain.doFilter(servletRequest, servletResponse);
