@@ -145,6 +145,12 @@ public class Utils {
     private static NumberUtil numberUtil;
 
     /**
+     * <h2>字符串工具</h2>
+     */
+    @Getter
+    private static StringUtil stringUtil;
+
+    /**
      * <h2>获取HttpUtil</h2>
      *
      * @return HttpUtil
@@ -186,7 +192,8 @@ public class Utils {
             EntityManager entityManager,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
-            NumberUtil numberUtil
+            NumberUtil numberUtil,
+            StringUtil stringUtil
     ) {
         Utils.redisUtil = redisUtil;
         Utils.emailUtil = emailUtil;
@@ -209,6 +216,7 @@ public class Utils {
         Utils.request = httpServletRequest;
         Utils.response = httpServletResponse;
         Utils.numberUtil = numberUtil;
+        Utils.stringUtil = stringUtil;
     }
 
     /**
