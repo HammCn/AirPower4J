@@ -1,13 +1,31 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.annotation.ApiController;
+import cn.hamm.airpower.annotation.Extends;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.Constant;
+import cn.hamm.airpower.enums.Api;
+import cn.hamm.airpower.interfaces.IPermission;
 import cn.hamm.airpower.model.Access;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -17,7 +35,13 @@ import java.util.Objects;
  * @author Hamm.cn
  */
 @Component
+@Slf4j
 public class AccessUtil {
+    /**
+     * <h2>控制器字节码文件路径</h2>
+     */
+    private static final String CONTROLLER_CLASS_PATH = "/**/*" + Constant.CONTROLLER_SUFFIX + ".class";
+
     /**
      * <h2>获取需要被授权的类型</h2>
      *
@@ -59,5 +83,114 @@ public class AccessUtil {
         return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING)) +
                 Constant.UNDERLINE +
                 method.getName();
+    }
+
+    /**
+     * <h2>扫描并返回权限列表</h2>
+     *
+     * @param packageName     包名
+     * @param permissionClass 权限类
+     * @param <P>             权限类型
+     * @return 权限列表
+     */
+    public final <P extends IPermission<P>> @NotNull List<P> scanPermission(String packageName, Class<P> permissionClass) {
+        List<P> permissions = new ArrayList<>();
+        try {
+            ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+            String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
+                    ClassUtils.convertClassNameToResourcePath(packageName) + CONTROLLER_CLASS_PATH;
+            Resource[] resources = resourcePatternResolver.getResources(pattern);
+            MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
+
+            for (Resource resource : resources) {
+                // 用于读取类信息
+                MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
+                // 扫描到的class
+                String className = metadataReader.getClassMetadata().getClassName();
+                Class<?> clazz = Class.forName(className);
+
+                ApiController apiController = Utils.getReflectUtil().getAnnotation(ApiController.class, clazz);
+                if (Objects.isNull(apiController)) {
+                    // 不是rest控制器或者是指定的几个白名单控制器
+                    continue;
+                }
+
+                String customClassName = Utils.getReflectUtil().getDescription(clazz);
+                String identity = clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING);
+                P permission = permissionClass.getConstructor().newInstance();
+
+                permission.setName(customClassName).setIdentity(identity);
+                permission.setChildren(new ArrayList<>());
+
+                String apiPath = apiController.value();
+
+                // 取出所有控制器方法
+                Method[] methods = clazz.getMethods();
+
+                // 取出控制器类上的Extends注解 如自己没标 则使用父类的
+                Extends extendsApi = Utils.getReflectUtil().getAnnotation(Extends.class, clazz);
+                for (Method method : methods) {
+                    if (Objects.nonNull(extendsApi)) {
+                        try {
+                            Api current = Utils.getDictionaryUtil().getDictionary(Api.class, Api::getMethodName, method.getName());
+                            if (checkApiExcluded(current, extendsApi)) {
+                                continue;
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    }
+                    String customMethodName = Utils.getReflectUtil().getDescription(method);
+
+                    String subIdentity = (!Constant.EMPTY_STRING.equalsIgnoreCase(apiPath) ? (apiPath + Constant.UNDERLINE) : Constant.EMPTY_STRING);
+
+                    RequestMapping requestMapping = Utils.getReflectUtil().getAnnotation(RequestMapping.class, method);
+                    PostMapping postMapping = Utils.getReflectUtil().getAnnotation(PostMapping.class, method);
+                    GetMapping getMapping = Utils.getReflectUtil().getAnnotation(GetMapping.class, method);
+
+                    if (Objects.nonNull(requestMapping) && requestMapping.value().length > 0) {
+                        subIdentity += requestMapping.value()[0];
+                    } else if (Objects.nonNull(postMapping) && postMapping.value().length > 0) {
+                        subIdentity += postMapping.value()[0];
+                    } else if (Objects.nonNull(getMapping) && getMapping.value().length > 0) {
+                        subIdentity += getMapping.value()[0];
+                    }
+                    if (!StringUtils.hasText(subIdentity) || (apiPath + Constant.UNDERLINE).equals(subIdentity)) {
+                        continue;
+                    }
+
+                    Access accessConfig = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
+                    if (!accessConfig.isLogin() || !accessConfig.isAuthorize()) {
+                        // 这里可以选择是否不读取这些接口的权限，但前端可能需要
+                        continue;
+                    }
+                    P subPermission = permissionClass.getConstructor().newInstance();
+                    subPermission.setIdentity(subIdentity).setName(customClassName + Constant.LINE + customMethodName);
+                    permission.getChildren().add(subPermission);
+                }
+                permissions.add(permission);
+            }
+        } catch (Exception exception) {
+            log.error("扫描权限出错", exception);
+        }
+        return permissions;
+    }
+
+    /**
+     * <h2>检查Api是否在子控制器中被排除</h2>
+     *
+     * @param api    Api
+     * @param extend 注解
+     * @return 检查结果
+     */
+    private boolean checkApiExcluded(Api api, @NotNull Extends extend) {
+        List<Api> excludeList = Arrays.asList(extend.exclude());
+        List<Api> includeList = Arrays.asList(extend.value());
+        if (excludeList.contains(api)) {
+            return true;
+        }
+        if (includeList.isEmpty()) {
+            return false;
+        }
+        return !includeList.contains(api);
     }
 }

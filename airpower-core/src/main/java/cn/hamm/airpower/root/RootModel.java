@@ -178,7 +178,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             Utils.getReflectUtil().setFieldValue(this, field,
                     Utils.getStringUtil().desensitize(
                             valueString,
-                            desensitize.type(),
+                            desensitize.value(),
                             desensitize.head(),
                             desensitize.tail(),
                             desensitize.symbol()

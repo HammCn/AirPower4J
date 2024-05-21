@@ -14,7 +14,7 @@ public @interface Desensitize {
     /**
      * <h2>脱敏类型</h2>
      */
-    Type type();
+    Type value();
 
     /**
      * <h2>开始保留位数</h2>
@@ -79,5 +79,10 @@ public @interface Desensitize {
          * <h2>IP地址(v4)</h2>
          */
         IP_V4,
+
+        /**
+         * <h2>不脱敏</h2>
+         */
+        IGNORE,
     }
 }
