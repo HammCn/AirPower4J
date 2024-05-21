@@ -38,7 +38,6 @@ public class RequestUtil {
         return isUploadFileContentType(request.getContentType());
     }
 
-
     /**
      * <h2>判断是否是上传请求</h2>
      *
@@ -48,7 +47,6 @@ public class RequestUtil {
     public final boolean isUploadRequest(@NotNull ServletRequest request) {
         return isUploadFileContentType(request.getContentType());
     }
-
 
     /**
      * <h2>获取IP地址</h2>

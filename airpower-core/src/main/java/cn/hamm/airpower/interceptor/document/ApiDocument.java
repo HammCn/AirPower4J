@@ -536,7 +536,7 @@ public class ApiDocument {
         private String description;
         private String document;
         private Boolean required = false;
-        private List<Map<String, String>> dictionary = new ArrayList<>();
+        private List<Map<String, Object>> dictionary = new ArrayList<>();
         private List<ApiRequestParam> children = new ArrayList<>();
         private Boolean phone = false;
         private Boolean email = false;

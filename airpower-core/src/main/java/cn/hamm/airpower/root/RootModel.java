@@ -47,12 +47,13 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>通过指定的过滤器来过滤响应数据</h2>
+     * <h2>过滤和脱敏</h2>
      *
-     * @param filterClass 过滤器类
+     * @param filterClass   过滤器类
+     * @param isDesensitize 是否需要脱敏
      * @return 实体
      */
-    public final M filter(@NotNull Class<?> filterClass) {
+    public final M filterAndDesensitize(@NotNull Class<?> filterClass, boolean isDesensitize) {
         Class<M> clazz = (Class<M>) this.getClass();
         List<Field> allFields = Utils.getReflectUtil().getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
@@ -62,23 +63,27 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         allFields.forEach(field -> {
             if (!Void.class.equals(filterClass)) {
                 task.accept(field, filterClass);
+                filterFieldPayload(field, isDesensitize);
             }
-            desensitize.accept(field);
+            if (isDesensitize) {
+                desensitize.accept(field);
+            }
         });
         return (M) this;
     }
 
     /**
-     * <h2>通过指定的过滤注解来过滤数据</h2>
+     * <h2>过滤和脱敏</h2>
      *
-     * @param filter 过滤器注解
+     * @param filter        过滤器注解
+     * @param isDesensitize 是否需要脱敏
      * @return 实体
      */
-    public final M filter(@Nullable Filter filter) {
+    public final M filterAndDesensitize(@Nullable Filter filter, boolean isDesensitize) {
         if (Objects.isNull(filter)) {
-            return filter(Void.class);
+            return filterAndDesensitize(Void.class, isDesensitize);
         }
-        return filter(filter.value());
+        return filterAndDesensitize(filter.value(), isDesensitize);
     }
 
     /**
@@ -90,7 +95,6 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     private void excludeBy(@NotNull Field field, @NotNull Class<?> filterClass) {
         Exclude fieldExclude = Utils.getReflectUtil().getAnnotation(Exclude.class, field);
         if (Objects.isNull(fieldExclude)) {
-            filterFieldPayload(field);
             return;
         }
         Class<?>[] excludeClasses = fieldExclude.filters();
@@ -102,8 +106,6 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         if (isNeedClear) {
             Utils.getReflectUtil().clearFieldValue(this, field);
         }
-        //如果是挂载数据
-        filterFieldPayload(field);
     }
 
     /**
@@ -117,7 +119,6 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         if (Objects.isNull(fieldExpose)) {
             // 没有标记 则直接移除掉
             Utils.getReflectUtil().clearFieldValue(this, field);
-            filterFieldPayload(field);
             return;
         }
         Class<?>[] exposeClasses = fieldExpose.filters();
@@ -129,15 +130,15 @@ public class RootModel<M extends RootModel<M>> implements IAction {
                 Utils.getReflectUtil().clearFieldValue(this, field);
             }
         }
-        filterFieldPayload(field);
     }
 
     /**
      * <h2>挂载数据的Payload过滤</h2>
      *
-     * @param field 字段
+     * @param field         字段
+     * @param isDesensitize 是否需要脱敏
      */
-    private void filterFieldPayload(@NotNull Field field) {
+    private void filterFieldPayload(@NotNull Field field, boolean isDesensitize) {
         Payload payload = Utils.getReflectUtil().getAnnotation(Payload.class, field);
         if (Objects.isNull(payload)) {
             return;
@@ -149,13 +150,13 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             collection = Utils.getCollectionUtil().getCollectWithoutNull(
                     (Collection<RootModel<?>>) fieldValue, fieldClass
             );
-            collection.forEach(item -> item.filter(WhenPayLoad.class));
+            collection.forEach(item -> item.filterAndDesensitize(WhenPayLoad.class, isDesensitize));
             Utils.getReflectUtil().setFieldValue(this, field, collection);
             return;
         }
         if (Objects.nonNull(fieldValue)) {
             Utils.getReflectUtil().setFieldValue(this, field,
-                    ((RootModel<?>) fieldValue).filter(WhenPayLoad.class)
+                    ((RootModel<?>) fieldValue).filterAndDesensitize(WhenPayLoad.class, isDesensitize)
             );
         }
     }
@@ -178,7 +179,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             Utils.getReflectUtil().setFieldValue(this, field,
                     Utils.getStringUtil().desensitize(
                             valueString,
-                            desensitize.type(),
+                            desensitize.value(),
                             desensitize.head(),
                             desensitize.tail(),
                             desensitize.symbol()

@@ -14,7 +14,7 @@ public @interface Desensitize {
     /**
      * <h2>脱敏类型</h2>
      */
-    Type type();
+    Type value();
 
     /**
      * <h2>开始保留位数</h2>

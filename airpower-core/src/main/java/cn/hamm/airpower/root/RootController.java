@@ -11,7 +11,6 @@ import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <h1>控制器根类</h1>
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Hamm.cn
  */
 @Permission(login = false)
-@RestController
+
 @RequestMapping(Constant.EMPTY_STRING)
 @Slf4j
 public class RootController implements IAction, ITry {
