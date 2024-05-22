@@ -24,19 +24,32 @@ import java.util.function.Function;
 public class DictionaryUtil {
 
     /**
-     * <h2>查询指定key的枚举字典项目</h2>
+     * <h2>查字典</h2>
      *
      * @param enumClass 枚举字典类
      * @param key       枚举字典值
-     * @param <D>       [泛型] 当前类型
-     * @return 指定的枚举字典项目
+     * @param <D>       [泛型] 字典类型
+     * @return 查到的字典
      */
-    public final <D extends IDictionary> @Nullable D getDictionaryByKey(@NotNull Class<D> enumClass, int key) {
+    public final <D extends IDictionary> @Nullable D getDictionary(@NotNull Class<D> enumClass, int key) {
+        return getDictionary(enumClass, IDictionary::getKey, key);
+    }
+
+    /**
+     * <h2>查字典</h2>
+     *
+     * @param enumClass 枚举字典类
+     * @param function  获取指定值的方法
+     * @param value     比较的值
+     * @param <D>       [泛型] 字典类型
+     * @return 查到的字典
+     */
+    public final <D extends IDictionary> @Nullable D getDictionary(@NotNull Class<D> enumClass, Function<D, Object> function, Object value) {
         try {
             // 取出所有枚举类型
             D[] objs = enumClass.getEnumConstants();
             for (D obj : objs) {
-                if (obj.equalsKey(key)) {
+                if (function.apply(obj).equals(value)) {
                     return obj;
                 }
             }
@@ -82,29 +95,5 @@ public class DictionaryUtil {
             mapList.add(item);
         }
         return mapList;
-    }
-
-    /**
-     * <h2>根据字典类和函数获取枚举字典</h2>
-     *
-     * @param enumClass 字典类
-     * @param function  函数
-     * @param value     值
-     * @param <D>       字典类
-     * @return 字典
-     */
-    public <D extends IDictionary> D getDictionary(@NotNull Class<D> enumClass, Function<D, Object> function, Object value) {
-        try {
-            // 取出所有枚举类型
-            D[] objs = enumClass.getEnumConstants();
-            for (D obj : objs) {
-                if (function.apply(obj).equals(value)) {
-                    return obj;
-                }
-            }
-        } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
-        }
-        return null;
     }
 }
