@@ -1,13 +1,13 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.interfaces.IDictionary;
+import cn.hamm.airpower.interfaces.IFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,34 +60,35 @@ public class DictionaryUtil {
     }
 
     /**
-     * <h2>获取指定枚举类的Map数据</h2>
+     * <h2>获取指定枚举类的ListMap数据</h2>
      *
      * @param clazz 枚举类
-     * @return 返回结果
+     * @return ListMap
      */
     public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(@NotNull Class<D> clazz) {
-        return getDictionaryList(clazz, "key", "label");
+        return getDictionaryList(clazz, IDictionary::getKey, IDictionary::getLabel);
     }
 
     /**
-     * <h2>获取指定枚举类的Map数据</h2>
+     * <h2>获取指定枚举类的ListMap数据</h2>
      *
-     * @param clazz  枚举类
-     * @param params 参数列表
-     * @return 返回结果
+     * @param clazz   枚举字典类
+     * @param lambdas 需要获取的方法表达式
+     * @param <D>     字典类型
+     * @return ListMap
      */
+    @SafeVarargs
     public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(
-            @NotNull Class<D> clazz, String... params
+            @NotNull Class<D> clazz, IFunction<D, Object>... lambdas
     ) {
         List<Map<String, Object>> mapList = new ArrayList<>();
-        for (Object obj : clazz.getEnumConstants()) {
+        for (D obj : clazz.getEnumConstants()) {
             //取出所有枚举类型
-            Map<String, Object> item = new HashMap<>(params.length);
-            for (String param : params) {
+            Map<String, Object> item = new HashMap<>(lambdas.length);
+            for (IFunction<D, Object> lambda : lambdas) {
                 // 依次取出参数的值
                 try {
-                    Method method = clazz.getMethod("get" + StringUtils.capitalize(param));
-                    item.put(param, method.invoke(obj).toString());
+                    item.put(StringUtils.uncapitalize(Utils.getReflectUtil().getLambdaFunctionName(lambda)), lambda.apply(obj));
                 } catch (Exception exception) {
                     log.error(exception.getMessage(), exception);
                 }
