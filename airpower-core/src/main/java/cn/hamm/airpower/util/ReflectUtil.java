@@ -4,7 +4,9 @@ import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.annotation.Document;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IDictionary;
+import cn.hamm.airpower.interfaces.IFunction;
 import cn.hamm.airpower.root.RootController;
 import cn.hamm.airpower.root.RootEntity;
 import cn.hamm.airpower.root.RootModel;
@@ -15,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -279,6 +282,42 @@ public class ReflectUtil {
             fieldNames.add(field.getName());
         }
         return fieldNames;
+    }
+
+    /**
+     * <h2>获取Lambda的Function表达式的函数名</h2>
+     *
+     * @param lambda 表达式
+     * @return 函数名
+     */
+    public final @NotNull String getLambdaFunctionName(@NotNull IFunction<?, ?> lambda) {
+        return getSerializedLambda(lambda).getImplMethodName().replace(Constant.GET, Constant.EMPTY_STRING);
+    }
+
+    /**
+     * <h2>获取Lambda的Function类的函数名</h2>
+     *
+     * @param lambda 表达式
+     * @return 类名
+     */
+    public final @NotNull String getLambdaClassName(@NotNull IFunction<?, ?> lambda) {
+        return getSerializedLambda(lambda).getImplClass().replaceAll(Constant.SLASH, Constant.DOT);
+    }
+
+    /**
+     * <h2>获取一个SerializedLambda</h2>
+     *
+     * @param lambda 表达式
+     * @return SerializedLambda
+     */
+    private SerializedLambda getSerializedLambda(@NotNull IFunction<?, ?> lambda) {
+        try {
+            Method replaceMethod = lambda.getClass().getDeclaredMethod("writeReplace");
+            replaceMethod.setAccessible(true);
+            return (SerializedLambda) replaceMethod.invoke(lambda);
+        } catch (Exception exception) {
+            throw new ServiceException(exception);
+        }
     }
 
     /**
