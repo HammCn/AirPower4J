@@ -32,6 +32,11 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
     @Bean
     public abstract AbstractRequestInterceptor getAccessInterceptor();
 
+    /**
+     * <h2>添加拦截器</h2>
+     *
+     * @param registry 拦截器管理器
+     */
     @Override
     public final void addInterceptors(@NotNull InterceptorRegistry registry) {
         //添加身份校验拦截器
@@ -39,6 +44,11 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
         addCustomInterceptors(registry);
     }
 
+    /**
+     * <h2>添加参数解析器</h2>
+     *
+     * @param resolvers 参数解析器
+     */
     @Override
     public final void addArgumentResolvers(@NotNull List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(accessResolver);
@@ -53,6 +63,11 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
     public void addCustomInterceptors(InterceptorRegistry registry) {
     }
 
+    /**
+     * <h2>添加缓存过滤器</h2>
+     *
+     * @return 过滤器对象
+     */
     @Bean
     public FilterRegistrationBean<RequestCacheFilter> bodyCachingFilterRegistration() {
         FilterRegistrationBean<RequestCacheFilter> registration = new FilterRegistrationBean<>();

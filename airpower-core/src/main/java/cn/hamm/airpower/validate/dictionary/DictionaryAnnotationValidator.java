@@ -20,6 +20,13 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
      */
     private Class<? extends IDictionary> enumClazz = null;
 
+    /**
+     * <h2>验证</h2>
+     *
+     * @param value   验证的值
+     * @param context 验证器会话
+     * @return 验证结果
+     */
     @Contract("null, _ -> true")
     @Override
     public final boolean isValid(Integer value, ConstraintValidatorContext context) {
@@ -29,6 +36,11 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
         return Objects.nonNull(Utils.getDictionaryUtil().getDictionary(enumClazz, value));
     }
 
+    /**
+     * <h2>初始化</h2>
+     *
+     * @param dictionary 字典类
+     */
     @Contract(mutates = "this")
     @Override
     public final void initialize(@NotNull Dictionary dictionary) {

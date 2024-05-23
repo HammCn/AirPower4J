@@ -41,6 +41,14 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     protected static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
 
+    /**
+     * <h2>拦截器</h2>
+     *
+     * @param request  请求
+     * @param response 响应
+     * @param object   请求对象
+     * @return 拦截结果
+     */
     @Override
     public final boolean preHandle(
             @NotNull HttpServletRequest request,

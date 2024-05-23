@@ -6,6 +6,7 @@ import java.lang.annotation.*;
  * <h1>此接口返回数据不脱敏</h1>
  *
  * @author Hamm.cn
+ * @see Desensitize
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -32,6 +32,12 @@ import java.util.Objects;
 @ControllerAdvice
 @Slf4j
 public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
+    /**
+     * <h2>是否支持</h2>
+     *
+     * @param returnType    请求方法
+     * @param converterType 转换器
+     */
     @Contract(pure = true)
     @Override
     public final boolean supports(
@@ -41,6 +47,17 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
         return true;
     }
 
+    /**
+     * <h2>响应结果处理前置</h2>
+     *
+     * @param body                  输出数据
+     * @param returnType            请求方法
+     * @param selectedContentType   选择的数据类型
+     * @param selectedConverterType 选择的转换器
+     * @param request               请求
+     * @param response              响应
+     * @return 处理后的结果
+     */
     @Override
     public final Object beforeBodyWrite(
             Object body,
@@ -57,6 +74,14 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
         return beforeResponseFinished(getResult(body, method), request, response);
     }
 
+    /**
+     * <h2>获取响应结果</h2>
+     *
+     * @param result 响应结果
+     * @param method 请求的方法
+     * @param <M>    数据类型
+     * @return 处理后的数据
+     */
     @Contract("null, _ -> null")
     @SuppressWarnings({"unchecked", "RedundantSuppression"})
     private <M extends RootModel<M>> Object getResult(Object result, Method method) {

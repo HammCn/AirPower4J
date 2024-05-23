@@ -22,6 +22,13 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
      */
     private boolean mobile = true;
 
+    /**
+     * <h2>验证</h2>
+     *
+     * @param value   验证的值
+     * @param context 验证会话
+     * @return 验证结果
+     */
     @Override
     public final boolean isValid(String value, ConstraintValidatorContext context) {
         if (!StringUtils.hasLength(value)) {
@@ -43,9 +50,14 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
         return Utils.getValidateUtil().isMobilePhone(value) || Utils.getValidateUtil().isTelPhone(value);
     }
 
+    /**
+     * <h2>初始化</h2>
+     *
+     * @param phone 电话验证注解
+     */
     @Override
-    public final void initialize(@NotNull Phone constraintAnnotation) {
-        mobile = constraintAnnotation.mobile();
-        tel = constraintAnnotation.tel();
+    public final void initialize(@NotNull Phone phone) {
+        mobile = phone.mobile();
+        tel = phone.tel();
     }
 }

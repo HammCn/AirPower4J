@@ -47,9 +47,8 @@ import java.util.function.BiFunction;
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> implements ITry {
     /**
-     * <h2>SQL语句中like的前缀</h2>
+     * <h2>数据源</h2>
      */
-    private static final String SQL_LIKE_PERCENT = "%";
     @Autowired
     protected R repository;
 
@@ -798,7 +797,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 case LIKE:
                     if (!isEqual) {
                         predicateList.add(
-                                builder.like(root.get(field.getName()), fieldValue + SQL_LIKE_PERCENT)
+                                builder.like(root.get(field.getName()), fieldValue + Constant.PERCENT)
                         );
                     }
                 default:
