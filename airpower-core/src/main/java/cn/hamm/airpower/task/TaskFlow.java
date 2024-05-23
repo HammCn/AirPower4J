@@ -1,4 +1,4 @@
-package cn.hamm.airpower.model;
+package cn.hamm.airpower.task;
 
 
 import org.jetbrains.annotations.Contract;
@@ -18,6 +18,10 @@ import java.util.function.Function;
  * @author Hamm.cn
  */
 public class TaskFlow<D> {
+    private TaskFlow() {
+        // 禁止外部实例化
+    }
+
     /**
      * <h2>使用的线程池服务</h2>
      */
