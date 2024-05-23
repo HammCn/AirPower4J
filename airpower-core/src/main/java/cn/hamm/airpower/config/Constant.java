@@ -124,6 +124,11 @@ public class Constant {
     public final static String ASTERISK = "*";
 
     /**
+     * <h2>%</h2>
+     */
+    public static final String PERCENT = "%";
+
+    /**
      * <h2>控制器后缀</h2>
      */
     public static final String CONTROLLER_SUFFIX = "Controller";
@@ -182,6 +187,11 @@ public class Constant {
      * <h2>Long 0</h2>
      */
     public static final long ZERO_LONG = 0L;
+
+    /**
+     * <h2>Int 0</h2>
+     */
+    public static final int ZERO_INT = 0;
 
     /**
      * <h2>String 0</h2>

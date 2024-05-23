@@ -22,6 +22,12 @@ import java.util.Objects;
  */
 @Component
 public class AccessResolver implements HandlerMethodArgumentResolver {
+    /**
+     * <h2>支持的参数类型</h2>
+     *
+     * @param parameter 参数
+     * @return 是否支持
+     */
     @Override
     public final boolean supportsParameter(@NotNull MethodParameter parameter) {
         Class<?> clazz = parameter.getParameterType();

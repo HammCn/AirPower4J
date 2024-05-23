@@ -3,9 +3,10 @@ package cn.hamm.airpower.annotation;
 import java.lang.annotation.*;
 
 /**
- * <h1>脱敏</h1>
+ * <h1>标记字段在API输出时自动脱敏</h1>
  *
  * @author Hamm.cn
+ * @apiNote 如需标记不脱敏的接口，可使用 {@link DesensitizeExclude}
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

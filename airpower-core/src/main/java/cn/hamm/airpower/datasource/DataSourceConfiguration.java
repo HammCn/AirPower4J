@@ -15,6 +15,9 @@ import org.springframework.context.annotation.Primary;
  */
 @Configuration
 public class DataSourceConfiguration {
+    /**
+     * <h2>数据源配置对象</h2>
+     */
     @Autowired
     private DataSourceProperties dataSourceProperties;
 
