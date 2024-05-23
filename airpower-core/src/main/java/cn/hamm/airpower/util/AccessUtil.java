@@ -88,6 +88,18 @@ public class AccessUtil {
     /**
      * <h2>扫描并返回权限列表</h2>
      *
+     * @param clazz           入口类
+     * @param permissionClass 权限类
+     * @param <P>             权限类型
+     * @return 权限列表
+     */
+    public final <P extends IPermission<P>> @NotNull List<P> scanPermission(@NotNull Class<?> clazz, Class<P> permissionClass) {
+        return scanPermission(clazz.getPackageName(), permissionClass);
+    }
+
+    /**
+     * <h2>扫描并返回权限列表</h2>
+     *
      * @param packageName     包名
      * @param permissionClass 权限类
      * @param <P>             权限类型
