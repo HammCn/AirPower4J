@@ -518,13 +518,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 MessageConstant.MISSING_ID_WHEN_QUERY,
                 Utils.getReflectUtil().getDescription(getEntityClass())
         ));
-        Optional<E> optional = repository.findById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-        throw new ServiceException(ServiceError.DATA_NOT_FOUND, String.format(
-                MessageConstant.QUERY_DATA_NOT_FOUND, id, Utils.getReflectUtil().getDescription(getEntityClass())
-        ));
+        return repository.findById(id).orElseThrow(
+                () -> new ServiceException(ServiceError.DATA_NOT_FOUND, String.format(
+                        MessageConstant.QUERY_DATA_NOT_FOUND,
+                        id, Utils.getReflectUtil().getDescription(getEntityClass()))
+                )
+        );
     }
 
     /**
