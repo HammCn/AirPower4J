@@ -29,26 +29,32 @@ public class TaskFlow<D> {
             Executors.defaultThreadFactory(),
             new ThreadPoolExecutor.AbortPolicy()
     );
+
     /**
      * <h2>任务步骤</h2>
      */
     private final List<Function<D, TaskFlow<D>>> steps = new ArrayList<>();
+
     /**
      * <h2>任务数据</h2>
      */
     private D data = null;
+
     /**
      * <h2>任务步骤处理前置方法</h2>
      */
     private Consumer<D> beforeStep = null;
+
     /**
      * <h2>任务步骤处理后置方法</h2>
      */
     private Consumer<D> afterStep = null;
+
     /**
      * <h2>任务执行成功方法</h2>
      */
     private Consumer<D> onSuccess = null;
+
     /**
      * <h2>任务执行失败方法</h2>
      */
