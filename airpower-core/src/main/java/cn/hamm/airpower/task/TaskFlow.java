@@ -1,6 +1,5 @@
 package cn.hamm.airpower.task;
 
-
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,10 +17,6 @@ import java.util.function.Function;
  * @author Hamm.cn
  */
 public class TaskFlow<D> {
-    private TaskFlow() {
-        // 禁止外部实例化
-    }
-
     /**
      * <h2>使用的线程池服务</h2>
      */
@@ -34,6 +29,34 @@ public class TaskFlow<D> {
             Executors.defaultThreadFactory(),
             new ThreadPoolExecutor.AbortPolicy()
     );
+    /**
+     * <h2>任务步骤</h2>
+     */
+    private final List<Function<D, TaskFlow<D>>> steps = new ArrayList<>();
+    /**
+     * <h2>任务数据</h2>
+     */
+    private D data = null;
+    /**
+     * <h2>任务步骤处理前置方法</h2>
+     */
+    private Consumer<D> beforeStep = null;
+    /**
+     * <h2>任务步骤处理后置方法</h2>
+     */
+    private Consumer<D> afterStep = null;
+    /**
+     * <h2>任务执行成功方法</h2>
+     */
+    private Consumer<D> onSuccess = null;
+    /**
+     * <h2>任务执行失败方法</h2>
+     */
+    private BiConsumer<Exception, TaskFlow<D>> onError = null;
+
+    private TaskFlow() {
+        // 禁止外部实例化
+    }
 
     /**
      * <h2>创建一个任务</h2>
@@ -58,36 +81,6 @@ public class TaskFlow<D> {
         taskFlow.data = data;
         return taskFlow;
     }
-
-    /**
-     * <h2>任务数据</h2>
-     */
-    private D data = null;
-
-    /**
-     * <h2>任务步骤</h2>
-     */
-    private final List<Function<D, TaskFlow<D>>> steps = new ArrayList<>();
-
-    /**
-     * <h2>任务步骤处理前置方法</h2>
-     */
-    private Consumer<D> beforeStep = null;
-
-    /**
-     * <h2>任务步骤处理后置方法</h2>
-     */
-    private Consumer<D> afterStep = null;
-
-    /**
-     * <h2>任务执行成功方法</h2>
-     */
-    private Consumer<D> onSuccess = null;
-
-    /**
-     * <h2>任务执行失败方法</h2>
-     */
-    private BiConsumer<Exception, TaskFlow<D>> onError = null;
 
     /**
      * <h2>添加下一步</h2>
