@@ -27,9 +27,15 @@ import java.util.Objects;
 @Configuration
 @EnableCaching
 public class RedisConfigurer implements CachingConfigurer {
+    /**
+     * <h2>Redis连接工厂</h2>
+     */
     @Resource
     private RedisConnectionFactory redisConnectionFactory;
 
+    /**
+     * <h2>缓存管理器</h2>
+     */
     @Bean
     @Override
     public CacheManager cacheManager() {
@@ -49,6 +55,9 @@ public class RedisConfigurer implements CachingConfigurer {
                 .build();
     }
 
+    /**
+     * <h2>缓存键生成器</h2>
+     */
     @Bean
     @Override
     public KeyGenerator keyGenerator() {
@@ -63,6 +72,9 @@ public class RedisConfigurer implements CachingConfigurer {
         };
     }
 
+    /**
+     * <h2>缓存解析器</h2>
+     */
     @Bean
     @Override
     public CacheResolver cacheResolver() {
