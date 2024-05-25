@@ -113,6 +113,88 @@ public class NumberUtil {
         ).longValue();
     }
 
+    /**
+     * <h2>多个数相除</h2>
+     *
+     * @param first  被除数
+     * @param second 除数
+     * @return 商
+     */
+    public final double div(double first, double second) {
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE).doubleValue();
+    }
+
+    /**
+     * <h2>多个数相除</h2>
+     *
+     * @param first  被除数
+     * @param second 除数
+     * @param scale  保留位数
+     * @return 商
+     */
+    public final double div(double first, double second, int scale) {
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, DEFAULT_ROUNDING_MODE).doubleValue();
+    }
+
+    /**
+     * <h2>多个数相除</h2>
+     *
+     * @param first        被除数
+     * @param second       除数
+     * @param scale        保留位数
+     * @param roundingMode 舍弃方式
+     * @return 商
+     */
+    public final double div(double first, double second, int scale, RoundingMode roundingMode) {
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, roundingMode).doubleValue();
+    }
+
+    /**
+     * <h2>多个数相除</h2>
+     *
+     * @param first  被除数
+     * @param second 除数
+     * @return 商
+     */
+    public final double div(long first, long second) {
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE).doubleValue();
+    }
+
+    /**
+     * <h2>多个数相除</h2>
+     *
+     * @param first  被除数
+     * @param second 除数
+     * @param scale  保留位数
+     * @return 商
+     */
+    public final double div(long first, long second, int scale) {
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, DEFAULT_ROUNDING_MODE).doubleValue();
+    }
+
+    /**
+     * <h2>多个数相除</h2>
+     *
+     * @param first        被除数
+     * @param second       除数
+     * @param scale        保留位数
+     * @param roundingMode 舍弃方式
+     * @return 商
+     */
+    public final double div(long first, long second, int scale, RoundingMode roundingMode) {
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, roundingMode).doubleValue();
+    }
+
+    /**
+     * <h2>计算的业务逻辑</h2>
+     *
+     * @param function 计算执行方法
+     * @param first    第一个数据
+     * @param second   第二个数据
+     * @param values   更多的数据
+     * @param <T>      数据类型
+     * @return 计算的结果
+     */
     private <T extends Number> T calc(@NotNull BiFunction<T, T, T> function, T first, T second, T[] values) {
         T result = function.apply(first, second);
         if (Objects.nonNull(values)) {
@@ -126,48 +208,18 @@ public class NumberUtil {
     /**
      * <h2>多个数相除</h2>
      *
-     * @param first  被除数
-     * @param second 除数
-     * @param values 更多除数
+     * @param first        被除数
+     * @param second       除数
+     * @param scale        保留位数
+     * @param roundingMode 舍弃方式
      * @return 商
      */
-    public final double div(double first, double second, double... values) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second),
-                Arrays.stream(values).mapToObj(BigDecimal::valueOf).toArray(BigDecimal[]::new)
-        ).doubleValue();
-    }
-
-    /**
-     * <h2>多个数相除</h2>
-     *
-     * @param first  被除数
-     * @param second 除数
-     * @param values 更多除数
-     * @return 商
-     */
-    public final double div(long first, long second, long... values) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second),
-                Arrays.stream(values).mapToObj(BigDecimal::valueOf).toArray(BigDecimal[]::new)
-        ).doubleValue();
-    }
-
-    /**
-     * <h2>多个数相除</h2>
-     *
-     * @param first  被除数
-     * @param second 除数
-     * @param values 更多除数
-     * @return 商
-     */
-    private BigDecimal div(BigDecimal first, BigDecimal second, BigDecimal[] values) {
+    private BigDecimal div(BigDecimal first, BigDecimal second, int scale, RoundingMode roundingMode) {
         try {
-            BigDecimal result = first.divide(second, DEFAULT_SCALE, DEFAULT_ROUNDING_MODE);
-            if (Objects.nonNull(values)) {
-                for (BigDecimal value : values) {
-                    result = result.divide(value, DEFAULT_SCALE, DEFAULT_ROUNDING_MODE);
-                }
+            if (BigDecimal.valueOf(0).equals(second)) {
+                throw new RuntimeException("除数不能为0");
             }
-            return result;
+            return first.divide(second, scale, roundingMode);
         } catch (Exception e) {
             throw new RuntimeException("计算出现异常");
         }
