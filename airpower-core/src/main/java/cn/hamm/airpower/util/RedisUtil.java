@@ -9,8 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -248,6 +250,8 @@ public class RedisUtil {
      * @param message 消息
      */
     public final void publish(String channel, String message) {
+        redisTemplate.setKeySerializer(new StringRedisSerializer(StandardCharsets.UTF_8));
+        redisTemplate.setValueSerializer(new StringRedisSerializer(StandardCharsets.UTF_8));
         redisTemplate.convertAndSend(channel, message);
     }
 
