@@ -1,12 +1,16 @@
 package cn.hamm.airpower.websocket;
 
 import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import java.util.Objects;
 
 /**
  * <h1>WebsocketUtil</h1>
@@ -42,6 +46,10 @@ public class WebsocketUtil {
      * @param message 消息
      */
     private @NotNull WebSocketEvent<WebSocketMessage> publish(String channel, WebSocketMessage message) {
+        final String channelPrefix = Configs.getWebsocketConfig().getChannelPrefix();
+        if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
+            throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
+        }
         WebSocketEvent<WebSocketMessage> webSocketEvent = new WebSocketEvent<>();
         webSocketEvent.setData(message);
         switch (Configs.getWebsocketConfig().getSupport()) {

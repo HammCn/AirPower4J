@@ -1,6 +1,7 @@
 package cn.hamm.airpower.websocket;
 
 import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.Utils;
@@ -115,14 +116,14 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
      * @param userId  用户ID
      */
     private void startRedisListener(@NotNull WebSocketSession session, long userId) {
-        final String personalChannel = CHANNEL_USER_PREFIX + userId;
+        final String personalChannel = Configs.getWebsocketConfig().getChannelPrefix() + Constant.UNDERLINE + CHANNEL_USER_PREFIX + userId;
         redisConnectionFactory.getConnection().subscribe(
                 (message, pattern) -> {
                     synchronized (session) {
                         onChannelMessage(new String(message.getBody(), StandardCharsets.UTF_8), session);
                     }
                 },
-                CHANNEL_ALL.getBytes(StandardCharsets.UTF_8),
+                (Configs.getWebsocketConfig().getChannelPrefix() + Constant.UNDERLINE + CHANNEL_ALL).getBytes(StandardCharsets.UTF_8),
                 personalChannel.getBytes(StandardCharsets.UTF_8)
         );
     }
