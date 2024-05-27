@@ -1,6 +1,7 @@
 package cn.hamm.airpower.websocket;
 
 import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.Utils;
@@ -53,11 +54,11 @@ public class WebsocketUtil {
         WebSocketEvent webSocketEvent = WebSocketEvent.create(payload);
         switch (Configs.getWebsocketConfig().getSupport()) {
             case REDIS:
-                Utils.getRedisUtil().publish(channel, Json.toString(webSocketEvent));
+                Utils.getRedisUtil().publish(channelPrefix + Constant.UNDERLINE + channel, Json.toString(webSocketEvent));
                 break;
             case MQTT:
                 try {
-                    Utils.getMqttUtil().publish(WebSocketHandler.CHANNEL_ALL, Json.toString(webSocketEvent));
+                    Utils.getMqttUtil().publish(channelPrefix + Constant.UNDERLINE + WebSocketHandler.CHANNEL_ALL, Json.toString(webSocketEvent));
                 } catch (MqttException e) {
                     throw new RuntimeException("发布消息失败", e);
                 }
