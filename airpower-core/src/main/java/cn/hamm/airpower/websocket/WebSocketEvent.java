@@ -5,6 +5,8 @@ import cn.hamm.airpower.config.Constant;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -23,7 +25,7 @@ public class WebSocketEvent<T extends WebSocketMessage> {
     /**
      * <h2>事件ID</h2>
      */
-    private String eventId;
+    private String id;
 
     /**
      * <h2>事件名称</h2>
@@ -42,8 +44,12 @@ public class WebSocketEvent<T extends WebSocketMessage> {
 
     WebSocketEvent() {
         long time = System.currentTimeMillis();
-        // time_serviceId_count
-        this.eventId = time + Constant.UNDERLINE + Configs.getServiceConfig().getServiceId() + Constant.UNDERLINE + CURRENT_EVENT_ID.getAndDecrement();
+        this.id = Base64.getEncoder().encodeToString((String.format(
+                "%s-%s-%s",
+                Configs.getServiceConfig().getServiceId(),
+                CURRENT_EVENT_ID.incrementAndGet(),
+                time
+        )).getBytes(StandardCharsets.UTF_8));
         this.time = time;
     }
 }
