@@ -111,8 +111,8 @@ public class TaskFlow<D> {
         }
         Function<D, TaskFlow<D>> function = steps.get(0);
         steps.remove(0);
-        TaskFlow.EXECUTOR.execute(() -> {
-            try {
+        try {
+            TaskFlow.EXECUTOR.execute(() -> {
                 if (Objects.nonNull(beforeStep)) {
                     beforeStep.accept(data);
                 }
@@ -122,14 +122,14 @@ public class TaskFlow<D> {
                 }
                 this.data = taskFlow.data;
                 this.start();
-            } catch (Exception exception) {
-                if (Objects.nonNull(onError)) {
-                    onError.accept(exception, this);
-                    return;
-                }
-                throw exception;
+            });
+        } catch (Exception exception) {
+            if (Objects.nonNull(onError)) {
+                onError.accept(exception, this);
+                return;
             }
-        });
+            throw exception;
+        }
     }
 
     /**
