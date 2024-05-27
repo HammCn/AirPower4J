@@ -1,18 +1,26 @@
 package cn.hamm.airpower;
 
+import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interceptor.AbstractRequestInterceptor;
 import cn.hamm.airpower.interceptor.cache.RequestCacheFilter;
 import cn.hamm.airpower.resolver.AccessResolver;
+import cn.hamm.airpower.websocket.WebSocketHandler;
+import cn.hamm.airpower.websocket.WebSocketSupport;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <h1>全局配置</h1>
@@ -20,7 +28,7 @@ import java.util.List;
  * @author Hamm.cn
  */
 @Configuration
-public abstract class AbstractWebConfig implements WebMvcConfigurer {
+public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketConfigurer {
     @Autowired
     private AccessResolver accessResolver;
 
@@ -31,6 +39,16 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
      */
     @Bean
     public abstract AbstractRequestInterceptor getAccessInterceptor();
+
+    /**
+     * <h2>获取一个WebSocketHandler</h2>
+     *
+     * @return WebSocketHandler
+     */
+    @Bean
+    public WebSocketHandler getWebsocketHandler() {
+        return new WebSocketHandler();
+    }
 
     /**
      * <h2>添加拦截器</h2>
@@ -74,5 +92,22 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer {
         registration.setFilter(new RequestCacheFilter());
         registration.addUrlPatterns("/*");
         return registration;
+    }
+
+    /**
+     * <h2>添加WebSocket服务监听</h2>
+     *
+     * @param registry WebSocketHandlerRegistry
+     */
+    @Override
+    public final void registerWebSocketHandlers(@NotNull WebSocketHandlerRegistry registry) {
+        if (Configs.getWebsocketConfig().getSupport().equals(WebSocketSupport.NO)) {
+            return;
+        }
+        final String channelPrefix = Configs.getWebsocketConfig().getChannelPrefix();
+        if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
+            throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
+        }
+        registry.addHandler(getWebsocketHandler(), Configs.getWebsocketConfig().getPath()).setAllowedOrigins("*");
     }
 }

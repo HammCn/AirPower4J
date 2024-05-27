@@ -1,6 +1,7 @@
 package cn.hamm.airpower.websocket;
 
 import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.Utils;
@@ -21,44 +22,43 @@ import java.util.Objects;
 @Component
 public class WebsocketUtil {
     /**
-     * <h2>给所有人发消息</h2>
+     * <h2>发布事件负载</h2>
      *
-     * @param message 消息内容
+     * @param payload 事件负载
      */
-    public final @NotNull WebSocketEvent<WebSocketMessage> sendToAll(WebSocketMessage message) {
-        return publish(WebsocketHandler.CHANNEL_ALL, message);
+    public final @NotNull WebSocketEvent publish(WebSocketPayload payload) {
+        return publishToChannel(WebSocketHandler.CHANNEL_ALL, payload);
     }
 
     /**
-     * <h2>给指定用户发消息</h2>
+     * <h2>发布事件负载到指定的用户</h2>
      *
      * @param userId  用户ID
-     * @param message 消息内容
+     * @param payload 事件负载
      */
-    public final @NotNull WebSocketEvent<WebSocketMessage> sendToUser(long userId, WebSocketMessage message) {
-        return publish(WebsocketHandler.CHANNEL_USER_PREFIX + userId, message);
+    public final @NotNull WebSocketEvent publishToUser(long userId, WebSocketPayload payload) {
+        return publishToChannel(WebSocketHandler.CHANNEL_USER_PREFIX + userId, payload);
     }
 
     /**
-     * <h2>发布消息</h2>
+     * <h2>发布事件负载到指定的频道</h2>
      *
      * @param channel 频道
-     * @param message 消息
+     * @param payload 事件负载
      */
-    private @NotNull WebSocketEvent<WebSocketMessage> publish(String channel, WebSocketMessage message) {
+    public final @NotNull WebSocketEvent publishToChannel(String channel, WebSocketPayload payload) {
         final String channelPrefix = Configs.getWebsocketConfig().getChannelPrefix();
         if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
-        WebSocketEvent<WebSocketMessage> webSocketEvent = new WebSocketEvent<>();
-        webSocketEvent.setData(message);
+        WebSocketEvent webSocketEvent = WebSocketEvent.create(payload);
         switch (Configs.getWebsocketConfig().getSupport()) {
             case REDIS:
-                Utils.getRedisUtil().publish(channel, Json.toString(webSocketEvent));
+                Utils.getRedisUtil().publish(channelPrefix + Constant.UNDERLINE + channel, Json.toString(webSocketEvent));
                 break;
             case MQTT:
                 try {
-                    Utils.getMqttUtil().publish(WebsocketHandler.CHANNEL_ALL, Json.toString(webSocketEvent));
+                    Utils.getMqttUtil().publish(channelPrefix + Constant.UNDERLINE + WebSocketHandler.CHANNEL_ALL, Json.toString(webSocketEvent));
                 } catch (MqttException e) {
                     throw new RuntimeException("发布消息失败", e);
                 }
