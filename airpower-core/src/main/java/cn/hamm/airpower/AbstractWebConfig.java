@@ -5,7 +5,7 @@ import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interceptor.AbstractRequestInterceptor;
 import cn.hamm.airpower.interceptor.cache.RequestCacheFilter;
 import cn.hamm.airpower.resolver.AccessResolver;
-import cn.hamm.airpower.websocket.WebsocketHandler;
+import cn.hamm.airpower.websocket.WebSocketHandler;
 import cn.hamm.airpower.websocket.WebSocketSupport;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +46,8 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
      * @return WebSocketHandler
      */
     @Bean
-    public WebsocketHandler getWebsocketHandler() {
-        return new WebsocketHandler();
+    public WebSocketHandler getWebsocketHandler() {
+        return new WebSocketHandler();
     }
 
     /**

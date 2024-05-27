@@ -4,10 +4,10 @@ import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
-import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
@@ -31,7 +31,7 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class WebsocketHandler extends TextWebSocketHandler implements MessageListener {
+public class WebSocketHandler extends TextWebSocketHandler implements MessageListener {
     /**
      * <h2>Redis连接工厂</h2>
      */
@@ -55,7 +55,7 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
      * @param textMessage 文本消息
      */
     @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session, @NotNull TextMessage textMessage) {
+    protected final void handleTextMessage(@NonNull WebSocketSession session, @NotNull TextMessage textMessage) {
         final String message = textMessage.getPayload();
         if (Configs.getWebsocketConfig().getPing().equals(message)) {
             try {
@@ -66,20 +66,20 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
             return;
         }
         try {
-            WebSocketEvent webSocketEvent = Json.parse(message, WebSocketEvent.class);
-            onWebSocketEvent(webSocketEvent);
+            WebSocketPayload webSocketPayload = Json.parse(message, WebSocketPayload.class);
+            onWebSocketPayload(webSocketPayload);
         } catch (Exception exception) {
-            log.error("解析Websocket消息失败: {}", exception.getMessage());
+            log.error("解析Websocket事件负载失败: {}", exception.getMessage());
         }
     }
 
     /**
-     * <h2>WebSocket事件</h2>
+     * <h2>当WebSocket负载到达时</h2>
      *
-     * @param webSocketEvent WebSocket事件
+     * @param webSocketPayload 负载对象
      */
-    public void onWebSocketEvent(@NotNull WebSocketEvent webSocketEvent) {
-        log.info("收到Websocket消息");
+    public void onWebSocketPayload(@NotNull WebSocketPayload webSocketPayload) {
+        log.info("负载类型: {}, 负载内容: {}", webSocketPayload.getType(), webSocketPayload.getData());
     }
 
     /**
@@ -88,7 +88,7 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
      * @param session 会话
      */
     @Override
-    public void afterConnectionEstablished(@NonNull WebSocketSession session) {
+    public final void afterConnectionEstablished(@NonNull WebSocketSession session) {
         if (Objects.isNull(session.getUri())) {
             return;
         }
@@ -178,14 +178,6 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
         }
     }
 
-    @Override
-    public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
-    }
-
-    @Override
-    public void onMessage(@NotNull Message message, byte[] pattern) {
-    }
-
     /**
      * <h2>关闭连接</h2>
      *
@@ -197,5 +189,15 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
         } catch (IOException e) {
             log.error("关闭Websocket失败");
         }
+    }
+
+    @Contract(pure = true)
+    @Override
+    public final void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
+    }
+
+    @Contract(pure = true)
+    @Override
+    public final void onMessage(@NotNull Message message, byte[] pattern) {
     }
 }

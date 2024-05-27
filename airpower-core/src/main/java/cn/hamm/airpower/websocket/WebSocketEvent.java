@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -38,17 +39,17 @@ public class WebSocketEvent {
     private WebSocketPayload payload;
 
     /**
-     * <h2>构造方法</h2>
+     * <h2>重置事件的ID和事件</h2>
      */
-    private WebSocketEvent() {
+    protected final void resetEvent() {
         long time = System.currentTimeMillis();
+        this.time = time;
         this.id = Base64.getEncoder().encodeToString((String.format(
                 "%s-%s-%s",
                 Configs.getServiceConfig().getServiceId(),
                 CURRENT_EVENT_ID.incrementAndGet(),
                 time
         )).getBytes(StandardCharsets.UTF_8));
-        this.time = time;
     }
 
     /**
@@ -57,7 +58,9 @@ public class WebSocketEvent {
      * @param payload 负载
      * @return 事件
      */
-    static WebSocketEvent create(WebSocketPayload payload) {
-        return new WebSocketEvent().setPayload(payload);
+    static @NotNull WebSocketEvent create(WebSocketPayload payload) {
+        WebSocketEvent webSocketEvent = new WebSocketEvent().setPayload(payload);
+        webSocketEvent.resetEvent();
+        return webSocketEvent;
     }
 }
