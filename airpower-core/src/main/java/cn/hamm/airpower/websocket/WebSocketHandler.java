@@ -33,20 +33,18 @@ import java.util.Objects;
 @Slf4j
 public class WebSocketHandler extends TextWebSocketHandler implements MessageListener {
     /**
-     * <h2>Redis连接工厂</h2>
-     */
-    @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
-
-    /**
      * <h2>订阅全频道</h2>
      */
     public static String CHANNEL_ALL = "WEBSOCKET_ALL";
-
     /**
      * <h2>订阅用户频道前缀</h2>
      */
     public static String CHANNEL_USER_PREFIX = "WEBSOCKET_USER_";
+    /**
+     * <h2>Redis连接工厂</h2>
+     */
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
 
     /**
      * <h2>收到Websocket消息时</h2>
@@ -67,7 +65,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         }
         try {
             WebSocketPayload webSocketPayload = Json.parse(message, WebSocketPayload.class);
-            onWebSocketPayload(webSocketPayload);
+            onWebSocketPayload(webSocketPayload, session);
         } catch (Exception exception) {
             log.error("解析Websocket事件负载失败: {}", exception.getMessage());
         }
@@ -78,7 +76,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      *
      * @param webSocketPayload 负载对象
      */
-    public void onWebSocketPayload(@NotNull WebSocketPayload webSocketPayload) {
+    public void onWebSocketPayload(@NotNull WebSocketPayload webSocketPayload, @NotNull WebSocketSession session) {
         log.info("负载类型: {}, 负载内容: {}", webSocketPayload.getType(), webSocketPayload.getData());
     }
 
@@ -128,7 +126,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     /**
      * <h2>开始监听Redis消息</h2>
      *
-     * @param session 连接
+     * @param session WebSocket会话
      * @param userId  用户ID
      */
     private void startRedisListener(@NotNull WebSocketSession session, long userId) {
