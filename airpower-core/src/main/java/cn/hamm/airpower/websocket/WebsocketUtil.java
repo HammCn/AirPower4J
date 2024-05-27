@@ -25,7 +25,7 @@ public class WebsocketUtil {
      *
      * @param message 消息内容
      */
-    public final @NotNull WebSocketEvent<WebSocketMessage> sendToAll(WebSocketMessage message) {
+    public final @NotNull WebSocketEvent sendToAll(WebSocketPayload message) {
         return publish(WebsocketHandler.CHANNEL_ALL, message);
     }
 
@@ -35,23 +35,22 @@ public class WebsocketUtil {
      * @param userId  用户ID
      * @param message 消息内容
      */
-    public final @NotNull WebSocketEvent<WebSocketMessage> sendToUser(long userId, WebSocketMessage message) {
+    public final @NotNull WebSocketEvent sendToUser(long userId, WebSocketPayload message) {
         return publish(WebsocketHandler.CHANNEL_USER_PREFIX + userId, message);
     }
 
     /**
-     * <h2>发布消息</h2>
+     * <h2>发布事件</h2>
      *
      * @param channel 频道
-     * @param message 消息
+     * @param payload 事件
      */
-    private @NotNull WebSocketEvent<WebSocketMessage> publish(String channel, WebSocketMessage message) {
+    public final @NotNull WebSocketEvent publish(String channel, WebSocketPayload payload) {
         final String channelPrefix = Configs.getWebsocketConfig().getChannelPrefix();
         if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
-        WebSocketEvent<WebSocketMessage> webSocketEvent = new WebSocketEvent<>();
-        webSocketEvent.setData(message);
+        WebSocketEvent webSocketEvent = WebSocketEvent.create(payload);
         switch (Configs.getWebsocketConfig().getSupport()) {
             case REDIS:
                 Utils.getRedisUtil().publish(channel, Json.toString(webSocketEvent));

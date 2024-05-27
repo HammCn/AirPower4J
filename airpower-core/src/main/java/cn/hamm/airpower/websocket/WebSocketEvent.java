@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Data
 @Accessors(chain = true)
-public class WebSocketEvent<T extends WebSocketMessage> {
+public class WebSocketEvent {
     /**
      * <h2>当前事件ID</h2>
      */
@@ -28,21 +28,19 @@ public class WebSocketEvent<T extends WebSocketMessage> {
     private String id;
 
     /**
-     * <h2>事件名称</h2>
-     */
-    private String event = "message";
-
-    /**
-     * <h2>消息产生时间</h2>
+     * <h2>事件时间戳</h2>
      */
     private Long time;
 
     /**
-     * <h2>消息对象</h2>
+     * <h2>事件负载</h2>
      */
-    private T data;
+    private WebSocketPayload payload;
 
-    WebSocketEvent() {
+    /**
+     * <h2>构造方法</h2>
+     */
+    private WebSocketEvent() {
         long time = System.currentTimeMillis();
         this.id = Base64.getEncoder().encodeToString((String.format(
                 "%s-%s-%s",
@@ -51,5 +49,15 @@ public class WebSocketEvent<T extends WebSocketMessage> {
                 time
         )).getBytes(StandardCharsets.UTF_8));
         this.time = time;
+    }
+
+    /**
+     * <h2>创建WebSocket事件</h2>
+     *
+     * @param payload 负载
+     * @return 事件
+     */
+    static WebSocketEvent create(WebSocketPayload payload) {
+        return new WebSocketEvent().setPayload(payload);
     }
 }

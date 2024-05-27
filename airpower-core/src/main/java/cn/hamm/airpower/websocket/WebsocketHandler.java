@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
+import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
@@ -58,12 +59,27 @@ public class WebsocketHandler extends TextWebSocketHandler implements MessageLis
         final String message = textMessage.getPayload();
         if (Configs.getWebsocketConfig().getPing().equals(message)) {
             try {
-                WebSocketEvent<WebSocketMessage> webSocketEvent = new WebSocketEvent<>().setEvent(Configs.getWebsocketConfig().getPong());
-                session.sendMessage(new TextMessage(Json.toString(webSocketEvent)));
+                session.sendMessage(new TextMessage(Configs.getWebsocketConfig().getPong()));
             } catch (IOException e) {
                 log.error("发送Websocket消息失败: {}", e.getMessage());
             }
+            return;
         }
+        try {
+            WebSocketEvent webSocketEvent = Json.parse(message, WebSocketEvent.class);
+            onWebSocketEvent(webSocketEvent);
+        } catch (Exception exception) {
+            log.error("解析Websocket消息失败: {}", exception.getMessage());
+        }
+    }
+
+    /**
+     * <h2>WebSocket事件</h2>
+     *
+     * @param webSocketEvent WebSocket事件
+     */
+    public void onWebSocketEvent(@NotNull WebSocketEvent webSocketEvent) {
+        log.info("收到Websocket消息");
     }
 
     /**
