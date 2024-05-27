@@ -1,5 +1,6 @@
 package cn.hamm.airpower.config;
 
+import cn.hamm.airpower.websocket.WebSocketConfig;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,14 +30,23 @@ public class Configs {
     @Getter
     private static MqttConfig mqttConfig;
 
+
+    /**
+     * <h2>WebSocket配置</h2>
+     */
+    @Getter
+    private static WebSocketConfig websocketConfig;
+
     @Autowired
     Configs(
             CookieConfig cookieConfig,
             ServiceConfig serviceConfig,
-            MqttConfig mqttConfig
+            MqttConfig mqttConfig,
+            WebSocketConfig websocketConfig
     ) {
         Configs.cookieConfig = cookieConfig;
         Configs.serviceConfig = serviceConfig;
         Configs.mqttConfig = mqttConfig;
+        Configs.websocketConfig = websocketConfig;
     }
 }
