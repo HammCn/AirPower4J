@@ -1,21 +1,27 @@
 package cn.hamm.airpower.websocket;
 
+import cn.hamm.airpower.exception.ServiceException;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import java.util.Objects;
 
 /**
  * <h1>WebSocket配置</h1>
  *
  * @author Hamm
  */
+@Slf4j
 @Component
 @Data
 @Accessors(chain = true)
@@ -42,6 +48,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
     private WebSocketSupport support = WebSocketSupport.NO;
 
+    /**
+     * <h2>发布订阅的频道前缀</h2>
+     */
+    private String channelPrefix;
+
     @Bean
     public TextWebSocketHandler getWebSocketHandler() {
         return new WebsocketHandler();
@@ -55,7 +66,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(@NotNull WebSocketHandlerRegistry registry) {
         if (!support.equals(WebSocketSupport.NO)) {
-            registry.addHandler(getWebSocketHandler(), path).setAllowedOrigins("*");
+            return;
         }
+        if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
+            throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
+        }
+        registry.addHandler(getWebSocketHandler(), path).setAllowedOrigins("*");
     }
 }
