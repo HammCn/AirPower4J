@@ -65,7 +65,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
     @Override
     public void registerWebSocketHandlers(@NotNull WebSocketHandlerRegistry registry) {
-        if (!support.equals(WebSocketSupport.NO)) {
+        if (support.equals(WebSocketSupport.NO)) {
             return;
         }
         if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
