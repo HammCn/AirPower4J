@@ -1,5 +1,6 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.websocket.WebsocketUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -139,6 +140,12 @@ public class Utils {
     private static HttpServletResponse response;
 
     /**
+     * <h2>WebSocket工具类</h2>
+     */
+    @Getter
+    private static WebsocketUtil websocketUtil;
+
+    /**
      * <h2>数字工具</h2>
      */
     @Getter
@@ -193,7 +200,8 @@ public class Utils {
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             NumberUtil numberUtil,
-            StringUtil stringUtil
+            StringUtil stringUtil,
+            WebsocketUtil websocketUtil
     ) {
         Utils.redisUtil = redisUtil;
         Utils.emailUtil = emailUtil;
@@ -217,6 +225,7 @@ public class Utils {
         Utils.response = httpServletResponse;
         Utils.numberUtil = numberUtil;
         Utils.stringUtil = stringUtil;
+        Utils.websocketUtil = websocketUtil;
     }
 
     /**

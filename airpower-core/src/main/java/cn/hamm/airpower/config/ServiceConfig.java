@@ -24,6 +24,11 @@ public class ServiceConfig {
     private String databasePrefix = "tenant_";
 
     /**
+     * <h2>默认服务ID</h2>
+     */
+    private int serviceId = Constant.ZERO_INT;
+
+    /**
      * <h2>是否开启文档</h2>
      */
     private boolean enableDocument = false;
