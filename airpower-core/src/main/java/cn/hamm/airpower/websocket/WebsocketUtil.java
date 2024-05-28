@@ -33,8 +33,9 @@ public class WebsocketUtil {
     /**
      * <h2>发布事件负载到指定的用户</h2>
      *
-     * @param userId  用户ID
+     * @param userId  目标用户ID
      * @param payload 事件负载
+     * @return WebSocketEvent
      */
     public final @NotNull WebSocketEvent publishToUser(long userId, WebSocketPayload payload) {
         return publishToChannel(WebSocketHandler.CHANNEL_USER_PREFIX + userId, payload);
@@ -44,21 +45,23 @@ public class WebsocketUtil {
      * <h2>发布事件负载到指定的频道</h2>
      *
      * @param channel 频道
-     * @param payload 事件负载
+     * @param payload 负载
      */
     public final @NotNull WebSocketEvent publishToChannel(String channel, WebSocketPayload payload) {
         final String channelPrefix = Configs.getWebsocketConfig().getChannelPrefix();
         if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
-        WebSocketEvent webSocketEvent = WebSocketEvent.create(payload);
+        final String targetChannel = channelPrefix + Constant.UNDERLINE + channel;
+        final WebSocketEvent event = WebSocketEvent.create(payload);
+        log.info("发布消息到频道 {} : {}", targetChannel, Json.toString(event));
         switch (Configs.getWebsocketConfig().getSupport()) {
             case REDIS:
-                Utils.getRedisUtil().publish(channelPrefix + Constant.UNDERLINE + channel, Json.toString(webSocketEvent));
+                Utils.getRedisUtil().publish(targetChannel, Json.toString(event));
                 break;
             case MQTT:
                 try {
-                    Utils.getMqttUtil().publish(channelPrefix + Constant.UNDERLINE + WebSocketHandler.CHANNEL_ALL, Json.toString(webSocketEvent));
+                    Utils.getMqttUtil().publish(targetChannel, Json.toString(event));
                 } catch (MqttException e) {
                     throw new RuntimeException("发布消息失败", e);
                 }
@@ -66,6 +69,6 @@ public class WebsocketUtil {
             default:
                 throw new RuntimeException("WebSocket暂不支持");
         }
-        return webSocketEvent;
+        return event;
     }
 }

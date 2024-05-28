@@ -3,6 +3,7 @@ package cn.hamm.airpower.websocket;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +11,7 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.*;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -22,6 +21,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -31,7 +31,7 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class WebSocketHandler extends TextWebSocketHandler implements MessageListener {
+public class WebSocketHandler extends TextWebSocketHandler implements MessageListener, ITry {
     /**
      * <h2>订阅全频道</h2>
      */
@@ -47,6 +47,21 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     private RedisConnectionFactory redisConnectionFactory;
 
     /**
+     * <h2>Redis连接Map</h2>
+     */
+    protected final HashMap<String, RedisConnection> redisConnectionHashMap = new HashMap<>();
+
+    /**
+     * <h2>MQTT客户端Map</h2>
+     */
+    protected final HashMap<String, MqttClient> mqttClientHashMap = new HashMap<>();
+
+    /**
+     * <h2>用户IDMap</h2>
+     */
+    protected final HashMap<String, Long> userIdHashMap = new HashMap<>();
+
+    /**
      * <h2>收到Websocket消息时</h2>
      *
      * @param session     会话
@@ -55,7 +70,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     @Override
     protected final void handleTextMessage(@NonNull WebSocketSession session, @NotNull TextMessage textMessage) {
         final String message = textMessage.getPayload();
-        if (Configs.getWebsocketConfig().getPing().equals(message)) {
+        if (Configs.getWebsocketConfig().getPing().equalsIgnoreCase(message)) {
             try {
                 session.sendMessage(new TextMessage(Configs.getWebsocketConfig().getPong()));
             } catch (IOException e) {
@@ -68,6 +83,14 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             onWebSocketPayload(webSocketPayload, session);
         } catch (Exception exception) {
             log.error("解析Websocket事件负载失败: {}", exception.getMessage());
+        }
+    }
+
+    protected final void sendWebSocketPayload(@NotNull WebSocketSession session, @NotNull WebSocketPayload webSocketPayload) {
+        try {
+            session.sendMessage(new TextMessage(Json.toString(WebSocketEvent.create(webSocketPayload))));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -107,6 +130,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             default:
                 throw new RuntimeException("WebSocket暂不支持");
         }
+        userIdHashMap.put(session.getId(), userId);
     }
 
     /**
@@ -130,14 +154,16 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * @param userId  用户ID
      */
     private void startRedisListener(@NotNull WebSocketSession session, long userId) {
-        final String personalChannel = Configs.getWebsocketConfig().getChannelPrefix() + Constant.UNDERLINE + CHANNEL_USER_PREFIX + userId;
-        redisConnectionFactory.getConnection().subscribe(
+        final String personalChannel = getRealChannel(CHANNEL_USER_PREFIX + userId);
+        RedisConnection redisConnection = redisConnectionFactory.getConnection();
+        redisConnectionHashMap.put(session.getId(), redisConnection);
+        redisConnection.subscribe(
                 (message, pattern) -> {
                     synchronized (session) {
                         onChannelMessage(new String(message.getBody(), StandardCharsets.UTF_8), session);
                     }
                 },
-                (Configs.getWebsocketConfig().getChannelPrefix() + Constant.UNDERLINE + CHANNEL_ALL).getBytes(StandardCharsets.UTF_8),
+                getRealChannel(CHANNEL_ALL).getBytes(StandardCharsets.UTF_8),
                 personalChannel.getBytes(StandardCharsets.UTF_8)
         );
     }
@@ -171,6 +197,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             final String personalChannel = CHANNEL_USER_PREFIX + userId;
             String[] topics = {CHANNEL_ALL, personalChannel};
             mqttClient.subscribe(topics);
+            mqttClientHashMap.put(session.getId(), mqttClient);
         } catch (MqttException e) {
             throw new ServiceException(e);
         }
@@ -192,10 +219,119 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     @Contract(pure = true)
     @Override
     public final void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
+        try {
+            RedisConnection redisConnection = redisConnectionHashMap.get(session.getId());
+            if (Objects.nonNull(redisConnection)) {
+                redisConnection.close();
+            }
+            redisConnectionHashMap.remove(session.getId());
+            MqttClient mqttClient = mqttClientHashMap.get(session.getId());
+            if (Objects.nonNull(mqttClient)) {
+                mqttClient.close();
+                mqttClientHashMap.remove(session.getId());
+            }
+            userIdHashMap.remove(session.getId());
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
     }
 
     @Contract(pure = true)
     @Override
     public final void onMessage(@NotNull Message message, byte[] pattern) {
+    }
+
+    /**
+     * <h2>REDIS订阅</h2>
+     *
+     * @param channel 传入的频道
+     * @param session WebSocket会话
+     */
+    protected final void redisSubscribe(@NotNull String channel, WebSocketSession session) {
+        log.info("REDIS开始订阅频道: {}", getRealChannel(channel));
+        getRedisSubscription(session).subscribe(getRealChannel(channel).getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * <h2>MQTT订阅</h2>
+     *
+     * @param channel 传入的频道
+     * @param session WebSocket会话
+     */
+    protected final void mqttSubscribe(String channel, WebSocketSession session) {
+        log.info("MQTT开始订阅频道: {}", getRealChannel(channel));
+        try {
+            getMqttClient(session).subscribe(getRealChannel(channel));
+        } catch (MqttException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * <h2>获取真实的频道</h2>
+     *
+     * @param channel 传入的频道
+     * @return 带前缀的真实频道
+     */
+    protected final @NotNull String getRealChannel(String channel) {
+        return Configs.getWebsocketConfig().getChannelPrefix() + Constant.UNDERLINE + channel;
+    }
+
+    /**
+     * <h2>Redis订阅</h2>
+     *
+     * @param channel 传入的频道
+     * @param session WebSocket会话
+     */
+    protected final void redisUnSubscribe(@NotNull String channel, WebSocketSession session) {
+        log.info("REDIS取消订阅频道: {}", getRealChannel(channel));
+        getRedisSubscription(session).unsubscribe(getRealChannel(channel).getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * <h2>MQTT订阅</h2>
+     *
+     * @param channel 传入的频道
+     * @param session WebSocket会话
+     */
+    protected final void mqttUnSubscribe(String channel, WebSocketSession session) {
+        log.info("MQTT取消订阅频道: {}", getRealChannel(channel));
+        try {
+            getMqttClient(session).unsubscribe(getRealChannel(channel));
+        } catch (MqttException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * <h2>获取MQTT客户端</h2>
+     *
+     * @param session WebSocket会话
+     * @return MQTT客户端
+     */
+    protected final MqttClient getMqttClient(@NotNull WebSocketSession session) {
+        MqttClient mqttClient = mqttClientHashMap.get(session.getId());
+        if (Objects.isNull(mqttClient)) {
+            throw new RuntimeException("mqtt client is null");
+        }
+        return mqttClient;
+    }
+
+    /**
+     * <h2>获取Redis订阅</h2>
+     *
+     * @param session WebSocket会话
+     * @return Redis订阅
+     */
+    protected final Subscription getRedisSubscription(@NotNull WebSocketSession session) {
+        RedisConnection redisConnection = redisConnectionHashMap.get(session.getId());
+        if (Objects.isNull(redisConnection)) {
+            throw new RuntimeException("redisConnection is null");
+        }
+        Subscription subscription = redisConnection.getSubscription();
+        if (Objects.isNull(subscription)) {
+            throw new RuntimeException("subscription is null");
+        }
+        return subscription;
     }
 }

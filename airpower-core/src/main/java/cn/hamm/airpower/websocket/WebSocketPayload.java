@@ -14,7 +14,7 @@ public class WebSocketPayload {
     /**
      * <h2>负载类型</h2>
      */
-    private String type;
+    private String type = "system";
 
     /**
      * <h2>负载数据</h2>
