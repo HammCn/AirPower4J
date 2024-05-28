@@ -29,6 +29,16 @@ public class WebSocketEvent {
     private String id;
 
     /**
+     * <h2>发送方ID</h2>
+     */
+    private long from = Constant.ZERO_LONG;
+
+    /**
+     * <h2>接收方ID</h2>
+     */
+    private long to = Constant.ZERO_LONG;
+
+    /**
      * <h2>事件时间戳</h2>
      */
     private Long time;
@@ -58,8 +68,17 @@ public class WebSocketEvent {
      * @param payload 负载
      * @return 事件
      */
-    static @NotNull WebSocketEvent create(WebSocketPayload payload) {
-        WebSocketEvent webSocketEvent = new WebSocketEvent().setPayload(payload);
+    public static @NotNull WebSocketEvent create(WebSocketPayload payload) {
+        return create().setPayload(payload);
+    }
+
+    /**
+     * <h2>创建WebSocket事件</h2>
+     *
+     * @return 事件
+     */
+    private static @NotNull WebSocketEvent create() {
+        WebSocketEvent webSocketEvent = new WebSocketEvent();
         webSocketEvent.resetEvent();
         return webSocketEvent;
     }
