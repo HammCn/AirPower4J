@@ -76,6 +76,6 @@ public class ServiceException extends RuntimeException implements IException {
      * @param exception 异常
      */
     public ServiceException(@NotNull Exception exception) {
-        this.setCode(ServiceError.EMAIL_ERROR.getCode()).setMessage(exception.getMessage());
+        this.setCode(ServiceError.SERVICE_ERROR.getCode()).setMessage(exception.getMessage());
     }
 }
