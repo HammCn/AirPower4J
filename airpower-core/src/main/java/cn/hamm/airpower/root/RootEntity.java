@@ -106,11 +106,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @Document(MessageConstant.GET_PAGE_OR_GET_LIST_USE_ONLY)
     private Long updateTimeTo;
 
-    @Transient
-    @Getter
-    @Setter
-    private String text;
-
     /**
      * <h2>设置ID</h2>
      *
