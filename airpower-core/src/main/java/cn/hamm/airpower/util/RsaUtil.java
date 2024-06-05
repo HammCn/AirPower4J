@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -58,11 +55,11 @@ public class RsaUtil {
      * @param sourceContent 原文
      * @return 密文
      */
-    public final String publicKeyEncode(String sourceContent) {
+    public final String publicKeyEncrypt(String sourceContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
             PublicKey publicKey = getPublicKey(this.publicKey);
-            return encodeByKey(sourceContent, publicKey, blockSize);
+            return encrypt(sourceContent, publicKey, blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -75,11 +72,11 @@ public class RsaUtil {
      * @param encryptedContent 密文
      * @return 原文
      */
-    public final @NotNull String privateKeyDecode(String encryptedContent) {
+    public final @NotNull String privateKeyDecrypt(String encryptedContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
             PrivateKey privateKey = getPrivateKey(this.privateKey);
-            return decodeByKey(encryptedContent, privateKey, blockSize);
+            return decrypt(encryptedContent, privateKey, blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -92,11 +89,11 @@ public class RsaUtil {
      * @param sourceContent 原文
      * @return 密文
      */
-    public final String privateKeyEncode(String sourceContent) {
+    public final String privateKeyEncrypt(String sourceContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
             PrivateKey privateKey = getPrivateKey(this.privateKey);
-            return encodeByKey(sourceContent, privateKey, blockSize);
+            return encrypt(sourceContent, privateKey, blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -110,11 +107,11 @@ public class RsaUtil {
      * @param encryptedContent 密文
      * @return 原文
      */
-    public final @NotNull String publicKeyDecode(String encryptedContent) {
+    public final @NotNull String publicKeyDecrypt(String encryptedContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
             PublicKey publicKey = getPublicKey(this.publicKey);
-            return decodeByKey(encryptedContent, publicKey, blockSize);
+            return decrypt(encryptedContent, publicKey, blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -130,7 +127,7 @@ public class RsaUtil {
      * @return 明文
      */
     @Contract("_, _, _ -> new")
-    private @NotNull String decodeByKey(String encryptedContent, Key key, int blockSize) throws Exception {
+    private @NotNull String decrypt(String encryptedContent, Key key, int blockSize) throws Exception {
         byte[] srcBytes = Base64.getDecoder().decode(encryptedContent);
         Cipher deCipher;
         deCipher = Cipher.getInstance(CRYPT_METHOD);
@@ -148,7 +145,7 @@ public class RsaUtil {
      * @param blockSize     区块大小
      * @return 密文
      */
-    private String encodeByKey(@NotNull String sourceContent, Key key, int blockSize) throws Exception {
+    private String encrypt(@NotNull String sourceContent, Key key, int blockSize) throws Exception {
         byte[] srcBytes = sourceContent.getBytes();
         Cipher cipher;
         cipher = Cipher.getInstance(CRYPT_METHOD);
@@ -211,5 +208,62 @@ public class RsaUtil {
         byte[] data = byteArrayOutputStream.toByteArray();
         byteArrayOutputStream.close();
         return data;
+    }
+
+    /**
+     * <h2>生成RSA密钥对</h2>
+     *
+     * @return KeyPair
+     */
+    public final KeyPair generateKeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
+    }
+
+    /**
+     * <h2>将公钥转换为PEM格式</h2>
+     *
+     * @param publicKey 公钥
+     * @return PEM
+     */
+    public final @NotNull String convertPublicKeyToPEM(@NotNull PublicKey publicKey) {
+        byte[] encoded = publicKey.getEncoded();
+        String base64Encoded = Base64.getEncoder().encodeToString(encoded);
+        return "-----BEGIN PUBLIC KEY-----\n" +
+                wrapBase64Text(base64Encoded) +
+                "-----END PUBLIC KEY-----";
+    }
+
+    /**
+     * <h2>将私钥转换为PEM格式</h2>
+     *
+     * @param privateKey 私钥
+     * @return PEM
+     */
+    public final @NotNull String convertPrivateKeyToPEM(@NotNull PrivateKey privateKey) {
+        byte[] encoded = privateKey.getEncoded();
+        String base64Encoded = Base64.getEncoder().encodeToString(encoded);
+        return "-----BEGIN RSA PRIVATE KEY-----\n" +
+                wrapBase64Text(base64Encoded) +
+                "-----END RSA PRIVATE KEY-----";
+    }
+
+    /**
+     * <h2>将Base64编码的文本换行</h2>
+     *
+     * @param base64Text 原始Base64
+     * @return 换行后的
+     */
+    private @NotNull String wrapBase64Text(@NotNull String base64Text) {
+        final int wrapLength = 64;
+        StringBuilder wrappedText = new StringBuilder();
+        int start = 0;
+        while (start < base64Text.length()) {
+            int end = Math.min(start + wrapLength, base64Text.length());
+            wrappedText.append(base64Text, start, end).append("\n");
+            start = end;
+        }
+        return wrappedText.toString();
     }
 }

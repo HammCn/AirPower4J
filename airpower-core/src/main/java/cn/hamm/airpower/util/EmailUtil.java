@@ -21,6 +21,9 @@ public class EmailUtil {
     @Autowired(required = false)
     private JavaMailSender javaMailSender;
 
+    /**
+     * <h2>发件人/用户名</h2>
+     */
     @Value("${spring.mail.username: ''}")
     private String mailFrom;
 

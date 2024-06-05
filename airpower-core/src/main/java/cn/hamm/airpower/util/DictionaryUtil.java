@@ -1,10 +1,10 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.interfaces.IFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -31,7 +31,7 @@ public class DictionaryUtil {
      * @param <D>       [泛型] 字典类型
      * @return 查到的字典
      */
-    public final <D extends IDictionary> @Nullable D getDictionary(@NotNull Class<D> enumClass, int key) {
+    public final <D extends IDictionary> @NotNull D getDictionary(@NotNull Class<D> enumClass, int key) {
         return getDictionary(enumClass, IDictionary::getKey, key);
     }
 
@@ -44,7 +44,7 @@ public class DictionaryUtil {
      * @param <D>       [泛型] 字典类型
      * @return 查到的字典
      */
-    public final <D extends IDictionary> @Nullable D getDictionary(@NotNull Class<D> enumClass, Function<D, Object> function, Object value) {
+    public final <D extends IDictionary> @NotNull D getDictionary(@NotNull Class<D> enumClass, Function<D, Object> function, Object value) {
         try {
             // 取出所有枚举类型
             D[] objs = enumClass.getEnumConstants();
@@ -56,7 +56,7 @@ public class DictionaryUtil {
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
         }
-        return null;
+        throw new ServiceException("传入的值不在字典可选范围内");
     }
 
     /**

@@ -7,6 +7,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * <h1>随机助手类</h1>
@@ -35,6 +37,26 @@ public class RandomUtil {
      */
     private static final String BASE_CHAR_NUMBER = BASE_CHAR.toUpperCase() + BASE_CHAR_NUMBER_LOWER;
 
+    /**
+     * <h2>获取随机字节数组</h2>
+     *
+     * @param length 长度
+     * @return 随机字节数组
+     */
+    public final byte @NotNull [] randomBytes(int length) {
+        byte[] bytes = new byte[length];
+        IntStream.range(0, length).forEach(i -> bytes[i] = (byte) (Math.random() * 256 - 128));
+        return bytes;
+    }
+
+    /**
+     * <h2>获取32位随机字节数组</h2>
+     *
+     * @return 随机字节数组
+     */
+    public final byte @NotNull [] randomBytes() {
+        return randomBytes(32);
+    }
 
     /**
      * <h2>获取32位随机字符串</h2>
@@ -76,17 +98,12 @@ public class RandomUtil {
         if (!StringUtils.hasText(baseString)) {
             return Constant.EMPTY_STRING;
         }
-        if (length < 1) {
-            length = 1;
-        }
-
-        final StringBuilder sb = new StringBuilder(length);
+        length = Math.max(length, 1);
         final int baseLength = baseString.length();
-        for (int i = 0; i < length; i++) {
-            final int number = randomInt(baseLength);
-            sb.append(baseString.charAt(number));
-        }
-        return sb.toString();
+        return IntStream.range(0, length)
+                .map(i -> randomInt(baseLength))
+                .mapToObj(number -> String.valueOf(baseString.charAt(number)))
+                .collect(Collectors.joining());
     }
 
     /**
@@ -139,7 +156,11 @@ public class RandomUtil {
         return getRandom().nextInt(min, max);
     }
 
-
+    /**
+     * <h2>获得随机数种子</h2>
+     *
+     * @return 随机种子
+     */
     private ThreadLocalRandom getRandom() {
         return ThreadLocalRandom.current();
     }
