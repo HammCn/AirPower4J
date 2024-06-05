@@ -158,6 +158,12 @@ public class Utils {
     private static StringUtil stringUtil;
 
     /**
+     * <h2>AES工具</h2>
+     */
+    @Getter
+    private static AesUtil aesUtil;
+
+    /**
      * <h2>获取HttpUtil</h2>
      *
      * @return HttpUtil
@@ -201,7 +207,8 @@ public class Utils {
             HttpServletResponse httpServletResponse,
             NumberUtil numberUtil,
             StringUtil stringUtil,
-            WebsocketUtil websocketUtil
+            WebsocketUtil websocketUtil,
+            AesUtil aesUtil
     ) {
         Utils.redisUtil = redisUtil;
         Utils.emailUtil = emailUtil;
@@ -226,6 +233,7 @@ public class Utils {
         Utils.numberUtil = numberUtil;
         Utils.stringUtil = stringUtil;
         Utils.websocketUtil = websocketUtil;
+        Utils.aesUtil = aesUtil;
     }
 
     /**

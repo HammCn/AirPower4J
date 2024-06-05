@@ -74,7 +74,10 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             }
         }
 
-        beforeHandleRequest(request, response, clazz, method);
+        boolean isContinue = beforeHandleRequest(request, response, clazz, method);
+        if (!isContinue) {
+            return true;
+        }
         Access access = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
@@ -118,11 +121,14 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param response 响应对象
      * @param clazz    控制器类
      * @param method   执行方法
+     * @return 拦截结果
+     * @apiNote 如返回<code>TRUE</code>，则继续走后续拦截，如返回<code>FALSE</code>，则中断拦截，直接放行
      */
     @SuppressWarnings({"EmptyMethod", "unused"})
-    protected void beforeHandleRequest(
+    protected boolean beforeHandleRequest(
             HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method
     ) {
+        return true;
     }
 
     /**
