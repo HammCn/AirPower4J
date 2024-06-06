@@ -175,8 +175,8 @@ public class RootEntityController<
     @RequestMapping("getList")
     @Filter(WhenGetList.class)
     public Json getList(@RequestBody QueryRequest<E> queryRequest) {
-        queryRequest = getQueryRequest(queryRequest);
         checkApiAvailableStatus(Api.GetList);
+        queryRequest = getQueryRequest(queryRequest);
         queryRequest = beforeGetList(queryRequest).copy();
         return Json.data(afterGetList(service.getList(queryRequest)));
     }
@@ -192,8 +192,8 @@ public class RootEntityController<
     @RequestMapping("getPage")
     @Filter(WhenGetPage.class)
     public Json getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
-        queryPageRequest = getQueryRequest(queryPageRequest);
         checkApiAvailableStatus(Api.GetPage);
+        queryPageRequest = getQueryRequest(queryPageRequest);
         queryPageRequest = (QueryPageRequest<E>) beforeGetPage(queryPageRequest).copy();
         return Json.data(afterGetPage(service.getPage(queryPageRequest)));
     }
