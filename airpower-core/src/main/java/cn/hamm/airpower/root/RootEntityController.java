@@ -52,15 +52,17 @@ public class RootEntityController<
     @Description("添加")
     @RequestMapping("add")
     @Filter(WhenGetDetail.class)
-    public Json add(@RequestBody @Validated(WhenAdd.class) E entity) {
+    public Json add(@RequestBody @Validated(WhenAdd.class) E source) {
         checkApiAvailableStatus(Api.Add);
-        service.ignoreReadOnlyFields(entity);
-        long insertId = service.add(beforeAdd(entity));
+        service.ignoreReadOnlyFields(source);
+        source = beforeAdd(source).copy();
+        final E finalSource = source;
+        long id = service.add(source);
         execute(
-                () -> afterAdd(insertId, entity),
-                () -> afterSaved(insertId, entity)
+                () -> afterAdd(id, finalSource),
+                () -> afterSaved(id, finalSource)
         );
-        return Json.entity(insertId, MessageConstant.SUCCESS_TO_ADD);
+        return Json.entity(id, MessageConstant.SUCCESS_TO_ADD);
     }
 
     /**
@@ -74,15 +76,18 @@ public class RootEntityController<
     @Description("修改")
     @RequestMapping("update")
     @Filter(WhenGetDetail.class)
-    public Json update(@RequestBody @Validated(WhenUpdate.class) @NotNull E entity) {
+    public Json update(@RequestBody @Validated(WhenUpdate.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Update);
-        long updateId = entity.getId();
-        service.update(beforeUpdate(service.ignoreReadOnlyFields(entity)));
+        long id = source.getId();
+        service.ignoreReadOnlyFields(source);
+        source = beforeUpdate(source).copy();
+        final E finalSource = source;
+        service.update(source);
         execute(
-                () -> afterUpdate(updateId, entity),
-                () -> afterSaved(updateId, entity)
+                () -> afterUpdate(id, finalSource),
+                () -> afterSaved(id, finalSource)
         );
-        return Json.entity(updateId, MessageConstant.SUCCESS_TO_UPDATE);
+        return Json.entity(id, MessageConstant.SUCCESS_TO_UPDATE);
     }
 
     /**
@@ -94,15 +99,15 @@ public class RootEntityController<
      */
     @Description("删除")
     @RequestMapping("delete")
-    public Json delete(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
+    public Json delete(@RequestBody @Validated(WhenIdRequired.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Delete);
-        long deleteId = entity.getId();
-        beforeDelete(deleteId);
-        service.delete(deleteId);
+        long id = source.getId();
+        beforeDelete(id);
+        service.delete(id);
         execute(
-                () -> afterDelete(deleteId)
+                () -> afterDelete(id)
         );
-        return Json.entity(deleteId, MessageConstant.SUCCESS_TO_DELETE);
+        return Json.entity(id, MessageConstant.SUCCESS_TO_DELETE);
     }
 
     /**
@@ -114,9 +119,9 @@ public class RootEntityController<
     @Description("查询详情")
     @RequestMapping("getDetail")
     @Filter(WhenGetDetail.class)
-    public Json getDetail(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
+    public Json getDetail(@RequestBody @Validated(WhenIdRequired.class) @NotNull E source) {
         checkApiAvailableStatus(Api.GetDetail);
-        return Json.data(afterGetDetail(service.get(entity.getId())));
+        return Json.data(afterGetDetail(service.get(source.getId())));
     }
 
     /**
@@ -128,14 +133,15 @@ public class RootEntityController<
      */
     @Description("禁用")
     @RequestMapping("disable")
-    public Json disable(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
+    public Json disable(@RequestBody @Validated(WhenIdRequired.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Disable);
-        beforeDisable(entity.getId());
-        service.disable(entity.getId());
+        long id = source.getId();
+        beforeDisable(id);
+        service.disable(id);
         execute(
-                () -> afterDisable(entity.getId())
+                () -> afterDisable(id)
         );
-        return Json.entity(entity.getId(), MessageConstant.SUCCESS_TO_DISABLE);
+        return Json.entity(source.getId(), MessageConstant.SUCCESS_TO_DISABLE);
     }
 
     /**
@@ -147,14 +153,15 @@ public class RootEntityController<
      */
     @Description("启用")
     @RequestMapping("enable")
-    public Json enable(@RequestBody @Validated(WhenIdRequired.class) @NotNull E entity) {
+    public Json enable(@RequestBody @Validated(WhenIdRequired.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Enable);
-        beforeEnable(entity.getId());
-        service.enable(entity.getId());
+        long id = source.getId();
+        beforeEnable(id);
+        service.enable(id);
         execute(
-                () -> afterEnable(entity.getId())
+                () -> afterEnable(id)
         );
-        return Json.entity(entity.getId(), MessageConstant.SUCCESS_TO_ENABLE);
+        return Json.entity(source.getId(), MessageConstant.SUCCESS_TO_ENABLE);
     }
 
     /**
@@ -170,7 +177,8 @@ public class RootEntityController<
     public Json getList(@RequestBody QueryRequest<E> queryRequest) {
         queryRequest = getQueryRequest(queryRequest);
         checkApiAvailableStatus(Api.GetList);
-        return Json.data(afterGetList(service.getList(beforeGetList(queryRequest))));
+        queryRequest = beforeGetList(queryRequest).copy();
+        return Json.data(afterGetList(service.getList(queryRequest)));
     }
 
     /**
@@ -186,7 +194,8 @@ public class RootEntityController<
     public Json getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         queryPageRequest = getQueryRequest(queryPageRequest);
         checkApiAvailableStatus(Api.GetPage);
-        return Json.data(afterGetPage(service.getPage(beforeGetPage(queryPageRequest))));
+        queryPageRequest = (QueryPageRequest<E>) beforeGetPage(queryPageRequest).copy();
+        return Json.data(afterGetPage(service.getPage(queryPageRequest)));
     }
 
     /**
