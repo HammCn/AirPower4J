@@ -1,8 +1,10 @@
 package cn.hamm.airpower.enums;
 
+import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.interfaces.IException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.jetbrains.annotations.Contract;
 
 /**
  * <h1>系统错误代码字典</h1>
@@ -13,7 +15,7 @@ import lombok.Getter;
 @SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
 @Getter
 @AllArgsConstructor
-public enum ServiceError implements IException {
+public enum ServiceError implements IException, IDictionary {
     CONTINUE(201, "请继续"),
 
     UPGRADE_CLIENT_NECESSARY(301, "请更新客户端"),
@@ -61,4 +63,16 @@ public enum ServiceError implements IException {
 
     private final int code;
     private final String message;
+
+    @Contract(pure = true)
+    @Override
+    public int getKey() {
+        return this.code;
+    }
+
+    @Contract(pure = true)
+    @Override
+    public String getLabel() {
+        return this.message;
+    }
 }
