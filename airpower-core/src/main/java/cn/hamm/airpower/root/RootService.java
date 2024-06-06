@@ -73,14 +73,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #afterSaved(long, E)
      */
     public final long add(@NotNull E source) {
-        source = beforeAdd(source);
+        source = beforeAdd(source).copy();
         ServiceError.SERVICE_ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark(Constant.EMPTY_STRING);
         }
-        long id = saveToDatabase(source);
         E finalSource = source;
+        long id = saveToDatabase(source);
         execute(() -> afterAdd(id, finalSource));
         return id;
     }
@@ -115,13 +115,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @see #updateWithNull(E)
      */
     public final void update(@NotNull E source) {
-        source = beforeUpdate(source);
-        updateToDatabase(source);
-        E finalSource = source;
-        execute(
-                () -> afterUpdate(finalSource.getId(), finalSource),
-                () -> afterSaved(finalSource.getId(), finalSource)
-        );
+        updateToDatabase(false, source);
     }
 
     /**
@@ -136,17 +130,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      */
     @SuppressWarnings("unused")
     public final void updateWithNull(@NotNull E source) {
-        ServiceError.PARAM_MISSING.whenNull(source.getId(), String.format(
-                MessageConstant.MISSING_ID_WHEN_UPDATE,
-                Utils.getReflectUtil().getDescription(getEntityClass())
-        ));
-        source = beforeUpdate(source);
-        updateToDatabase(source, true);
-        E finalSource = source;
-        execute(
-                () -> afterUpdate(finalSource.getId(), finalSource),
-                () -> afterSaved(finalSource.getId(), finalSource)
-        );
+        updateToDatabase(true, source);
     }
 
     /**
@@ -293,7 +277,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final @NotNull List<E> getList(QueryRequest<E> queryRequest) {
         queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
         queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
-        queryRequest = beforeGetList(queryRequest);
+        queryRequest = beforeGetList(queryRequest).copy();
         List<E> list = repository.findAll(
                 createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort())
         );
@@ -415,7 +399,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final @NotNull QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
         queryPageRequest = Objects.requireNonNullElse(queryPageRequest, new QueryPageRequest<>());
         queryPageRequest.setFilter(Objects.requireNonNullElse(queryPageRequest.getFilter(), getNewInstance()));
-        queryPageRequest = beforeGetPage(queryPageRequest);
+        queryPageRequest = (QueryPageRequest<E>) beforeGetPage(queryPageRequest).copy();
         org.springframework.data.domain.Page<E> pageData = repository.findAll(
                 createSpecification(queryPageRequest.getFilter(), false), createPageable(queryPageRequest)
         );
@@ -477,10 +461,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>🔴更新到数据库</h2>
+     * <h2>🔴更新到数据库(不触发前后置)</h2>
      *
      * @param source 原始实体
-     * @apiNote 🔴请注意，此方法不会触发前后置
      * @see #update(E)
      * @see #updateWithNull(E)
      */
@@ -489,7 +472,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     }
 
     /**
-     * <h2>🔴更新到数据库</h2>
+     * <h2>🔴更新到数据库(触发前后置)</h2>
      *
      * @param source   原始实体
      * @param withNull 是否更新空值
@@ -504,6 +487,24 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
                 Utils.getReflectUtil().getDescription(getEntityClass())
         ));
         saveToDatabase(source, withNull);
+    }
+
+
+    /**
+     * <h2>🔴更新到数据库</h2>
+     *
+     * @param withNull 是否更新 <code>null</code> 属性
+     * @param source   原始数据
+     */
+    private void updateToDatabase(boolean withNull, @NotNull E source) {
+        long id = source.getId();
+        source = beforeUpdate(source).copy();
+        updateToDatabase(source, withNull);
+        E finalSource = source;
+        execute(
+                () -> afterUpdate(id, finalSource),
+                () -> afterSaved(id, finalSource)
+        );
     }
 
     /**
@@ -603,7 +604,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     private long saveAndFlush(@NotNull E entity) {
         E target = getNewInstance();
         BeanUtils.copyProperties(entity, target);
-        target = beforeSaveToDatabase(target);
+        target = beforeSaveToDatabase(target).copy();
         target = repository.saveAndFlush(target);
         // 新增完毕，清掉查询缓存，避免查询到旧数据
         Utils.getEntityManager().clear();
