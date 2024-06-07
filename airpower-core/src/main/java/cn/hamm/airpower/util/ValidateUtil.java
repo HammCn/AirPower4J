@@ -173,8 +173,7 @@ public class ValidateUtil {
      * @param <M>     模型类型
      * @param <A>     校验分组类型
      */
-    @SafeVarargs
-    public final <M extends RootModel<M>, A extends IAction> void valid(M model, Class<A>... actions) {
+    public final <M extends RootModel<M>, A extends IAction> void valid(M model, Class<?>... actions) {
         if (Objects.isNull(model)) {
             return;
         }
@@ -185,11 +184,9 @@ public class ValidateUtil {
             }
             return;
         }
-        for (Class<A> action : actions) {
-            Set<ConstraintViolation<M>> violations = validator.validate(model, action);
-            if (!violations.isEmpty()) {
-                ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
-            }
+        Set<ConstraintViolation<M>> violations = validator.validate(model, actions);
+        if (!violations.isEmpty()) {
+            ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
         }
     }
 }
