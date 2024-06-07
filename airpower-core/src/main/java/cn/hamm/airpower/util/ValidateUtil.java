@@ -3,7 +3,6 @@ package cn.hamm.airpower.util;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.PatternConstant;
 import cn.hamm.airpower.enums.ServiceError;
-import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.root.RootModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -171,9 +170,8 @@ public class ValidateUtil {
      * @param model   数据模型
      * @param actions (可选)校验分组
      * @param <M>     模型类型
-     * @param <A>     校验分组类型
      */
-    public final <M extends RootModel<M>, A extends IAction> void valid(M model, Class<?>... actions) {
+    public final <M extends RootModel<M>> void valid(M model, Class<?>... actions) {
         if (Objects.isNull(model)) {
             return;
         }
