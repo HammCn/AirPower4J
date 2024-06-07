@@ -80,5 +80,10 @@ public @interface Desensitize {
          * <h2>IP地址(v4)</h2>
          */
         IP_V4,
+
+        /**
+         * <h2>自定义</h2>
+         */
+        CUSTOM,
     }
 }
