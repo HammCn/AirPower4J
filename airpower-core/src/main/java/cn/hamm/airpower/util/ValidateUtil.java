@@ -1,9 +1,17 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.PatternConstant;
+import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.root.RootModel;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +22,11 @@ import java.util.regex.Pattern;
  */
 @Component
 public class ValidateUtil {
+    /**
+     * <h2>从工厂获取Validator实例</h2>
+     */
+    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
     /**
      * <h2>是否是数字</h2>
      *
@@ -149,5 +162,29 @@ public class ValidateUtil {
     public final boolean validRegex(String value, @NotNull Pattern pattern) {
         Matcher emailMatcher = pattern.matcher(value);
         return emailMatcher.matches();
+    }
+
+    /**
+     * <h2>验证传入的数据模型</h2>
+     *
+     * @param model   数据模型
+     * @param actions (可选)校验分组
+     * @param <M>     模型类型
+     */
+    public final <M extends RootModel<M>> void valid(M model, Class<?>... actions) {
+        if (Objects.isNull(model)) {
+            return;
+        }
+        if (actions.length == Constant.ZERO_INT) {
+            Set<ConstraintViolation<M>> violations = validator.validate(model);
+            if (!violations.isEmpty()) {
+                ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
+            }
+            return;
+        }
+        Set<ConstraintViolation<M>> violations = validator.validate(model, actions);
+        if (!violations.isEmpty()) {
+            ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
+        }
     }
 }
