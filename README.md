@@ -16,21 +16,25 @@
 
 ## 📖 这是个什么项目
 
-为了满足开发标准化、工程化、系统化等等需求，我们设计并开发了一个基于 **Java17**、**SpringBoot3.x**、**JPA&MySQL** 的后端开发脚手架，其中包含了一些 **RBAC**、**请求验证**、**CURD封装**、**异常处理**、**多租户SaaS**、**加解密与安全**、**WebSocket**等模块，以满足日常开发的快捷、稳健、标准化等要求。
+为了满足开发标准化、工程化、系统化等等需求，我们设计并开发了一个基于 **Java17**、**SpringBoot3.x**、**JPA&MySQL**
+的后端开发脚手架，其中包含了一些 **RBAC**、**请求验证**、**CURD封装**、**异常处理**、**多租户SaaS**、**加解密与安全**、*
+*WebSocket**等模块，以满足日常开发的快捷、稳健、标准化等要求。
 
 ## 🎈 为何起名**AirPower**
 
-其实是因为前一个项目 **AirPower4T** 瞎起了个名字，后端没办法就干脆直接叫 **AirPower4J** 得了。
+因为前端项目起了 **AirPower4T** 这个名字，于是后端就直接起名 **AirPower4J** 得了。
 
 ## 🔑 如何使用(初始化)?
 
 通过我们提供的 ```AirPower宿主仓库``` 项目来完成 **AirPower** 宿主项目的初始化:
 
-AirPowerJavaStarter via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md) / [GitHub](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md)
+AirPowerJavaStarter
+via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md) / [GitHub](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md)
 
 ## 🛎 问题反馈与建议
 
-如果你有什么疑问或者问题，你也可以加入开发者交流QQ群(```555156313```)进行咨询，当然，我们更建议你发起 [Gitee issue](https://gitee.com/air-power/AirPower4J/issues/new) / [Github issue](https://github.com/HammCn/AirPower4J/issues/new)
+如果你有什么疑问或者问题，你也可以加入开发者交流QQ群(```555156313```)
+进行咨询，当然，我们更建议你发起 [Gitee issue](https://gitee.com/air-power/AirPower4J/issues/new) / [Github issue](https://github.com/HammCn/AirPower4J/issues/new)
 
 ## ⏰ Enjoy it
 
