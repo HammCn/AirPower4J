@@ -7,8 +7,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 /**
  * <h1>枚举字典验证实现类</h1>
  *
@@ -33,7 +31,12 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
         if (null == value) {
             return true;
         }
-        return Objects.nonNull(Utils.getDictionaryUtil().getDictionary(enumClazz, value));
+        try {
+            Utils.getDictionaryUtil().getDictionary(enumClazz, value);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     /**
