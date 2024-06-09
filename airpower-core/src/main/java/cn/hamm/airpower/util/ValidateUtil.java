@@ -25,7 +25,7 @@ public class ValidateUtil {
     /**
      * <h2>从工厂获取Validator实例</h2>
      */
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     /**
      * <h2>是否是数字</h2>
