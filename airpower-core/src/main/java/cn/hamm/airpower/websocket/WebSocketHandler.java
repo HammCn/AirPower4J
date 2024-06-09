@@ -35,31 +35,28 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     /**
      * <h2>订阅全频道</h2>
      */
-    public static String CHANNEL_ALL = "WEBSOCKET_ALL";
+    public static final String CHANNEL_ALL = "WEBSOCKET_ALL";
     /**
      * <h2>订阅用户频道前缀</h2>
      */
-    public static String CHANNEL_USER_PREFIX = "WEBSOCKET_USER_";
+    public static final String CHANNEL_USER_PREFIX = "WEBSOCKET_USER_";
+    /**
+     * <h2>Redis连接Map</h2>
+     */
+    protected final HashMap<String, RedisConnection> redisConnectionHashMap = new HashMap<>();
+    /**
+     * <h2>MQTT客户端Map</h2>
+     */
+    protected final HashMap<String, MqttClient> mqttClientHashMap = new HashMap<>();
+    /**
+     * <h2>用户IDMap</h2>
+     */
+    protected final HashMap<String, Long> userIdHashMap = new HashMap<>();
     /**
      * <h2>Redis连接工厂</h2>
      */
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
-
-    /**
-     * <h2>Redis连接Map</h2>
-     */
-    protected final HashMap<String, RedisConnection> redisConnectionHashMap = new HashMap<>();
-
-    /**
-     * <h2>MQTT客户端Map</h2>
-     */
-    protected final HashMap<String, MqttClient> mqttClientHashMap = new HashMap<>();
-
-    /**
-     * <h2>用户IDMap</h2>
-     */
-    protected final HashMap<String, Long> userIdHashMap = new HashMap<>();
 
     /**
      * <h2>收到Websocket消息时</h2>
