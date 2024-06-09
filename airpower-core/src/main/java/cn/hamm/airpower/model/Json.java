@@ -60,7 +60,7 @@ public class Json {
      * @return Json
      */
     public static Json success(String message) {
-        return newJson().setMessage(message);
+        return create().setMessage(message);
     }
 
     /**
@@ -104,7 +104,7 @@ public class Json {
      * @return Json
      */
     public static Json data(Object data, String message) {
-        return newJson().setData(data).setMessage(message);
+        return create().setData(data).setMessage(message);
     }
 
     /**
@@ -147,7 +147,7 @@ public class Json {
      * @return Json
      */
     public static Json show(int code, String message, Object data) {
-        return newJson().setCode(code).setMessage(message).setData(data);
+        return create().setCode(code).setMessage(message).setData(data);
     }
 
     /**
@@ -240,7 +240,7 @@ public class Json {
      * @return JSON对象
      */
     @Contract(" -> new")
-    private static @NotNull Json newJson() {
+    public static @NotNull Json create() {
         return new Json();
     }
 }
