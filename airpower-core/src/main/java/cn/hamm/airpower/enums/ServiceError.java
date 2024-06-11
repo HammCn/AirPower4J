@@ -24,6 +24,10 @@ public enum ServiceError implements IException, IDictionary {
     // 400 请求参数代码
     PARAM_MISSING(4001, "缺少参数"),
     PARAM_INVALID(4002, "无效的参数"),
+    INVALID_APP_KEY(4003, "传入的AppKey无效"),
+    SIGNATURE_INVALID(4004, "签名无效"),
+    REPEAT_REQUEST(4005, "重复的请求"),
+    TIMESTAMP_INVALID(4006, "请求时间不在允许范围内"),
 
     // 401 需要登录代码
     UNAUTHORIZED(401, "获取身份信息失败,请重新登录!"),
@@ -35,6 +39,7 @@ public enum ServiceError implements IException, IDictionary {
     FORBIDDEN_DELETE(4033, "无权删除"),
     FORBIDDEN_DELETE_USED(4034, "数据正在使用中,无法被删除!"),
     FORBIDDEN_UPLOAD_MAX_SIZE(4035, "上传的文件大小超过最大限制"),
+    OPEN_APP_DISABLED(4036, "当前应用已被禁用"),
 
     // 404 没有查到数据代码
     DATA_NOT_FOUND(404, "没有查到相关的数据"),
@@ -45,6 +50,10 @@ public enum ServiceError implements IException, IDictionary {
 
     // 500 服务基础代码
     SERVICE_ERROR(500, "服务发生错误,请稍后再试"),
+    DECRYPT_DATA_FAIL(5001, "数据解密失败"),
+    ENCRYPT_DATA_FAIL(5002, "数据加密失败"),
+    JSON_DECODE_FAIL(5003, "JSON解码失败"),
+
     API_SERVICE_UNSUPPORTED(501, "请求的接口暂未实现"),
 
     // 502 内部错误代码
@@ -59,6 +68,7 @@ public enum ServiceError implements IException, IDictionary {
 
     // 5023 邮件相关代码
     EMAIL_ERROR(5023, "发送邮件可能出现异常,请检查收件箱"),
+
     ;
 
     private final int code;

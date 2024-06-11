@@ -28,8 +28,8 @@ import java.util.Objects;
  * <h1>全局权限拦截器抽象类</h1>
  *
  * @author Hamm.cn
- * @see #checkPermissionAccess(Long, String, HttpServletRequest)
- * @see #beforeHandleRequest(HttpServletRequest, HttpServletResponse, Class, Method)
+ * @see #checkUserPermission(Long, String, HttpServletRequest)
+ * @see #interceptRequest(HttpServletRequest, HttpServletResponse, Class, Method)
  * @see #getRequestBody(HttpServletRequest)
  * @see #setShareData(String, Object)
  */
@@ -73,15 +73,24 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
                 return false;
             }
         }
+        handleRequest(request, response, clazz, method);
+        return true;
+    }
 
-        boolean isContinue = beforeHandleRequest(request, response, clazz, method);
-        if (!isContinue) {
-            return true;
-        }
+    /**
+     * <h2>请求拦截器</h2>
+     *
+     * @param request  请求
+     * @param response 响应
+     * @param clazz    控制器
+     * @param method   方法
+     */
+    private void handleRequest(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, Class<?> clazz, Method method) {
+        interceptRequest(request, response, clazz, method);
         Access access = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
-            return true;
+            return;
         }
         //需要登录
         String accessToken = request.getHeader(Configs.getServiceConfig().getAuthorizeHeader());
@@ -96,11 +105,9 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
-            return checkPermissionAccess(userId, Utils.getAccessUtil().getPermissionIdentity(clazz, method), request);
+            checkUserPermission(userId, Utils.getAccessUtil().getPermissionIdentity(clazz, method), request);
         }
-        return true;
     }
-
 
     /**
      * <h2>验证指定的用户是否有指定权限标识的权限</h2>
@@ -108,31 +115,31 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param userId             用户ID
      * @param permissionIdentity 权限标识
      * @param request            请求对象
-     * @return 验证结果
+     * @apiNote 抛出异常则为拦截
      */
-    protected abstract boolean checkPermissionAccess(
+    protected void checkUserPermission(
             Long userId, String permissionIdentity, HttpServletRequest request
-    );
+    ) {
+    }
 
     /**
-     * <h2>请求拦截器前置方法</h2>
+     * <h2>拦截请求</h2>
      *
      * @param request  请求对象
      * @param response 响应对象
      * @param clazz    控制器类
      * @param method   执行方法
-     * @return 拦截结果
-     * @apiNote 如返回<code>TRUE</code>，则继续走后续拦截，如返回<code>FALSE</code>，则中断拦截，直接放行
+     * @apiNote 抛出异常则为拦截
      */
     @SuppressWarnings({"EmptyMethod", "unused"})
-    protected boolean beforeHandleRequest(
+    protected void interceptRequest(
             HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method
     ) {
-        return true;
     }
 
+
     /**
-     * <h2>设置共享数据提供给其他拦截器实用</h2>
+     * <h2>设置共享数据</h2>
      *
      * @param key   KEY
      * @param value VALUE
@@ -143,7 +150,6 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             requestAttributes.setAttribute(key, value, RequestAttributes.SCOPE_REQUEST);
         }
     }
-
 
     /**
      * <h2>从请求中获取请求的包体</h2>
@@ -168,6 +174,5 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             log.error(exception.getMessage(), exception);
         }
         return Constant.EMPTY_STRING;
-
     }
 }

@@ -1,6 +1,5 @@
 package cn.hamm.airpower.util;
 
-
 import cn.hamm.airpower.exception.ServiceException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
