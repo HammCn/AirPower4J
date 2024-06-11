@@ -232,4 +232,9 @@ public class Constant {
      * <h2>Cookie</h2>
      */
     public static final String COOKIE = "Cookie";
+
+    /**
+     * <h2>毫秒转秒</h2>
+     */
+    public static final int MILLISECONDS_PER_SECOND = 1000;
 }
