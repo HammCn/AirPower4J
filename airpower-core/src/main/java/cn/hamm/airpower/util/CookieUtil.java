@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CookieUtil {
-
     /**
      * <h2>获取一个Cookie</h2>
      *

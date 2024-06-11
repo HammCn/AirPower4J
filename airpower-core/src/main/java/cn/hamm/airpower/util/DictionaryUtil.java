@@ -22,7 +22,6 @@ import java.util.function.Function;
 @Slf4j
 @Component
 public class DictionaryUtil {
-
     /**
      * <h2>查字典</h2>
      *

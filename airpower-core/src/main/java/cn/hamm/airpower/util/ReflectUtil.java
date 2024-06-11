@@ -32,7 +32,6 @@ import java.util.*;
 @Slf4j
 @Component
 public class ReflectUtil {
-
     /**
      * <h2>获取对象指定属性的值</h2>
      *

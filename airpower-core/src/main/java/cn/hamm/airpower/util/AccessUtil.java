@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-
 /**
  * <h1>权限处理助手</h1>
  *
