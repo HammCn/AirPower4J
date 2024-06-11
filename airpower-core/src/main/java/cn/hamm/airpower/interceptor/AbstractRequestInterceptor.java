@@ -28,7 +28,7 @@ import java.util.Objects;
  * <h1>全局权限拦截器抽象类</h1>
  *
  * @author Hamm.cn
- * @see #checkPermissionAccess(Long, String, HttpServletRequest)
+ * @see #checkUserPermission(Long, String, HttpServletRequest)
  * @see #interceptRequest(HttpServletRequest, HttpServletResponse, Class, Method)
  * @see #getRequestBody(HttpServletRequest)
  * @see #setShareData(String, Object)
@@ -87,7 +87,6 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     private void handleRequest(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, Class<?> clazz, Method method) {
         interceptRequest(request, response, clazz, method);
-        beforeHandleRequest(request, response, clazz, method);
         Access access = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
@@ -106,10 +105,9 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
-            checkPermissionAccess(userId, Utils.getAccessUtil().getPermissionIdentity(clazz, method), request);
+            checkUserPermission(userId, Utils.getAccessUtil().getPermissionIdentity(clazz, method), request);
         }
     }
-
 
     /**
      * <h2>验证指定的用户是否有指定权限标识的权限</h2>
@@ -117,36 +115,10 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param userId             用户ID
      * @param permissionIdentity 权限标识
      * @param request            请求对象
-     * @return 验证结果
-     */
-    protected abstract boolean checkPermissionAccess(
-            Long userId, String permissionIdentity, HttpServletRequest request
-    );
-
-    /**
-     * <h2>即将弃用</h2>
-     *
-     * @see #interceptRequest(HttpServletRequest, HttpServletResponse, Class, Method)
-     */
-    @Deprecated(since = "2.1.0")
-    protected boolean beforeHandleRequest(
-            HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method
-    ) {
-        return true;
-    }
-
-    /**
-     * <h2>拦截OpenApi请求</h2>
-     *
-     * @param request  请求对象
-     * @param response 响应对象
-     * @param clazz    控制器类
-     * @param method   执行方法
      * @apiNote 抛出异常则为拦截
      */
-    @SuppressWarnings({"EmptyMethod", "unused"})
-    protected void interceptOpenApiRequest(
-            HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Method method
+    protected void checkUserPermission(
+            Long userId, String permissionIdentity, HttpServletRequest request
     ) {
     }
 
