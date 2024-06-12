@@ -80,15 +80,19 @@ public class OpenRequest {
      * @apiNote 无需手动调用
      */
     public final void checkSignature() {
-        String source = this.openApp.getAppSecret() + this.appKey + this.version + this.timestamp + this.nonce + this.content;
+        String source = this.sign();
         ServiceError.SIGNATURE_INVALID.whenNotEquals(this.signature, DigestUtils.sha1Hex(source));
-        Object savedNonce = Utils.getRedisUtil().get(NONCE_CACHE_PREFIX + this.nonce);
-        ServiceError.REPEAT_REQUEST.whenNotNull(savedNonce);
-        Utils.getRedisUtil().set(NONCE_CACHE_PREFIX + this.nonce, 1, NONCE_CACHE_SECOND);
-        ServiceError.TIMESTAMP_INVALID.when(
-                this.timestamp > System.currentTimeMillis() + NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND ||
-                        this.timestamp < System.currentTimeMillis() - NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND
-        );
+        checkNonce();
+        checkTimestamp();
+    }
+
+    /**
+     * <h2>签名</h2>
+     *
+     * @return 签名后的字符串
+     */
+    public final @org.jetbrains.annotations.NotNull String sign() {
+        return DigestUtils.sha1Hex(this.openApp.getAppSecret() + this.appKey + this.version + this.timestamp + this.nonce + this.content);
     }
 
     /**
@@ -129,5 +133,24 @@ public class OpenRequest {
             ServiceError.DECRYPT_DATA_FAIL.show();
         }
         return request;
+    }
+
+    /**
+     * <h2>时间戳检测</h2>
+     */
+    private void checkTimestamp() {
+        ServiceError.TIMESTAMP_INVALID.when(
+                this.timestamp > System.currentTimeMillis() + NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND ||
+                        this.timestamp < System.currentTimeMillis() - NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND
+        );
+    }
+
+    /**
+     * <h2>防重放检测</h2>
+     */
+    private void checkNonce() {
+        Object savedNonce = Utils.getRedisUtil().get(NONCE_CACHE_PREFIX + this.nonce);
+        ServiceError.REPEAT_REQUEST.whenNotNull(savedNonce);
+        Utils.getRedisUtil().set(NONCE_CACHE_PREFIX + this.nonce, 1, NONCE_CACHE_SECOND);
     }
 }
