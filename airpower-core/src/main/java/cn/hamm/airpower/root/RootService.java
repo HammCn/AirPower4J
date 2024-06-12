@@ -291,9 +291,20 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
      * @return List数据
      */
     public final @NotNull List<E> filter(E filter) {
+        return filter(filter, null);
+    }
+
+    /**
+     * <h2>🟡过滤数据</h2>
+     *
+     * @param filter 全匹配过滤器
+     * @param sort   排序
+     * @return List数据
+     */
+    public final @NotNull List<E> filter(E filter, Sort sort) {
         QueryRequest<E> queryRequest = new QueryRequest<>();
         queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), filter));
-        return repository.findAll(createSpecification(filter, true), createSort(queryRequest.getSort()));
+        return repository.findAll(createSpecification(filter, true), createSort(sort));
     }
 
     /**
