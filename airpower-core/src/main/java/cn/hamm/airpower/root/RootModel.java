@@ -123,12 +123,13 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         }
         Class<?>[] exposeClasses = fieldExpose.filters();
 
-        if (exposeClasses.length > 0) {
-            // 标记了暴露
-            boolean isExpose = Arrays.asList(exposeClasses).contains(filterClass);
-            if (!isExpose) {
-                Utils.getReflectUtil().clearFieldValue(this, field);
-            }
+        if (exposeClasses.length == 0) {
+            return;
+        }
+        // 标记了暴露
+        boolean isExpose = Arrays.asList(exposeClasses).contains(filterClass);
+        if (!isExpose) {
+            Utils.getReflectUtil().clearFieldValue(this, field);
         }
     }
 
@@ -154,11 +155,12 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             Utils.getReflectUtil().setFieldValue(this, field, collection);
             return;
         }
-        if (Objects.nonNull(fieldValue)) {
-            Utils.getReflectUtil().setFieldValue(this, field,
-                    ((RootModel<?>) fieldValue).filterAndDesensitize(WhenPayLoad.class, isDesensitize)
-            );
+        if (Objects.isNull(fieldValue)) {
+            return;
         }
+        Utils.getReflectUtil().setFieldValue(this, field,
+                ((RootModel<?>) fieldValue).filterAndDesensitize(WhenPayLoad.class, isDesensitize)
+        );
     }
 
     /**
@@ -175,16 +177,17 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         if (Objects.isNull(value)) {
             return;
         }
-        if (value instanceof String valueString) {
-            Utils.getReflectUtil().setFieldValue(this, field,
-                    Utils.getStringUtil().desensitize(
-                            valueString,
-                            desensitize.value(),
-                            desensitize.head(),
-                            desensitize.tail(),
-                            desensitize.symbol()
-                    )
-            );
+        if (!(value instanceof String valueString)) {
+            return;
         }
+        Utils.getReflectUtil().setFieldValue(this, field,
+                Utils.getStringUtil().desensitize(
+                        valueString,
+                        desensitize.value(),
+                        desensitize.head(),
+                        desensitize.tail(),
+                        desensitize.symbol()
+                )
+        );
     }
 }
