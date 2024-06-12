@@ -31,7 +31,11 @@ import java.util.Objects;
 @Accessors(chain = true)
 @Slf4j
 public class Json {
+    /**
+     * <h2>ObjectMapper</h2>
+     */
     private static ObjectMapper objectMapper = null;
+
     /**
      * <h2>错误代码</h2>
      */
