@@ -28,18 +28,26 @@ import java.util.Map;
 @Slf4j
 public class TokenUtil {
     /**
+     * <h2>无效的令牌</h2>
+     */
+    public static final String ACCESS_TOKEN_INVALID = "身份令牌无效，请重新获取身份令牌";
+
+    /**
      * <h2>算法</h2>
      */
     private static final String HMAC_SHA_256 = "HmacSHA256";
-
-    private static final String PAYLOADS_IS_EMPTY = "payloads is empty";
-    private static final String HMAC_SHA_256_ERROR = "hmacSha256 error";
-
+    /**
+     * <h2>缺少负载</h2>
+     */
+    private static final String PAYLOADS_IS_EMPTY = "没有任何负载数据";
+    /**
+     * <h2>HMAC-SHA-256错误</h2>
+     */
+    private static final String HMAC_SHA_256_ERROR = "HMAC-SHA-256发生错误";
     /**
      * <h2>Token由3部分组成</h2>
      */
     private static final int TOKEN_PART_COUNT = 3;
-
     /**
      * <h2>验证后的Token</h2>
      */
@@ -117,20 +125,20 @@ public class TokenUtil {
         try {
             source = new String(Base64.getUrlDecoder().decode(accessToken.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception exception) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED, "身份令牌无效，请重新获取身份令牌");
+            throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         if (!StringUtils.hasText(source)) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED, "身份令牌无效，请重新获取身份令牌");
+            throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         String[] list = source.split(Constant.DOT_REGEX);
         if (list.length != TOKEN_PART_COUNT) {
             throw new ServiceException(ServiceError.UNAUTHORIZED);
         }
         if (!hmacSha256(secret, list[0] + Constant.DOT + list[2]).equals(list[1])) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED, "身份令牌无效，请重新获取身份令牌");
+            throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         if (Long.parseLong(list[0]) < System.currentTimeMillis() && Long.parseLong(list[0]) != 0) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED, "身份令牌已过期，请重新获取身份令牌");
+            throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         Map<String, Object> payloads = Json.parse2Map(new String(
                 Base64.getUrlDecoder().decode(list[2].getBytes(StandardCharsets.UTF_8)))
@@ -160,7 +168,6 @@ public class TokenUtil {
             throw new ServiceException(HMAC_SHA_256_ERROR);
         }
     }
-
 
     /**
      * <h2>已验证的身份令牌</h2>
