@@ -59,10 +59,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
             throw new ServiceException("OpenApi必须接收一个OpenRequest参数");
         }
         try {
-            ServiceError.INVALID_APP_KEY.when(!StringUtils.hasText(openRequest.getAppKey()));
-            ServiceError.SERVICE_ERROR.whenNull(openAppService, "注入OpenAppService失败");
-            IOpenApp openApp = openAppService.getByAppKey(openRequest.getAppKey());
-            ServiceError.INVALID_APP_KEY.whenNull(openApp);
+            IOpenApp openApp = getOpenAppFromRequest(openRequest);
             openRequest.setOpenApp(openApp);
             Object object = proceedingJoinPoint.proceed();
             openLogId = addOpenLog(openRequest.getOpenApp(), Utils.getRequest().getRequestURI(), openRequest.decodeContent());
@@ -84,6 +81,20 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
             updateExceptionResponse(openLogId, exception);
             throw exception;
         }
+    }
+
+    /**
+     * <h2>从请求对象中获取OpenApp</h2>
+     *
+     * @param openRequest OpenRequest
+     * @return OpenApp
+     */
+    private @NotNull IOpenApp getOpenAppFromRequest(@NotNull OpenRequest openRequest) {
+        ServiceError.INVALID_APP_KEY.when(!StringUtils.hasText(openRequest.getAppKey()));
+        ServiceError.SERVICE_ERROR.whenNull(openAppService, "注入OpenAppService失败");
+        IOpenApp openApp = openAppService.getByAppKey(openRequest.getAppKey());
+        ServiceError.INVALID_APP_KEY.whenNull(openApp);
+        return openApp;
     }
 
     /**
@@ -115,7 +126,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     }
 
     /**
-     * +<h2>更新日志异常</h2>
+     * <h2>更新日志异常</h2>
      *
      * @param openLogId 日志ID
      * @param exception 异常
