@@ -32,4 +32,14 @@ public interface IDictionary {
     default boolean equalsKey(int key) {
         return this.getKey() == key;
     }
+
+    /**
+     * <h2>判断Key是否不相等</h2>
+     *
+     * @param key 被判断的Key
+     * @return 对比结果
+     */
+    default boolean notEqualsKey(int key) {
+        return !equalsKey(key);
+    }
 }
