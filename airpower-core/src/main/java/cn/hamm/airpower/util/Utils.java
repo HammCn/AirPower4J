@@ -164,24 +164,10 @@ public class Utils {
     private static AesUtil aesUtil;
 
     /**
-     * <h2>获取HttpUtil</h2>
-     *
-     * @return HttpUtil
+     * <h2>任务工具</h2>
      */
-    @Contract(" -> new")
-    public static @NotNull HttpUtil getHttpUtil() {
-        return new HttpUtil();
-    }
-
-    /**
-     * <h2>获取TokenUtil</h2>
-     *
-     * @return TokenUtil
-     */
-    @Contract(" -> new")
-    public static @NotNull TokenUtil getTokenUtil() {
-        return new TokenUtil();
-    }
+    @Getter
+    private static TaskUtil taskUtil;
 
     @Autowired
     Utils(
@@ -208,7 +194,8 @@ public class Utils {
             NumberUtil numberUtil,
             StringUtil stringUtil,
             WebsocketUtil websocketUtil,
-            AesUtil aesUtil
+            AesUtil aesUtil,
+            TaskUtil taskUtil
     ) {
         Utils.redisUtil = redisUtil;
         Utils.emailUtil = emailUtil;
@@ -234,6 +221,27 @@ public class Utils {
         Utils.stringUtil = stringUtil;
         Utils.websocketUtil = websocketUtil;
         Utils.aesUtil = aesUtil;
+        Utils.taskUtil = taskUtil;
+    }
+
+    /**
+     * <h2>获取HttpUtil</h2>
+     *
+     * @return HttpUtil
+     */
+    @Contract(" -> new")
+    public static @NotNull HttpUtil getHttpUtil() {
+        return new HttpUtil();
+    }
+
+    /**
+     * <h2>获取TokenUtil</h2>
+     *
+     * @return TokenUtil
+     */
+    @Contract(" -> new")
+    public static @NotNull TokenUtil getTokenUtil() {
+        return new TokenUtil();
     }
 
     /**
