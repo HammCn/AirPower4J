@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Hamm.cn
  */
 @Permission(login = false)
-
 @RequestMapping(Constant.EMPTY_STRING)
 @Slf4j
 public class RootController implements IAction {
