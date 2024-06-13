@@ -17,10 +17,11 @@ import java.util.List;
 @Component
 public class TaskUtil {
     /**
-     * <h2>执行任务</h2>
+     * <h2>执行任务(不会抛出异常)</h2>
      *
      * @param runnable     任务
      * @param moreRunnable 更多任务
+     * @apiNote 如需事务处理，可使用 {@link TransactionUtil#run(TransactionUtil.Function)}
      */
     public final void run(Runnable runnable, Runnable... moreRunnable) {
         for (Runnable run : getRunnableList(runnable, moreRunnable)) {
@@ -33,10 +34,11 @@ public class TaskUtil {
     }
 
     /**
-     * <h2>异步执行任务</h2>
+     * <h2>异步执行任务(不会抛出异常)</h2>
      *
      * @param runnable     任务
      * @param moreRunnable 更多任务
+     * @apiNote 如需异步事务处理，可在此参数传入的方法中自行调用 {@link TransactionUtil#run(TransactionUtil.Function)}
      */
     public final void runAsync(Runnable runnable, Runnable... moreRunnable) {
         for (Runnable run : getRunnableList(runnable, moreRunnable)) {

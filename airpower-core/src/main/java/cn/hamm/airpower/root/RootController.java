@@ -7,7 +7,6 @@ import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
-import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping(Constant.EMPTY_STRING)
 @Slf4j
-public class RootController implements IAction, ITry {
+public class RootController implements IAction {
     /**
      * <h2>获取当前登录用户的信息</h2>
      *
