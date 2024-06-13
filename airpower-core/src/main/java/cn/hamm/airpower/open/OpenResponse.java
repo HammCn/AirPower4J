@@ -21,12 +21,11 @@ public class OpenResponse {
      * @return 加密后的数据
      */
     public static <A extends IOpenApp> String encodeResponse(A openApp, Object data) {
-        String response = null;
         if (Objects.isNull(data)) {
             // 数据负载为空 直接返回
-            return response;
+            return null;
         }
-        response = Json.toString(data);
+        String response = Json.toString(data);
         OpenArithmeticType appArithmeticType = Utils.getDictionaryUtil().getDictionary(
                 OpenArithmeticType.class, openApp.getArithmetic()
         );
