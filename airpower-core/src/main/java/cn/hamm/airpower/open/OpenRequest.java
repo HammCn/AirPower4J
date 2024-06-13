@@ -80,8 +80,7 @@ public class OpenRequest {
      * @apiNote 无需手动调用
      */
     public final void checkSignature() {
-        String source = this.sign();
-        ServiceError.SIGNATURE_INVALID.whenNotEquals(this.signature, DigestUtils.sha1Hex(source));
+        ServiceError.SIGNATURE_INVALID.whenNotEquals(this.signature, this.sign());
         checkNonce();
         checkTimestamp();
     }
@@ -127,8 +126,13 @@ public class OpenRequest {
                 case RSA:
                     request = Utils.getRsaUtil().setPrivateKey(openApp.getPrivateKey()).privateKeyDecrypt(request);
                     break;
+                case NO:
+                    break;
                 default:
+                    throw new ServiceException("解密失败，不支持的加密算法类型");
             }
+        } catch (ServiceException e) {
+            throw e;
         } catch (Exception e) {
             ServiceError.DECRYPT_DATA_FAIL.show();
         }
