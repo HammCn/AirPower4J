@@ -42,4 +42,9 @@ public class WebSocketConfig {
      * <h2>发布订阅的频道前缀</h2>
      */
     private String channelPrefix;
+
+    /**
+     * <h2>WebSocket允许的跨域</h2>
+     */
+    private String allowedOrigins = "*";
 }
