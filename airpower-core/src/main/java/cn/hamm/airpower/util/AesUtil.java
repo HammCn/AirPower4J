@@ -131,17 +131,6 @@ public class AesUtil {
         }
     }
 
-    public static void main(String[] args) {
-        String keyStr = AesUtil.getRandomKey();
-        System.out.println(keyStr);
-        String message = "Hello, this is a secret message!";
-        String encrypted = new AesUtil().setKey(keyStr).encrypt(message);
-        System.out.println("Encoded Encrypted Text: " + encrypted);
-
-        String decrypted = new AesUtil().setKey(keyStr).decrypt(encrypted);
-        System.out.println("Decrypted Text: " + decrypted);
-    }
-
     /**
      * <h2>获取随机密钥</h2>
      *
