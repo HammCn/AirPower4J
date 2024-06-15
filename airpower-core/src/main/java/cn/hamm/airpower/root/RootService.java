@@ -7,7 +7,6 @@ import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
-import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
 import cn.hamm.airpower.model.query.QueryPageRequest;
@@ -45,7 +44,7 @@ import java.util.function.BiFunction;
  */
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
-public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> implements ITry {
+public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>数据源</h2>
      */
@@ -81,7 +80,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         }
         E finalSource = source;
         long id = saveToDatabase(source);
-        execute(() -> afterAdd(id, finalSource));
+        Utils.getTaskUtil().run(() -> afterAdd(id, finalSource));
         return id;
     }
 
@@ -181,7 +180,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void disable(long id) {
         beforeDisable(id);
         disableById(id);
-        execute(() -> afterDisable(id));
+        Utils.getTaskUtil().run(() -> afterDisable(id));
     }
 
     /**
@@ -212,7 +211,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void enable(long id) {
         beforeEnable(id);
         enableById(id);
-        execute(() -> afterEnable(id));
+        Utils.getTaskUtil().run(() -> afterEnable(id));
     }
 
     /**
@@ -243,7 +242,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
     public final void delete(long id) {
         beforeDelete(id);
         deleteById(id);
-        execute(() -> afterDelete(id));
+        Utils.getTaskUtil().run(() -> afterDelete(id));
     }
 
     /**
@@ -512,7 +511,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> i
         source = beforeUpdate(source).copy();
         updateToDatabase(source, withNull);
         E finalSource = source;
-        execute(
+        Utils.getTaskUtil().run(
                 () -> afterUpdate(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );

@@ -15,6 +15,7 @@ public class TransactionUtil {
      * <h2>开始执行一个包含若干方法的事务</h2>
      *
      * @param function 事务包含的方法集合体
+     * @apiNote 如需无视异常执行多项任务，可使用 {@link TaskUtil#run(Runnable, Runnable...)} 或 {@link TaskUtil#runAsync(Runnable, Runnable...)}
      */
     @Transactional(rollbackFor = Exception.class)
     public void run(@NotNull Function function) {

@@ -1,6 +1,7 @@
 package cn.hamm.airpower;
 
 import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.config.WebSocketConfig;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interceptor.AbstractRequestInterceptor;
 import cn.hamm.airpower.interceptor.cache.RequestCacheFilter;
@@ -32,6 +33,9 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     @Autowired
     private AccessResolver accessResolver;
 
+    @Autowired
+    private WebSocketConfig webSocketConfig;
+
     /**
      * <h2>获取一个拦截器实例</h2>
      *
@@ -58,7 +62,8 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     @Override
     public final void addInterceptors(@NotNull InterceptorRegistry registry) {
         //添加身份校验拦截器
-        registry.addInterceptor(getAccessInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(getAccessInterceptor())
+                .addPathPatterns("/**");
         addCustomInterceptors(registry);
     }
 
@@ -108,6 +113,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
         if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
-        registry.addHandler(getWebsocketHandler(), Configs.getWebsocketConfig().getPath()).setAllowedOrigins("*");
+        registry.addHandler(getWebsocketHandler(), Configs.getWebsocketConfig().getPath())
+                .setAllowedOrigins(webSocketConfig.getAllowedOrigins());
     }
 }

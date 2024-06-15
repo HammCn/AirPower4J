@@ -3,7 +3,6 @@ package cn.hamm.airpower.websocket;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
-import cn.hamm.airpower.interfaces.ITry;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,7 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class WebSocketHandler extends TextWebSocketHandler implements MessageListener, ITry {
+public class WebSocketHandler extends TextWebSocketHandler implements MessageListener {
     /**
      * <h2>订阅全频道</h2>
      */

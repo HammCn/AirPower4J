@@ -13,6 +13,7 @@ import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
+import cn.hamm.airpower.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -58,7 +59,7 @@ public class RootEntityController<
         source = beforeAdd(source).copy();
         final E finalSource = source;
         long id = service.add(source);
-        execute(
+        Utils.getTaskUtil().run(
                 () -> afterAdd(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -83,7 +84,7 @@ public class RootEntityController<
         source = beforeUpdate(source).copy();
         final E finalSource = source;
         service.update(source);
-        execute(
+        Utils.getTaskUtil().run(
                 () -> afterUpdate(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -104,7 +105,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDelete(id);
         service.delete(id);
-        execute(
+        Utils.getTaskUtil().run(
                 () -> afterDelete(id)
         );
         return Json.entity(id, MessageConstant.SUCCESS_TO_DELETE);
@@ -138,7 +139,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDisable(id);
         service.disable(id);
-        execute(
+        Utils.getTaskUtil().run(
                 () -> afterDisable(id)
         );
         return Json.entity(source.getId(), MessageConstant.SUCCESS_TO_DISABLE);
@@ -158,7 +159,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeEnable(id);
         service.enable(id);
-        execute(
+        Utils.getTaskUtil().run(
                 () -> afterEnable(id)
         );
         return Json.entity(source.getId(), MessageConstant.SUCCESS_TO_ENABLE);
