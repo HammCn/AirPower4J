@@ -63,12 +63,9 @@ public class ExceptionInterceptor {
             return Json.error(ServiceError.PARAM_INVALID);
         }
         List<FieldError> errors = result.getFieldErrors();
-        for (FieldError error : errors) {
-            stringBuilder.append(String.format(
-                    MessageConstant.MESSAGE_AND_DESCRIPTION, error.getDefaultMessage(), error.getField()
-            ));
-            break;
-        }
+        errors.stream().findFirst().ifPresent(error -> stringBuilder.append(String.format(
+                MessageConstant.MESSAGE_AND_DESCRIPTION, error.getDefaultMessage(), error.getField()
+        )));
         return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString());
     }
 
@@ -80,12 +77,9 @@ public class ExceptionInterceptor {
         log.error(exception.getMessage());
         StringBuilder stringBuilder = new StringBuilder();
         Set<ConstraintViolation<?>> errors = exception.getConstraintViolations();
-        for (ConstraintViolation<?> error : errors) {
-            stringBuilder.append(String.format(
-                    MessageConstant.MESSAGE_AND_DESCRIPTION, error.getMessage(), error.getInvalidValue().toString()
-            ));
-            break;
-        }
+        errors.stream().findFirst().ifPresent(error -> stringBuilder.append(String.format(
+                MessageConstant.MESSAGE_AND_DESCRIPTION, error.getMessage(), error.getInvalidValue().toString()
+        )));
         return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString());
     }
 
@@ -107,7 +101,6 @@ public class ExceptionInterceptor {
     @ExceptionHandler(NoHandlerFoundException.class)
     public Json notFoundHandle(@NotNull NoHandlerFoundException exception, HttpServletResponse response) {
         log.error(exception.getMessage());
-
         if (Configs.getServiceConfig().isEnableDocument()) {
             String[] arr = exception.getRequestURL().split(Constant.SLASH);
             if (arr.length > 1) {
@@ -115,9 +108,7 @@ public class ExceptionInterceptor {
                 boolean result = ApiDocument.writeEntityDocument(packageName, response);
                 if (!result) {
                     response.reset();
-                    return Json.error(ServiceError.API_SERVICE_UNSUPPORTED);
                 }
-
             }
         }
         return Json.error(ServiceError.API_SERVICE_UNSUPPORTED);
@@ -154,7 +145,8 @@ public class ExceptionInterceptor {
             log.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED.getMessage(), exception);
         }
         return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED, String.format(
-                MessageConstant.ONLY_CONTENT_TYPE_JSON_SUPPORTED, Objects.requireNonNull(exception.getContentType()).getType()
+                MessageConstant.ONLY_CONTENT_TYPE_JSON_SUPPORTED,
+                Objects.requireNonNull(exception.getContentType()).getType()
         ));
     }
 
