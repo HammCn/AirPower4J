@@ -41,11 +41,13 @@ public class Json {
      */
     @Description("错误代码")
     private int code = Constant.JSON_SUCCESS_CODE;
+
     /**
      * <h2>错误信息</h2>
      */
     @Description("错误信息")
     private String message = Constant.JSON_SUCCESS_MESSAGE;
+    
     /**
      * <h2>返回数据</h2>
      */
