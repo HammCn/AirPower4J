@@ -127,19 +127,12 @@ public class HttpUtil {
         this.headers.forEach((key, value) -> requestBuilder.header(key, value.toString()));
         HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofString(body);
         switch (method) {
-            case GET:
-                requestBuilder.GET();
-                break;
-            case POST:
-                requestBuilder.POST(bodyPublisher);
-                break;
-            case PUT:
-                requestBuilder.PUT(bodyPublisher);
-                break;
-            case DELETE:
-                requestBuilder.DELETE();
-                break;
-            default:
+            case GET -> requestBuilder.GET();
+            case POST -> requestBuilder.POST(bodyPublisher);
+            case PUT -> requestBuilder.PUT(bodyPublisher);
+            case DELETE -> requestBuilder.DELETE();
+            default -> {
+            }
         }
         if (Objects.nonNull(cookies)) {
             List<String> cookieList = new ArrayList<>();

@@ -24,12 +24,14 @@ import java.util.regex.Pattern;
 @Component
 public class ValidateUtil {
     /**
-     * <h2>从工厂获取Validator实例</h2>
+     * <h2>验证器实例</h2>
      */
     private final Validator validator;
 
     ValidateUtil() {
+        // 初始化验证器工厂
         try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
+            // 创建验证器实例
             validator = validatorFactory.getValidator();
         }
     }
@@ -183,14 +185,15 @@ public class ValidateUtil {
         }
         if (actions.length == Constant.ZERO_INT) {
             Set<ConstraintViolation<M>> violations = validator.validate(model);
-            if (!violations.isEmpty()) {
-                ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
+            if (violations.isEmpty()) {
+                return;
             }
-            return;
-        }
-        Set<ConstraintViolation<M>> violations = validator.validate(model, actions);
-        if (!violations.isEmpty()) {
             ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
         }
+        Set<ConstraintViolation<M>> violations = validator.validate(model, actions);
+        if (violations.isEmpty()) {
+            return;
+        }
+        ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
     }
 }

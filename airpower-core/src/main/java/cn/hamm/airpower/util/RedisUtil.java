@@ -1,6 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootEntity;
@@ -262,6 +263,6 @@ public class RedisUtil {
      * @return key
      */
     private @NotNull <E extends RootEntity<E>> String getCacheKey(@NotNull E entity) {
-        return entity.getClass().getSimpleName() + "_" + entity.getId().toString();
+        return entity.getClass().getSimpleName() + Constant.UNDERLINE + entity.getId().toString();
     }
 }

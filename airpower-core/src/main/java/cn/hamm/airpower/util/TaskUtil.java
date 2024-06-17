@@ -24,13 +24,13 @@ public class TaskUtil {
      * @apiNote 如需事务处理，可使用 {@link TransactionUtil#run(TransactionUtil.Function)}
      */
     public final void run(Runnable runnable, Runnable... moreRunnable) {
-        for (Runnable run : getRunnableList(runnable, moreRunnable)) {
+        getRunnableList(runnable, moreRunnable).forEach(run -> {
             try {
                 run.run();
             } catch (Exception exception) {
                 log.error(exception.getMessage(), exception);
             }
-        }
+        });
     }
 
     /**
@@ -41,9 +41,7 @@ public class TaskUtil {
      * @apiNote 如需异步事务处理，可在此参数传入的方法中自行调用 {@link TransactionUtil#run(TransactionUtil.Function)}
      */
     public final void runAsync(Runnable runnable, Runnable... moreRunnable) {
-        for (Runnable run : getRunnableList(runnable, moreRunnable)) {
-            new Thread(run).start();
-        }
+        getRunnableList(runnable, moreRunnable).forEach(run -> new Thread(run).start());
     }
 
     /**

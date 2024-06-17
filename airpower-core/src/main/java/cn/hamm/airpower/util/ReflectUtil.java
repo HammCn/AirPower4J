@@ -21,7 +21,11 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <h1>反射工具类</h1>
@@ -252,12 +256,10 @@ public class ReflectUtil {
             return fieldList;
         }
         Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            // 过滤静态属性 或 过滤transient 关键字修饰的属性
-            if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
-                fieldList.add(field);
-            }
-        }
+        // 过滤静态属性 或 过滤transient 关键字修饰的属性
+        fieldList = Arrays.stream(fields)
+                .filter(field -> !Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
+                .collect(Collectors.toCollection(LinkedList::new));
         if (isTheRootClass(clazz)) {
             return fieldList;
         }
@@ -275,11 +277,9 @@ public class ReflectUtil {
      */
     public final @NotNull List<String> getFieldNameList(@NotNull Class<?> clazz) {
         Field[] fields = clazz.getDeclaredFields();
-        List<String> fieldNames = new ArrayList<>();
-        for (Field field : fields) {
-            fieldNames.add(field.getName());
-        }
-        return fieldNames;
+        return Arrays.stream(fields)
+                .map(Field::getName)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -289,7 +289,9 @@ public class ReflectUtil {
      * @return 函数名
      */
     public final @NotNull String getLambdaFunctionName(@NotNull IFunction<?, ?> lambda) {
-        return getSerializedLambda(lambda).getImplMethodName().replace(Constant.GET, Constant.EMPTY_STRING);
+        return getSerializedLambda(lambda)
+                .getImplMethodName()
+                .replace(Constant.GET, Constant.EMPTY_STRING);
     }
 
     /**
@@ -299,7 +301,9 @@ public class ReflectUtil {
      * @return 类名
      */
     public final @NotNull String getLambdaClassName(@NotNull IFunction<?, ?> lambda) {
-        return getSerializedLambda(lambda).getImplClass().replaceAll(Constant.SLASH, Constant.DOT);
+        return getSerializedLambda(lambda)
+                .getImplClass()
+                .replaceAll(Constant.SLASH, Constant.DOT);
     }
 
     /**

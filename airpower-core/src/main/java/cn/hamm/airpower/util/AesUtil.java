@@ -22,8 +22,14 @@ import java.util.Base64;
  */
 @Component
 public class AesUtil {
+    /**
+     * <h2>密钥长度</h2>
+     */
     private static final int KEY_SIZE = 256;
 
+    /**
+     * <h2>AES</h2>
+     */
     private static final String AES = "AES";
 
     /**
@@ -42,6 +48,47 @@ public class AesUtil {
     private byte[] iv = "0000000000000000".getBytes(StandardCharsets.UTF_8);
 
     /**
+     * <h2>算法</h2>
+     */
+    private String algorithm = AES_CBC_PKCS5_PADDING;
+
+    /**
+     * <h2>获取随机密钥</h2>
+     *
+     * @return 随机密钥
+     */
+    @Contract(" -> new")
+    public static @NotNull String getRandomKey() {
+        try {
+            KeyGenerator keyGen = KeyGenerator.getInstance(AES);
+            keyGen.init(KEY_SIZE, new SecureRandom());
+            SecretKey aesKey = keyGen.generateKey();
+            byte[] keyBytes = aesKey.getEncoded();
+            return Base64.getEncoder().encodeToString(keyBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    /**
+     * <h2>获取随机密钥</h2>
+     *
+     * @return 随机密钥
+     */
+    @Contract(" -> new")
+    public static @NotNull String getRandomIv() {
+        try {
+            KeyGenerator keyGen = KeyGenerator.getInstance(AES);
+            keyGen.init(KEY_SIZE / 2, new SecureRandom());
+            SecretKey aesKey = keyGen.generateKey();
+            byte[] keyBytes = aesKey.getEncoded();
+            return Base64.getEncoder().encodeToString(keyBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    /**
      * <h2>设置偏移向量</h2>
      *
      * @param iv 偏移向量
@@ -51,11 +98,6 @@ public class AesUtil {
         this.iv = Base64.getDecoder().decode(iv);
         return this;
     }
-
-    /**
-     * <h2>算法</h2>
-     */
-    private String algorithm = AES_CBC_PKCS5_PADDING;
 
     /**
      * <h2>设置算法</h2>
@@ -115,55 +157,14 @@ public class AesUtil {
      * @return Cipher
      */
     private @NotNull Cipher getCipher(int mode) {
-        System.out.println(key.length);
-        System.out.println(new String(key));
-        System.out.println(iv.length);
-        System.out.println(new String(iv));
         try {
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, AES);
             IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
-
             Cipher cipher = Cipher.getInstance(algorithm);
             cipher.init(mode, secretKeySpec, ivParameterSpec);
             return cipher;
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * <h2>获取随机密钥</h2>
-     *
-     * @return 随机密钥
-     */
-    @Contract(" -> new")
-    public static @NotNull String getRandomKey() {
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance(AES);
-            keyGen.init(KEY_SIZE, new SecureRandom());
-            SecretKey aesKey = keyGen.generateKey();
-            byte[] keyBytes = aesKey.getEncoded();
-            return Base64.getEncoder().encodeToString(keyBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    /**
-     * <h2>获取随机密钥</h2>
-     *
-     * @return 随机密钥
-     */
-    @Contract(" -> new")
-    public static @NotNull String getRandomIv() {
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance(AES);
-            keyGen.init(KEY_SIZE / 2, new SecureRandom());
-            SecretKey aesKey = keyGen.generateKey();
-            byte[] keyBytes = aesKey.getEncoded();
-            return Base64.getEncoder().encodeToString(keyBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new ServiceException(e);
         }
     }
 }

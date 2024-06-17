@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.stream.IntStream;
+
 /**
  * <h1>字符串处理类</h1>
  *
@@ -36,13 +38,13 @@ public class StringUtil {
             return text;
         }
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < text.length(); i++) {
+        IntStream.range(0, text.length()).forEach(i -> {
             if (i >= head && i <= text.length() - tail - 1) {
                 stringBuilder.append(symbol);
             } else {
                 stringBuilder.append(text.charAt(i));
             }
-        }
+        });
         return stringBuilder.toString();
     }
 
@@ -103,36 +105,37 @@ public class StringUtil {
     @Contract(pure = true)
     public final @NotNull String desensitize(@NotNull String valueString, Desensitize.@NotNull Type type, int head, int tail, String symbol) {
         switch (type) {
-            case CHINESE_NAME:
+            case CHINESE_NAME -> {
                 head = Math.max(1, head);
                 tail = Math.max(1, tail);
                 if (valueString.length() <= head + tail) {
                     tail = 0;
                 }
-                break;
-            case BANK_CARD:
+            }
+            case BANK_CARD -> {
                 head = Math.max(4, head);
                 tail = Math.max(4, tail);
-                break;
-            case ID_CARD:
+            }
+            case ID_CARD -> {
                 head = Math.max(6, head);
                 tail = Math.max(4, tail);
-                break;
-            case MOBILE:
+            }
+            case MOBILE -> {
                 head = Math.max(3, head);
                 tail = Math.max(4, tail);
-                break;
-            case EMAIL:
+            }
+            case EMAIL -> {
                 head = 2;
                 tail = 2;
-                break;
-            case IP_V4:
+            }
+            case IP_V4 -> {
                 return Utils.getStringUtil().desensitizeIpv4Address(valueString, symbol);
-            case ADDRESS:
+            }
+            case ADDRESS -> {
                 head = Math.max(3, head);
                 tail = Math.max(0, tail);
-                break;
-            case TELEPHONE:
+            }
+            case TELEPHONE -> {
                 //noinspection AlibabaUndefineMagicConstant
                 if (valueString.length() <= 8) {
                     head = Math.max(2, head);
@@ -141,12 +144,13 @@ public class StringUtil {
                     head = Math.max(4, head);
                     tail = Math.max(4, tail);
                 }
-                break;
-            case CAR_NUMBER:
+            }
+            case CAR_NUMBER -> {
                 head = Math.max(2, head);
                 tail = Math.max(1, tail);
-                break;
-            default:
+            }
+            default -> {
+            }
         }
         return Utils.getStringUtil().replace(valueString, head, tail, symbol);
     }
