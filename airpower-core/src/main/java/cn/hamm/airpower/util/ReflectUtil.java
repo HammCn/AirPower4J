@@ -340,7 +340,10 @@ public class ReflectUtil {
             return null;
         }
         List<Method> superMethods = Arrays.stream(superClass.getMethods()).toList();
-        Method superMethod = superMethods.stream().filter(m -> m.getName().equals(method.getName())).findFirst().orElse(null);
+        Method superMethod = superMethods.stream()
+                .filter(m -> m.getName().equals(method.getName()))
+                .findFirst()
+                .orElse(null);
         if (Objects.isNull(superMethod)) {
             return null;
         }
