@@ -44,7 +44,6 @@ public class MqttUtil {
         );
     }
 
-
     /**
      * <h2>创建配置</h2>
      *

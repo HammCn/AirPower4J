@@ -55,7 +55,6 @@ public class NumberUtil {
         ).longValue();
     }
 
-
     /**
      * <h2>多个数相减</h2>
      *
@@ -83,7 +82,6 @@ public class NumberUtil {
                 Arrays.stream(values).mapToObj(BigInteger::valueOf).toArray(BigInteger[]::new)
         ).longValue();
     }
-
 
     /**
      * <h2>多个数相乘</h2>

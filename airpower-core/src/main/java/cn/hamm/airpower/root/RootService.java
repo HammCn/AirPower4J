@@ -1,6 +1,5 @@
 package cn.hamm.airpower.root;
 
-import cn.hamm.airpower.annotation.ReadOnly;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
@@ -337,7 +336,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         return queryPageResponse;
     }
 
-
     /**
      * <h2>🟢数据库操作前的<code>最后一次</code>确认</h2>
      *
@@ -396,7 +394,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected E afterGet(E result) {
         return result;
     }
-
 
     /**
      * <h2>🟡分页查询数据</h2>
@@ -457,20 +454,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>🔴忽略只读字段</h2>
-     *
-     * @param entity 实体
-     * @return 忽略只读字段之后的实体
-     */
-    @Contract("_ -> param1")
-    protected final @NotNull E ignoreReadOnlyFields(@NotNull E entity) {
-        Utils.getReflectUtil().getFieldList(getEntityClass()).stream()
-                .filter(field -> Objects.nonNull(Utils.getReflectUtil().getAnnotation(ReadOnly.class, field)))
-                .forEach(field -> Utils.getReflectUtil().clearFieldValue(entity, field));
-        return entity;
-    }
-
-    /**
      * <h2>🔴更新到数据库(不触发前后置)</h2>
      *
      * @param source 原始实体
@@ -498,7 +481,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         ));
         saveToDatabase(source, withNull);
     }
-
 
     /**
      * <h2>🔴更新到数据库</h2>
@@ -819,7 +801,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         return predicateList;
     }
-
 
     /**
      * <h2>添加创建时间和更新时间的查询条件</h2>

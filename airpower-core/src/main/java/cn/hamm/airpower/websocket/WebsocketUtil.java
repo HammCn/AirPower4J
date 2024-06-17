@@ -7,7 +7,6 @@ import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -26,8 +25,8 @@ public class WebsocketUtil {
      *
      * @param payload 事件负载
      */
-    public final @NotNull WebSocketEvent publish(WebSocketPayload payload) {
-        return publishToChannel(WebSocketHandler.CHANNEL_ALL, payload);
+    public final void publish(WebSocketPayload payload) {
+        publishToChannel(WebSocketHandler.CHANNEL_ALL, payload);
     }
 
     /**
@@ -35,10 +34,9 @@ public class WebsocketUtil {
      *
      * @param userId  目标用户ID
      * @param payload 事件负载
-     * @return WebSocketEvent
      */
-    public final @NotNull WebSocketEvent publishToUser(long userId, WebSocketPayload payload) {
-        return publishToChannel(WebSocketHandler.CHANNEL_USER_PREFIX + userId, payload);
+    public final void publishToUser(long userId, WebSocketPayload payload) {
+        publishToChannel(WebSocketHandler.CHANNEL_USER_PREFIX + userId, payload);
     }
 
     /**
@@ -47,7 +45,7 @@ public class WebsocketUtil {
      * @param channel 频道
      * @param payload 负载
      */
-    public final @NotNull WebSocketEvent publishToChannel(String channel, WebSocketPayload payload) {
+    public final void publishToChannel(String channel, WebSocketPayload payload) {
         final String channelPrefix = Configs.getWebsocketConfig().getChannelPrefix();
         if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
@@ -69,6 +67,5 @@ public class WebsocketUtil {
             default:
                 throw new RuntimeException("WebSocket暂不支持");
         }
-        return event;
     }
 }

@@ -76,7 +76,6 @@ public class StringUtil {
         return desensitizeIpv4Address(ipv4, Constant.ASTERISK);
     }
 
-
     /**
      * <h2>文本脱敏</h2>
      *
