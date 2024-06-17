@@ -53,19 +53,14 @@ public class WebsocketUtil {
         final String targetChannel = channelPrefix + Constant.UNDERLINE + channel;
         final WebSocketEvent event = WebSocketEvent.create(payload);
         log.info("发布消息到频道 {} : {}", targetChannel, Json.toString(event));
-        switch (Configs.getWebsocketConfig().getSupport()) {
-            case REDIS:
-                Utils.getRedisUtil().publish(targetChannel, Json.toString(event));
-                break;
-            case MQTT:
-                try {
-                    Utils.getMqttUtil().publish(targetChannel, Json.toString(event));
-                } catch (MqttException e) {
-                    throw new RuntimeException("发布消息失败", e);
-                }
-                break;
-            default:
-                throw new RuntimeException("WebSocket暂不支持");
+        try {
+            switch (Configs.getWebsocketConfig().getSupport()) {
+                case REDIS -> Utils.getRedisUtil().publish(targetChannel, Json.toString(event));
+                case MQTT -> Utils.getMqttUtil().publish(targetChannel, Json.toString(event));
+                default -> throw new RuntimeException("WebSocket暂不支持");
+            }
+        } catch (MqttException e) {
+            throw new RuntimeException("发布消息失败", e);
         }
     }
 }
