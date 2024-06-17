@@ -36,22 +36,27 @@ public class TokenUtil {
      * <h2>算法</h2>
      */
     private static final String HMAC_SHA_256 = "HmacSHA256";
+
     /**
      * <h2>缺少负载</h2>
      */
     private static final String PAYLOADS_IS_EMPTY = "没有任何负载数据";
+
     /**
      * <h2>HMAC-SHA-256错误</h2>
      */
     private static final String HMAC_SHA_256_ERROR = "HMAC-SHA-256发生错误";
+
     /**
      * <h2>Token由3部分组成</h2>
      */
     private static final int TOKEN_PART_COUNT = 3;
+
     /**
      * <h2>验证后的Token</h2>
      */
     private final VerifiedToken verifiedToken;
+
 
     public TokenUtil() {
         verifiedToken = new VerifiedToken();
