@@ -217,15 +217,15 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     public final void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         try {
             String sessionId = session.getId();
-            RedisConnection redisConnection = redisConnectionHashMap.get(sessionId);
-            if (Objects.nonNull(redisConnection)) {
-                redisConnection.close();
+            if (Objects.nonNull(redisConnectionHashMap.get(sessionId))) {
+                redisConnectionHashMap.remove(sessionId).close();
             }
-            MqttClient mqttClient = mqttClientHashMap.get(sessionId);
-            if (Objects.nonNull(mqttClient)) {
-                mqttClient.close();
+            if (Objects.nonNull(mqttClientHashMap.get(sessionId))) {
+                mqttClientHashMap.remove(sessionId).close();
             }
-            userIdHashMap.remove(sessionId);
+            if (Objects.nonNull(userIdHashMap.get(sessionId))) {
+                userIdHashMap.remove(sessionId);
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
