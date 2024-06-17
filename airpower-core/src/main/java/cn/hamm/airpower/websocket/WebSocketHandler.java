@@ -20,8 +20,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <h1>WebSocket Handler</h1>
@@ -42,15 +42,15 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     /**
      * <h2>Redis连接Map</h2>
      */
-    protected final HashMap<String, RedisConnection> redisConnectionHashMap = new HashMap<>();
+    protected final ConcurrentHashMap<String, RedisConnection> redisConnectionHashMap = new ConcurrentHashMap<>();
     /**
      * <h2>MQTT客户端Map</h2>
      */
-    protected final HashMap<String, MqttClient> mqttClientHashMap = new HashMap<>();
+    protected final ConcurrentHashMap<String, MqttClient> mqttClientHashMap = new ConcurrentHashMap<>();
     /**
      * <h2>用户IDMap</h2>
      */
-    protected final HashMap<String, Long> userIdHashMap = new HashMap<>();
+    protected final ConcurrentHashMap<String, Long> userIdHashMap = new ConcurrentHashMap<>();
     /**
      * <h2>Redis连接工厂</h2>
      */
@@ -216,17 +216,16 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     @Override
     public final void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         try {
-            RedisConnection redisConnection = redisConnectionHashMap.get(session.getId());
+            String sessionId = session.getId();
+            RedisConnection redisConnection = redisConnectionHashMap.get(sessionId);
             if (Objects.nonNull(redisConnection)) {
                 redisConnection.close();
             }
-            redisConnectionHashMap.remove(session.getId());
-            MqttClient mqttClient = mqttClientHashMap.get(session.getId());
+            MqttClient mqttClient = mqttClientHashMap.get(sessionId);
             if (Objects.nonNull(mqttClient)) {
                 mqttClient.close();
-                mqttClientHashMap.remove(session.getId());
             }
-            userIdHashMap.remove(session.getId());
+            userIdHashMap.remove(sessionId);
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
