@@ -35,22 +35,27 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * <h2>订阅全频道</h2>
      */
     public static final String CHANNEL_ALL = "WEBSOCKET_ALL";
+
     /**
      * <h2>订阅用户频道前缀</h2>
      */
     public static final String CHANNEL_USER_PREFIX = "WEBSOCKET_USER_";
+
     /**
      * <h2>Redis连接Map</h2>
      */
     protected final ConcurrentHashMap<String, RedisConnection> redisConnectionHashMap = new ConcurrentHashMap<>();
+
     /**
      * <h2>MQTT客户端Map</h2>
      */
     protected final ConcurrentHashMap<String, MqttClient> mqttClientHashMap = new ConcurrentHashMap<>();
+
     /**
      * <h2>用户IDMap</h2>
      */
     protected final ConcurrentHashMap<String, Long> userIdHashMap = new ConcurrentHashMap<>();
+
     /**
      * <h2>Redis连接工厂</h2>
      */
@@ -82,6 +87,12 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         }
     }
 
+    /**
+     * <h2>发送Websocket事件负载</h2>
+     *
+     * @param session          会话
+     * @param webSocketPayload 事件负载
+     */
     protected final void sendWebSocketPayload(@NotNull WebSocketSession session, @NotNull WebSocketPayload webSocketPayload) {
         try {
             session.sendMessage(new TextMessage(Json.toString(WebSocketEvent.create(webSocketPayload))));
@@ -117,14 +128,11 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         }
         long userId = Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
         switch (Configs.getWebsocketConfig().getSupport()) {
-            case REDIS:
-                startRedisListener(session, userId);
-                break;
-            case MQTT:
-                startMqttListener(session, userId);
-                break;
-            default:
-                throw new RuntimeException("WebSocket暂不支持");
+            case REDIS -> startRedisListener(session, userId);
+            case MQTT -> startMqttListener(session, userId);
+            case NO -> {
+            }
+            default -> throw new RuntimeException("WebSocket暂不支持");
         }
         userIdHashMap.put(session.getId(), userId);
     }
