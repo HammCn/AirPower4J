@@ -91,7 +91,9 @@ public class OpenRequest {
      * @return 签名后的字符串
      */
     public final @org.jetbrains.annotations.NotNull String sign() {
-        return DigestUtils.sha1Hex(this.openApp.getAppSecret() + this.appKey + this.version + this.timestamp + this.nonce + this.content);
+        return DigestUtils.sha1Hex(
+                this.openApp.getAppSecret() + this.appKey + this.version + this.timestamp + this.nonce + this.content
+        );
     }
 
     /**
@@ -120,16 +122,15 @@ public class OpenRequest {
         );
         try {
             switch (appArithmeticType) {
-                case AES:
-                    request = Utils.getAesUtil().setKey(this.openApp.getAppSecret()).decrypt(request);
-                    break;
-                case RSA:
-                    request = Utils.getRsaUtil().setPrivateKey(openApp.getPrivateKey()).privateKeyDecrypt(request);
-                    break;
-                case NO:
-                    break;
-                default:
-                    throw new ServiceException("解密失败，不支持的加密算法类型");
+                case AES -> request = Utils.getAesUtil()
+                        .setKey(this.openApp.getAppSecret())
+                        .decrypt(request);
+                case RSA -> request = Utils.getRsaUtil()
+                        .setPrivateKey(openApp.getPrivateKey())
+                        .privateKeyDecrypt(request);
+                case NO -> {
+                }
+                default -> throw new ServiceException("解密失败，不支持的加密算法类型");
             }
         } catch (ServiceException e) {
             throw e;

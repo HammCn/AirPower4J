@@ -31,16 +31,15 @@ public class OpenResponse {
         );
         try {
             switch (appArithmeticType) {
-                case AES:
-                    response = Utils.getAesUtil().setKey(openApp.getAppSecret()).encrypt(response);
-                    break;
-                case RSA:
-                    response = Utils.getRsaUtil().setPrivateKey(openApp.getPrivateKey()).publicKeyEncrypt(response);
-                    break;
-                case NO:
-                    break;
-                default:
-                    throw new ServiceException(ServiceError.ENCRYPT_DATA_FAIL, "不支持的加密算法");
+                case AES -> response = Utils.getAesUtil()
+                        .setKey(openApp.getAppSecret())
+                        .encrypt(response);
+                case RSA -> response = Utils.getRsaUtil()
+                        .setPrivateKey(openApp.getPrivateKey())
+                        .publicKeyEncrypt(response);
+                case NO -> {
+                }
+                default -> throw new ServiceException(ServiceError.ENCRYPT_DATA_FAIL, "不支持的加密算法");
             }
         } catch (Exception e) {
             ServiceError.ENCRYPT_DATA_FAIL.show();
