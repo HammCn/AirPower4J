@@ -7,6 +7,7 @@ import cn.hamm.airpower.root.RootModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,13 @@ public class ValidateUtil {
     /**
      * <h2>从工厂获取Validator实例</h2>
      */
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private final Validator validator;
+
+    ValidateUtil() {
+        try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
+            validator = validatorFactory.getValidator();
+        }
+    }
 
     /**
      * <h2>是否是数字</h2>
@@ -56,7 +63,6 @@ public class ValidateUtil {
     public final boolean isEmail(String value) {
         return validRegex(value, PatternConstant.EMAIL);
     }
-
 
     /**
      * <h2>是否是字母</h2>

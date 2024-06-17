@@ -36,6 +36,9 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     @Autowired
     private WebSocketConfig webSocketConfig;
 
+    @Autowired
+    private WebSocketHandler webSocketHandler;
+
     /**
      * <h2>获取一个拦截器实例</h2>
      *
@@ -51,7 +54,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
      */
     @Bean
     public WebSocketHandler getWebsocketHandler() {
-        return new WebSocketHandler();
+        return webSocketHandler;
     }
 
     /**

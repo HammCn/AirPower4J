@@ -108,11 +108,13 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             Collection<?> collection = Utils.getCollectionUtil().getCollectWithoutNull(
                     (Collection<?>) json.getData(), dataCls
             );
-            collection.stream().toList().forEach(item -> {
-                if (Utils.getReflectUtil().isModel(item.getClass())) {
-                    ((M) item).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude));
-                }
-            });
+            collection.stream()
+                    .toList()
+                    .forEach(item -> {
+                        if (Utils.getReflectUtil().isModel(item.getClass())) {
+                            ((M) item).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude));
+                        }
+                    });
             return json.setData(collection);
         }
         if (Utils.getReflectUtil().isModel(dataCls)) {

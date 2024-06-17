@@ -1,6 +1,5 @@
 package cn.hamm.airpower.validate.phone;
 
-
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

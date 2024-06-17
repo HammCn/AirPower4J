@@ -55,7 +55,7 @@ public class RootEntityController<
     @Filter(WhenGetDetail.class)
     public Json add(@RequestBody @Validated(WhenAdd.class) E source) {
         checkApiAvailableStatus(Api.Add);
-        service.ignoreReadOnlyFields(source);
+        source.ignoreReadOnlyFields();
         source = beforeAdd(source).copy();
         final E finalSource = source;
         long id = service.add(source);
@@ -80,7 +80,7 @@ public class RootEntityController<
     public Json update(@RequestBody @Validated(WhenUpdate.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Update);
         long id = source.getId();
-        service.ignoreReadOnlyFields(source);
+        source.ignoreReadOnlyFields();
         source = beforeUpdate(source).copy();
         final E finalSource = source;
         service.update(source);
