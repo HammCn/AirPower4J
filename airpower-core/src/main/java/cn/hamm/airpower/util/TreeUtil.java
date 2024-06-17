@@ -1,5 +1,6 @@
 package cn.hamm.airpower.util;
 
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.interfaces.ITree;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class TreeUtil {
      * @return 树结构数组
      */
     public final <E extends ITree<E>> List<E> buildTreeList(List<E> list) {
-        return buildTreeList(list, 0L);
+        return buildTreeList(list, Constant.ZERO_LONG);
     }
 
     /**
