@@ -63,7 +63,7 @@ public class OpenRequest {
     private String signature;
 
     /**
-     * <h2>请求随机串不能为空</h2>
+     * <h2>请求随机串</h2>
      */
     @NotNull(message = "请求随机串不能为空")
     private String nonce;
