@@ -196,7 +196,6 @@ public class ReflectUtil {
         return Objects.isNull(document) ? Constant.EMPTY_STRING : document.value();
     }
 
-
     /**
      * <h2>递归获取字段的文档</h2>
      *

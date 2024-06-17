@@ -88,7 +88,6 @@ public class Json {
         return data(new RootEntity<E>().setId(id));
     }
 
-
     /**
      * <h2>输出实体</h2>
      *

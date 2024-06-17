@@ -132,7 +132,6 @@ public class Utils {
     @Getter
     private static HttpServletRequest request;
 
-
     /**
      * <h2>当前的响应对象</h2>
      */

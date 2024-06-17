@@ -64,7 +64,6 @@ public class ValidateUtil {
         return validRegex(value, PatternConstant.EMAIL);
     }
 
-
     /**
      * <h2>是否是字母</h2>
      *

@@ -66,7 +66,6 @@ public class ApiDocument {
 
         String json = Json.toString(apiDocument);
 
-
         String html = """
                 <!DOCTYPE html>
                 <html>
@@ -360,7 +359,6 @@ public class ApiDocument {
             apiDocument.setDocument(Utils.getReflectUtil().getDocument(clazz));
 
             apiDocument.setRequestParamList(params);
-
 
             String json = Json.toString(apiDocument);
 
