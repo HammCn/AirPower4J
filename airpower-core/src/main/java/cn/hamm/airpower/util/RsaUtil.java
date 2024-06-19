@@ -215,7 +215,7 @@ public class RsaUtil {
      * @return KeyPair
      */
     public final KeyPair generateKeyPair() throws NoSuchAlgorithmException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(CRYPT_METHOD);
         keyPairGenerator.initialize(2048);
         return keyPairGenerator.generateKeyPair();
     }
