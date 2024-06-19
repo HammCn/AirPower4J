@@ -152,19 +152,7 @@ public class AccessUtil {
                     }
                     String customMethodName = Utils.getReflectUtil().getDescription(method);
 
-                    String subIdentity = (!Constant.EMPTY_STRING.equalsIgnoreCase(apiPath) ? (apiPath + Constant.UNDERLINE) : Constant.EMPTY_STRING);
-
-                    RequestMapping requestMapping = Utils.getReflectUtil().getAnnotation(RequestMapping.class, method);
-                    PostMapping postMapping = Utils.getReflectUtil().getAnnotation(PostMapping.class, method);
-                    GetMapping getMapping = Utils.getReflectUtil().getAnnotation(GetMapping.class, method);
-
-                    if (Objects.nonNull(requestMapping) && requestMapping.value().length > 0) {
-                        subIdentity += requestMapping.value()[0];
-                    } else if (Objects.nonNull(postMapping) && postMapping.value().length > 0) {
-                        subIdentity += postMapping.value()[0];
-                    } else if (Objects.nonNull(getMapping) && getMapping.value().length > 0) {
-                        subIdentity += getMapping.value()[0];
-                    }
+                    String subIdentity = getMethodPermissionIdentity(method, apiPath);
                     if (!StringUtils.hasText(subIdentity) || (apiPath + Constant.UNDERLINE).equals(subIdentity)) {
                         continue;
                     }
@@ -203,5 +191,29 @@ public class AccessUtil {
             return false;
         }
         return !includeList.contains(api);
+    }
+
+    /**
+     * <h2>获取方法权限标识</h2>
+     *
+     * @param method  方法
+     * @param apiPath Api路径
+     * @return 权限标识
+     */
+    private @NotNull String getMethodPermissionIdentity(Method method, String apiPath) {
+        String subIdentity = (!Constant.EMPTY_STRING.equalsIgnoreCase(apiPath) ? (apiPath + Constant.UNDERLINE) : Constant.EMPTY_STRING);
+
+        RequestMapping requestMapping = Utils.getReflectUtil().getAnnotation(RequestMapping.class, method);
+        PostMapping postMapping = Utils.getReflectUtil().getAnnotation(PostMapping.class, method);
+        GetMapping getMapping = Utils.getReflectUtil().getAnnotation(GetMapping.class, method);
+
+        if (Objects.nonNull(requestMapping) && requestMapping.value().length > 0) {
+            subIdentity += requestMapping.value()[0];
+        } else if (Objects.nonNull(postMapping) && postMapping.value().length > 0) {
+            subIdentity += postMapping.value()[0];
+        } else if (Objects.nonNull(getMapping) && getMapping.value().length > 0) {
+            subIdentity += getMapping.value()[0];
+        }
+        return subIdentity;
     }
 }
