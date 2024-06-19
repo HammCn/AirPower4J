@@ -39,7 +39,8 @@ public enum ServiceError implements IException, IDictionary {
     FORBIDDEN_DELETE(4033, "无权删除"),
     FORBIDDEN_DELETE_USED(4034, "数据正在使用中,无法被删除!"),
     FORBIDDEN_UPLOAD_MAX_SIZE(4035, "上传的文件大小超过最大限制"),
-    OPEN_APP_DISABLED(4036, "当前应用已被禁用"),
+    FORBIDDEN_DISABLED(4036, "ID为%s的%s已被禁用"),
+    OPEN_APP_DISABLED(4037, "当前应用已被禁用"),
 
     // 404 没有查到数据代码
     DATA_NOT_FOUND(404, "没有查到相关的数据"),
