@@ -226,7 +226,7 @@ public class RsaUtil {
      * @param publicKey 公钥
      * @return PEM
      */
-    public final @NotNull String convertPublicKeyToPEM(@NotNull PublicKey publicKey) {
+    public final @NotNull String convertPublicKeyToPem(@NotNull PublicKey publicKey) {
         byte[] encoded = publicKey.getEncoded();
         String base64Encoded = Base64.getEncoder().encodeToString(encoded);
         return "-----BEGIN PUBLIC KEY-----\n" +
@@ -240,7 +240,7 @@ public class RsaUtil {
      * @param privateKey 私钥
      * @return PEM
      */
-    public final @NotNull String convertPrivateKeyToPEM(@NotNull PrivateKey privateKey) {
+    public final @NotNull String convertPrivateKeyToPem(@NotNull PrivateKey privateKey) {
         byte[] encoded = privateKey.getEncoded();
         String base64Encoded = Base64.getEncoder().encodeToString(encoded);
         return "-----BEGIN RSA PRIVATE KEY-----\n" +
