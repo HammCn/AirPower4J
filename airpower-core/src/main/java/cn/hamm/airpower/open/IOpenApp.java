@@ -9,26 +9,36 @@ package cn.hamm.airpower.open;
 public interface IOpenApp {
     /**
      * <h2>获取应用的AppKey</h2>
+     *
+     * @return AppKey
      */
     String getAppKey();
 
     /**
      * <h2>获取应用的AppSecret</h2>
+     *
+     * @return AppSecret
      */
     String getAppSecret();
 
     /**
      * <h2>获取应用的加密算法</h2>
+     *
+     * @return 算法
      */
     Integer getArithmetic();
 
     /**
      * <h2>获取应用的私钥</h2>
+     *
+     * @return 私钥
      */
     String getPrivateKey();
 
     /**
      * <h2>获取应用的公钥</h2>
+     *
+     * @return 公钥
      */
     String getPublicKey();
 }
