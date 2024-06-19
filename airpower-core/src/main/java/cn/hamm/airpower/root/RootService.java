@@ -368,13 +368,32 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param id 主键ID
      * @return 实体
      * @see #getMaybeNull(long)
+     * @see #getWithEnable(long)
      */
     public final @NotNull E get(long id) {
         return afterGet(getById(id));
     }
 
     /**
-     * <h2>🟡根据<code>ID</code>查询对应的实体</h2>
+     * <h2>🟡根据<code>ID</code>查询正常启用的实体</h2>
+     *
+     * @param id 主键ID
+     * @return 实体
+     * @see #get(long)
+     * @see #getMaybeNull(long)
+     */
+    public final @NotNull E getWithEnable(long id) {
+        E entity = get(id);
+        ServiceError.FORBIDDEN_DISABLED.when(entity.getIsDisabled(), String.format(
+                        ServiceError.FORBIDDEN_DISABLED.getMessage(),
+                        id, Utils.getReflectUtil().getDescription(getEntityClass())
+                )
+        );
+        return entity;
+    }
+
+    /**
+     * <h2>🟡根据<code>ID</code>查询对应的实体(可能为<code>null</code>)</h2>
      *
      * @param id 主键ID
      * @return 实体
