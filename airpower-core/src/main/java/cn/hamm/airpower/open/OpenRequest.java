@@ -53,19 +53,19 @@ public class OpenRequest {
     /**
      * <h2>加密后的业务数据</h2>
      */
-    @NotNull(message = "业务数据包体不能为空")
+    @NotBlank(message = "业务数据包体不能为空")
     private String content;
 
     /**
      * <h2>签名字符串</h2>
      */
-    @NotNull(message = "签名字符串不能为空")
+    @NotBlank(message = "签名字符串不能为空")
     private String signature;
 
     /**
      * <h2>请求随机串</h2>
      */
-    @NotNull(message = "请求随机串不能为空")
+    @NotBlank(message = "请求随机串不能为空")
     private String nonce;
 
     /**
@@ -102,8 +102,9 @@ public class OpenRequest {
      * @param clazz 业务数据对象类型
      */
     public final <T extends RootModel<T>> T parse(Class<T> clazz) {
+        String json = decodeContent();
         try {
-            return Json.parse(decodeContent(), clazz);
+            return Json.parse(json, clazz);
         } catch (Exception e) {
             ServiceError.JSON_DECODE_FAIL.show();
             throw new ServiceException(e);
