@@ -183,7 +183,7 @@ public class Json {
         try {
             TypeReference<Map<String, Object>> typeRef = new TypeReference<>() {
             };
-            return objectMapper.readValue(json, typeRef);
+            return getObjectMapper().readValue(json, typeRef);
         } catch (Exception exception) {
             log.error(exception.getMessage());
             throw new ServiceException(exception);
@@ -200,7 +200,7 @@ public class Json {
         try {
             TypeReference<List<Map<String, Object>>> typeRef = new TypeReference<>() {
             };
-            return objectMapper.readValue(json, typeRef);
+            return getObjectMapper().readValue(json, typeRef);
         } catch (Exception exception) {
             log.error(exception.getMessage());
             throw new ServiceException(exception);
