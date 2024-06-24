@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -179,12 +180,10 @@ public class Json {
      * @return Map
      */
     public static Map<String, Object> parse2Map(String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         try {
             TypeReference<Map<String, Object>> typeRef = new TypeReference<>() {
             };
-            return objectMapper.readValue(json, typeRef);
+            return getObjectMapper().readValue(json, typeRef);
         } catch (Exception exception) {
             log.error(exception.getMessage());
             throw new ServiceException(exception);
@@ -198,12 +197,10 @@ public class Json {
      * @return List<Map>
      */
     public static List<Map<String, Object>> parse2MapList(String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         try {
             TypeReference<List<Map<String, Object>>> typeRef = new TypeReference<>() {
             };
-            return objectMapper.readValue(json, typeRef);
+            return getObjectMapper().readValue(json, typeRef);
         } catch (Exception exception) {
             log.error(exception.getMessage());
             throw new ServiceException(exception);
@@ -235,6 +232,10 @@ public class Json {
             objectMapper = new ObjectMapper();
             // 忽略未声明的属性
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            // 忽略值为null的属性
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            // 忽略没有属性的类
+            objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         }
         return objectMapper;
     }
