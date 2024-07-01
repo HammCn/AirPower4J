@@ -133,7 +133,7 @@ public class AccessUtil {
                 permission.setName(customClassName).setIdentity(identity);
                 permission.setChildren(new ArrayList<>());
 
-                String apiPath = apiController.value();
+                String apiPath = clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING) + Constant.UNDERLINE;
 
                 // 取出所有控制器方法
                 Method[] methods = clazz.getMethods();
@@ -207,13 +207,9 @@ public class AccessUtil {
         PostMapping postMapping = Utils.getReflectUtil().getAnnotation(PostMapping.class, method);
         GetMapping getMapping = Utils.getReflectUtil().getAnnotation(GetMapping.class, method);
 
-        if (Objects.nonNull(requestMapping) && requestMapping.value().length > 0) {
-            subIdentity += requestMapping.value()[0];
-        } else if (Objects.nonNull(postMapping) && postMapping.value().length > 0) {
-            subIdentity += postMapping.value()[0];
-        } else if (Objects.nonNull(getMapping) && getMapping.value().length > 0) {
-            subIdentity += getMapping.value()[0];
+        if (Objects.nonNull(requestMapping) || Objects.nonNull(postMapping) || Objects.nonNull(getMapping)) {
+            return subIdentity;
         }
-        return subIdentity;
+        return apiPath + method.getName();
     }
 }
