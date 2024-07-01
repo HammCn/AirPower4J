@@ -133,7 +133,7 @@ public class AccessUtil {
                 permission.setName(customClassName).setIdentity(identity);
                 permission.setChildren(new ArrayList<>());
 
-                String apiPath = apiController.value();
+                String apiPath = clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING) + Constant.UNDERLINE;
 
                 // 取出所有控制器方法
                 Method[] methods = clazz.getMethods();
@@ -141,6 +141,7 @@ public class AccessUtil {
                 // 取出控制器类上的Extends注解 如自己没标 则使用父类的
                 Extends extendsApi = Utils.getReflectUtil().getAnnotation(Extends.class, clazz);
                 for (Method method : methods) {
+
                     if (Objects.nonNull(extendsApi)) {
                         try {
                             Api current = Utils.getDictionaryUtil().getDictionary(Api.class, Api::getMethodName, method.getName());
@@ -150,13 +151,11 @@ public class AccessUtil {
                         } catch (Exception ignored) {
                         }
                     }
-                    String customMethodName = Utils.getReflectUtil().getDescription(method);
-
                     String subIdentity = getMethodPermissionIdentity(method, apiPath);
-                    if (!StringUtils.hasText(subIdentity) || (apiPath + Constant.UNDERLINE).equals(subIdentity)) {
+                    if (apiPath.equals(subIdentity)) {
                         continue;
                     }
-
+                    String customMethodName = Utils.getReflectUtil().getDescription(method);
                     Access accessConfig = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
                     if (!accessConfig.isLogin() || !accessConfig.isAuthorize()) {
                         // 这里可以选择是否不读取这些接口的权限，但前端可能需要
@@ -201,19 +200,13 @@ public class AccessUtil {
      * @return 权限标识
      */
     private @NotNull String getMethodPermissionIdentity(Method method, String apiPath) {
-        String subIdentity = (!Constant.EMPTY_STRING.equalsIgnoreCase(apiPath) ? (apiPath + Constant.UNDERLINE) : Constant.EMPTY_STRING);
-
         RequestMapping requestMapping = Utils.getReflectUtil().getAnnotation(RequestMapping.class, method);
         PostMapping postMapping = Utils.getReflectUtil().getAnnotation(PostMapping.class, method);
         GetMapping getMapping = Utils.getReflectUtil().getAnnotation(GetMapping.class, method);
 
-        if (Objects.nonNull(requestMapping) && requestMapping.value().length > 0) {
-            subIdentity += requestMapping.value()[0];
-        } else if (Objects.nonNull(postMapping) && postMapping.value().length > 0) {
-            subIdentity += postMapping.value()[0];
-        } else if (Objects.nonNull(getMapping) && getMapping.value().length > 0) {
-            subIdentity += getMapping.value()[0];
+        if (Objects.isNull(requestMapping) && Objects.isNull(postMapping) && Objects.isNull(getMapping)) {
+            return apiPath;
         }
-        return subIdentity;
+        return apiPath + method.getName();
     }
 }
