@@ -5,8 +5,10 @@ import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
+import cn.hamm.airpower.enums.DateTimeFormatter;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
@@ -14,8 +16,10 @@ import cn.hamm.airpower.model.query.QueryExport;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
+import cn.hamm.airpower.util.DateTimeUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.validate.dictionary.Dictionary;
 import jakarta.persistence.Column;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +37,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiFunction;
 
@@ -50,8 +56,7 @@ import java.util.function.BiFunction;
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
-    public static final String EXPORT_FILE_PREFIX = "export_file_";
-    public static final String EXPORT_FILE_CSV = ".csv";
+
     /**
      * <h2>数据源</h2>
      */
@@ -59,9 +64,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected R repository;
 
     /**
-     * <h2>导出任务缓存前缀</h2>
+     * <h2>导出文件前缀</h2>
      */
-    private static final String EXPORT_TASK_PREFIX = "export_task_";
+    public static final String EXPORT_FILE_PREFIX = "export_file_";
+
+    /**
+     * <h2>导出文件后缀</h2>
+     */
+    public static final String EXPORT_FILE_CSV = ".csv";
 
     /**
      * <h2>创建导出任务</h2>
@@ -71,7 +81,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final String createExportTask(QueryRequest<E> queryRequest) {
         String fileCode = Utils.getRandomUtil().randomString().toLowerCase();
-        final String fileCacheKey = EXPORT_TASK_PREFIX + fileCode;
+        final String fileCacheKey = EXPORT_FILE_PREFIX + fileCode;
         Object object = Utils.getRedisUtil().get(fileCacheKey);
         if (Objects.nonNull(object)) {
             return createExportTask(queryRequest);
@@ -92,9 +102,15 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @param exportList 导出的数据
      * @return 存储的文件地址
+     * @apiNote 支持完全重写导出逻辑
+     *
+     * <ul>
+     *     <li>默认导出为 <code>CSV</code> 表格，如需自定义导出方式或格式，可直接重写此方法</li>
+     *     <li>如仅需<code>自定义导出存储位置</code>，可重写 {@link #afterExport(String)}</li>
+     * </ul>
      */
     protected String saveExportFile(List<E> exportList) {
-        // 导出到csv并存出文件
+        // 导出到csv并存储文件
         ReflectUtil reflectUtil = Utils.getReflectUtil();
         List<String> fieldNameList = new ArrayList<>();
         List<Field> fieldList = new ArrayList<>();
@@ -123,15 +139,55 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             for (String fieldName : fieldNameList) {
                 Object value = map.get(fieldName);
                 value = prepareExcelColumn(fieldName, value, fieldList);
+                value = value.toString().replaceAll(Constant.COMMA, Constant.SPACE).replaceAll(Constant.LINE_BREAK, Constant.SPACE);
                 columnList.add(value.toString());
             }
             rowList.add(String.join(Constant.COMMA, columnList));
         }
         String content = String.join(Constant.LINE_BREAK, rowList);
+        return afterExport(content);
+    }
+
+    /**
+     * <h2>导出数据后置方法</h2>
+     *
+     * @param content 导出的CSV数据
+     * @return 存储后的可访问路径
+     * @apiNote 可存储至其他地方后返回可访问绝对路径
+     */
+    protected String afterExport(String content) {
+        final String separator = File.separator;
+        final String absolutePath = Configs.getServiceConfig().getExportFilePath() + separator;
+        ServiceError.SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
+
+        // 准备导出的相对路径
+        String exportFilePath = "";
         try {
-            Path tempFilePath = Files.createTempFile(EXPORT_FILE_PREFIX, EXPORT_FILE_CSV);
-            Files.writeString(tempFilePath, content, java.nio.charset.StandardCharsets.UTF_8);
-            return tempFilePath.getFileName().toString();
+            DateTimeUtil dateTimeUtil = Utils.getDateTimeUtil();
+            long milliSecond = System.currentTimeMillis();
+
+            // 追加今日文件夹 定时任务将按存储文件夹进行删除过时文件
+            String todayDir = dateTimeUtil.format(milliSecond,
+                    DateTimeFormatter.FULL_DATE.getValue()
+                            .replaceAll(Constant.LINE, Constant.EMPTY_STRING)
+            );
+            exportFilePath += todayDir + separator;
+
+            if (!Files.exists(Paths.get(absolutePath + exportFilePath))) {
+                Files.createDirectory(Paths.get(absolutePath + exportFilePath));
+            }
+
+            // 存储的文件名
+            final String fileName = todayDir + dateTimeUtil.format(milliSecond,
+                    DateTimeFormatter.FULL_TIME.getValue()
+                            .replaceAll(Constant.COLON, Constant.EMPTY_STRING)
+            ) + Utils.getRandomUtil().randomString() + EXPORT_FILE_CSV;
+
+            // 拼接最终存储路径
+            exportFilePath += fileName;
+            Path path = Paths.get(absolutePath + exportFilePath);
+            Files.writeString(path, content);
+            return exportFilePath;
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -154,8 +210,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             value = Constant.LINE;
         }
         ReflectUtil reflectUtil = Utils.getReflectUtil();
-        // 替换逗号 换行 为空格
-        value = value.toString().replaceAll(Constant.COMMA, Constant.SPACE).replaceAll(Constant.LINE_BREAK, Constant.SPACE);
         try {
             Field field = fieldList.stream().filter(item -> item.getName().equals(fieldName)).findFirst().orElse(null);
             if (Objects.isNull(field)) {
@@ -167,8 +221,18 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
 
             return switch (excelColumn.value()) {
-                case DATETIME -> Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
+                case DATETIME -> Constant.TAB + Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
                 case TEXT -> Constant.TAB + value;
+                case BOOLEAN -> (boolean) value ? Constant.YES : Constant.NO;
+                case DICTIONARY -> {
+                    Dictionary dictionary = reflectUtil.getAnnotation(Dictionary.class, field);
+                    if (Objects.isNull(dictionary)) {
+                        yield value;
+                    } else {
+                        IDictionary dict = Utils.getDictionaryUtil().getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
+                        yield dict.getLabel();
+                    }
+                }
                 default -> value;
             };
         } catch (Exception exception) {
@@ -194,7 +258,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 导出文件地址
      */
     protected final String queryExport(@NotNull QueryExport queryExportModel) {
-        final String fileCacheKey = EXPORT_TASK_PREFIX + queryExportModel.getFileCode();
+        final String fileCacheKey = EXPORT_FILE_PREFIX + queryExportModel.getFileCode();
         Object object = Utils.getRedisUtil().get(fileCacheKey);
         ServiceError.DATA_NOT_FOUND.whenNull(object, "错误的FileCode");
         ServiceError.DATA_NOT_FOUND.whenEmpty(object, "文件暂未准备完毕");

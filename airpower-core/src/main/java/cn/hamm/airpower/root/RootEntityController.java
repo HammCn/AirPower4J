@@ -52,13 +52,6 @@ public class RootEntityController<
         return Json.data(service.createExportTask(queryRequest), "导出任务创建成功");
     }
 
-    @RequestMapping("tests")
-    @Permission(login = false)
-    public Json tests(@RequestBody QueryRequest<E> queryRequest) {
-        List<E> list = service.getList(queryRequest);
-        return Json.success(service.saveExportFile(list));
-    }
-
     /**
      * <h2>导出</h2>
      */

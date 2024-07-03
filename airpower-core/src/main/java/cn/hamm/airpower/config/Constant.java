@@ -247,4 +247,14 @@ public class Constant {
      * <h2>TAB</h2>
      */
     public static final String TAB = "\t";
+
+    /**
+     * <h2>是</h2>
+     */
+    public static final String YES = "是";
+
+    /**
+     * <h2>否</h2>
+     */
+    public static final String NO = "否";
 }

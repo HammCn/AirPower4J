@@ -1,5 +1,6 @@
 package cn.hamm.airpower.annotation;
 
+import cn.hamm.airpower.validate.dictionary.Dictionary;
 import java.lang.annotation.*;
 
 /**
@@ -32,6 +33,12 @@ public @interface ExcelColumn {
          * <h2>数字</h2>
          */
         NUMBER,
+
+        /**
+         * <h2>字典</h2>
+         * @apiNote 请确保同时标记了 @{@link Dictionary}
+         */
+        DICTIONARY,
 
         /**
          * <h2>布尔值</h2>
