@@ -50,6 +50,8 @@ import java.util.function.BiFunction;
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
+    public static final String EXPORT_FILE_PREFIX = "export_file_";
+    public static final String EXPORT_FILE_CSV = ".csv";
     /**
      * <h2>数据源</h2>
      */
@@ -95,13 +97,16 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         // 导出到csv并存出文件
         ReflectUtil reflectUtil = Utils.getReflectUtil();
         List<String> fieldNameList = new ArrayList<>();
+        List<Field> fieldList = new ArrayList<>();
 
         List<String> headerList = new ArrayList<>();
-        for (Field field : reflectUtil.getFieldList(getEntityClass())) {
+        Class<E> entityClass = getEntityClass();
+        for (Field field : reflectUtil.getFieldList(entityClass)) {
             ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
             if (Objects.isNull(excelColumn)) {
                 continue;
             }
+            fieldList.add(field);
             fieldNameList.add(field.getName());
             String fieldName = reflectUtil.getDescription(field);
             headerList.add(fieldName);
@@ -109,7 +114,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
         List<String> rowList = new ArrayList<>();
         // 添加表头
-        rowList.add(String.join(",", headerList));
+        rowList.add(String.join(Constant.COMMA, headerList));
 
         String json = Json.toString(exportList);
         List<Map<String, Object>> mapList = Json.parse2MapList(json);
@@ -117,47 +122,58 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             List<String> columnList = new ArrayList<>();
             for (String fieldName : fieldNameList) {
                 Object value = map.get(fieldName);
-                if (Objects.isNull(value)) {
-                    value = Constant.LINE;
-                }
-                if (!StringUtils.hasText(value.toString())) {
-                    value = Constant.LINE;
-                }
-
-                String breakLine = "\n";
-                value = value.toString().replaceAll(Constant.COMMA, " ").replaceAll(breakLine, " ");
-                try {
-                    Field field = getEntityClass().getField(fieldName);
-                    ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
-                    if (Objects.nonNull(excelColumn)) {
-                        switch (excelColumn.value()) {
-                            case DATETIME:
-                                value = Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
-                                break;
-                            case TEXT:
-                                value = "\t" + value;
-                                break;
-                            default:
-                        }
-                    }
-                } catch (Exception exception) {
-                    log.error(exception.getMessage(), exception);
-                }
+                value = prepareExcelColumn(fieldName, value, fieldList);
                 columnList.add(value.toString());
             }
-            rowList.add(String.join(",", columnList));
+            rowList.add(String.join(Constant.COMMA, columnList));
         }
-        String content = String.join("\n", rowList);
-        final String prefix = "export_file_";
-        final String suffix = ".csv";
+        String content = String.join(Constant.LINE_BREAK, rowList);
         try {
-            // 创建临时文件
-            Path tempFilePath = Files.createTempFile(prefix, suffix);
+            Path tempFilePath = Files.createTempFile(EXPORT_FILE_PREFIX, EXPORT_FILE_CSV);
             Files.writeString(tempFilePath, content, java.nio.charset.StandardCharsets.UTF_8);
             return tempFilePath.getFileName().toString();
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
+        }
+    }
+
+    /**
+     * <h2>准备导出列</h2>
+     *
+     * @param fieldName 字段名
+     * @param value     当前值
+     * @param fieldList 字段列表
+     * @return 处理后的值
+     */
+    private @NotNull Object prepareExcelColumn(String fieldName, Object value, List<Field> fieldList) {
+        if (Objects.isNull(value)) {
+            value = Constant.LINE;
+        }
+        if (!StringUtils.hasText(value.toString())) {
+            value = Constant.LINE;
+        }
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
+        // 替换逗号 换行 为空格
+        value = value.toString().replaceAll(Constant.COMMA, Constant.SPACE).replaceAll(Constant.LINE_BREAK, Constant.SPACE);
+        try {
+            Field field = fieldList.stream().filter(item -> item.getName().equals(fieldName)).findFirst().orElse(null);
+            if (Objects.isNull(field)) {
+                return value;
+            }
+            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+            if (Objects.isNull(excelColumn)) {
+                return value;
+            }
+
+            return switch (excelColumn.value()) {
+                case DATETIME -> Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
+                case TEXT -> Constant.TAB + value;
+                default -> value;
+            };
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            return value;
         }
     }
 

@@ -17,7 +17,6 @@ public @interface ExcelColumn {
      */
     Type value() default Type.TEXT;
 
-
     enum Type {
         /**
          * <h2>普通文本</h2>

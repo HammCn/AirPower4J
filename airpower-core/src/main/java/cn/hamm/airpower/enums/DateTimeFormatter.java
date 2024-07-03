@@ -44,22 +44,22 @@ public enum DateTimeFormatter {
     /**
      * <h2>年月日</h2>
      */
-    FULL_DATE(YEAR + "-" + MONTH + "-" + DAY),
+    FULL_DATE("yyyy-MM-dd"),
 
     /**
      * <h2>时分秒</h2>
      */
-    FULL_TIME(HOUR + ":" + MINUTE + ":" + SECOND),
+    FULL_TIME("HH:mm:ss"),
 
     /**
      * <h2>年月日时分秒</h2>
      */
-    FULL_DATETIME(FULL_DATE + " " + FULL_TIME),
+    FULL_DATETIME("yyyy-MM-dd HH:mm:ss"),
 
     /**
      * <h2>月日时分</h2>
      */
-    SHORT_DATETIME(MONTH + "-" + DAY + " " + HOUR + ":" + MINUTE),
+    SHORT_DATETIME("MM-dd HH:mm"),
     ;
 
     private final String value;
