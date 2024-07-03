@@ -1,16 +1,20 @@
 package cn.hamm.airpower.root;
 
+import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
+import cn.hamm.airpower.model.query.QueryExport;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
+import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.Utils;
 import jakarta.persistence.Column;
 import jakarta.persistence.criteria.*;
@@ -31,6 +35,8 @@ import org.springframework.util.StringUtils;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiFunction;
 
@@ -49,6 +55,135 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     @Autowired
     protected R repository;
+
+    /**
+     * <h2>导出任务缓存前缀</h2>
+     */
+    private static final String EXPORT_TASK_PREFIX = "export_task_";
+
+    /**
+     * <h2>创建导出任务</h2>
+     *
+     * @param queryRequest 请求查询的参数
+     * @return 导出任务ID
+     */
+    public final String createExportTask(QueryRequest<E> queryRequest) {
+        String fileCode = Utils.getRandomUtil().randomString().toLowerCase();
+        final String fileCacheKey = EXPORT_TASK_PREFIX + fileCode;
+        Object object = Utils.getRedisUtil().get(fileCacheKey);
+        if (Objects.nonNull(object)) {
+            return createExportTask(queryRequest);
+        }
+        Utils.getRedisUtil().set(fileCacheKey, "");
+        Utils.getTaskUtil().runAsync(() -> {
+            // 查数据 写文件
+            List<E> list = getList(queryRequest);
+            list = beforeExport(list);
+            String url = saveExportFile(list);
+            Utils.getRedisUtil().set(fileCacheKey, url);
+        });
+        return fileCode;
+    }
+
+    /**
+     * <h2>保存导出的数据到文件</h2>
+     *
+     * @param exportList 导出的数据
+     * @return 存储的文件地址
+     */
+    protected String saveExportFile(List<E> exportList) {
+        // 导出到csv并存出文件
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
+        List<String> fieldNameList = new ArrayList<>();
+
+        List<String> headerList = new ArrayList<>();
+        for (Field field : reflectUtil.getFieldList(getEntityClass())) {
+            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+            if (Objects.isNull(excelColumn)) {
+                continue;
+            }
+            fieldNameList.add(field.getName());
+            String fieldName = reflectUtil.getDescription(field);
+            headerList.add(fieldName);
+        }
+
+        List<String> rowList = new ArrayList<>();
+        // 添加表头
+        rowList.add(String.join(",", headerList));
+
+        String json = Json.toString(exportList);
+        List<Map<String, Object>> mapList = Json.parse2MapList(json);
+        for (Map<String, Object> map : mapList) {
+            List<String> columnList = new ArrayList<>();
+            for (String fieldName : fieldNameList) {
+                Object value = map.get(fieldName);
+                if (Objects.isNull(value)) {
+                    value = Constant.LINE;
+                }
+                if (!StringUtils.hasText(value.toString())) {
+                    value = Constant.LINE;
+                }
+
+                String breakLine = "\n";
+                value = value.toString().replaceAll(Constant.COMMA, " ").replaceAll(breakLine, " ");
+                try {
+                    Field field = getEntityClass().getField(fieldName);
+                    ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+                    if (Objects.nonNull(excelColumn)) {
+                        switch (excelColumn.value()) {
+                            case DATETIME:
+                                value = Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
+                                break;
+                            case TEXT:
+                                value = "\t" + value;
+                                break;
+                            default:
+                        }
+                    }
+                } catch (Exception exception) {
+                    log.error(exception.getMessage(), exception);
+                }
+                columnList.add(value.toString());
+            }
+            rowList.add(String.join(",", columnList));
+        }
+        String content = String.join("\n", rowList);
+        final String prefix = "export_file_";
+        final String suffix = ".csv";
+        try {
+            // 创建临时文件
+            Path tempFilePath = Files.createTempFile(prefix, suffix);
+            Files.writeString(tempFilePath, content, java.nio.charset.StandardCharsets.UTF_8);
+            return tempFilePath.getFileName().toString();
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            throw new ServiceException(exception);
+        }
+    }
+
+    /**
+     * <h2>导出前置方法</h2>
+     *
+     * @param exportList 导出的数据列表
+     * @return 处理后的数据列表
+     */
+    protected List<E> beforeExport(@NotNull List<E> exportList) {
+        return exportList;
+    }
+
+    /**
+     * <h2>查询导出结果</h2>
+     *
+     * @param queryExportModel 查询导出模型
+     * @return 导出文件地址
+     */
+    protected final String queryExport(@NotNull QueryExport queryExportModel) {
+        final String fileCacheKey = EXPORT_TASK_PREFIX + queryExportModel.getFileCode();
+        Object object = Utils.getRedisUtil().get(fileCacheKey);
+        ServiceError.DATA_NOT_FOUND.whenNull(object, "错误的FileCode");
+        ServiceError.DATA_NOT_FOUND.whenEmpty(object, "文件暂未准备完毕");
+        return object.toString();
+    }
 
     /**
      * <h2>🟢添加前置方法</h2>
@@ -780,7 +915,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 搜索条件
      */
     @SuppressWarnings("AlibabaSwitchStatement")
-    private @NotNull List<Predicate> getPredicateList(
+    private @NotNull List<jakarta.persistence.criteria.Predicate> getPredicateList(
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();

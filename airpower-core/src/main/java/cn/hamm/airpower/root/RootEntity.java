@@ -45,6 +45,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint UNSIGNED comment 'ID'")
     @Min(value = 0, message = "ID必须大于{value}")
+    @ExcelColumn(ExcelColumn.Type.NUMBER)
     @NotNull(groups = {WhenUpdate.class, WhenIdRequired.class}, message = "ID不能为空")
     private Long id;
 
@@ -53,6 +54,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @Column(columnDefinition = "text comment '备注'")
     @Length(max = 1000, message = "备注最多允许{max}个字符")
     @Exclude(filters = {WhenPayLoad.class})
+    @ExcelColumn
     private String remark;
 
     @Description("是否禁用")
@@ -60,30 +62,35 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @Search(Search.Mode.EQUALS)
     @Column(columnDefinition = "tinyint UNSIGNED default 0 comment '是否禁用'")
     @Exclude(filters = {WhenPayLoad.class})
+    @ExcelColumn(ExcelColumn.Type.BOOLEAN)
     private Boolean isDisabled;
 
     @Description("创建时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建时间'")
     @Exclude(filters = {WhenPayLoad.class})
+    @ExcelColumn(ExcelColumn.Type.DATETIME)
     private Long createTime;
 
     @Description("创建人ID")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建人ID'")
     @Exclude(filters = {WhenPayLoad.class})
+    @ExcelColumn(ExcelColumn.Type.NUMBER)
     private Long createUserId;
 
     @Description("修改人ID")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改人ID'")
     @Exclude(filters = {WhenPayLoad.class})
+    @ExcelColumn(ExcelColumn.Type.NUMBER)
     private Long updateUserId;
 
     @Description("修改时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改时间'")
     @Exclude(filters = {WhenPayLoad.class})
+    @ExcelColumn(ExcelColumn.Type.DATETIME)
     private Long updateTime;
 
     @Transient
