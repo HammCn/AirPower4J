@@ -44,18 +44,18 @@ public class RootEntityController<
     protected S service;
 
     /**
-     * <h2>导出</h2>
+     * <h2>创建导出任务</h2>
      */
-    @Description("异步导出")
+    @Description("创建导出任务")
     @RequestMapping("export")
     public Json export(@RequestBody QueryRequest<E> queryRequest) {
         return Json.data(service.createExportTask(queryRequest), "导出任务创建成功");
     }
 
     /**
-     * <h2>导出</h2>
+     * <h2>查询异步导出结果</h2>
      */
-    @Description("异步导出")
+    @Description("查询异步导出结果")
     @RequestMapping("queryExport")
     @Permission(authorize = false)
     public Json queryExport(@RequestBody @Validated QueryExport queryExport) {
