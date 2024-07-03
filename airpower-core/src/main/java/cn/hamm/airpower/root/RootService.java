@@ -156,12 +156,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @apiNote 可存储至其他地方后返回可访问绝对路径
      */
     protected String afterExport(String content) {
+        // 路径分隔符
         final String separator = File.separator;
+
+        // 准备导出的相对路径
+        String exportFilePath = "export_";
         final String absolutePath = Configs.getServiceConfig().getExportFilePath() + separator;
         ServiceError.SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
 
-        // 准备导出的相对路径
-        String exportFilePath = "";
         try {
             DateTimeUtil dateTimeUtil = Utils.getDateTimeUtil();
             long milliSecond = System.currentTimeMillis();
@@ -178,10 +180,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
 
             // 存储的文件名
-            final String fileName = todayDir + dateTimeUtil.format(milliSecond,
+            final String fileName = todayDir + Constant.UNDERLINE + dateTimeUtil.format(milliSecond,
                     DateTimeFormatter.FULL_TIME.getValue()
                             .replaceAll(Constant.COLON, Constant.EMPTY_STRING)
-            ) + Utils.getRandomUtil().randomString() + EXPORT_FILE_CSV;
+            ) + Constant.UNDERLINE + Utils.getRandomUtil().randomString() + EXPORT_FILE_CSV;
 
             // 拼接最终存储路径
             exportFilePath += fileName;
