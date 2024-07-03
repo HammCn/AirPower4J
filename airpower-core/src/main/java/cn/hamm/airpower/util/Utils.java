@@ -168,6 +168,12 @@ public class Utils {
     @Getter
     private static TaskUtil taskUtil;
 
+    /**
+     * <h2>日期时间工具</h2>
+     */
+    @Getter
+    private static DateTimeUtil dateTimeUtil;
+
     @Autowired
     Utils(
             RedisUtil redisUtil,
@@ -194,7 +200,8 @@ public class Utils {
             StringUtil stringUtil,
             WebsocketUtil websocketUtil,
             AesUtil aesUtil,
-            TaskUtil taskUtil
+            TaskUtil taskUtil,
+            DateTimeUtil dateTimeUtil
     ) {
         Utils.redisUtil = redisUtil;
         Utils.emailUtil = emailUtil;
@@ -221,6 +228,7 @@ public class Utils {
         Utils.websocketUtil = websocketUtil;
         Utils.aesUtil = aesUtil;
         Utils.taskUtil = taskUtil;
+        Utils.dateTimeUtil = dateTimeUtil;
     }
 
     /**

@@ -237,4 +237,24 @@ public class Constant {
      * <h2>毫秒转秒</h2>
      */
     public static final int MILLISECONDS_PER_SECOND = 1000;
+
+    /**
+     * <h2>换行</h2>
+     */
+    public static final String LINE_BREAK = "\n";
+
+    /**
+     * <h2>TAB</h2>
+     */
+    public static final String TAB = "\t";
+
+    /**
+     * <h2>是</h2>
+     */
+    public static final String YES = "是";
+
+    /**
+     * <h2>否</h2>
+     */
+    public static final String NO = "否";
 }

@@ -10,6 +10,7 @@ import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IEntityAction;
 import cn.hamm.airpower.model.Json;
+import cn.hamm.airpower.model.query.QueryExport;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
@@ -41,6 +42,25 @@ public class RootEntityController<
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected S service;
+
+    /**
+     * <h2>创建导出任务</h2>
+     */
+    @Description("创建导出任务")
+    @RequestMapping("export")
+    public Json export(@RequestBody QueryRequest<E> queryRequest) {
+        return Json.data(service.createExportTask(queryRequest), "导出任务创建成功");
+    }
+
+    /**
+     * <h2>查询异步导出结果</h2>
+     */
+    @Description("查询异步导出结果")
+    @RequestMapping("queryExport")
+    @Permission(authorize = false)
+    public Json queryExport(@RequestBody @Validated QueryExport queryExport) {
+        return Json.data(service.queryExport(queryExport), "请下载导出的文件");
+    }
 
     /**
      * <h2>添加一条新数据接口</h2>

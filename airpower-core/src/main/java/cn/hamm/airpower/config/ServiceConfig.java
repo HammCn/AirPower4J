@@ -84,6 +84,13 @@ public class ServiceConfig {
     private String tenantHeader = "tenant-code";
 
     /**
+     * <h2>导出文件的目录</h2>
+     *
+     * @apiNote 请<code>不要</code>使用 <code>/</code> 结尾
+     */
+    private String exportFilePath = "";
+
+    /**
      * <h2>是否开启调试模式</h2>
      *
      * @apiNote 调试模式打开，控制台将输出部分错误堆栈信息等

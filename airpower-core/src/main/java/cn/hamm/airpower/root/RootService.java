@@ -1,17 +1,25 @@
 package cn.hamm.airpower.root;
 
+import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
+import cn.hamm.airpower.enums.DateTimeFormatter;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.interfaces.IDictionary;
+import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
+import cn.hamm.airpower.model.query.QueryExport;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
+import cn.hamm.airpower.util.DateTimeUtil;
+import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.validate.dictionary.Dictionary;
 import jakarta.persistence.Column;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +37,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiFunction;
 
@@ -44,11 +56,216 @@ import java.util.function.BiFunction;
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
+
     /**
      * <h2>数据源</h2>
      */
     @Autowired
     protected R repository;
+
+    /**
+     * <h2>导出文件前缀</h2>
+     */
+    public static final String EXPORT_FILE_PREFIX = "export_file_";
+
+    /**
+     * <h2>导出文件后缀</h2>
+     */
+    public static final String EXPORT_FILE_CSV = ".csv";
+
+    /**
+     * <h2>创建导出任务</h2>
+     *
+     * @param queryRequest 请求查询的参数
+     * @return 导出任务ID
+     */
+    public final String createExportTask(QueryRequest<E> queryRequest) {
+        String fileCode = Utils.getRandomUtil().randomString().toLowerCase();
+        final String fileCacheKey = EXPORT_FILE_PREFIX + fileCode;
+        Object object = Utils.getRedisUtil().get(fileCacheKey);
+        if (Objects.nonNull(object)) {
+            return createExportTask(queryRequest);
+        }
+        Utils.getRedisUtil().set(fileCacheKey, "");
+        Utils.getTaskUtil().runAsync(() -> {
+            // 查数据 写文件
+            List<E> list = getList(queryRequest);
+            list = beforeExport(list);
+            String url = saveExportFile(list);
+            Utils.getRedisUtil().set(fileCacheKey, url);
+        });
+        return fileCode;
+    }
+
+    /**
+     * <h2>保存导出的数据到文件</h2>
+     *
+     * @param exportList 导出的数据
+     * @return 存储的文件地址
+     * @apiNote 支持完全重写导出逻辑
+     *
+     * <ul>
+     *     <li>默认导出为 <code>CSV</code> 表格，如需自定义导出方式或格式，可直接重写此方法</li>
+     *     <li>如仅需<code>自定义导出存储位置</code>，可重写 {@link #afterExport(String)}</li>
+     * </ul>
+     */
+    protected String saveExportFile(List<E> exportList) {
+        // 导出到csv并存储文件
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
+        List<String> fieldNameList = new ArrayList<>();
+        List<Field> fieldList = new ArrayList<>();
+
+        List<String> headerList = new ArrayList<>();
+        Class<E> entityClass = getEntityClass();
+        for (Field field : reflectUtil.getFieldList(entityClass)) {
+            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+            if (Objects.isNull(excelColumn)) {
+                continue;
+            }
+            fieldList.add(field);
+            fieldNameList.add(field.getName());
+            String fieldName = reflectUtil.getDescription(field);
+            headerList.add(fieldName);
+        }
+
+        List<String> rowList = new ArrayList<>();
+        // 添加表头
+        rowList.add(String.join(Constant.COMMA, headerList));
+
+        String json = Json.toString(exportList);
+        List<Map<String, Object>> mapList = Json.parse2MapList(json);
+        for (Map<String, Object> map : mapList) {
+            List<String> columnList = new ArrayList<>();
+            for (String fieldName : fieldNameList) {
+                Object value = map.get(fieldName);
+                value = prepareExcelColumn(fieldName, value, fieldList);
+                value = value.toString().replaceAll(Constant.COMMA, Constant.SPACE).replaceAll(Constant.LINE_BREAK, Constant.SPACE);
+                columnList.add(value.toString());
+            }
+            rowList.add(String.join(Constant.COMMA, columnList));
+        }
+        String content = String.join(Constant.LINE_BREAK, rowList);
+        return afterExport(content);
+    }
+
+    /**
+     * <h2>导出数据后置方法</h2>
+     *
+     * @param content 导出的CSV数据
+     * @return 存储后的可访问路径
+     * @apiNote 可存储至其他地方后返回可访问绝对路径
+     */
+    protected String afterExport(String content) {
+        // 路径分隔符
+        final String separator = File.separator;
+
+        // 准备导出的相对路径
+        String exportFilePath = "export_";
+        final String absolutePath = Configs.getServiceConfig().getExportFilePath() + separator;
+        ServiceError.SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
+
+        try {
+            DateTimeUtil dateTimeUtil = Utils.getDateTimeUtil();
+            long milliSecond = System.currentTimeMillis();
+
+            // 追加今日文件夹 定时任务将按存储文件夹进行删除过时文件
+            String todayDir = dateTimeUtil.format(milliSecond,
+                    DateTimeFormatter.FULL_DATE.getValue()
+                            .replaceAll(Constant.LINE, Constant.EMPTY_STRING)
+            );
+            exportFilePath += todayDir + separator;
+
+            if (!Files.exists(Paths.get(absolutePath + exportFilePath))) {
+                Files.createDirectory(Paths.get(absolutePath + exportFilePath));
+            }
+
+            // 存储的文件名
+            final String fileName = todayDir + Constant.UNDERLINE + dateTimeUtil.format(milliSecond,
+                    DateTimeFormatter.FULL_TIME.getValue()
+                            .replaceAll(Constant.COLON, Constant.EMPTY_STRING)
+            ) + Constant.UNDERLINE + Utils.getRandomUtil().randomString() + EXPORT_FILE_CSV;
+
+            // 拼接最终存储路径
+            exportFilePath += fileName;
+            Path path = Paths.get(absolutePath + exportFilePath);
+            Files.writeString(path, content);
+            return exportFilePath;
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            throw new ServiceException(exception);
+        }
+    }
+
+    /**
+     * <h2>准备导出列</h2>
+     *
+     * @param fieldName 字段名
+     * @param value     当前值
+     * @param fieldList 字段列表
+     * @return 处理后的值
+     */
+    private @NotNull Object prepareExcelColumn(String fieldName, Object value, List<Field> fieldList) {
+        if (Objects.isNull(value)) {
+            value = Constant.LINE;
+        }
+        if (!StringUtils.hasText(value.toString())) {
+            value = Constant.LINE;
+        }
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
+        try {
+            Field field = fieldList.stream().filter(item -> item.getName().equals(fieldName)).findFirst().orElse(null);
+            if (Objects.isNull(field)) {
+                return value;
+            }
+            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+            if (Objects.isNull(excelColumn)) {
+                return value;
+            }
+
+            return switch (excelColumn.value()) {
+                case DATETIME -> Constant.TAB + Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
+                case TEXT -> Constant.TAB + value;
+                case BOOLEAN -> (boolean) value ? Constant.YES : Constant.NO;
+                case DICTIONARY -> {
+                    Dictionary dictionary = reflectUtil.getAnnotation(Dictionary.class, field);
+                    if (Objects.isNull(dictionary)) {
+                        yield value;
+                    } else {
+                        IDictionary dict = Utils.getDictionaryUtil().getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
+                        yield dict.getLabel();
+                    }
+                }
+                default -> value;
+            };
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            return value;
+        }
+    }
+
+    /**
+     * <h2>导出前置方法</h2>
+     *
+     * @param exportList 导出的数据列表
+     * @return 处理后的数据列表
+     */
+    protected List<E> beforeExport(@NotNull List<E> exportList) {
+        return exportList;
+    }
+
+    /**
+     * <h2>查询导出结果</h2>
+     *
+     * @param queryExportModel 查询导出模型
+     * @return 导出文件地址
+     */
+    protected final String queryExport(@NotNull QueryExport queryExportModel) {
+        final String fileCacheKey = EXPORT_FILE_PREFIX + queryExportModel.getFileCode();
+        Object object = Utils.getRedisUtil().get(fileCacheKey);
+        ServiceError.DATA_NOT_FOUND.whenNull(object, "错误的FileCode");
+        ServiceError.DATA_NOT_FOUND.whenEmpty(object, "文件暂未准备完毕");
+        return object.toString();
+    }
 
     /**
      * <h2>🟢添加前置方法</h2>
@@ -780,7 +997,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 搜索条件
      */
     @SuppressWarnings("AlibabaSwitchStatement")
-    private @NotNull List<Predicate> getPredicateList(
+    private @NotNull List<jakarta.persistence.criteria.Predicate> getPredicateList(
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();

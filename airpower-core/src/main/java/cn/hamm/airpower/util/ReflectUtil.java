@@ -353,4 +353,22 @@ public class ReflectUtil {
         }
         return getAnnotation(annotationClass, superMethod, superClass);
     }
+
+    /**
+     * <h2>递归获取字段</h2>
+     *
+     * @param fieldName 字段名
+     * @param clazz     当前类
+     * @return 字段
+     */
+    public final @Nullable Field getField(String fieldName, Class<?> clazz) {
+        if (Objects.isNull(clazz) || Object.class.equals(clazz)) {
+            return null;
+        }
+        try {
+            return clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            return getField(fieldName, clazz.getSuperclass());
+        }
+    }
 }
