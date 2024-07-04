@@ -37,7 +37,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
@@ -56,7 +58,6 @@ import java.util.function.BiFunction;
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
-
     /**
      * <h2>数据源</h2>
      */
@@ -64,9 +65,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected R repository;
 
     /**
+     * <h2>导出文件夹前缀</h2>
+     */
+    public static final String EXPORT_DIR_PREFIX = "export_";
+
+    /**
      * <h2>导出文件前缀</h2>
      */
-    public static final String EXPORT_FILE_PREFIX = "export_file_";
+    public static final String EXPORT_FILE_PREFIX = EXPORT_DIR_PREFIX + "file_";
 
     /**
      * <h2>导出文件后缀</h2>
@@ -78,6 +84,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @param queryRequest 请求查询的参数
      * @return 导出任务ID
+     * @see #beforeExportQuery(QueryRequest)
+     * @see #afterExportQuery(List)
+     * @see #createExportStream(List)
      */
     public final String createExportTask(QueryRequest<E> queryRequest) {
         String fileCode = Utils.getRandomUtil().randomString().toLowerCase();
@@ -90,7 +99,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Utils.getTaskUtil().runAsync(() -> {
             // 查数据 写文件
             List<E> list = exportQuery(queryRequest);
-            String url = saveExportFile(list);
+            String url = saveExportFile(createExportStream(list));
             Utils.getRedisUtil().set(fileCacheKey, url);
         });
         return fileCode;
@@ -107,32 +116,18 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>导出查询</h2>
-     *
-     * @param queryRequest 查询请求
-     * @return 查询结果
-     */
-    private @NotNull List<E> exportQuery(QueryRequest<E> queryRequest) {
-        queryRequest = checkQueryRequest(queryRequest);
-        queryRequest = beforeExportQuery(queryRequest).copy();
-        List<E> list = query(queryRequest);
-        list = afterExportQuery(list);
-        return list;
-    }
-
-    /**
-     * <h2>🟢保存导出的数据到文件</h2>
+     * <h2>🟢创建导出数据的文件字节流</h2>
      *
      * @param exportList 导出的数据
-     * @return 存储的文件地址
-     * @apiNote 支持完全重写导出逻辑
+     * @return 导出的文件的字节流
+     * @apiNote 支持完全重写导出文件生成逻辑
      *
      * <ul>
      *     <li>默认导出为 <code>CSV</code> 表格，如需自定义导出方式或格式，可直接重写此方法</li>
-     *     <li>如仅需<code>自定义导出存储位置</code>，可重写 {@link #afterExport(String)}</li>
+     *     <li>如仅需<code>自定义导出存储位置</code>，可重写 {@link #saveExportFile(InputStream)}</li>
      * </ul>
      */
-    protected String saveExportFile(List<E> exportList) {
+    protected InputStream createExportStream(List<E> exportList) {
         // 导出到csv并存储文件
         ReflectUtil reflectUtil = Utils.getReflectUtil();
         List<String> fieldNameList = new ArrayList<>();
@@ -168,22 +163,22 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             rowList.add(String.join(Constant.COMMA, columnList));
         }
         String content = String.join(Constant.LINE_BREAK, rowList);
-        return afterExport(content);
+        return new ByteArrayInputStream(content.getBytes());
     }
 
     /**
-     * <h2>🟢导出数据后置方法</h2>
+     * <h2>🟢保存导出生成的文件</h2>
      *
-     * @param content 导出的CSV数据
+     * @param exportFileStream 导出的文件字节流
      * @return 存储后的可访问路径
-     * @apiNote 可存储至其他地方后返回可访问绝对路径
+     * @apiNote 可重写此方法存储至其他地方后返回可访问绝对路径
      */
-    protected String afterExport(String content) {
+    protected String saveExportFile(InputStream exportFileStream) {
         // 路径分隔符
         final String separator = File.separator;
 
         // 准备导出的相对路径
-        String exportFilePath = "export_";
+        String exportFilePath = EXPORT_DIR_PREFIX;
         final String absolutePath = Configs.getServiceConfig().getExportFilePath() + separator;
         ServiceError.SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
 
@@ -211,7 +206,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             // 拼接最终存储路径
             exportFilePath += fileName;
             Path path = Paths.get(absolutePath + exportFilePath);
-            Files.writeString(path, content);
+            Files.write(path, exportFileStream.readAllBytes());
             return exportFilePath;
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
@@ -220,54 +215,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>准备导出列</h2>
-     *
-     * @param fieldName 字段名
-     * @param value     当前值
-     * @param fieldList 字段列表
-     * @return 处理后的值
-     */
-    private @NotNull Object prepareExcelColumn(String fieldName, Object value, List<Field> fieldList) {
-        if (Objects.isNull(value)) {
-            value = Constant.LINE;
-        }
-        if (!StringUtils.hasText(value.toString())) {
-            value = Constant.LINE;
-        }
-        ReflectUtil reflectUtil = Utils.getReflectUtil();
-        try {
-            Field field = fieldList.stream().filter(item -> item.getName().equals(fieldName)).findFirst().orElse(null);
-            if (Objects.isNull(field)) {
-                return value;
-            }
-            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
-            if (Objects.isNull(excelColumn)) {
-                return value;
-            }
-
-            return switch (excelColumn.value()) {
-                case DATETIME -> Constant.TAB + Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
-                case TEXT -> Constant.TAB + value;
-                case BOOLEAN -> (boolean) value ? Constant.YES : Constant.NO;
-                case DICTIONARY -> {
-                    Dictionary dictionary = reflectUtil.getAnnotation(Dictionary.class, field);
-                    if (Objects.isNull(dictionary)) {
-                        yield value;
-                    } else {
-                        IDictionary dict = Utils.getDictionaryUtil().getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
-                        yield dict.getLabel();
-                    }
-                }
-                default -> value;
-            };
-        } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
-            return value;
-        }
-    }
-
-    /**
-     * <h2>导出查询后置方法</h2>
+     * <h2>🟢导出查询后置方法</h2>
      *
      * @param exportList 导出的数据列表
      * @return 处理后的数据列表
@@ -520,19 +468,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>查询数据</h2>
-     *
-     * @param queryRequest 查询请求
-     * @return 查询结果数据列表
-     */
-    private @NotNull List<E> query(@NotNull QueryRequest<E> queryRequest) {
-        queryRequest = beforeQuery(queryRequest);
-        return repository.findAll(
-                createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort())
-        );
-    }
-
-    /**
      * <h2>🟢查询前置方法</h2>
      *
      * @param queryRequest 查询请求
@@ -543,18 +478,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * </ul>
      */
     protected QueryRequest<E> beforeQuery(@NotNull QueryRequest<E> queryRequest) {
-        return queryRequest;
-    }
-
-    /**
-     * <h2>检查查询请求</h2>
-     *
-     * @param queryRequest 查询请求
-     * @return 检查后的查询请求
-     */
-    private @NotNull QueryRequest<E> checkQueryRequest(QueryRequest<E> queryRequest) {
-        queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
-        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
         return queryRequest;
     }
 
@@ -774,6 +697,125 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 Utils.getReflectUtil().getDescription(getEntityClass())
         ));
         saveToDatabase(source, withNull);
+    }
+
+    /**
+     * <h2>添加查询条件(<code>value</code>不为<code>null</code>时)</h2>
+     *
+     * @param root          ROOT
+     * @param predicateList 查询条件列表
+     * @param fieldName     所属的字段名称
+     * @param expression    表达式
+     * @param value         条件的值
+     */
+    protected final <Y extends Comparable<? super Y>> void addPredicateNonNull(
+            @NotNull Root<E> root,
+            List<Predicate> predicateList,
+            String fieldName,
+            BiFunction<Expression<? extends Y>, Y, Predicate> expression,
+            Y value) {
+        if (Objects.nonNull(value)) {
+            predicateList.add(expression.apply(root.get(fieldName), value));
+        }
+    }
+
+    /**
+     * <h2>尝试获取当前登录用户ID</h2>
+     *
+     * @return 用户ID
+     */
+    private long tryToGetCurrentUserId() {
+        try {
+            String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
+            return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
+        } catch (Exception exception) {
+            return Constant.ZERO_LONG;
+        }
+    }
+
+    /**
+     * <h2>导出查询</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 查询结果
+     */
+    private @NotNull List<E> exportQuery(QueryRequest<E> queryRequest) {
+        queryRequest = checkQueryRequest(queryRequest);
+        queryRequest = beforeExportQuery(queryRequest).copy();
+        List<E> list = query(queryRequest);
+        return afterExportQuery(list);
+    }
+
+    /**
+     * <h2>查询数据</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 查询结果数据列表
+     */
+    private @NotNull List<E> query(@NotNull QueryRequest<E> queryRequest) {
+        queryRequest = beforeQuery(queryRequest);
+        return repository.findAll(
+                createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort())
+        );
+    }
+
+    /**
+     * <h2>准备导出列</h2>
+     *
+     * @param fieldName 字段名
+     * @param value     当前值
+     * @param fieldList 字段列表
+     * @return 处理后的值
+     */
+    private @NotNull Object prepareExcelColumn(String fieldName, Object value, List<Field> fieldList) {
+        if (Objects.isNull(value)) {
+            value = Constant.LINE;
+        }
+        if (!StringUtils.hasText(value.toString())) {
+            value = Constant.LINE;
+        }
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
+        try {
+            Field field = fieldList.stream().filter(item -> item.getName().equals(fieldName)).findFirst().orElse(null);
+            if (Objects.isNull(field)) {
+                return value;
+            }
+            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+            if (Objects.isNull(excelColumn)) {
+                return value;
+            }
+
+            return switch (excelColumn.value()) {
+                case DATETIME -> Constant.TAB + Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
+                case TEXT -> Constant.TAB + value;
+                case BOOLEAN -> (boolean) value ? Constant.YES : Constant.NO;
+                case DICTIONARY -> {
+                    Dictionary dictionary = reflectUtil.getAnnotation(Dictionary.class, field);
+                    if (Objects.isNull(dictionary)) {
+                        yield value;
+                    } else {
+                        IDictionary dict = Utils.getDictionaryUtil().getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
+                        yield dict.getLabel();
+                    }
+                }
+                default -> value;
+            };
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            return value;
+        }
+    }
+
+    /**
+     * <h2>检查查询请求</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 检查后的查询请求
+     */
+    private @NotNull QueryRequest<E> checkQueryRequest(QueryRequest<E> queryRequest) {
+        queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
+        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
+        return queryRequest;
     }
 
     /**
@@ -1115,26 +1157,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>添加查询条件(<code>value</code>不为<code>null</code>时)</h2>
-     *
-     * @param root          ROOT
-     * @param predicateList 查询条件列表
-     * @param fieldName     所属的字段名称
-     * @param expression    表达式
-     * @param value         条件的值
-     */
-    protected final <Y extends Comparable<? super Y>> void addPredicateNonNull(
-            @NotNull Root<E> root,
-            List<Predicate> predicateList,
-            String fieldName,
-            BiFunction<Expression<? extends Y>, Y, Predicate> expression,
-            Y value) {
-        if (Objects.nonNull(value)) {
-            predicateList.add(expression.apply(root.get(fieldName), value));
-        }
-    }
-
-    /**
      * <h2>创建查询对象</h2>
      *
      * @param filter  过滤器对象
@@ -1166,19 +1188,5 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
-    }
-
-    /**
-     * <h2>尝试获取当前登录用户ID</h2>
-     *
-     * @return 用户ID
-     */
-    protected final long tryToGetCurrentUserId() {
-        try {
-            String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
-            return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
-        } catch (Exception exception) {
-            return Constant.ZERO_LONG;
-        }
     }
 }
