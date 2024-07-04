@@ -16,11 +16,10 @@ import cn.hamm.airpower.model.query.QueryExport;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.model.query.QueryRequest;
-import cn.hamm.airpower.util.DateTimeUtil;
-import cn.hamm.airpower.util.ReflectUtil;
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.*;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
@@ -37,7 +36,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
@@ -56,7 +57,6 @@ import java.util.function.BiFunction;
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
-
     /**
      * <h2>数据源</h2>
      */
@@ -64,54 +64,80 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected R repository;
 
     /**
+     * <h2>导出文件夹前缀</h2>
+     */
+    private static final String EXPORT_DIR_PREFIX = "export_";
+    /**
      * <h2>导出文件前缀</h2>
      */
-    public static final String EXPORT_FILE_PREFIX = "export_file_";
-
+    private static final String EXPORT_FILE_PREFIX = EXPORT_DIR_PREFIX + "file_";
     /**
      * <h2>导出文件后缀</h2>
      */
-    public static final String EXPORT_FILE_CSV = ".csv";
+    private static final String EXPORT_FILE_CSV = ".csv";
+    @Autowired
+    private ReflectUtil reflectUtil;
+    @Autowired
+    private TaskUtil taskUtil;
+    @Autowired
+    private RedisUtil redisUtil;
+    @Autowired
+    private RandomUtil randomUtil;
+    @Autowired
+    private DateTimeUtil dateTimeUtil;
+    @Autowired
+    private EntityManager entityManager;
 
     /**
      * <h2>创建导出任务</h2>
      *
      * @param queryRequest 请求查询的参数
      * @return 导出任务ID
+     * @see #beforeExportQuery(QueryRequest)
+     * @see #afterExportQuery(List)
+     * @see #createExportStream(List)
      */
     public final String createExportTask(QueryRequest<E> queryRequest) {
-        String fileCode = Utils.getRandomUtil().randomString().toLowerCase();
+        String fileCode = randomUtil.randomString().toLowerCase();
         final String fileCacheKey = EXPORT_FILE_PREFIX + fileCode;
-        Object object = Utils.getRedisUtil().get(fileCacheKey);
+        Object object = redisUtil.get(fileCacheKey);
         if (Objects.nonNull(object)) {
             return createExportTask(queryRequest);
         }
-        Utils.getRedisUtil().set(fileCacheKey, "");
-        Utils.getTaskUtil().runAsync(() -> {
+        redisUtil.set(fileCacheKey, "");
+        taskUtil.runAsync(() -> {
             // 查数据 写文件
-            List<E> list = getList(queryRequest);
-            list = beforeExport(list);
-            String url = saveExportFile(list);
-            Utils.getRedisUtil().set(fileCacheKey, url);
+            List<E> list = exportQuery(queryRequest);
+            String url = saveExportFile(createExportStream(list));
+            redisUtil.set(fileCacheKey, url);
         });
         return fileCode;
     }
 
     /**
-     * <h2>保存导出的数据到文件</h2>
+     * <h2>🟢导出查询前置方法</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 处理后的查询请求
+     */
+    protected QueryRequest<E> beforeExportQuery(QueryRequest<E> queryRequest) {
+        return queryRequest;
+    }
+
+    /**
+     * <h2>🟢创建导出数据的文件字节流</h2>
      *
      * @param exportList 导出的数据
-     * @return 存储的文件地址
-     * @apiNote 支持完全重写导出逻辑
+     * @return 导出的文件的字节流
+     * @apiNote 支持完全重写导出文件生成逻辑
      *
      * <ul>
      *     <li>默认导出为 <code>CSV</code> 表格，如需自定义导出方式或格式，可直接重写此方法</li>
-     *     <li>如仅需<code>自定义导出存储位置</code>，可重写 {@link #afterExport(String)}</li>
+     *     <li>如仅需<code>自定义导出存储位置</code>，可重写 {@link #saveExportFile(InputStream)}</li>
      * </ul>
      */
-    protected String saveExportFile(List<E> exportList) {
+    protected InputStream createExportStream(List<E> exportList) {
         // 导出到csv并存储文件
-        ReflectUtil reflectUtil = Utils.getReflectUtil();
         List<String> fieldNameList = new ArrayList<>();
         List<Field> fieldList = new ArrayList<>();
 
@@ -124,8 +150,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
             fieldList.add(field);
             fieldNameList.add(field.getName());
-            String fieldName = reflectUtil.getDescription(field);
-            headerList.add(fieldName);
+            headerList.add(reflectUtil.getDescription(field));
         }
 
         List<String> rowList = new ArrayList<>();
@@ -145,27 +170,23 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             rowList.add(String.join(Constant.COMMA, columnList));
         }
         String content = String.join(Constant.LINE_BREAK, rowList);
-        return afterExport(content);
+        return new ByteArrayInputStream(content.getBytes());
     }
 
     /**
-     * <h2>导出数据后置方法</h2>
+     * <h2>🟢保存导出生成的文件</h2>
      *
-     * @param content 导出的CSV数据
+     * @param exportFileStream 导出的文件字节流
      * @return 存储后的可访问路径
-     * @apiNote 可存储至其他地方后返回可访问绝对路径
+     * @apiNote 可重写此方法存储至其他地方后返回可访问绝对路径
      */
-    protected String afterExport(String content) {
-        // 路径分隔符
-        final String separator = File.separator;
-
+    protected String saveExportFile(InputStream exportFileStream) {
         // 准备导出的相对路径
-        String exportFilePath = "export_";
-        final String absolutePath = Configs.getServiceConfig().getExportFilePath() + separator;
+        String exportFilePath = EXPORT_DIR_PREFIX;
+        final String absolutePath = Configs.getServiceConfig().getExportFilePath() + File.separator;
         ServiceError.SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
 
         try {
-            DateTimeUtil dateTimeUtil = Utils.getDateTimeUtil();
             long milliSecond = System.currentTimeMillis();
 
             // 追加今日文件夹 定时任务将按存储文件夹进行删除过时文件
@@ -173,7 +194,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     DateTimeFormatter.FULL_DATE.getValue()
                             .replaceAll(Constant.LINE, Constant.EMPTY_STRING)
             );
-            exportFilePath += todayDir + separator;
+            exportFilePath += todayDir + File.separator;
 
             if (!Files.exists(Paths.get(absolutePath + exportFilePath))) {
                 Files.createDirectory(Paths.get(absolutePath + exportFilePath));
@@ -183,12 +204,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             final String fileName = todayDir + Constant.UNDERLINE + dateTimeUtil.format(milliSecond,
                     DateTimeFormatter.FULL_TIME.getValue()
                             .replaceAll(Constant.COLON, Constant.EMPTY_STRING)
-            ) + Constant.UNDERLINE + Utils.getRandomUtil().randomString() + EXPORT_FILE_CSV;
+            ) + Constant.UNDERLINE + randomUtil.randomString() + EXPORT_FILE_CSV;
 
             // 拼接最终存储路径
             exportFilePath += fileName;
             Path path = Paths.get(absolutePath + exportFilePath);
-            Files.writeString(path, content);
+            Files.write(path, exportFileStream.readAllBytes());
             return exportFilePath;
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
@@ -197,59 +218,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>准备导出列</h2>
-     *
-     * @param fieldName 字段名
-     * @param value     当前值
-     * @param fieldList 字段列表
-     * @return 处理后的值
-     */
-    private @NotNull Object prepareExcelColumn(String fieldName, Object value, List<Field> fieldList) {
-        if (Objects.isNull(value)) {
-            value = Constant.LINE;
-        }
-        if (!StringUtils.hasText(value.toString())) {
-            value = Constant.LINE;
-        }
-        ReflectUtil reflectUtil = Utils.getReflectUtil();
-        try {
-            Field field = fieldList.stream().filter(item -> item.getName().equals(fieldName)).findFirst().orElse(null);
-            if (Objects.isNull(field)) {
-                return value;
-            }
-            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
-            if (Objects.isNull(excelColumn)) {
-                return value;
-            }
-
-            return switch (excelColumn.value()) {
-                case DATETIME -> Constant.TAB + Utils.getDateTimeUtil().format(Long.parseLong(value.toString()));
-                case TEXT -> Constant.TAB + value;
-                case BOOLEAN -> (boolean) value ? Constant.YES : Constant.NO;
-                case DICTIONARY -> {
-                    Dictionary dictionary = reflectUtil.getAnnotation(Dictionary.class, field);
-                    if (Objects.isNull(dictionary)) {
-                        yield value;
-                    } else {
-                        IDictionary dict = Utils.getDictionaryUtil().getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
-                        yield dict.getLabel();
-                    }
-                }
-                default -> value;
-            };
-        } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
-            return value;
-        }
-    }
-
-    /**
-     * <h2>导出前置方法</h2>
+     * <h2>🟢导出查询后置方法</h2>
      *
      * @param exportList 导出的数据列表
      * @return 处理后的数据列表
      */
-    protected List<E> beforeExport(@NotNull List<E> exportList) {
+    protected List<E> afterExportQuery(@NotNull List<E> exportList) {
         return exportList;
     }
 
@@ -261,7 +235,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected final String queryExport(@NotNull QueryExport queryExportModel) {
         final String fileCacheKey = EXPORT_FILE_PREFIX + queryExportModel.getFileCode();
-        Object object = Utils.getRedisUtil().get(fileCacheKey);
+        Object object = redisUtil.get(fileCacheKey);
         ServiceError.DATA_NOT_FOUND.whenNull(object, "错误的FileCode");
         ServiceError.DATA_NOT_FOUND.whenEmpty(object, "文件暂未准备完毕");
         return object.toString();
@@ -296,7 +270,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         E finalSource = source;
         long id = saveToDatabase(source);
-        Utils.getTaskUtil().run(() -> afterAdd(id, finalSource));
+        taskUtil.run(() -> afterAdd(id, finalSource));
         return id;
     }
 
@@ -396,7 +370,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void disable(long id) {
         beforeDisable(id);
         disableById(id);
-        Utils.getTaskUtil().run(() -> afterDisable(id));
+        taskUtil.run(() -> afterDisable(id));
     }
 
     /**
@@ -427,7 +401,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void enable(long id) {
         beforeEnable(id);
         enableById(id);
-        Utils.getTaskUtil().run(() -> afterEnable(id));
+        taskUtil.run(() -> afterEnable(id));
     }
 
     /**
@@ -458,7 +432,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void delete(long id) {
         beforeDelete(id);
         deleteById(id);
-        Utils.getTaskUtil().run(() -> afterDelete(id));
+        taskUtil.run(() -> afterDelete(id));
     }
 
     /**
@@ -490,13 +464,24 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterGetList(List)
      */
     public final @NotNull List<E> getList(QueryRequest<E> queryRequest) {
-        queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
-        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
+        queryRequest = checkQueryRequest(queryRequest);
         queryRequest = beforeGetList(queryRequest).copy();
-        List<E> list = repository.findAll(
-                createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort())
-        );
+        List<E> list = query(queryRequest);
         return afterGetList(list);
+    }
+
+    /**
+     * <h2>🟢查询前置方法</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 处理后的查询请求
+     * <ul>
+     *     <li>{@link #getList(QueryRequest)} {@link #getPage(QueryPageRequest)} {@link #createExportTask(QueryRequest)}均会触发此前置方法</li>
+     *     <li>{@link #beforeGetList(QueryRequest)} {@link #beforeGetPage(QueryPageRequest)} {@link #beforeExportQuery(QueryRequest)}} 先触发</li>
+     * </ul>
+     */
+    protected QueryRequest<E> beforeQuery(@NotNull QueryRequest<E> queryRequest) {
+        return queryRequest;
     }
 
     /**
@@ -603,7 +588,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         E entity = get(id);
         ServiceError.FORBIDDEN_DISABLED.when(entity.getIsDisabled(), String.format(
                         ServiceError.FORBIDDEN_DISABLED.getMessage(),
-                        id, Utils.getReflectUtil().getDescription(getEntityClass())
+                id, reflectUtil.getDescription(getEntityClass())
                 )
         );
         return entity;
@@ -640,8 +625,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterGetPage(QueryPageResponse)
      */
     public final @NotNull QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
-        queryPageRequest = Objects.requireNonNullElse(queryPageRequest, new QueryPageRequest<>());
-        queryPageRequest.setFilter(Objects.requireNonNullElse(queryPageRequest.getFilter(), getNewInstance()));
+        queryPageRequest = (QueryPageRequest<E>) checkQueryRequest(queryPageRequest);
         queryPageRequest = (QueryPageRequest<E>) beforeGetPage(queryPageRequest).copy();
         org.springframework.data.domain.Page<E> pageData = repository.findAll(
                 createSpecification(queryPageRequest.getFilter(), false), createPageable(queryPageRequest)
@@ -713,9 +697,124 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         ServiceError.SERVICE_ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
         ServiceError.PARAM_MISSING.whenNull(source.getId(), String.format(
                 MessageConstant.MISSING_ID_WHEN_UPDATE,
-                Utils.getReflectUtil().getDescription(getEntityClass())
+                reflectUtil.getDescription(getEntityClass())
         ));
         saveToDatabase(source, withNull);
+    }
+
+    /**
+     * <h2>添加查询条件(<code>value</code>不为<code>null</code>时)</h2>
+     *
+     * @param root          ROOT
+     * @param predicateList 查询条件列表
+     * @param fieldName     所属的字段名称
+     * @param expression    表达式
+     * @param value         条件的值
+     */
+    protected final <Y extends Comparable<? super Y>> void addPredicateNonNull(
+            @NotNull Root<E> root,
+            List<Predicate> predicateList,
+            String fieldName,
+            BiFunction<Expression<? extends Y>, Y, Predicate> expression,
+            Y value) {
+        if (Objects.nonNull(value)) {
+            predicateList.add(expression.apply(root.get(fieldName), value));
+        }
+    }
+
+    /**
+     * <h2>尝试获取当前登录用户ID</h2>
+     *
+     * @return 用户ID
+     */
+    private long tryToGetCurrentUserId() {
+        try {
+            String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
+            return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
+        } catch (Exception exception) {
+            return Constant.ZERO_LONG;
+        }
+    }
+
+    /**
+     * <h2>导出查询</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 查询结果
+     */
+    private @NotNull List<E> exportQuery(QueryRequest<E> queryRequest) {
+        queryRequest = checkQueryRequest(queryRequest);
+        queryRequest = beforeExportQuery(queryRequest).copy();
+        List<E> list = query(queryRequest);
+        return afterExportQuery(list);
+    }
+
+    /**
+     * <h2>查询数据</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 查询结果数据列表
+     */
+    private @NotNull List<E> query(@NotNull QueryRequest<E> queryRequest) {
+        queryRequest = beforeQuery(queryRequest);
+        return repository.findAll(
+                createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort())
+        );
+    }
+
+    /**
+     * <h2>准备导出列</h2>
+     *
+     * @param fieldName 字段名
+     * @param value     当前值
+     * @param fieldList 字段列表
+     * @return 处理后的值
+     */
+    private @NotNull Object prepareExcelColumn(String fieldName, Object value, List<Field> fieldList) {
+        if (Objects.isNull(value) || !StringUtils.hasText(value.toString())) {
+            value = Constant.LINE;
+        }
+        try {
+            Field field = fieldList.stream().filter(item -> item.getName().equals(fieldName)).findFirst().orElse(null);
+            if (Objects.isNull(field)) {
+                return value;
+            }
+            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+            if (Objects.isNull(excelColumn)) {
+                return value;
+            }
+
+            return switch (excelColumn.value()) {
+                case DATETIME -> Constant.TAB + dateTimeUtil.format(Long.parseLong(value.toString()));
+                case TEXT -> Constant.TAB + value;
+                case BOOLEAN -> (boolean) value ? Constant.YES : Constant.NO;
+                case DICTIONARY -> {
+                    Dictionary dictionary = reflectUtil.getAnnotation(Dictionary.class, field);
+                    if (Objects.isNull(dictionary)) {
+                        yield value;
+                    } else {
+                        IDictionary dict = Utils.getDictionaryUtil().getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
+                        yield dict.getLabel();
+                    }
+                }
+                default -> value;
+            };
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            return value;
+        }
+    }
+
+    /**
+     * <h2>检查查询请求</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 检查后的查询请求
+     */
+    private @NotNull QueryRequest<E> checkQueryRequest(QueryRequest<E> queryRequest) {
+        queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
+        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
+        return queryRequest;
     }
 
     /**
@@ -729,7 +828,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         source = beforeUpdate(source).copy();
         updateToDatabase(source, withNull);
         E finalSource = source;
-        Utils.getTaskUtil().run(
+        taskUtil.run(
                 () -> afterUpdate(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -744,12 +843,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private @NotNull E getById(long id) {
         ServiceError.PARAM_MISSING.whenNull(id, String.format(
                 MessageConstant.MISSING_ID_WHEN_QUERY,
-                Utils.getReflectUtil().getDescription(getEntityClass())
+                reflectUtil.getDescription(getEntityClass())
         ));
         return repository.findById(id).orElseThrow(
                 () -> new ServiceException(ServiceError.DATA_NOT_FOUND, String.format(
                         MessageConstant.QUERY_DATA_NOT_FOUND,
-                        id, Utils.getReflectUtil().getDescription(getEntityClass()))
+                        id, reflectUtil.getDescription(getEntityClass()))
                 )
         );
     }
@@ -791,7 +890,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         entity.setUpdateTime(System.currentTimeMillis());
         if (Objects.nonNull(entity.getId())) {
             // 修改前清掉JPA缓存，避免查询到旧数据
-            Utils.getEntityManager().clear();
+            entityManager.clear();
             // 有ID 走修改 且不允许修改下列字段
             E existEntity = getById(entity.getId());
             if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
@@ -808,7 +907,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             return saveAndFlush(entity);
         }
         // 修改前清掉JPA缓存，避免查询到旧数据
-        Utils.getEntityManager().clear();
+        entityManager.clear();
         // 有ID 走修改 且不允许修改下列字段
         E existEntity = getById(entity.getId());
         if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
@@ -835,7 +934,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         target = beforeSaveToDatabase(target).copy();
         target = repository.saveAndFlush(target);
         // 新增完毕，清掉查询缓存，避免查询到旧数据
-        Utils.getEntityManager().clear();
+        entityManager.clear();
         return target.getId();
     }
 
@@ -859,10 +958,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param entity 实体
      */
     private void checkUnique(@NotNull E entity) {
-        List<Field> fields = Utils.getReflectUtil().getFieldList(getEntityClass());
+        List<Field> fields = reflectUtil.getFieldList(getEntityClass());
         for (Field field : fields) {
-            String fieldName = Utils.getReflectUtil().getDescription(field);
-            Column annotation = Utils.getReflectUtil().getAnnotation(Column.class, field);
+            String fieldName = reflectUtil.getDescription(field);
+            Column annotation = reflectUtil.getAnnotation(Column.class, field);
             if (Objects.isNull(annotation)) {
                 // 不是数据库列 不校验
                 continue;
@@ -871,13 +970,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 没有标唯一 不校验
                 continue;
             }
-            Object fieldValue = Utils.getReflectUtil().getFieldValue(entity, field);
+            Object fieldValue = reflectUtil.getFieldValue(entity, field);
             if (Objects.isNull(fieldValue)) {
                 // 没有值 不校验
                 continue;
             }
             E search = getNewInstance();
-            Utils.getReflectUtil().setFieldValue(search, field, fieldValue);
+            reflectUtil.setFieldValue(search, field, fieldValue);
             Example<E> example = Example.of(search);
             Optional<E> exist = repository.findOne(example);
             if (exist.isEmpty()) {
@@ -1001,18 +1100,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();
-        List<Field> fields = Utils.getReflectUtil().getFieldList(search.getClass());
+        List<Field> fields = reflectUtil.getFieldList(search.getClass());
         for (Field field : fields) {
-            Object fieldValue = Utils.getReflectUtil().getFieldValue(search, field);
-            if (Objects.isNull(fieldValue)) {
-                // 没有传入查询值 跳过
+            Object fieldValue = reflectUtil.getFieldValue(search, field);
+            if (Objects.isNull(fieldValue) || !StringUtils.hasText(fieldValue.toString())) {
+                // 没有传入查询值 空字符串 跳过
                 continue;
             }
-            if (!StringUtils.hasText(fieldValue.toString())) {
-                // 空字符串 跳过
-                continue;
-            }
-            Search searchMode = Utils.getReflectUtil().getAnnotation(Search.class, field);
+            Search searchMode = reflectUtil.getAnnotation(Search.class, field);
             if (Objects.isNull(searchMode)) {
                 // 没有配置查询注解 跳过
                 continue;
@@ -1057,26 +1152,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>添加查询条件(<code>value</code>不为<code>null</code>时)</h2>
-     *
-     * @param root          ROOT
-     * @param predicateList 查询条件列表
-     * @param fieldName     所属的字段名称
-     * @param expression    表达式
-     * @param value         条件的值
-     */
-    protected final <Y extends Comparable<? super Y>> void addPredicateNonNull(
-            @NotNull Root<E> root,
-            List<Predicate> predicateList,
-            String fieldName,
-            BiFunction<Expression<? extends Y>, Y, Predicate> expression,
-            Y value) {
-        if (Objects.nonNull(value)) {
-            predicateList.add(expression.apply(root.get(fieldName), value));
-        }
-    }
-
-    /**
      * <h2>创建查询对象</h2>
      *
      * @param filter  过滤器对象
@@ -1108,19 +1183,5 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
-    }
-
-    /**
-     * <h2>尝试获取当前登录用户ID</h2>
-     *
-     * @return 用户ID
-     */
-    protected final long tryToGetCurrentUserId() {
-        try {
-            String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
-            return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
-        } catch (Exception exception) {
-            return Constant.ZERO_LONG;
-        }
     }
 }

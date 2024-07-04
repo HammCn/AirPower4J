@@ -3,10 +3,13 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.*;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
+import cn.hamm.airpower.util.CollectionUtil;
+import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.Utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +32,13 @@ import java.util.function.Consumer;
 @EqualsAndHashCode
 @SuppressWarnings("unchecked")
 public class RootModel<M extends RootModel<M>> implements IAction {
+    private final ReflectUtil reflectUtil;
+
+    @Contract(pure = true)
+    public RootModel() {
+        reflectUtil = Utils.getReflectUtil();
+    }
+
     /**
      * <h2>忽略只读字段</h2>
      */
@@ -60,10 +70,13 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filterClass   过滤器类
      * @param isDesensitize 是否需要脱敏
      * @return 实体
+     * @see #filterAndDesensitize(Filter, boolean)
+     * @see #desensitize(Field)
+     * @see #filter(Class)
      */
     public final M filterAndDesensitize(@NotNull Class<?> filterClass, boolean isDesensitize) {
         Class<M> clazz = (Class<M>) this.getClass();
-        List<Field> allFields = Utils.getReflectUtil().getFieldList(clazz);
+        List<Field> allFields = reflectUtil.getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
         // 类中没有标排除 则所有字段全暴露 走黑名单
         BiConsumer<@NotNull Field, @NotNull Class<?>> task = Objects.nonNull(exclude) ? this::exposeBy : this::excludeBy;
@@ -81,11 +94,39 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
+     * <h2>脱敏字段</h2>
+     *
+     * @return 实体
+     * @see #filterAndDesensitize(Class, boolean)
+     * @see #filterAndDesensitize(Filter, boolean)
+     * @see #filter(Class)
+     */
+    public final M deserialize() {
+        return filterAndDesensitize(Void.class, true);
+    }
+
+    /**
+     * <h2>过滤字段</h2>
+     *
+     * @param filterClass 过滤器
+     * @return 实体
+     * @see #filterAndDesensitize(Class, boolean)
+     * @see #filterAndDesensitize(Filter, boolean)
+     * @see #desensitize(Field)
+     */
+    public final M filter(Class<?> filterClass) {
+        return filterAndDesensitize(filterClass, false);
+    }
+
+    /**
      * <h2>过滤和脱敏</h2>
      *
      * @param filter        过滤器注解
      * @param isDesensitize 是否需要脱敏
      * @return 实体
+     * @see #filterAndDesensitize(Class, boolean)
+     * @see #filter(Class)
+     * @see #desensitize(Field)
      */
     public final M filterAndDesensitize(@Nullable Filter filter, boolean isDesensitize) {
         if (Objects.isNull(filter)) {
@@ -101,7 +142,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filterClass 过滤器
      */
     private void excludeBy(@NotNull Field field, @NotNull Class<?> filterClass) {
-        Exclude fieldExclude = Utils.getReflectUtil().getAnnotation(Exclude.class, field);
+        Exclude fieldExclude = reflectUtil.getAnnotation(Exclude.class, field);
         if (Objects.isNull(fieldExclude)) {
             return;
         }
@@ -123,10 +164,10 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filterClass 过滤器
      */
     private void exposeBy(@NotNull Field field, @NotNull Class<?> filterClass) {
-        Expose fieldExpose = Utils.getReflectUtil().getAnnotation(Expose.class, field);
+        Expose fieldExpose = reflectUtil.getAnnotation(Expose.class, field);
         if (Objects.isNull(fieldExpose)) {
             // 没有标记 则直接移除掉
-            Utils.getReflectUtil().clearFieldValue(this, field);
+            reflectUtil.clearFieldValue(this, field);
             return;
         }
         Class<?>[] exposeClasses = fieldExpose.filters();
@@ -137,7 +178,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         // 标记了暴露
         boolean isExpose = Arrays.asList(exposeClasses).contains(filterClass);
         if (!isExpose) {
-            Utils.getReflectUtil().clearFieldValue(this, field);
+            reflectUtil.clearFieldValue(this, field);
         }
     }
 
@@ -148,25 +189,26 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param isDesensitize 是否需要脱敏
      */
     private void filterFieldPayload(@NotNull Field field, boolean isDesensitize) {
-        Payload payload = Utils.getReflectUtil().getAnnotation(Payload.class, field);
+        Payload payload = reflectUtil.getAnnotation(Payload.class, field);
         if (Objects.isNull(payload)) {
             return;
         }
-        Object fieldValue = Utils.getReflectUtil().getFieldValue(this, field);
+        Object fieldValue = reflectUtil.getFieldValue(this, field);
         Collection<RootModel<?>> collection;
         if (fieldValue instanceof Collection<?>) {
             Class<?> fieldClass = field.getType();
-            collection = Utils.getCollectionUtil().getCollectWithoutNull(
+            CollectionUtil collectionUtil = Utils.getCollectionUtil();
+            collection = collectionUtil.getCollectWithoutNull(
                     (Collection<RootModel<?>>) fieldValue, fieldClass
             );
             collection.forEach(item -> item.filterAndDesensitize(WhenPayLoad.class, isDesensitize));
-            Utils.getReflectUtil().setFieldValue(this, field, collection);
+            reflectUtil.setFieldValue(this, field, collection);
             return;
         }
         if (Objects.isNull(fieldValue)) {
             return;
         }
-        Utils.getReflectUtil().setFieldValue(this, field,
+        reflectUtil.setFieldValue(this, field,
                 ((RootModel<?>) fieldValue).filterAndDesensitize(WhenPayLoad.class, isDesensitize)
         );
     }
@@ -177,18 +219,18 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param field 字段
      */
     private void desensitize(@NotNull Field field) {
-        Desensitize desensitize = Utils.getReflectUtil().getAnnotation(Desensitize.class, field);
+        Desensitize desensitize = reflectUtil.getAnnotation(Desensitize.class, field);
         if (Objects.isNull(desensitize)) {
             return;
         }
-        Object value = Utils.getReflectUtil().getFieldValue(this, field);
+        Object value = reflectUtil.getFieldValue(this, field);
         if (Objects.isNull(value)) {
             return;
         }
         if (!(value instanceof String valueString)) {
             return;
         }
-        Utils.getReflectUtil().setFieldValue(this, field,
+        reflectUtil.setFieldValue(this, field,
                 Utils.getStringUtil().desensitize(
                         valueString,
                         desensitize.value(),
