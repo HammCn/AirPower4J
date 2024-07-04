@@ -89,8 +89,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Utils.getRedisUtil().set(fileCacheKey, "");
         Utils.getTaskUtil().runAsync(() -> {
             // 查数据 写文件
-            List<E> list = getList(queryRequest);
-            list = beforeExport(list);
+            List<E> list = exportQuery(queryRequest);
             String url = saveExportFile(list);
             Utils.getRedisUtil().set(fileCacheKey, url);
         });
@@ -98,7 +97,31 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>保存导出的数据到文件</h2>
+     * <h2>🟢导出查询前置方法</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 处理后的查询请求
+     */
+    protected QueryRequest<E> beforeExportQuery(QueryRequest<E> queryRequest) {
+        return queryRequest;
+    }
+
+    /**
+     * <h2>导出查询</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 查询结果
+     */
+    private @NotNull List<E> exportQuery(QueryRequest<E> queryRequest) {
+        queryRequest = checkQueryRequest(queryRequest);
+        queryRequest = beforeExportQuery(queryRequest).copy();
+        List<E> list = query(queryRequest);
+        list = afterExportQuery(list);
+        return list;
+    }
+
+    /**
+     * <h2>🟢保存导出的数据到文件</h2>
      *
      * @param exportList 导出的数据
      * @return 存储的文件地址
@@ -149,7 +172,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>导出数据后置方法</h2>
+     * <h2>🟢导出数据后置方法</h2>
      *
      * @param content 导出的CSV数据
      * @return 存储后的可访问路径
@@ -244,12 +267,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>导出前置方法</h2>
+     * <h2>导出查询后置方法</h2>
      *
      * @param exportList 导出的数据列表
      * @return 处理后的数据列表
      */
-    protected List<E> beforeExport(@NotNull List<E> exportList) {
+    protected List<E> afterExportQuery(@NotNull List<E> exportList) {
         return exportList;
     }
 
@@ -490,13 +513,49 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterGetList(List)
      */
     public final @NotNull List<E> getList(QueryRequest<E> queryRequest) {
-        queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
-        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
+        queryRequest = checkQueryRequest(queryRequest);
         queryRequest = beforeGetList(queryRequest).copy();
-        List<E> list = repository.findAll(
+        List<E> list = query(queryRequest);
+        return afterGetList(list);
+    }
+
+    /**
+     * <h2>查询数据</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 查询结果数据列表
+     */
+    private @NotNull List<E> query(@NotNull QueryRequest<E> queryRequest) {
+        queryRequest = beforeQuery(queryRequest);
+        return repository.findAll(
                 createSpecification(queryRequest.getFilter(), false), createSort(queryRequest.getSort())
         );
-        return afterGetList(list);
+    }
+
+    /**
+     * <h2>🟢查询前置方法</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 处理后的查询请求
+     * <ul>
+     *     <li>{@link #getList(QueryRequest)} {@link #getPage(QueryPageRequest)} {@link #createExportTask(QueryRequest)}均会触发此前置方法</li>
+     *     <li>{@link #beforeGetList(QueryRequest)} {@link #beforeGetPage(QueryPageRequest)} {@link #beforeExportQuery(QueryRequest)}} 先触发</li>
+     * </ul>
+     */
+    protected QueryRequest<E> beforeQuery(@NotNull QueryRequest<E> queryRequest) {
+        return queryRequest;
+    }
+
+    /**
+     * <h2>检查查询请求</h2>
+     *
+     * @param queryRequest 查询请求
+     * @return 检查后的查询请求
+     */
+    private @NotNull QueryRequest<E> checkQueryRequest(QueryRequest<E> queryRequest) {
+        queryRequest = Objects.requireNonNullElse(queryRequest, new QueryPageRequest<>());
+        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
+        return queryRequest;
     }
 
     /**
@@ -640,8 +699,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterGetPage(QueryPageResponse)
      */
     public final @NotNull QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
-        queryPageRequest = Objects.requireNonNullElse(queryPageRequest, new QueryPageRequest<>());
-        queryPageRequest.setFilter(Objects.requireNonNullElse(queryPageRequest.getFilter(), getNewInstance()));
+        queryPageRequest = (QueryPageRequest<E>) checkQueryRequest(queryPageRequest);
         queryPageRequest = (QueryPageRequest<E>) beforeGetPage(queryPageRequest).copy();
         org.springframework.data.domain.Page<E> pageData = repository.findAll(
                 createSpecification(queryPageRequest.getFilter(), false), createPageable(queryPageRequest)
