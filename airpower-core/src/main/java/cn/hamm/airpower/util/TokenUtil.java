@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <h1>TokenUtil</h1>
+ * <h1><code>TokenUtil</code></h1>
  *
  * @author Hamm.cn
  */
@@ -43,17 +43,17 @@ public class TokenUtil {
     private static final String PAYLOADS_IS_EMPTY = "没有任何负载数据";
 
     /**
-     * <h2>HMAC-SHA-256错误</h2>
+     * <h2><code>HMAC-SHA-256</code>错误</h2>
      */
     private static final String HMAC_SHA_256_ERROR = "HMAC-SHA-256发生错误";
 
     /**
-     * <h2>Token由3部分组成</h2>
+     * <h2><code>Token</code> 由 <code>3</code> 部分组成</h2>
      */
     private static final int TOKEN_PART_COUNT = 3;
 
     /**
-     * <h2>验证后的Token</h2>
+     * <h2>验证后的 <code>Token</code></h2>
      */
     private final VerifiedToken verifiedToken;
 
@@ -63,10 +63,10 @@ public class TokenUtil {
     }
 
     /**
-     * <h2>创建Token</h2>
+     * <h2>创建 <code>Token</code></h2>
      *
      * @param secret 密钥
-     * @return AccessToken
+     * @return <code>AccessToken</code>
      */
     public final String create(String secret) {
         ServiceError.PARAM_INVALID.whenEquals(Constant.AIRPOWER, secret, "身份令牌创建失败，请在环境变量配置 airpower.accessTokenSecret");
@@ -81,9 +81,9 @@ public class TokenUtil {
     /**
      * <h2>添加负载</h2>
      *
-     * @param key   负载的Key
-     * @param value 负载的Value
-     * @return TokenUtil
+     * @param key   负载的 <code>Key</code>
+     * @param value 负载的 <code>Value</code>
+     * @return <code>TokenUtil</code>
      */
     @Contract("_, _ -> this")
     public final TokenUtil addPayload(String key, Object value) {
@@ -94,8 +94,8 @@ public class TokenUtil {
     /**
      * <h2>移除负载</h2>
      *
-     * @param key 负载Key
-     * @return TokenUtil
+     * @param key 负载 <code>Key</code>
+     * @return <code>TokenUtil</code>
      */
     @Contract("_ -> this")
     public final TokenUtil removePayload(String key) {
@@ -107,7 +107,7 @@ public class TokenUtil {
      * <h2>设置过期时间(毫秒)</h2>
      *
      * @param millisecond 过期毫秒
-     * @return TokenUtil
+     * @return <code>TokenUtil</code>
      */
     @Contract("_ -> this")
     public final TokenUtil setExpireMillisecond(long millisecond) {
@@ -119,11 +119,11 @@ public class TokenUtil {
     }
 
     /**
-     * <h2>验证AccessToken并返回一个已验证的Token</h2>
+     * <h2>验证 <code>AccessToken</code> 并返回一个已验证的 <code>Token</code></h2>
      *
-     * @param accessToken AccessToken
+     * @param accessToken <code>AccessToken</code>
      * @param secret      密钥
-     * @return VerifiedToken
+     * @return <code>VerifiedToken</code>
      */
     public final VerifiedToken verify(@NotNull String accessToken, String secret) {
         String source;
@@ -152,7 +152,7 @@ public class TokenUtil {
     }
 
     /**
-     * <h2>HMacSha256</h2>
+     * <h2><code>HMacSha256</code></h2>
      *
      * @param secret  密钥
      * @param content 数据
@@ -195,8 +195,8 @@ public class TokenUtil {
         /**
          * <h2>获取负载</h2>
          *
-         * @param key 负载的Key
-         * @return 负载的Value
+         * @param key 负载的 <code>Key</code>
+         * @return 负载的 <code>Value</code>
          */
         public final @Nullable Object getPayload(String key) {
             return payloads.get(key);

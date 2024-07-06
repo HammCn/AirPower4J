@@ -32,7 +32,7 @@ public @interface Search {
         LIKE,
 
         /**
-         * <h2>JOIN查询</h2>
+         * <h2><code>JOIN</code> 查询</h2>
          */
         JOIN,
     }

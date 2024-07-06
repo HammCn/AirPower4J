@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
- * <h1>OpenApi请求体</h1>
+ * <h1><code>OpenApi</code> 请求体</h1>
  *
  * @author Hamm.cn
  */
@@ -32,7 +32,7 @@ public class OpenRequest {
     private static final int NONCE_CACHE_SECOND = 60;
 
     /**
-     * <h2>AppKey</h2>
+     * <h2><code>AppKey</code></h2>
      */
     @NotBlank(message = "AppKey不能为空")
     @Getter

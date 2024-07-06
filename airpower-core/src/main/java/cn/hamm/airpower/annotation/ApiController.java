@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.lang.annotation.*;
 
 /**
- * <h1>API控制器</h1>
+ * <h1><code>API</code> 控制器</h1>
  *
  * @author Hamm.cn
  */

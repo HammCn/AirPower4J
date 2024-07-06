@@ -24,7 +24,7 @@ public class ServiceConfig {
     private String databasePrefix = "tenant_";
 
     /**
-     * <h2>默认服务ID</h2>
+     * <h2>默认服务 <code>ID</code></h2>
      */
     private int serviceId = Constant.ZERO_INT;
 
@@ -34,7 +34,7 @@ public class ServiceConfig {
     private boolean enableDocument = false;
 
     /**
-     * <h2>AccessToken的密钥</h2>
+     * <h2><code>AccessToken</code> 的密钥</h2>
      */
     private String accessTokenSecret = Constant.AIRPOWER;
 
@@ -69,7 +69,7 @@ public class ServiceConfig {
     private String defaultSortDirection = "desc";
 
     /**
-     * <h2>身份令牌header的key</h2>
+     * <h2>身份令牌 <code>header</code> 的 <code>key</code></h2>
      */
     private String authorizeHeader = HttpHeaders.AUTHORIZATION;
 
@@ -79,7 +79,7 @@ public class ServiceConfig {
     private long authorizeExpireSecond = Constant.SECOND_PER_DAY;
 
     /**
-     * <h2>多租户的header的key</h2>
+     * <h2>多租户的 <code>header</code> 的 <code>key</code></h2>
      */
     private String tenantHeader = "tenant-code";
 
@@ -98,12 +98,12 @@ public class ServiceConfig {
     private boolean debug = true;
 
     /**
-     * <h2>MQTT配置</h2>
+     * <h2><code>MQTT</code> 配置</h2>
      */
     private MqttConfig mqtt = new MqttConfig();
 
     /**
-     * <h2>Cookie配置</h2>
+     * <h2><code>Cookie</code> 配置</h2>
      */
     private CookieConfig cookie = new CookieConfig();
 }

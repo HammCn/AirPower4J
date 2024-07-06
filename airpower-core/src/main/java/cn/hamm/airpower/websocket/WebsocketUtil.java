@@ -32,7 +32,7 @@ public class WebsocketUtil {
     /**
      * <h2>发布事件负载到指定的用户</h2>
      *
-     * @param userId  目标用户ID
+     * @param userId  目标用户 <code>ID</code>
      * @param payload 事件负载
      */
     public final void publishToUser(long userId, WebSocketPayload payload) {

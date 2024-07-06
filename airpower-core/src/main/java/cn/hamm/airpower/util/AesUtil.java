@@ -16,7 +16,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 /**
- * <h1>AES助手</h1>
+ * <h1><code>AES</code> 助手</h1>
  *
  * @author Hamm.cn
  */
@@ -33,7 +33,7 @@ public class AesUtil {
     private static final String AES = "AES";
 
     /**
-     * <h2>AES/CBC/PKCS5Padding</h2>
+     * <h2><code>AES/CBC/PKCS5Padding</code></h2>
      */
     private static final String AES_CBC_PKCS5_PADDING = "AES/CBC/PKCS5Padding";
 
@@ -92,7 +92,7 @@ public class AesUtil {
      * <h2>设置偏移向量</h2>
      *
      * @param iv 偏移向量
-     * @return AesUtil
+     * @return <code>AesUtil</code>
      */
     public AesUtil setIv(String iv) {
         this.iv = Base64.getDecoder().decode(iv);
@@ -103,7 +103,7 @@ public class AesUtil {
      * <h2>设置算法</h2>
      *
      * @param algorithm 算法
-     * @return AesUtil
+     * @return <code>AesUtil</code>
      */
     public AesUtil setAlgorithm(String algorithm) {
         this.algorithm = algorithm;
@@ -114,7 +114,7 @@ public class AesUtil {
      * <h2>设置密钥</h2>
      *
      * @param key 密钥
-     * @return AesUtil
+     * @return <code>AesUtil</code>
      */
     public AesUtil setKey(String key) {
         this.key = Base64.getDecoder().decode(key);
@@ -151,10 +151,10 @@ public class AesUtil {
     }
 
     /**
-     * <h2>获取Cipher</h2>
+     * <h2>获取 <code>Cipher</code></h2>
      *
      * @param mode 模式
-     * @return Cipher
+     * @return <code>Cipher</code>
      */
     private @NotNull Cipher getCipher(int mode) {
         try {

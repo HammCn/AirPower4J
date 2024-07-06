@@ -59,11 +59,11 @@ public class HttpUtil {
     private int connectTimeout = 5;
 
     /**
-     * <h2>添加Cookie</h2>
+     * <h2>添加 <code>Cookie</code></h2>
      *
      * @param key   Key
      * @param value Value
-     * @return HttpUtil
+     * @return <code>HttpUtil</code>
      */
     @Contract("_, _ -> this")
     public final HttpUtil addCookie(String key, String value) {
@@ -72,9 +72,9 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>发送POST请求</h2>
+     * <h2>发送 <code>POST</code> 请求</h2>
      *
-     * @return HttpResponse
+     * @return <code>HttpResponse</code>
      */
     public final HttpResponse<String> post() {
         method = HttpMethod.POST;
@@ -82,10 +82,10 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>发送POST请求</h2>
+     * <h2>发送 <code>POST</code> 请求</h2>
      *
      * @param body 请求体
-     * @return HttpResponse
+     * @return <code>HttpResponse</code>
      */
     public final HttpResponse<String> post(String body) {
         method = HttpMethod.POST;
@@ -96,7 +96,7 @@ public class HttpUtil {
     /**
      * <h2>发送GET请求</h2>
      *
-     * @return HttpResponse
+     * @return <code>HttpResponse</code>
      */
     public final HttpResponse<String> get() {
         method = HttpMethod.GET;
@@ -106,7 +106,7 @@ public class HttpUtil {
     /**
      * <h2>发送请求</h2>
      *
-     * @return HttpResponse
+     * @return <code>HttpResponse</code>
      */
     public final HttpResponse<String> send() {
         try {
@@ -117,9 +117,9 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>获取HttpRequest对象</h2>
+     * <h2>获取 <code>HttpRequest</code> 对象</h2>
      *
-     * @return HttpRequest
+     * @return <code>HttpRequest</code>
      */
     private HttpRequest getHttpRequest() {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
@@ -146,9 +146,9 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>获取HttpClient</h2>
+     * <h2>获取 <code>HttpClient</code></h2>
      *
-     * @return HttpClient
+     * @return <code>HttpClient</code>
      */
     private HttpClient getHttpClient() {
         HttpClient.Builder httpClientBuilder = HttpClient.newBuilder();
@@ -159,11 +159,11 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>添加Header</h2>
+     * <h2>添加 <code>Header</code></h2>
      *
      * @param key   Key
      * @param value Value
-     * @return HttpUtil
+     * @return <code>HttpUtil</code>
      */
     @Contract("_, _ -> this")
     public final HttpUtil addHeader(String key, Object value) {

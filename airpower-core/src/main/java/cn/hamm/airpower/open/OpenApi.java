@@ -3,7 +3,7 @@ package cn.hamm.airpower.open;
 import java.lang.annotation.*;
 
 /**
- * <h1>OpenApi</h1>
+ * <h1><code>OpenApi</code></h1>
  *
  * @author Hamm.cn
  */

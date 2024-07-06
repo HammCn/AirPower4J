@@ -213,7 +213,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>是否是继承自BaseEntity</h2>
+     * <h2>是否是继承自 <code>RootEntity</code></h2>
      *
      * @param clazz 类
      * @return 布尔
@@ -229,7 +229,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>是否是继承自BaseModel</h2>
+     * <h2>是否是继承自 <code>RootModel</code></h2>
      *
      * @param clazz 类
      * @return 布尔
@@ -283,7 +283,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取Lambda的Function表达式的函数名</h2>
+     * <h2>获取 <code>Lambda</code> 的 <code>Function</code> 表达式的函数名</h2>
      *
      * @param lambda 表达式
      * @return 函数名
@@ -295,7 +295,7 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取Lambda的Function类的函数名</h2>
+     * <h2>获取 <code>Lambda</code> 的 <code>Function</code> 类的函数名</h2>
      *
      * @param lambda 表达式
      * @return 类名
@@ -307,10 +307,10 @@ public class ReflectUtil {
     }
 
     /**
-     * <h2>获取一个SerializedLambda</h2>
+     * <h2>获取一个 <code>SerializedLambda</code></h2>
      *
      * @param lambda 表达式
-     * @return SerializedLambda
+     * @return <code>SerializedLambda</code>
      */
     private SerializedLambda getSerializedLambda(@NotNull IFunction<?, ?> lambda) {
         try {

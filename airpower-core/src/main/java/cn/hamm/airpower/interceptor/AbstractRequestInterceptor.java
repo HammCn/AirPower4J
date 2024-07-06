@@ -37,7 +37,7 @@ import java.util.Objects;
 @Slf4j
 public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     /**
-     * <h2>缓存的REQUEST_METHOD_KEY</h2>
+     * <h2>缓存的 <code>REQUEST_METHOD_KEY</code></h2>
      */
     protected static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
 
@@ -112,7 +112,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     /**
      * <h2>验证指定的用户是否有指定权限标识的权限</h2>
      *
-     * @param userId             用户ID
+     * @param userId             用户 <code>ID</code>
      * @param permissionIdentity 权限标识
      * @param request            请求对象
      * @apiNote 抛出异常则为拦截

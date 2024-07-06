@@ -8,16 +8,16 @@ package cn.hamm.airpower.open;
  */
 public interface IOpenApp {
     /**
-     * <h2>获取应用的AppKey</h2>
+     * <h2>获取应用的 <code>AppKey</code></h2>
      *
-     * @return AppKey
+     * @return <code>AppKey</code>
      */
     String getAppKey();
 
     /**
-     * <h2>获取应用的AppSecret</h2>
+     * <h2>获取应用的 <code>AppSecret</code></h2>
      *
-     * @return AppSecret
+     * @return <code>AppSecret</code>
      */
     String getAppSecret();
 
