@@ -65,7 +65,7 @@ public class RootEntityController<
     /**
      * <h2>添加一条新数据接口</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeAdd(E)
      * @see #afterAdd(long, E)
      * @see #afterSaved(long, E)
@@ -89,7 +89,7 @@ public class RootEntityController<
     /**
      * <h2>修改一条已存在的数据接口</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeUpdate(E)
      * @see #afterUpdate(long, E)
      * @see #afterSaved(long, E)
@@ -114,7 +114,7 @@ public class RootEntityController<
     /**
      * <h2>删除一条已存在的数据接口</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeDelete(long)
      * @see #afterDelete(long)
      */
@@ -134,7 +134,7 @@ public class RootEntityController<
     /**
      * <h2>查询一条详情数据</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #afterGetDetail(E)
      */
     @Description("查询详情")
@@ -148,7 +148,7 @@ public class RootEntityController<
     /**
      * <h2>禁用一条已存在的数据</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeDisable(long)
      * @see #afterDisable(long)
      */
@@ -168,7 +168,7 @@ public class RootEntityController<
     /**
      * <h2>启用一条已存在的数据</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeEnable(long)
      * @see #afterEnable(long)
      */
@@ -188,7 +188,7 @@ public class RootEntityController<
     /**
      * <h2>不分页查询</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeGetList(QueryRequest)
      * @see #afterGetList(List)
      */
@@ -205,7 +205,7 @@ public class RootEntityController<
     /**
      * <h2>分页查询</h2>
      *
-     * @apiNote 🔴可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
+     * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeGetPage(QueryPageRequest)
      * @see #afterGetPage(QueryPageResponse)
      */
@@ -277,7 +277,7 @@ public class RootEntityController<
     /**
      * <h2>新增后置方法</h2>
      *
-     * @param id     主键ID
+     * @param id     主键 <code>ID</code>
      * @param source 原始实体
      * @apiNote 可重写后执行新增后的其他业务
      */
@@ -299,7 +299,7 @@ public class RootEntityController<
     /**
      * <h2>修改后置方法</h2>
      *
-     * @param id     主键ID
+     * @param id     主键 <code>ID</code>
      * @param source 原始实体
      * @apiNote 可重写后执行修改之后的其他业务
      */
@@ -310,7 +310,7 @@ public class RootEntityController<
     /**
      * <h2>保存后置方法</h2>
      *
-     * @param id     主键ID
+     * @param id     主键 <code>ID</code>
      * @param source 原始实体
      * @apiNote 新增和修改最后触发
      */
@@ -321,7 +321,7 @@ public class RootEntityController<
     /**
      * <h2>删除前置方法</h2>
      *
-     * @param id 主键ID
+     * @param id 主键 <code>ID</code>
      * @apiNote 可重写后执行删除之前的业务处理或拦截
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -331,7 +331,7 @@ public class RootEntityController<
     /**
      * 删除后置方法
      *
-     * @param id 主键ID
+     * @param id 主键 <code>ID</code>
      * @apiNote 可重写后执行删除之后的其他业务
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -341,7 +341,7 @@ public class RootEntityController<
     /**
      * <h2>禁用前置方法</h2>
      *
-     * @param id 主键ID
+     * @param id 主键 <code>ID</code>
      * @apiNote 可重写后执行禁用之前的业务处理或拦截
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -351,7 +351,7 @@ public class RootEntityController<
     /**
      * <h2>禁用后置方法</h2>
      *
-     * @param id 主键ID
+     * @param id 主键 <code>ID</code>
      * @apiNote 可重写后执行禁用之后的其他业务
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -361,7 +361,7 @@ public class RootEntityController<
     /**
      * <h2>启用前置方法</h2>
      *
-     * @param id 主键ID
+     * @param id 主键 <code>ID</code>
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeEnable(long id) {
@@ -370,7 +370,7 @@ public class RootEntityController<
     /**
      * <h2>启用后置方法</h2>
      *
-     * @param id 主键ID
+     * @param id 主键 <code>ID</code>
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterEnable(long id) {

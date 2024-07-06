@@ -24,19 +24,26 @@ public interface ITree<E extends ITree<E>> extends IEntity<E> {
     E setName(String name);
 
     /**
-     * <h2>设置父级ID</h2>
+     * <h2>获取树的父级 <code>ID</code></h2>
      *
-     * @param parentId 设置父级ID
+     * @return 父级 <code>ID</code>
+     */
+    Long getParentId();
+
+    /**
+     * <h2>设置父级 <code>ID</code></h2>
+     *
+     * @param parentId 设置父级 <code>ID</code>
      * @return 树实体
      */
     E setParentId(Long parentId);
 
     /**
-     * <h2>获取树的父级ID</h2>
+     * <h2>获取树的子集列表</h2>
      *
-     * @return 父级ID
+     * @return 树的子集
      */
-    Long getParentId();
+    List<E> getChildren();
 
     /**
      * <h2>设置树的子集列表</h2>
@@ -46,11 +53,4 @@ public interface ITree<E extends ITree<E>> extends IEntity<E> {
      */
     @SuppressWarnings("UnusedReturnValue")
     E setChildren(List<E> children);
-
-    /**
-     * <h2>获取树的子集列表</h2>
-     *
-     * @return 树的子集
-     */
-    List<E> getChildren();
 }

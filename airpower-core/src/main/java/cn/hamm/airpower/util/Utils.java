@@ -12,14 +12,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
- * <h1>AirPower工具包 </h1>
+ * <h1><code>AirPower</code> 工具包 </h1>
  *
  * @author Hamm.cn
  */
 @Component
 public class Utils {
     /**
-     * <h2>Redis工具类</h2>
+     * <h2><code>Redis</code> 工具类</h2>
      */
     @Getter
     private static RedisUtil redisUtil;
@@ -49,19 +49,19 @@ public class Utils {
     private static SecurityUtil securityUtil;
 
     /**
-     * <h2>RSA工具类</h2>
+     * <h2><code>RSA</code> 工具类</h2>
      */
     @Getter
     private static RsaUtil rsaUtil;
 
     /**
-     * <h2>Cookie工具类</h2>
+     * <h2><code>Cookie</code> 工具类</h2>
      */
     @Getter
     private static CookieUtil cookieUtil;
 
     /**
-     * <h2>MQTT工具类</h2>
+     * <h2><code>MQTT</code> 工具类</h2>
      */
     @Getter
     private static MqttUtil mqttUtil;
@@ -121,7 +121,7 @@ public class Utils {
     private static Environment environment;
 
     /**
-     * <h2>JPA实体管理器</h2>
+     * <h2><code>JPA</code> 实体管理器</h2>
      */
     @Getter
     private static EntityManager entityManager;
@@ -139,7 +139,7 @@ public class Utils {
     private static HttpServletResponse response;
 
     /**
-     * <h2>WebSocket工具类</h2>
+     * <h2><code>WebSocket</code> 工具类</h2>
      */
     @Getter
     private static WebsocketUtil websocketUtil;
@@ -157,7 +157,7 @@ public class Utils {
     private static StringUtil stringUtil;
 
     /**
-     * <h2>AES工具</h2>
+     * <h2><code>AES</code> 工具</h2>
      */
     @Getter
     private static AesUtil aesUtil;

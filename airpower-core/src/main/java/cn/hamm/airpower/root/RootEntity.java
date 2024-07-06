@@ -114,9 +114,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     private Long updateTimeTo;
 
     /**
-     * <h2>设置ID</h2>
+     * <h2>设置 <code>ID</code></h2>
      *
-     * @param id ID
+     * @param id <code>ID</code>
      * @return 实体
      */
     @Override
@@ -159,9 +159,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置创建人ID</h2>
+     * <h2>设置创建人 <code>ID</code></h2>
      *
-     * @param createUserId 创建人ID
+     * @param createUserId 创建人 <code>ID</code>
      * @return 实体
      */
     public E setCreateUserId(Long createUserId) {
@@ -170,9 +170,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置修改人ID</h2>
+     * <h2>设置修改人 <code>ID</code></h2>
      *
-     * @param updateUserId 修改人ID
+     * @param updateUserId 修改人 <code>ID</code>
      * @return 实体
      */
     public E setUpdateUserId(Long updateUserId) {
@@ -206,9 +206,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>复制一个只包含ID的实体</h2>
+     * <h2>复制一个只包含 <code>ID</code> 的实体</h2>
      *
-     * @return 只复制ID的实体
+     * @return 只复制 <code>ID</code> 的实体
      */
     public final @org.jetbrains.annotations.NotNull E copyOnlyId() {
         try {

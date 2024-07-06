@@ -48,9 +48,9 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     public abstract AbstractRequestInterceptor getAccessInterceptor();
 
     /**
-     * <h2>获取一个WebSocketHandler</h2>
+     * <h2>获取一个 <code>WebSocketHandler</code></h2>
      *
-     * @return WebSocketHandler
+     * @return <code>WebSocketHandler</code>
      */
     @Bean
     public WebSocketHandler getWebsocketHandler() {
@@ -103,9 +103,9 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     }
 
     /**
-     * <h2>添加WebSocket服务监听</h2>
+     * <h2>添加 <code>WebSocket</code> 服务监听</h2>
      *
-     * @param registry WebSocketHandlerRegistry
+     * @param registry <code>WebSocketHandlerRegistry</code>
      */
     @Override
     public final void registerWebSocketHandlers(@NotNull WebSocketHandlerRegistry registry) {

@@ -10,9 +10,9 @@ import cn.hamm.airpower.util.ReflectUtil;
  */
 public interface IDictionary {
     /**
-     * <h2>获取枚举的key</h2>
+     * <h2>获取枚举的 <code>Key</code></h2>
      *
-     * @return key
+     * @return <code>Key</code>
      */
     int getKey();
 
@@ -24,9 +24,9 @@ public interface IDictionary {
     String getLabel();
 
     /**
-     * <h2>判断Key是否相等</h2>
+     * <h2>判断 <code>Key</code> 是否相等</h2>
      *
-     * @param key 被判断的Key
+     * @param key 被判断的 <code>Key</code>
      * @return 对比结果
      */
     default boolean equalsKey(int key) {
@@ -34,9 +34,9 @@ public interface IDictionary {
     }
 
     /**
-     * <h2>判断Key是否不相等</h2>
+     * <h2>判断 <code>Key</code> 是否不相等</h2>
      *
-     * @param key 被判断的Key
+     * @param key 被判断的 <code>Key</code>
      * @return 对比结果
      */
     default boolean notEqualsKey(int key) {

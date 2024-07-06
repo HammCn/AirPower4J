@@ -18,7 +18,7 @@ public class PasswordUtil {
      *
      * @param password 明文密码
      * @param salt     盐
-     * @return sha1散列摘要
+     * @return <code>sha1</code> 散列摘要
      */
     public @NotNull String encode(@NotNull String password, @NotNull String salt) {
         ServiceError.PARAM_MISSING.whenEmpty(password, MessageConstant.PASSWORD_CAN_NOT_BE_NULL);

@@ -59,7 +59,7 @@ public class DictionaryUtil {
     }
 
     /**
-     * <h2>获取指定枚举类的ListMap数据</h2>
+     * <h2>获取指定枚举类的 <code>ListMap</code> 数据</h2>
      *
      * @param clazz 枚举类
      * @return ListMap
@@ -69,7 +69,7 @@ public class DictionaryUtil {
     }
 
     /**
-     * <h2>获取指定枚举类的ListMap数据</h2>
+     * <h2>获取指定枚举类的 <code>ListMap</code> 数据</h2>
      *
      * @param clazz   枚举字典类
      * @param lambdas 需要获取的方法表达式

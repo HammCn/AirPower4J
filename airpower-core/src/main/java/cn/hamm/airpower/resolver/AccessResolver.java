@@ -34,7 +34,7 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
     }
 
     /**
-     * <h2>ACCESS_TOKEN换用户ID</h2>
+     * <h2><code>ACCESS_TOKEN</code> 换用户 <code>ID</code></h2>
      */
     @Override
     public final @NotNull @Unmodifiable Object resolveArgument(

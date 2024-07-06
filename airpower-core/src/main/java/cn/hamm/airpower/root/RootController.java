@@ -23,7 +23,7 @@ public class RootController implements IAction {
     /**
      * <h2>获取当前登录用户的信息</h2>
      *
-     * @return 用户ID
+     * @return 用户 <code>ID</code>
      */
     protected final long getCurrentUserId() {
         try {
