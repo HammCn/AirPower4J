@@ -31,10 +31,7 @@ public class StringUtil {
      * @return 替换后的字符串
      */
     public final @NotNull String replace(String text, int head, int tail, String symbol) {
-        if (head < 0 || tail < 0) {
-            return text;
-        }
-        if (head + tail >= text.length()) {
+        if (head < 0 || tail < 0 || head + tail >= text.length()) {
             return text;
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -104,54 +101,36 @@ public class StringUtil {
      */
     @Contract(pure = true)
     public final @NotNull String desensitize(@NotNull String valueString, Desensitize.@NotNull Type type, int head, int tail, String symbol) {
+        final StringUtil stringUtil = Utils.getStringUtil();
         switch (type) {
+            case BANK_CARD,
+                 ID_CARD,
+                 MOBILE,
+                 ADDRESS,
+                 CAR_NUMBER,
+                 EMAIL -> {
+                head = Math.max(type.getMinHead(), head);
+                tail = Math.max(type.getMinTail(), tail);
+            }
+            case IP_V4 -> {
+                return stringUtil.desensitizeIpv4Address(valueString, symbol);
+            }
             case CHINESE_NAME -> {
-                head = Math.max(1, head);
-                tail = Math.max(1, tail);
+                head = Math.max(type.getMinHead(), head);
+                tail = Math.max(type.getMinTail(), tail);
                 if (valueString.length() <= head + tail) {
                     tail = 0;
                 }
             }
-            case BANK_CARD -> {
-                head = Math.max(4, head);
-                tail = Math.max(4, tail);
-            }
-            case ID_CARD -> {
-                head = Math.max(6, head);
-                tail = Math.max(4, tail);
-            }
-            case MOBILE -> {
-                head = Math.max(3, head);
-                tail = Math.max(4, tail);
-            }
-            case EMAIL -> {
-                head = 2;
-                tail = 2;
-            }
-            case IP_V4 -> {
-                return Utils.getStringUtil().desensitizeIpv4Address(valueString, symbol);
-            }
-            case ADDRESS -> {
-                head = Math.max(3, head);
-                tail = Math.max(0, tail);
-            }
             case TELEPHONE -> {
-                //noinspection AlibabaUndefineMagicConstant
-                if (valueString.length() <= 8) {
-                    head = Math.max(2, head);
-                    tail = Math.max(2, tail);
-                } else {
-                    head = Math.max(4, head);
-                    tail = Math.max(4, tail);
-                }
-            }
-            case CAR_NUMBER -> {
-                head = Math.max(2, head);
-                tail = Math.max(1, tail);
+                // 包含区号 前后各留4 不包含则各留2
+                int isContainRegionCode = valueString.length() > 8 ? 4 : 2;
+                head = Math.max(isContainRegionCode, head);
+                tail = Math.max(isContainRegionCode, tail);
             }
             default -> {
             }
         }
-        return Utils.getStringUtil().replace(valueString, head, tail, symbol);
+        return stringUtil.replace(valueString, head, tail, symbol);
     }
 }
