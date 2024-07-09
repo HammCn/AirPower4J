@@ -90,7 +90,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         allFields.forEach(field -> {
             if (!Void.class.equals(filterClass)) {
                 task.accept(field, filterClass);
-                filterFieldPayload(field, isDesensitize);
+                filterFieldPayload(field, filterClass, isDesensitize);
             }
             if (isDesensitize) {
                 desensitize.accept(field);
@@ -225,11 +225,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param field         字段
      * @param isDesensitize 是否需要脱敏
      */
-    private void filterFieldPayload(@NotNull Field field, boolean isDesensitize) {
+    private void filterFieldPayload(@NotNull Field field, Class<?> filterClass, boolean isDesensitize) {
         Payload payload = reflectUtil.getAnnotation(Payload.class, field);
-        if (Objects.isNull(payload)) {
-            return;
-        }
         Object fieldValue = reflectUtil.getFieldValue(this, field);
         Collection<RootModel<?>> collection;
         if (fieldValue instanceof Collection<?>) {
@@ -238,7 +235,10 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             collection = collectionUtil.getCollectWithoutNull(
                     (Collection<RootModel<?>>) fieldValue, fieldClass
             );
-            collection.forEach(item -> item.filterAndDesensitize(WhenPayLoad.class, isDesensitize));
+            collection.forEach(item -> item.filterAndDesensitize(filterClass, isDesensitize));
+            if (Objects.nonNull(payload)) {
+                collection.forEach(item -> item.filterAndDesensitize(WhenPayLoad.class, isDesensitize));
+            }
             reflectUtil.setFieldValue(this, field, collection);
             return;
         }
@@ -246,8 +246,14 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return;
         }
         reflectUtil.setFieldValue(this, field,
-                ((RootModel<?>) fieldValue).filterAndDesensitize(WhenPayLoad.class, isDesensitize)
+                ((RootModel<?>) fieldValue).filterAndDesensitize(filterClass, isDesensitize)
         );
+
+        if (Objects.nonNull(payload)) {
+            reflectUtil.setFieldValue(this, field,
+                    ((RootModel<?>) fieldValue).filterAndDesensitize(WhenPayLoad.class, isDesensitize)
+            );
+        }
     }
 
     /**
