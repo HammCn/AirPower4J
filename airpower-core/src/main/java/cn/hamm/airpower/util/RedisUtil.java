@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <h1><code>Redis</code> 封装类</h1>
+ * <h1>{@code Redis} 封装类</h1>
  *
  * @author Hamm.cn
  */
@@ -51,7 +51,7 @@ public class RedisUtil {
     /**
      * <h2>从缓存中获取实体</h2>
      *
-     * @param key    缓存的 <code>Key</code>
+     * @param key    缓存的 {@code Key}
      * @param entity 实体
      * @return 缓存的实体
      */
@@ -99,7 +99,7 @@ public class RedisUtil {
     /**
      * <h2>缓存实体</h2>
      *
-     * @param key    缓存的 <code>Key</code>
+     * @param key    缓存的 {@code Key}
      * @param entity 实体
      */
     public final <E extends RootEntity<E>> void saveEntity(String key, E entity) {
@@ -109,7 +109,7 @@ public class RedisUtil {
     /**
      * <h2>缓存实体</h2>
      *
-     * @param key    缓存的 <code>Key</code>
+     * @param key    缓存的 {@code Key}
      * @param entity 实体
      * @param second 缓存时间(秒)
      */
@@ -120,7 +120,7 @@ public class RedisUtil {
     /**
      * <h2>指定缓存失效时间</h2>
      *
-     * @param key    缓存的 <code>Key</code>
+     * @param key    缓存的 {@code Key}
      * @param second 缓存时间(秒)
      */
     public final void setExpireSecond(String key, long second) {
@@ -154,7 +154,7 @@ public class RedisUtil {
     /**
      * <h2>获取过期时间</h2>
      *
-     * @param key 缓存的 <code>Key</code>
+     * @param key 缓存的 {@code Key}
      * @return 过期时间
      */
     public final long getExpireSecond(String key) {
@@ -171,8 +171,8 @@ public class RedisUtil {
     /**
      * <h2>判断key是否存在</h2>
      *
-     * @param key 缓存的 <code>Key</code>
-     * @return <code>true</code> 存在; <code>false</code> 不存在
+     * @param key 缓存的 {@code Key}
+     * @return {@code true} 存在; {@code false} 不存在
      */
     public final boolean hasKey(String key) {
         try {
@@ -186,7 +186,7 @@ public class RedisUtil {
     /**
      * <h2>删除缓存</h2>
      *
-     * @param key 缓存的 <code>Key</code>
+     * @param key 缓存的 {@code Key}
      */
     public final void del(String key) {
         try {
@@ -200,7 +200,7 @@ public class RedisUtil {
     /**
      * <h2>普通缓存获取</h2>
      *
-     * @param key 缓存的 <code>Key</code>
+     * @param key 缓存的 {@code Key}
      * @return 值
      */
     public final @Nullable Object get(String key) {
@@ -216,7 +216,7 @@ public class RedisUtil {
     /**
      * <h2>普通缓存放入</h2>
      *
-     * @param key   缓存的 <code>Key</code>
+     * @param key   缓存的 {@code Key}
      * @param value 值
      */
     public final void set(String key, Object value) {
@@ -226,7 +226,7 @@ public class RedisUtil {
     /**
      * <h2>普通缓存放入并设置时间</h2>
      *
-     * @param key    缓存的 <code>Key</code>
+     * @param key    缓存的 {@code Key}
      * @param value  缓存的值
      * @param second 缓存时间(秒)
      * @apiNote time要大于0 如果time小于等于0 将设置无限期
@@ -257,7 +257,7 @@ public class RedisUtil {
     }
 
     /**
-     * <h2>获取缓存 <code>Entity</code> 的 <code>cacheKey</code></h2>
+     * <h2>获取缓存 {@code Entity} 的 {@code cacheKey}</h2>
      *
      * @param entity 实体
      * @return key

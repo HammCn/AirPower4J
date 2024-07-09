@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecurityUtil {
     /**
-     * <h2>从 <code>AccessToken</code> 中获取 <code>ID</code></h2>
+     * <h2>从 {@code AccessToken} 中获取 {@code ID}</h2>
      *
-     * @param accessToken <code>AccessToken</code>
+     * @param accessToken {@code AccessToken}
      */
     public final long getIdFromAccessToken(String accessToken) {
         ServiceError.UNAUTHORIZED.whenNull(accessToken);
@@ -27,10 +27,10 @@ public class SecurityUtil {
     }
 
     /**
-     * <h2>创建一个 <code>AccessToken</code></h2>
+     * <h2>创建一个 {@code AccessToken}</h2>
      *
-     * @param id <code>TokenID</code>
-     * @return <code>AccessToken</code>
+     * @param id {@code TokenID}
+     * @return {@code AccessToken}
      */
     public final String createAccessToken(Long id) {
         return Utils.getTokenUtil().addPayload(Constant.ID, id)

@@ -120,7 +120,7 @@ public class ValidateUtil {
      * <h2>是否是普通字符</h2>
      * 允许字符:
      * <p>
-     * <code>@ # % a-z A-Z 0-9 汉字 _ + /</code>
+     * {@code @ # % a-z A-Z 0-9 汉字 _ + /}
      * </p>
      *
      * @param value 参数
@@ -176,7 +176,7 @@ public class ValidateUtil {
      * <h2>验证传入的数据模型</h2>
      *
      * @param model   数据模型
-     * @param actions <code>可选</code> 校验分组
+     * @param actions {@code 可选} 校验分组
      * @param <M>     模型类型
      */
     public final <M extends RootModel<M>> void valid(M model, Class<?>... actions) {

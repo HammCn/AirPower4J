@@ -8,7 +8,7 @@ import cn.hamm.airpower.util.Utils;
 import java.util.Objects;
 
 /**
- * <h1><code>OpenApi</code> 响应对象</h1>
+ * <h1>{@code OpenApi} 响应对象</h1>
  *
  * @author Hamm.cn
  */

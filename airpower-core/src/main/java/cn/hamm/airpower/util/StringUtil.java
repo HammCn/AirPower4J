@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 @Component
 public class StringUtil {
     /**
-     * <h2><code>IPV4</code> 的块长度</h2>
+     * <h2>{@code IPV4} 的块长度</h2>
      */
     private static final int IPV4_PART_COUNT = 4;
 
@@ -49,11 +49,11 @@ public class StringUtil {
     }
 
     /**
-     * <h2><code>IPv4</code> 地址脱敏</h2>
+     * <h2>{@code IPv4} 地址脱敏</h2>
      *
-     * @param ipv4   <code>IPv4</code> 地址
+     * @param ipv4   {@code IPv4} 地址
      * @param symbol 符号
-     * @return 脱敏后的 <code>IPv4</code> 地址
+     * @return 脱敏后的 {@code IPv4} 地址
      */
     public final @NotNull String desensitizeIpv4Address(@NotNull String ipv4, String symbol) {
         if (!StringUtils.hasText(symbol)) {
@@ -69,10 +69,10 @@ public class StringUtil {
     }
 
     /**
-     * <h2><code>IPv4</code> 地址脱敏</h2>
+     * <h2>{@code IPv4} 地址脱敏</h2>
      *
-     * @param ipv4 <code>IPv4</code> 地址
-     * @return 脱敏后的 <code>IPv4</code> 地址
+     * @param ipv4 {@code IPv4} 地址
+     * @return 脱敏后的 {@code IPv4} 地址
      */
     public final @NotNull String desensitizeIpv4Address(@NotNull String ipv4) {
         return desensitizeIpv4Address(ipv4, Constant.ASTERISK);

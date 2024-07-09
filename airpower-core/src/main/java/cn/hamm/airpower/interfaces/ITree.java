@@ -24,16 +24,16 @@ public interface ITree<E extends ITree<E>> extends IEntity<E> {
     E setName(String name);
 
     /**
-     * <h2>获取树的父级 <code>ID</code></h2>
+     * <h2>获取树的父级 {@code ID}</h2>
      *
-     * @return 父级 <code>ID</code>
+     * @return 父级 {@code ID}
      */
     Long getParentId();
 
     /**
-     * <h2>设置父级 <code>ID</code></h2>
+     * <h2>设置父级 {@code ID}</h2>
      *
-     * @param parentId 设置父级 <code>ID</code>
+     * @param parentId 设置父级 {@code ID}
      * @return 树实体
      */
     E setParentId(Long parentId);

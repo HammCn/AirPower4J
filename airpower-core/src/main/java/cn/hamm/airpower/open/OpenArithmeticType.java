@@ -13,12 +13,12 @@ import lombok.Getter;
 @Getter
 public enum OpenArithmeticType implements IDictionary {
     /**
-     * <h2><code>AES</code> 算法</h2>
+     * <h2>{@code AES} 算法</h2>
      */
     AES(1, "AES"),
 
     /**
-     * <h2><code>RSA</code> 算法</h2>
+     * <h2>{@code RSA} 算法</h2>
      */
     RSA(2, "RSA"),
 

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
- * <h1><code>Cookie</code> 相关配置</h1>
+ * <h1>{@code Cookie} 相关配置</h1>
  *
  * @author Hamm.cn
  * @see CookieUtil
@@ -20,27 +20,27 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower.cookie")
 public class CookieConfig {
     /**
-     * <h2><code>Cookie</code> 的路径</h2>
+     * <h2>{@code Cookie} 的路径</h2>
      */
     private String cookiePath = Constant.SLASH;
 
     /**
-     * <h2>身份验证的 <code>Cookie</code> 名称</h2>
+     * <h2>身份验证的 {@code Cookie} 名称</h2>
      */
     private String authCookieName = "authorization-key";
 
     /**
-     * <h2><code>Cookie</code> 的 <code>HttpOnly</code> 配置</h2>
+     * <h2>{@code Cookie} 的 {@code HttpOnly} 配置</h2>
      */
     private boolean cookieHttpOnly = true;
 
     /**
-     * <h2><code>Cookie</code> 有效期</h2>
+     * <h2>{@code Cookie} 有效期</h2>
      */
     private int cookieMaxAge = Constant.SECOND_PER_DAY;
 
     /**
-     * <h2>使用 <code>Https</code> 方式的安全 <code>Cookie</code></h2>
+     * <h2>使用 {@code Https} 方式的安全 {@code Cookie}</h2>
      */
     private boolean cookieSecurity = true;
 }

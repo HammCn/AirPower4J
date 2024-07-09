@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 public class TaskUtil {
     /**
-     * <h2>执行任务<code>不会抛出异常</code></h2>
+     * <h2>执行任务{@code 不会抛出异常}</h2>
      *
      * @param runnable     任务
      * @param moreRunnable 更多任务
@@ -34,7 +34,7 @@ public class TaskUtil {
     }
 
     /**
-     * <h2>异步执行任务<code>不会抛出异常</code></h2>
+     * <h2>异步执行任务{@code 不会抛出异常}</h2>
      *
      * @param runnable     任务
      * @param moreRunnable 更多任务

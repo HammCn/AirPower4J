@@ -11,7 +11,7 @@ import java.util.Base64;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * <h1><code>WebSocket</code> 事件</h1>
+ * <h1>{@code WebSocket} 事件</h1>
  *
  * @author Hamm.cn
  */
@@ -19,22 +19,22 @@ import java.util.concurrent.atomic.AtomicLong;
 @Accessors(chain = true)
 public class WebSocketEvent {
     /**
-     * <h2>当前事件 <code>ID</code></h2>
+     * <h2>当前事件 {@code ID}</h2>
      */
     private static final AtomicLong CURRENT_EVENT_ID = new AtomicLong(Constant.ZERO_LONG);
 
     /**
-     * <h2>事件 <code>ID</code></h2>
+     * <h2>事件 {@code ID}</h2>
      */
     private String id;
 
     /**
-     * <h2>发送方 <code>ID</code></h2>
+     * <h2>发送方 {@code ID}</h2>
      */
     private long from = Constant.ZERO_LONG;
 
     /**
-     * <h2>接收方 <code>ID</code></h2>
+     * <h2>接收方 {@code ID}</h2>
      */
     private long to = Constant.ZERO_LONG;
 
@@ -49,7 +49,7 @@ public class WebSocketEvent {
     private WebSocketPayload payload;
 
     /**
-     * <h2>创建 <code>WebSocket</code> 事件</h2>
+     * <h2>创建 {@code WebSocket} 事件</h2>
      *
      * @param payload 负载
      * @return 事件
@@ -59,7 +59,7 @@ public class WebSocketEvent {
     }
 
     /**
-     * <h2>创建 <code>WebSocket</code> 事件</h2>
+     * <h2>创建 {@code WebSocket} 事件</h2>
      *
      * @return 事件
      */
@@ -70,7 +70,7 @@ public class WebSocketEvent {
     }
 
     /**
-     * <h2>重置事件的 <code>ID</code> 和事件</h2>
+     * <h2>重置事件的 {@code ID} 和事件</h2>
      */
     protected final void resetEvent() {
         long time = System.currentTimeMillis();

@@ -7,7 +7,7 @@ package cn.hamm.airpower.interfaces;
  */
 public interface IEntityAction extends IAction {
     /**
-     * <h2><code>ID</code> 必须传入的场景</h2>
+     * <h2>{@code ID} 必须传入的场景</h2>
      */
     interface WhenIdRequired {
     }

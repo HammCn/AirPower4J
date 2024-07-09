@@ -29,7 +29,7 @@ public class TreeUtil {
      * <h2>生成树结构</h2>
      *
      * @param list     原始数据列表
-     * @param parentId 父级 <code>ID</code>
+     * @param parentId 父级 {@code ID}
      * @param <E>      泛型
      * @return 数结构数组
      */
