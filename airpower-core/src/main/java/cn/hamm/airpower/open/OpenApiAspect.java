@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
- * <h1><code>OpenApi</code> 切面</h1>
+ * <h1>{@code OpenApi} 切面</h1>
  *
  * @author Hamm.cn
  */
@@ -40,7 +40,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     }
 
     /**
-     * <h2><code>OpenApi</code></h2>
+     * <h2>{@code OpenApi}</h2>
      */
     @Around("pointCut()")
     public Object openApi(@NotNull ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -84,10 +84,10 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     }
 
     /**
-     * <h2>从请求对象中获取 <code>OpenApp</code></h2>
+     * <h2>从请求对象中获取 {@code OpenApp}</h2>
      *
-     * @param openRequest <code>OpenRequest</code>
-     * @return <code>OpenApp</code>
+     * @param openRequest {@code OpenRequest}
+     * @return {@code OpenApp}
      */
     private @NotNull IOpenApp getOpenAppFromRequest(@NotNull OpenRequest openRequest) {
         ServiceError.INVALID_APP_KEY.when(!StringUtils.hasText(openRequest.getAppKey()));
@@ -100,8 +100,8 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     /**
      * <h2>添加日志</h2>
      *
-     * @param openApp     <code>OpenApp</code>
-     * @param url         请求 <code>URL</code>
+     * @param openApp     {@code OpenApp}
+     * @param url         请求 {@code URL}
      * @param requestBody 请求数据
      * @return 日志ID
      */
@@ -115,7 +115,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     /**
      * <h2>更新日志返回数据</h2>
      *
-     * @param openLogId    日志 <code>ID</code>
+     * @param openLogId    日志 {@code ID}
      * @param responseBody 返回值
      */
     private void updateLogResponse(Long openLogId, String responseBody) {
@@ -128,7 +128,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     /**
      * <h2>更新日志异常</h2>
      *
-     * @param openLogId 日志 <code>ID</code>
+     * @param openLogId 日志 {@code ID}
      * @param exception 异常
      */
     private void updateExceptionResponse(Long openLogId, Exception exception) {

@@ -53,7 +53,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @Search(Search.Mode.LIKE)
     @Column(columnDefinition = "text comment '备注'")
     @Length(max = 1000, message = "备注最多允许{max}个字符")
-    @Exclude(filters = {WhenPayLoad.class})
     @ExcelColumn
     private String remark;
 
@@ -61,35 +60,30 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @ReadOnly
     @Search(Search.Mode.EQUALS)
     @Column(columnDefinition = "tinyint UNSIGNED default 0 comment '是否禁用'")
-    @Exclude(filters = {WhenPayLoad.class})
     @ExcelColumn(ExcelColumn.Type.BOOLEAN)
     private Boolean isDisabled;
 
     @Description("创建时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建时间'")
-    @Exclude(filters = {WhenPayLoad.class})
     @ExcelColumn(ExcelColumn.Type.DATETIME)
     private Long createTime;
 
     @Description("创建人ID")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建人ID'")
-    @Exclude(filters = {WhenPayLoad.class})
     @ExcelColumn(ExcelColumn.Type.NUMBER)
     private Long createUserId;
 
     @Description("修改人ID")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改人ID'")
-    @Exclude(filters = {WhenPayLoad.class})
     @ExcelColumn(ExcelColumn.Type.NUMBER)
     private Long updateUserId;
 
     @Description("修改时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改时间'")
-    @Exclude(filters = {WhenPayLoad.class})
     @ExcelColumn(ExcelColumn.Type.DATETIME)
     private Long updateTime;
 
@@ -114,9 +108,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     private Long updateTimeTo;
 
     /**
-     * <h2>设置 <code>ID</code></h2>
+     * <h2>设置 {@code ID}</h2>
      *
-     * @param id <code>ID</code>
+     * @param id {@code ID}
      * @return 实体
      */
     @Override
@@ -159,9 +153,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置创建人 <code>ID</code></h2>
+     * <h2>设置创建人 {@code ID}</h2>
      *
-     * @param createUserId 创建人 <code>ID</code>
+     * @param createUserId 创建人 {@code ID}
      * @return 实体
      */
     public E setCreateUserId(Long createUserId) {
@@ -170,9 +164,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置修改人 <code>ID</code></h2>
+     * <h2>设置修改人 {@code ID}</h2>
      *
-     * @param updateUserId 修改人 <code>ID</code>
+     * @param updateUserId 修改人 {@code ID}
      * @return 实体
      */
     public E setUpdateUserId(Long updateUserId) {
@@ -206,9 +200,9 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>复制一个只包含 <code>ID</code> 的实体</h2>
+     * <h2>复制一个只包含 {@code ID} 的实体</h2>
      *
-     * @return 只复制 <code>ID</code> 的实体
+     * @return 只复制 {@code ID} 的实体
      */
     public final @org.jetbrains.annotations.NotNull E copyOnlyId() {
         try {

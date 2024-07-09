@@ -131,8 +131,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @apiNote 支持完全重写导出文件生成逻辑
      *
      * <ul>
-     *     <li>默认导出为 <code>CSV</code> 表格，如需自定义导出方式或格式，可直接重写此方法</li>
-     *     <li>如仅需<code>自定义导出存储位置</code>，可重写 {@link #saveExportFile(InputStream)}</li>
+     *     <li>默认导出为 {@code CSV} 表格，如需自定义导出方式或格式，可直接重写此方法</li>
+     *     <li>如仅需{@code 自定义导出存储位置}，可重写 {@link #saveExportFile(InputStream)}</li>
      * </ul>
      */
     protected InputStream createExportStream(List<E> exportList) {
@@ -254,7 +254,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>添加一条数据</h2>
      *
      * @param source 原始实体
-     * @return 保存后的主键 <code>ID</code>
+     * @return 保存后的主键 {@code ID}
      * @see #beforeAdd(E)
      * @see #beforeSaveToDatabase(E)
      * @see #afterAdd(long, E)
@@ -276,7 +276,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>添加后置方法</h2>
      *
-     * @param id     主键 <code>ID</code>
+     * @param id     主键 {@code ID}
      * @param source 原始实体
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -310,7 +310,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>修改一条已经存在的数据</h2>
      *
      * @param source 保存的实体
-     * @apiNote 此方法的 <code>null</code> 属性依然会被更新到数据库
+     * @apiNote 此方法的 {@code null} 属性依然会被更新到数据库
      * @see #beforeUpdate(E)
      * @see #afterUpdate(long, E)
      * @see #afterSaved(long, E)
@@ -325,13 +325,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>修改后置方法</h2>
      *
      * <p>
-     * <code>请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以避免循环调用</code>
+     * {@code 请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以避免循环调用}
      * </p>
      * <p>
      * 如需再次保存，请调用 {@link #updateToDatabase(E)}
      * </p>
      *
-     * @param id     主键 <code>ID</code>
+     * @param id     主键 {@code ID}
      * @param source 原始实体
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -341,7 +341,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>保存后置方法</h2>
      *
-     * @param id     主键 <code>ID</code>
+     * @param id     主键 {@code ID}
      * @param source 保存前的原数据
      * @apiNote 添加或修改后最后触发
      */
@@ -353,7 +353,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>禁用前置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeDisable(long id) {
@@ -362,7 +362,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>禁用指定的数据</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @see #beforeDisable(long)
      * @see #afterDisable(long)
      */
@@ -375,7 +375,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>禁用后置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterDisable(long id) {
@@ -384,7 +384,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>启用前置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeEnable(long id) {
@@ -393,7 +393,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>启用指定的数据</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @see #beforeEnable(long)
      * @see #afterEnable(long)
      */
@@ -406,7 +406,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>启用后置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterEnable(long id) {
@@ -415,7 +415,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>删除前置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeDelete(long id) {
@@ -424,7 +424,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>删除指定的数据</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @see #beforeDelete(long)
      * @see #afterDelete(long)
      */
@@ -437,7 +437,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>删除后置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterDelete(long id) {
@@ -538,7 +538,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>数据库操作前的<code>最后一次</code>确认</h2>
+     * <h2>数据库操作前的{@code 最后一次}确认</h2>
      *
      * @return 当前实体
      */
@@ -564,9 +564,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>根据<code>ID</code>查询对应的实体</h2>
+     * <h2>根据{@code ID}查询对应的实体</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @return 实体
      * @see #getMaybeNull(long)
      * @see #getWithEnable(long)
@@ -576,9 +576,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>根据<code>ID</code>查询正常启用的实体</h2>
+     * <h2>根据{@code ID}查询正常启用的实体</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @return 实体
      * @see #get(long)
      * @see #getMaybeNull(long)
@@ -594,11 +594,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>根据<code>ID</code>查询对应的实体(可能为<code>null</code>)</h2>
+     * <h2>根据{@code ID}查询对应的实体(可能为{@code null})</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @return 实体
-     * @apiNote 查不到返回 <code>null</code>，不抛异常
+     * @apiNote 查不到返回 {@code null}，不抛异常
      * @see #get(long)
      */
     public final @Nullable E getMaybeNull(long id) {
@@ -618,7 +618,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>分页查询数据</h2>
      *
-     * @param queryPageRequest 请求的 <code>request</code> 对象
+     * @param queryPageRequest 请求的 {@code request} 对象
      * @return 分页查询列表
      * @see #beforeGetPage(QueryPageRequest)
      * @see #afterGetPage(QueryPageResponse)
@@ -637,7 +637,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>禁用指定的数据</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @apiNote 不建议直接调用, 请优先使用前后置方法
      * @see #beforeDisable(long)
      * @see #afterDisable(long)
@@ -650,7 +650,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>启用指定的数据</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @apiNote 不建议直接调用, 请优先使用前后置方法
      * @see #beforeEnable(long)
      * @see #afterEnable(long)
@@ -663,7 +663,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>删除指定的数据</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @apiNote 不建议直接调用, 请优先使用前后置方法
      * @see #beforeDelete(long)
      * @see #afterDelete(long)
@@ -702,7 +702,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>添加查询条件(<code>value</code>不为<code>null</code>时)</h2>
+     * <h2>添加查询条件({@code value}不为{@code null}时)</h2>
      *
      * @param root          ROOT
      * @param predicateList 查询条件列表
@@ -819,7 +819,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>更新到数据库</h2>
      *
-     * @param withNull 是否更新 <code>null</code> 属性
+     * @param withNull 是否更新 {@code null} 属性
      * @param source   原始数据
      */
     private void updateToDatabase(boolean withNull, @NotNull E source) {
@@ -834,9 +834,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>根据<code>ID</code>查询对应的实体</h2>
+     * <h2>根据{@code ID}查询对应的实体</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @return 实体
      */
     private @NotNull E getById(long id) {
@@ -855,7 +855,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>根据ID查询对应的实体</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @return 实体
      * @apiNote 查不到返回null，不抛异常
      */
@@ -1013,7 +1013,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>获取值为<code>null</code>的属性</h2>
+     * <h2>获取值为{@code null}的属性</h2>
      *
      * @param sourceEntity 来源对象
      * @return 非空属性列表
@@ -1045,7 +1045,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>创建<code>Sort</code></h2>
+     * <h2>创建{@code Sort}</h2>
      *
      * @param sort 排序对象
      * @return Sort Spring的排序对象
@@ -1071,7 +1071,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>创建<code>Pageable</code></h2>
+     * <h2>创建{@code Pageable}</h2>
      *
      * @param queryPageData 查询请求
      * @return Pageable

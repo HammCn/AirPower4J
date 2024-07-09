@@ -1,5 +1,8 @@
 package cn.hamm.airpower.annotation;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.lang.annotation.*;
 
 /**
@@ -35,55 +38,67 @@ public @interface Desensitize {
     /**
      * <h2>脱敏方式</h2>
      */
+    @AllArgsConstructor
+    @Getter
     enum Type {
         /**
          * <h2>座机号码</h2>
          */
-        TELEPHONE,
+        TELEPHONE(0, 0),
 
         /**
          * <h2>手机号码</h2>
          */
-        MOBILE,
+        MOBILE(3, 4),
 
         /**
          * <h2>身份证号</h2>
          */
-        ID_CARD,
+        ID_CARD(6, 4),
 
         /**
          * <h2>银行卡号</h2>
          */
-        BANK_CARD,
+        BANK_CARD(4, 4),
 
         /**
          * <h2>车牌号</h2>
          */
-        CAR_NUMBER,
+        CAR_NUMBER(2, 1),
 
         /**
          * <h2>邮箱</h2>
          */
-        EMAIL,
+        EMAIL(2, 2),
 
         /**
          * <h2>中文名</h2>
          */
-        CHINESE_NAME,
+        CHINESE_NAME(1, 1),
 
         /**
          * <h2>地址</h2>
          */
-        ADDRESS,
+        ADDRESS(3, 0),
 
         /**
          * <h2>IP地址(v4)</h2>
          */
-        IP_V4,
+        IP_V4(0, 0),
 
         /**
          * <h2>自定义</h2>
          */
-        CUSTOM,
+        CUSTOM(0, 0);
+
+        /**
+         * <h2>开始至少保留</h2>
+         */
+        private final int minHead;
+
+        /**
+         * <h2>结束至少保留</h2>
+         */
+        private final int minTail;
     }
 }

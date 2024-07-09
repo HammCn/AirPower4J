@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * <h1><code>AirPower</code> 配置</h1>
+ * <h1>{@code AirPower} 配置</h1>
  *
  * @author Hamm.cn
  */
 @Component
 public class Configs {
     /**
-     * <h2>全局 <code>Cookie</code> 配置</h2>
+     * <h2>全局 {@code Cookie} 配置</h2>
      */
     @Getter
     private static CookieConfig cookieConfig;
@@ -24,13 +24,13 @@ public class Configs {
     private static ServiceConfig serviceConfig;
 
     /**
-     * <h2><code>MQTT</code> 配置</h2>
+     * <h2>{@code MQTT} 配置</h2>
      */
     @Getter
     private static MqttConfig mqttConfig;
 
     /**
-     * <h2><code>WebSocket</code> 配置</h2>
+     * <h2>{@code WebSocket} 配置</h2>
      */
     @Getter
     private static WebSocketConfig websocketConfig;

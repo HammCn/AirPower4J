@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * <h1><code>WebSocket</code> 事件负载</h1>
+ * <h1>{@code WebSocket} 事件负载</h1>
  *
  * @author Hamm.cn
  */

@@ -277,7 +277,7 @@ public class RootEntityController<
     /**
      * <h2>新增后置方法</h2>
      *
-     * @param id     主键 <code>ID</code>
+     * @param id     主键 {@code ID}
      * @param source 原始实体
      * @apiNote 可重写后执行新增后的其他业务
      */
@@ -299,7 +299,7 @@ public class RootEntityController<
     /**
      * <h2>修改后置方法</h2>
      *
-     * @param id     主键 <code>ID</code>
+     * @param id     主键 {@code ID}
      * @param source 原始实体
      * @apiNote 可重写后执行修改之后的其他业务
      */
@@ -310,7 +310,7 @@ public class RootEntityController<
     /**
      * <h2>保存后置方法</h2>
      *
-     * @param id     主键 <code>ID</code>
+     * @param id     主键 {@code ID}
      * @param source 原始实体
      * @apiNote 新增和修改最后触发
      */
@@ -321,7 +321,7 @@ public class RootEntityController<
     /**
      * <h2>删除前置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @apiNote 可重写后执行删除之前的业务处理或拦截
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -331,7 +331,7 @@ public class RootEntityController<
     /**
      * 删除后置方法
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @apiNote 可重写后执行删除之后的其他业务
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -341,7 +341,7 @@ public class RootEntityController<
     /**
      * <h2>禁用前置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @apiNote 可重写后执行禁用之前的业务处理或拦截
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -351,7 +351,7 @@ public class RootEntityController<
     /**
      * <h2>禁用后置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      * @apiNote 可重写后执行禁用之后的其他业务
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
@@ -361,7 +361,7 @@ public class RootEntityController<
     /**
      * <h2>启用前置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void beforeEnable(long id) {
@@ -370,7 +370,7 @@ public class RootEntityController<
     /**
      * <h2>启用后置方法</h2>
      *
-     * @param id 主键 <code>ID</code>
+     * @param id 主键 {@code ID}
      */
     @SuppressWarnings({"unused", "EmptyMethod"})
     protected void afterEnable(long id) {

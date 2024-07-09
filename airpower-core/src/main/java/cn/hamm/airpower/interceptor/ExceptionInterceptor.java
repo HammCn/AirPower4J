@@ -115,7 +115,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>请求的数据不是标准 <code>JSON</code></h2>
+     * <h2>请求的数据不是标准 {@code JSON}</h2>
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Json dataExceptionHandle(@NotNull HttpMessageNotReadableException exception) {
@@ -163,7 +163,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2><code>Redis</code> 连接发生错误</h2>
+     * <h2>{@code Redis} 连接发生错误</h2>
      */
     @ExceptionHandler(RedisConnectionFailureException.class)
     public Json redisExceptionHandle(@NotNull RedisConnectionFailureException exception) {

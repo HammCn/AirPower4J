@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * <h1>简单 <code>JSON</code> 对象</h1>
+ * <h1>简单 {@code JSON} 对象</h1>
  *
  * @author Hamm.cn
  */
@@ -33,7 +33,7 @@ import java.util.Objects;
 @Slf4j
 public class Json {
     /**
-     * <h2><code>ObjectMapper</code></h2>
+     * <h2>{@code ObjectMapper}</h2>
      */
     private static ObjectMapper objectMapper = null;
 
@@ -64,7 +64,7 @@ public class Json {
      * <h2>输出提示信息</h2>
      *
      * @param message 提示信息
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static Json success(String message) {
         return create().setMessage(message);
@@ -74,7 +74,7 @@ public class Json {
      * <h2>输出数据</h2>
      *
      * @param data 数据
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static Json data(Object data) {
         return data(data, "获取成功");
@@ -83,9 +83,9 @@ public class Json {
     /**
      * <h2>输出实体</h2>
      *
-     * @param id  实体 <code>ID</code>
+     * @param id  实体 {@code ID}
      * @param <E> 实体类型
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static <E extends RootEntity<E>> Json entity(@NotNull Long id) {
         return data(new RootEntity<E>().setId(id));
@@ -94,9 +94,9 @@ public class Json {
     /**
      * <h2>输出实体</h2>
      *
-     * @param id      实体 <code><code>Json</code></code>
+     * @param id      实体 {@code Json}
      * @param message 提示信息
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static Json entity(@NotNull Long id, @NotNull String message) {
         return entity(id).setMessage(message);
@@ -107,7 +107,7 @@ public class Json {
      *
      * @param data    数据
      * @param message 提示信息
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static Json data(Object data, String message) {
         return create().setData(data).setMessage(message);
@@ -117,7 +117,7 @@ public class Json {
      * <h2>输出错误</h2>
      *
      * @param error 错误枚举
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static Json error(IException error) {
         return error(error, error.getMessage());
@@ -128,7 +128,7 @@ public class Json {
      *
      * @param error   错误枚举
      * @param message 错误信息
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static Json error(@NotNull IException error, String message) {
         return show(error.getCode(), message, null);
@@ -138,33 +138,33 @@ public class Json {
      * <h2>输出错误</h2>
      *
      * @param message 错误信息
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static Json error(String message) {
         return error(ServiceError.SERVICE_ERROR, message);
     }
 
     /**
-     * <h2>输出 <code>Json</code></h2>
+     * <h2>输出 {@code Json}</h2>
      *
      * @param code    错误代码
      * @param message 提示信息
      * @param data    输出数据
-     * @return <code>Json</code>
+     * @return {@code Json}
      */
     public static Json show(int code, String message, Object data) {
         return create().setCode(code).setMessage(message).setData(data);
     }
 
     /**
-     * <h2><code>Json</code> 反序列化到指定类</h2>
+     * <h2>{@code Json} 反序列化到指定类</h2>
      *
      * @param json  字符串
      * @param clazz 目标类
-     * @param <E>   目标类
+     * @param <T>   目标类
      * @return 目标类的实例
      */
-    public static <E> E parse(String json, Class<E> clazz) {
+    public static <T> T parse(String json, Class<T> clazz) {
         try {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
@@ -174,10 +174,27 @@ public class Json {
     }
 
     /**
-     * <h2><code>Json</code> 反序列化为 <code>Map</code></h2>
+     * <h2>{@code Json} 反序列化为数组</h2>
+     *
+     * @param json  字符串
+     * @param clazz 目标数组类
+     * @param <T>   目标类型
+     * @return 目标类的实例数组
+     */
+    public static <T> T[] parseList(String json, Class<? extends T[]> clazz) {
+        try {
+            return getObjectMapper().readValue(json, clazz);
+        } catch (JsonProcessingException exception) {
+            log.error(MessageConstant.EXCEPTION_WHEN_JSON_PARSE, exception);
+            throw new ServiceException(exception);
+        }
+    }
+
+    /**
+     * <h2>{@code Json} 反序列化为 {@code Map}</h2>
      *
      * @param json 字符串
-     * @return <code>Map</code>
+     * @return {@code Map}
      */
     public static Map<String, Object> parse2Map(String json) {
         try {
@@ -191,10 +208,10 @@ public class Json {
     }
 
     /**
-     * <h2><code>Json</code> 反序列化为 <code>ListMap</code></h2>
+     * <h2>{@code Json} 反序列化为 {@code ListMap}</h2>
      *
      * @param json 字符串
-     * @return <code>List<Map></code>
+     * @return {@code List<Map>}
      */
     public static List<Map<String, Object>> parse2MapList(String json) {
         try {
@@ -208,7 +225,7 @@ public class Json {
     }
 
     /**
-     * <h2><code>Json</code> 序列化到字符串</h2>
+     * <h2>{@code Json} 序列化到字符串</h2>
      *
      * @param object 对象
      * @return 字符串
@@ -223,9 +240,9 @@ public class Json {
     }
 
     /**
-     * <h2>获取一个配置后的 <code>ObjectMapper</code></h2>
+     * <h2>获取一个配置后的 {@code ObjectMapper}</h2>
      *
-     * @return <code>ObjectMapper</code>
+     * @return {@code ObjectMapper}
      */
     private static @NotNull ObjectMapper getObjectMapper() {
         if (Objects.isNull(objectMapper)) {
@@ -241,9 +258,9 @@ public class Json {
     }
 
     /**
-     * <h2>初始化一个新的 <code>JSON</code> 对象</h2>
+     * <h2>初始化一个新的 {@code JSON} 对象</h2>
      *
-     * @return <code>JSON</code> 对象
+     * @return {@code JSON} 对象
      */
     @Contract(" -> new")
     public static @NotNull Json create() {

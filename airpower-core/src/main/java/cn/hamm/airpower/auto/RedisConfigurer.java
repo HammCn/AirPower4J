@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.util.Objects;
 
 /**
- * <h1><code>Redis</code> 配置</h1>
+ * <h1>{@code Redis} 配置</h1>
  *
  * @author Hamm.cn
  */
@@ -28,7 +28,7 @@ import java.util.Objects;
 @EnableCaching
 public class RedisConfigurer implements CachingConfigurer {
     /**
-     * <h2><code>Redis</code> 连接工厂</h2>
+     * <h2>{@code Redis} 连接工厂</h2>
      */
     @Resource
     private RedisConnectionFactory redisConnectionFactory;

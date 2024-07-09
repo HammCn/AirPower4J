@@ -6,9 +6,4 @@ package cn.hamm.airpower.interfaces;
  * @author Hamm.cn
  */
 public interface IAction {
-    /**
-     * <h2>当需要过滤挂载数据时</h2>
-     */
-    interface WhenPayLoad {
-    }
 }

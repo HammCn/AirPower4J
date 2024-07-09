@@ -18,7 +18,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 /**
- * <h1><code>RSA</code> 加解密助手类</h1>
+ * <h1>{@code RSA} 加解密助手类</h1>
  *
  * @author Hamm.cn
  */
@@ -27,7 +27,7 @@ import java.util.Base64;
 @Component
 public class RsaUtil {
     /**
-     * <h2>加密算法 <code>KEY</code> 长度</h2>
+     * <h2>加密算法 {@code KEY} 长度</h2>
      */
     private final int CRYPT_KEY_SIZE = 2048;
     /**
@@ -182,9 +182,9 @@ public class RsaUtil {
     }
 
     /**
-     * <h2><code>RSA</code> 处理方法</h2>
+     * <h2>{@code RSA} 处理方法</h2>
      *
-     * @param cipher      <code>RSA</code> 实例
+     * @param cipher      {@code RSA} 实例
      * @param sourceBytes 加解密原始数据
      * @param blockSize   分片大小
      * @return 加解密结果
@@ -210,9 +210,9 @@ public class RsaUtil {
     }
 
     /**
-     * <h2>生成 <code>RSA</code> 密钥对</h2>
+     * <h2>生成 {@code RSA} 密钥对</h2>
      *
-     * @return <code>KeyPair</code>
+     * @return {@code KeyPair}
      */
     public final KeyPair generateKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(CRYPT_METHOD);
@@ -221,10 +221,10 @@ public class RsaUtil {
     }
 
     /**
-     * <h2>将公钥转换为 <code>PEM</code> 格式</h2>
+     * <h2>将公钥转换为 {@code PEM} 格式</h2>
      *
      * @param publicKey 公钥
-     * @return <code>PEM</code>
+     * @return {@code PEM}
      */
     public final @NotNull String convertPublicKeyToPem(@NotNull PublicKey publicKey) {
         byte[] encoded = publicKey.getEncoded();
@@ -235,10 +235,10 @@ public class RsaUtil {
     }
 
     /**
-     * <h2>将私钥转换为 <code>PEM</code> 格式</h2>
+     * <h2>将私钥转换为 {@code PEM} 格式</h2>
      *
      * @param privateKey 私钥
-     * @return <code>PEM</code>
+     * @return {@code PEM}
      */
     public final @NotNull String convertPrivateKeyToPem(@NotNull PrivateKey privateKey) {
         byte[] encoded = privateKey.getEncoded();
@@ -249,9 +249,9 @@ public class RsaUtil {
     }
 
     /**
-     * <h2>将 <code>Base64</code> 编码的文本换行</h2>
+     * <h2>将 {@code Base64} 编码的文本换行</h2>
      *
-     * @param base64Text 原始 <code>Base64</code>
+     * @param base64Text 原始 {@code Base64}
      * @return 换行后的
      */
     private @NotNull String wrapBase64Text(@NotNull String base64Text) {

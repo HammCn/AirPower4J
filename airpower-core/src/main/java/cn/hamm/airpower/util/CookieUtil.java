@@ -7,18 +7,18 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 /**
- * <h1><code>Cookie</code> 助手</h1>
+ * <h1>{@code Cookie} 助手</h1>
  *
  * @author Hamm.cn
  */
 @Component
 public class CookieUtil {
     /**
-     * <h2>获取一个 <code>Cookie</code></h2>
+     * <h2>获取一个 {@code Cookie}</h2>
      *
      * @param key   Key
      * @param value Value
-     * @return <code>Cookie</code>
+     * @return {@code Cookie}
      * @see CookieConfig
      */
     public final @NotNull Cookie getCookie(String key, String value) {
@@ -31,10 +31,10 @@ public class CookieUtil {
     }
 
     /**
-     * <h2>获取一个身份验证的 <code>Cookie</code></h2>
+     * <h2>获取一个身份验证的 {@code Cookie}</h2>
      *
      * @param value 身份串的值
-     * @return <code>Cookie</code>
+     * @return {@code Cookie}
      * @see CookieConfig
      */
     public final @NotNull Cookie getAuthorizeCookie(String value) {
