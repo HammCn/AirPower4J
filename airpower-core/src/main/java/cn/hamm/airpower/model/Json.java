@@ -161,10 +161,27 @@ public class Json {
      *
      * @param json  字符串
      * @param clazz 目标类
-     * @param <E>   目标类
+     * @param <T>   目标类
      * @return 目标类的实例
      */
-    public static <E> E parse(String json, Class<E> clazz) {
+    public static <T> T parse(String json, Class<T> clazz) {
+        try {
+            return getObjectMapper().readValue(json, clazz);
+        } catch (JsonProcessingException exception) {
+            log.error(MessageConstant.EXCEPTION_WHEN_JSON_PARSE, exception);
+            throw new ServiceException(exception);
+        }
+    }
+
+    /**
+     * <h2>{@code Json} 反序列化为数组</h2>
+     *
+     * @param json  字符串
+     * @param clazz 目标数组类
+     * @param <T>   目标类型
+     * @return 目标类的实例数组
+     */
+    public static <T> T[] parseList(String json, Class<? extends T[]> clazz) {
         try {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
