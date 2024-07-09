@@ -84,8 +84,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         List<Field> allFields = reflectUtil.getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
         // 类中没有标排除 则所有字段全暴露 走黑名单
-        BiConsumer<@NotNull Field, @NotNull Class<?>> task = Objects.nonNull(exclude) && Arrays.asList(exclude.filters()).contains(filterClass) ?
-                this::exposeBy : this::excludeBy;
+        boolean isExpose = Objects.nonNull(exclude) && Arrays.asList(exclude.filters()).contains(filterClass);
+        BiConsumer<@NotNull Field, @NotNull Class<?>> task = isExpose ? this::exposeBy : this::excludeBy;
         Consumer<@NotNull Field> desensitize = this::desensitize;
         allFields.forEach(field -> {
             if (!Void.class.equals(filterClass)) {
