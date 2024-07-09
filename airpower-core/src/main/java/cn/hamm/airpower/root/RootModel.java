@@ -84,7 +84,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         List<Field> allFields = reflectUtil.getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
         // 类中没有标排除 则所有字段全暴露 走黑名单
-        BiConsumer<@NotNull Field, @NotNull Class<?>> task = Objects.nonNull(exclude) ? this::exposeBy : this::excludeBy;
+        BiConsumer<@NotNull Field, @NotNull Class<?>> task = Objects.nonNull(exclude) && Arrays.asList(exclude.filters()).contains(filterClass) ?
+                this::exposeBy : this::excludeBy;
         Consumer<@NotNull Field> desensitize = this::desensitize;
         allFields.forEach(field -> {
             if (!Void.class.equals(filterClass)) {
@@ -153,6 +154,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             Method getMethod = getClass().getMethod(fieldGetter);
             Exclude methodExclude = reflectUtil.getAnnotation(Exclude.class, getMethod);
             if (Objects.nonNull(methodExclude)) {
+                // 属性的Getter上标记了排除
                 excludeClasses = methodExclude.filters();
             }
         } catch (NoSuchMethodException exception) {
@@ -161,9 +163,10 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         if (Objects.isNull(excludeClasses)) {
             Exclude fieldExclude = reflectUtil.getAnnotation(Exclude.class, field);
             if (Objects.isNull(fieldExclude)) {
-                reflectUtil.clearFieldValue(this, field);
+                // 属性Getter没标记 也没有属性本身标记 则暴露
                 return;
             }
+            // 属性Getter没标记 但是属性本身标记了
             excludeClasses = fieldExclude.filters();
         }
 
@@ -189,24 +192,29 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             Method getMethod = getClass().getMethod(fieldGetter);
             Expose methodExpose = reflectUtil.getAnnotation(Expose.class, getMethod);
             if (Objects.nonNull(methodExpose)) {
+                // 属性的Getter标记了暴露
                 exposeClasses = methodExpose.filters();
             }
+            // 属性的Getter没有标记
         } catch (NoSuchMethodException exception) {
             log.error(exception.getMessage(), exception);
         }
         if (Objects.isNull(exposeClasses)) {
             Expose fieldExpose = reflectUtil.getAnnotation(Expose.class, field);
             if (Objects.isNull(fieldExpose)) {
+                // 属性以及Getter都没有标记暴露 则排除
+                reflectUtil.clearFieldValue(this, field);
                 return;
             }
             exposeClasses = fieldExpose.filters();
         }
         if (exposeClasses.length == 0) {
+            // 虽然标记但未指定过滤器 所有场景都暴露
             return;
         }
-        // 标记了暴露
         boolean isExpose = Arrays.asList(exposeClasses).contains(filterClass);
         if (!isExpose) {
+            // 当前场景不在标记的暴露场景中 则排除
             reflectUtil.clearFieldValue(this, field);
         }
     }
