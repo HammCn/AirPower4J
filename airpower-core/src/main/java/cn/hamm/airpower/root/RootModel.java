@@ -161,6 +161,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         if (Objects.isNull(excludeClasses)) {
             Exclude fieldExclude = reflectUtil.getAnnotation(Exclude.class, field);
             if (Objects.isNull(fieldExclude)) {
+                reflectUtil.clearFieldValue(this, field);
                 return;
             }
             excludeClasses = fieldExclude.filters();
@@ -171,7 +172,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             isNeedClear = Arrays.asList(excludeClasses).contains(filterClass);
         }
         if (isNeedClear) {
-            Utils.getReflectUtil().clearFieldValue(this, field);
+            reflectUtil.clearFieldValue(this, field);
         }
     }
 
