@@ -3,6 +3,7 @@ package cn.hamm.airpower.util;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.PatternConstant;
 import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.root.RootModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -28,7 +29,7 @@ public class ValidateUtil {
      */
     private final Validator validator;
 
-    ValidateUtil() {
+    public ValidateUtil() {
         // 初始化验证器工厂
         try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
             // 创建验证器实例
@@ -158,6 +159,43 @@ public class ValidateUtil {
      */
     public final boolean isNaturalInteger(String value) {
         return validRegex(value, PatternConstant.NATURAL_INTEGER);
+    }
+
+    /**
+     * <h2>是否是有效二代身份证号</h2>
+     *
+     * @param idCard 身份证号
+     * @return 验证结果
+     */
+    public final boolean isChina2Identity(String idCard) {
+        // 一代身份证长度
+        final int idLength = 15;
+        // 二代身份证长度
+        final int id2Length = 18;
+        // 二代身份证求余数
+        final int id2Mod = 11;
+        // 系数
+        final int[] factor = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+        // 尾数
+        final char[] flags = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
+
+        if (Objects.isNull(idCard)) {
+            return false;
+        }
+        if (idCard.length() != id2Length && idCard.length() != idLength) {
+            return false;
+        }
+        if (idCard.length() == id2Length) {
+            // 校验二代身份证
+            int sum = 0;
+            for (int i = 0; i < idCard.length() - 1; i++) {
+                sum += Integer.parseInt(String.valueOf(idCard.charAt(i))) * factor[i];
+            }
+
+            // 求和后取余数11，得到的余数与校验码进行匹配，匹配成功，说明通过验证。
+            return flags[sum % id2Mod] == idCard.charAt(idCard.length() - 1);
+        }
+        throw new ServiceException("暂不支持一代身份证校验");
     }
 
     /**
