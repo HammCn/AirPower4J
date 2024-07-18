@@ -1119,10 +1119,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     break;
                 case LIKE:
                     if (!isEqual) {
+                        // 如果是模糊匹配
                         predicateList.add(
                                 builder.like(root.get(field.getName()), fieldValue + Constant.PERCENT)
                         );
+                        break;
                     }
+                    // 如果不是模糊匹配，走到default分支
                 default:
                     // 强匹配
                     predicate = builder.equal(root.get(field.getName()), fieldValue);
