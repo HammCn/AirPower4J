@@ -48,9 +48,9 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * <h2>忽略只读字段</h2>
      */
     public final void ignoreReadOnlyFields() {
-        Utils.getReflectUtil().getFieldList(this.getClass()).stream()
-                .filter(field -> Objects.nonNull(Utils.getReflectUtil().getAnnotation(ReadOnly.class, field)))
-                .forEach(field -> Utils.getReflectUtil().clearFieldValue(this, field));
+        reflectUtil.getFieldList(this.getClass()).stream()
+                .filter(field -> Objects.nonNull(reflectUtil.getAnnotation(ReadOnly.class, field)))
+                .forEach(field -> reflectUtil.clearFieldValue(this, field));
     }
 
     /**
