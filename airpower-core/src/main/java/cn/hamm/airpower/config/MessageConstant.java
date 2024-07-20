@@ -33,5 +33,5 @@ public class MessageConstant {
     public static final String PARAM_INVALID_MAY_BE_NOT_JSON = "请求参数格式不正确,请检查是否接口支持的JSON";
     public static final String REQUEST_METHOD_NOT_SUPPORTED = "%s 不被支持，请使用 %s 方法请求";
     public static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
-    public static final String ACCESS_DENIED = "你无权访问 " + MESSAGE_AND_DESCRIPTION;
+    public static final String ACCESS_DENIED = "你无权访问 %s (%s)";
 }

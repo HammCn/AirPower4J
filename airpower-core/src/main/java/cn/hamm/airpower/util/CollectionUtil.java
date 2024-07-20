@@ -13,7 +13,7 @@ import java.util.*;
 @Component
 public class CollectionUtil {
     /**
-     * <h2>获取集合中的非 {@code null} 元素</h2>
+     * <h2>获取集合中的 {@code 非null} 元素</h2>
      *
      * @param list       原始集合
      * @param fieldClass 数据类型

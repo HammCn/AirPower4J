@@ -245,7 +245,7 @@ public class RedisUtil {
     }
 
     /**
-     * <h2>发布到channel的消息</h2>
+     * <h2>发布到 {@code channel} 的消息</h2>
      *
      * @param channel 频道
      * @param message 消息

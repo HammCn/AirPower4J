@@ -74,16 +74,22 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     @Autowired
     protected R repository;
+
     @Autowired
     private ReflectUtil reflectUtil;
+
     @Autowired
     private TaskUtil taskUtil;
+
     @Autowired
     private RedisUtil redisUtil;
+
     @Autowired
     private RandomUtil randomUtil;
+
     @Autowired
     private DateTimeUtil dateTimeUtil;
+
     @Autowired
     private EntityManager entityManager;
 

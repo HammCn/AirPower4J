@@ -4,6 +4,7 @@ import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.Utils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ public class OpenResponse {
      * @param data    数据
      * @return 加密后的数据
      */
-    public static <A extends IOpenApp> String encodeResponse(A openApp, Object data) {
+    public static <A extends IOpenApp> @Nullable String encodeResponse(A openApp, Object data) {
         if (Objects.isNull(data)) {
             // 数据负载为空 直接返回
             return null;

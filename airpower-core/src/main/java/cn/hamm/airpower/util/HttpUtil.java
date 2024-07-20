@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.*;
 
 /**
- * <h1>HTTP请求工具类</h1>
+ * <h1>{@code HTTP} 请求工具类</h1>
  *
  * @author Hamm.cn
  */
@@ -29,7 +29,7 @@ public class HttpUtil {
     private Map<String, Object> headers = new HashMap<>();
 
     /**
-     * <h2>Cookie</h2>
+     * <h2>{@code Cookie}</h2>
      */
     private Map<String, Object> cookies = new HashMap<>();
 
@@ -61,8 +61,8 @@ public class HttpUtil {
     /**
      * <h2>添加 {@code Cookie}</h2>
      *
-     * @param key   Key
-     * @param value Value
+     * @param key   {@code Cookie} 键
+     * @param value {@code Cookie} 值
      * @return {@code HttpUtil}
      */
     @Contract("_, _ -> this")
@@ -161,8 +161,8 @@ public class HttpUtil {
     /**
      * <h2>添加 {@code Header}</h2>
      *
-     * @param key   Key
-     * @param value Value
+     * @param key   {@code Header} 键
+     * @param value {@code Header} 值
      * @return {@code HttpUtil}
      */
     @Contract("_, _ -> this")

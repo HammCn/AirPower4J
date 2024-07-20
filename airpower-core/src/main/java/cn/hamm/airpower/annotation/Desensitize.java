@@ -82,7 +82,7 @@ public @interface Desensitize {
         ADDRESS(3, 0),
 
         /**
-         * <h2>IP地址(v4)</h2>
+         * <h2><code>IPv4</code>地址</h2>
          */
         IP_V4(0, 0),
 

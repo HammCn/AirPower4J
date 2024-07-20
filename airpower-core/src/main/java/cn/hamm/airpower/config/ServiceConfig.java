@@ -86,7 +86,7 @@ public class ServiceConfig {
     /**
      * <h2>导出文件的目录</h2>
      *
-     * @apiNote 请{@code 不要}使用 {@code /} 结尾
+     * @apiNote 请 {@code 不要} 使用 {@code /} 结尾
      */
     private String exportFilePath = "";
 

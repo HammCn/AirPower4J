@@ -104,7 +104,7 @@ public class TokenUtil {
     }
 
     /**
-     * <h2>设置过期时间(毫秒)</h2>
+     * <h2>设置过期时间 {@code 毫秒}</h2>
      *
      * @param millisecond 过期毫秒
      * @return {@code TokenUtil}
@@ -188,7 +188,7 @@ public class TokenUtil {
         private Map<String, Object> payloads = new HashMap<>();
 
         /**
-         * <h2>过期时间(毫秒)</h2>
+         * <h2>过期时间 {@code 毫秒}</h2>
          */
         private long expireTimestamps = 0;
 
