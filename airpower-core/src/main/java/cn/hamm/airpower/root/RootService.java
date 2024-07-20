@@ -1100,7 +1100,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param isEqual 是否强匹配
      * @return 搜索条件
      */
-    @SuppressWarnings("AlibabaSwitchStatement")
     private @NotNull List<jakarta.persistence.criteria.Predicate> getPredicateList(
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
