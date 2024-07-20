@@ -558,7 +558,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>添加搜索的查询条件</h2>
      *
-     * @param root    ROOT
+     * @param root    {@code ROOT}
      * @param builder 参数构造器
      * @param search  原始查询对象
      * @return 查询条件列表
@@ -713,7 +713,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>添加查询条件({@code value}不为{@code null}时)</h2>
      *
-     * @param root          ROOT
+     * @param root          {@code ROOT}
      * @param predicateList 查询条件列表
      * @param fieldName     所属的字段名称
      * @param expression    表达式
@@ -731,9 +731,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>尝试获取当前登录用户ID</h2>
+     * <h2>尝试获取当前登录用户 {@code ID}</h2>
      *
-     * @return 用户ID
+     * @return 用户 {@code ID}
      */
     private long tryToGetCurrentUserId() {
         try {
@@ -866,7 +866,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @param id 主键 {@code ID}
      * @return 实体
-     * @apiNote 查不到返回null，不抛异常
+     * @apiNote 查不到返回 {@code null}，不抛异常
      */
     private @Nullable E getByIdMaybeNull(long id) {
         try {
@@ -1057,7 +1057,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>创建{@code Sort}</h2>
      *
      * @param sort 排序对象
-     * @return Sort Spring的排序对象
+     * @return Sort {@code Spring} 的排序对象
      */
     private @NotNull org.springframework.data.domain.Sort createSort(Sort sort) {
         sort = Objects.requireNonNullElse(sort, new Sort());
@@ -1097,8 +1097,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>获取查询条件列表</h2>
      *
-     * @param root    root
-     * @param builder builder
+     * @param root    {@code root}
+     * @param builder {@code builder}
      * @param search  搜索实体
      * @param isEqual 是否强匹配
      * @return 搜索条件
@@ -1146,7 +1146,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>添加创建时间和更新时间的查询条件</h2>
      *
-     * @param root          ROOT
+     * @param root          {@code ROOT}
      * @param builder       参数构造器
      * @param search        原始查询对象
      * @param predicateList 查询条件列表
@@ -1175,11 +1175,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>创建Predicate</h2>
+     * <h2>创建 {@code Predicate}</h2>
      *
-     * @param root          root
-     * @param criteriaQuery query
-     * @param builder       builder
+     * @param root          {@code root}
+     * @param criteriaQuery {@code query}
+     * @param builder       {@code builder}
      * @param filter        过滤器实体
      * @return 查询条件
      */
