@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -245,17 +246,38 @@ public class ReflectUtil {
     }
 
     /**
+     * <h2>缓存字段列表</h2>
+     */
+    private final static ConcurrentHashMap<Class<?>, List<Field>> FIELD_LIST_MAP = new ConcurrentHashMap<>();
+    /**
+     * <h2>缓存属性列表</h2>
+     *
+     * @apiNote 声明属性列表
+     */
+    private final static ConcurrentHashMap<String, Field[]> DECLARED_FIELD_LIST_MAP = new ConcurrentHashMap<>();
+
+    /**
      * <h2>获取指定类的字段列表</h2>
      *
      * @param clazz 类
      * @return 字段数组
      */
     public final @NotNull List<Field> getFieldList(Class<?> clazz) {
+        return FIELD_LIST_MAP.computeIfAbsent(clazz, this::getCacheFieldList);
+    }
+
+    /**
+     * <h2>获取指定类的字段列表</h2>
+     *
+     * @param clazz 类
+     * @return 字段数组
+     */
+    private @NotNull List<Field> getCacheFieldList(Class<?> clazz) {
         List<Field> fieldList = new LinkedList<>();
         if (Objects.isNull(clazz)) {
             return fieldList;
         }
-        Field[] fields = clazz.getDeclaredFields();
+        Field[] fields = getDeclaredFields(clazz);
         // 过滤静态属性 或 过滤transient 关键字修饰的属性
         fieldList = Arrays.stream(fields)
                 .filter(field -> !Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
@@ -270,13 +292,24 @@ public class ReflectUtil {
     }
 
     /**
+     * <h2>获取类的所有属性</h2>
+     *
+     * @param clazz 类
+     * @return 属性数组
+     */
+    @Contract(pure = true)
+    public final Field @NotNull [] getDeclaredFields(@NotNull Class<?> clazz) {
+        return DECLARED_FIELD_LIST_MAP.computeIfAbsent(clazz.getName(), key -> clazz.getDeclaredFields());
+    }
+
+    /**
      * <h2>获取类的所有公开属性名称列表</h2>
      *
      * @param clazz 类
      * @return 属性名数组
      */
     public final @NotNull List<String> getFieldNameList(@NotNull Class<?> clazz) {
-        Field[] fields = clazz.getDeclaredFields();
+        Field[] fields = getDeclaredFields(clazz);
         return Arrays.stream(fields)
                 .map(Field::getName)
                 .collect(Collectors.toList());

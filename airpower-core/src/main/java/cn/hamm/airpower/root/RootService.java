@@ -1,5 +1,6 @@
 package cn.hamm.airpower.root;
 
+import cn.hamm.airpower.annotation.Desensitize;
 import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Configs;
@@ -905,7 +906,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 如果数据库是null 且 传入的也是null 签名给空字符串
                 entity.setRemark(Constant.EMPTY_STRING);
             }
-            entity = withNull ? entity : getEntityForSave(entity, existEntity);
+            entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
         }
         if (Objects.isNull(entity.getCreateUserId())) {
             entity.setCreateUserId(tryToGetCurrentUserId());
@@ -925,7 +926,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (Objects.isNull(entity.getUpdateUserId())) {
             entity.setUpdateUserId(tryToGetCurrentUserId());
         }
-        entity = withNull ? entity : getEntityForSave(entity, existEntity);
+        entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
         return saveAndFlush(entity);
     }
 
@@ -954,9 +955,27 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 目标实体
      */
     @Contract("_, _ -> param2")
-    private @NotNull E getEntityForSave(@NotNull E sourceEntity, @NotNull E existEntity) {
+    private @NotNull E getEntityForUpdate(@NotNull E sourceEntity, @NotNull E existEntity) {
         String[] nullProperties = getNullProperties(sourceEntity);
         BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
+        List<Field> fieldList = reflectUtil.getFieldList(getEntityClass());
+        for (Field field : fieldList) {
+            Desensitize desensitize = reflectUtil.getAnnotation(Desensitize.class, field);
+            if (Objects.isNull(desensitize)) {
+                // 非脱敏注解标记属性
+                continue;
+            }
+            // 脱敏字段
+            Object fieldValue = reflectUtil.getFieldValue(existEntity, field);
+            if (Objects.isNull(fieldValue)) {
+                // 值本身是空
+                continue;
+            }
+            if (fieldValue.toString().contains(desensitize.symbol())) {
+                // 如果值包含脱敏字符
+                reflectUtil.setFieldValue(existEntity, field, null);
+            }
+        }
         return existEntity;
     }
 
