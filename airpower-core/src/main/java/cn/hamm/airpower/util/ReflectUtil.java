@@ -287,7 +287,7 @@ public class ReflectUtil {
         }
         // 处理父类字段
         Class<?> superClass = clazz.getSuperclass();
-        fieldList.addAll(getFieldList(superClass));
+        fieldList.addAll(getCacheFieldList(superClass));
         return fieldList;
     }
 
