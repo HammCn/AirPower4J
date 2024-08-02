@@ -955,7 +955,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 目标实体
      */
     @Contract("_, _ -> param2")
-    private @NotNull E getEntityForUpdate(@NotNull E sourceEntity, @NotNull E existEntity) {
+    protected final @NotNull E getEntityForUpdate(@NotNull E sourceEntity, @NotNull E existEntity) {
         String[] nullProperties = getNullProperties(sourceEntity);
         BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
         List<Field> fieldList = reflectUtil.getFieldList(getEntityClass());
