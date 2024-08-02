@@ -13,7 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DataSource {
     /**
-     * <h2>数据库名称(租户的key)</h2>
+     * <h2>数据库名称</h2>
+     * 租户的 {@code key}
      */
     private String database;
 

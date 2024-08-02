@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-<a href="https://gitee.com/air-power/AirPower4J">Gitee</a> / <a href="https://github.com/HammCn/AirPower4J">GitHub</a> / <a href="./CHANGELOG.md">CHANGELOG</a> / <a href="https://central.sonatype.com/namespace/cn.hamm">Maven</a>
+<a href="https://github.com/HammCn/AirPower4J">GitHub</a> / <a href="https://gitee.com/air-power/AirPower4J">Gitee</a> / <a href="./CHANGELOG.md">CHANGELOG</a> / <a href="https://central.sonatype.com/namespace/cn.hamm">Maven</a>
 </p>
 
 ## 📖 这是个什么项目
@@ -29,12 +29,12 @@
 通过我们提供的 ```AirPower宿主仓库``` 项目来完成 **AirPower** 宿主项目的初始化:
 
 AirPowerJavaStarter
-via [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md) / [GitHub](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md)
+via [GitHub](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md) / [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md)
 
 ## 🛎 问题反馈与建议
 
 如果你有什么疑问或者问题，你也可以加入开发者交流QQ群(```555156313```)
-进行咨询，当然，我们更建议你发起 [Gitee issue](https://gitee.com/air-power/AirPower4J/issues/new) / [Github issue](https://github.com/HammCn/AirPower4J/issues/new)
+进行咨询，当然，我们更建议你发起 [Github issue](https://github.com/HammCn/AirPower4J/issues/new) / [Gitee issue](https://gitee.com/air-power/AirPower4J/issues/new)
 
 ## ⏰ Enjoy it
 

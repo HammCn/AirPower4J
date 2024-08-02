@@ -64,7 +64,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当满足条件时抛出异常</h2>
+     * <h2>当 {@code 满足条件} 时抛出异常</h2>
      *
      * @param condition 条件
      */
@@ -73,7 +73,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当满足条件时抛出异常</h2>
+     * <h2>当 {@code 满足条件} 时抛出异常</h2>
      *
      * @param condition 条件
      * @param message   返回信息
@@ -85,7 +85,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当满足条件时抛出异常</h2>
+     * <h2>当 {@code 满足条件} 时抛出异常</h2>
      *
      * @param condition 条件
      * @param message   返回信息
@@ -98,7 +98,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当为null时抛出异常</h2>
+     * <h2>当为 {@code null} 时抛出异常</h2>
      *
      * @param obj 被验证的数据
      */
@@ -108,7 +108,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当为null时抛出异常</h2>
+     * <h2>当为 {@code null} 时抛出异常</h2>
      *
      * @param obj     被验证的数据
      * @param message 返回信息
@@ -119,7 +119,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两者相同时抛出异常</h2>
+     * <h2>当 {@code 两者相同} 时抛出异常</h2>
      *
      * @param obj1 被验证的数据
      * @param obj2 被验证的数据
@@ -129,7 +129,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两者相同时抛出异常</h2>
+     * <h2>当 {@code 两者相同} 时抛出异常</h2>
      *
      * @param obj1    被验证的数据
      * @param obj2    被验证的数据
@@ -140,7 +140,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两个字符串相同时抛出异常</h2>
+     * <h2>当 {@code 两个字符串相同} 时抛出异常</h2>
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -150,7 +150,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两个字符串相同时抛出异常</h2>
+     * <h2>当 {@code 两个字符串相同} 时抛出异常</h2>
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -161,7 +161,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两个字符串忽略大小写相同时抛出异常</h2>
+     * <h2>当 {@code 两个字符串忽略大小写相同} 时抛出异常</h2>
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -171,7 +171,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两个字符串忽略大小写相同时抛出异常</h2>
+     * <h2>当 {@code 两个字符串忽略大小写相同} 时抛出异常</h2>
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -182,7 +182,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两者不相同时抛出异常</h2>
+     * <h2>当 <s>{@code 两者不相同}</s> 时抛出异常</h2>
      *
      * @param obj1 被验证的数据
      * @param obj2 被验证的数据
@@ -192,7 +192,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两者不相同时抛出异常</h2>
+     * <h2>当 <s>{@code 两者不相同}</s> 时抛出异常</h2>
      *
      * @param obj1    被验证的数据
      * @param obj2    被验证的数据
@@ -203,7 +203,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两个字符串不相同时抛出异常</h2>
+     * <h2>当 <s>{@code 两个字符串不相同}</s> 时抛出异常</h2>
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -213,7 +213,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两个字符串不相同时抛出异常</h2>
+     * <h2>当 <s>{@code 两个字符串不相同}</s> 时抛出异常</h2>
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -224,7 +224,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两个字符串忽略大小写还不相同时抛出异常</h2>
+     * <h2>当 <s>{@code 两个字符串忽略大小写还不相同}</s> 时抛出异常</h2>
      *
      * @param str1 被验证的数据
      * @param str2 被验证的数据
@@ -234,7 +234,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当两个字符串忽略大小写还不相同时抛出异常</h2>
+     * <h2>当 <s>{@code 两个字符串忽略大小写还不相同}</s> 时抛出异常</h2>
      *
      * @param str1    被验证的数据
      * @param str2    被验证的数据
@@ -245,7 +245,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当为null或空字符串时抛出异常</h2>
+     * <h2>当为 {@code null或空字符串} 时抛出异常</h2>
      *
      * @param obj 被验证的数据
      */
@@ -254,7 +254,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当为null或空字符串时抛出异常</h2>
+     * <h2>当为 {@code null或空字符串} 时抛出异常</h2>
      *
      * @param obj     被验证的数据
      * @param message 返回信息
@@ -264,7 +264,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当不为null时抛出异常</h2>
+     * <h2>当 <s>{@code 不为null}</s> 时抛出异常</h2>
      *
      * @param obj 被验证的数据
      */
@@ -273,7 +273,7 @@ public interface IException {
     }
 
     /**
-     * <h2>当不为null时抛出异常</h2>
+     * <h2>当 <s>{@code 不为null}</s> 时抛出异常</h2>
      *
      * @param obj     被验证的数据
      * @param message 返回信息

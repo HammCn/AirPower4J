@@ -50,7 +50,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取32位随机字节数组</h2>
+     * <h2>获取 {@code 32} 位随机字节数组</h2>
      *
      * @return 随机字节数组
      */
@@ -59,7 +59,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取32位随机字符串</h2>
+     * <h2>获取 {@code 32} 位随机字符串</h2>
      *
      * @return 随机字符串
      */

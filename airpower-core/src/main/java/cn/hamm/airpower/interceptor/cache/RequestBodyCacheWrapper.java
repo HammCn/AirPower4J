@@ -55,7 +55,7 @@ public class RequestBodyCacheWrapper extends HttpServletRequestWrapper {
      * @param inputStream 输入流
      * @return 输入字节数组
      */
-    private byte[] inputStreamToBytes(@NotNull InputStream inputStream) throws IOException {
+    private byte @NotNull [] inputStreamToBytes(@NotNull InputStream inputStream) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int read;

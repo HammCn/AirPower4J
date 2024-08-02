@@ -37,7 +37,7 @@ public class DateTimeUtil {
      * @param formatter   格式化模板
      * @return 格式化后的时间
      */
-    public final @NotNull String format(long milliSecond, DateTimeFormatter formatter) {
+    public final @NotNull String format(long milliSecond, @NotNull DateTimeFormatter formatter) {
         return format(milliSecond, formatter.getValue());
     }
 

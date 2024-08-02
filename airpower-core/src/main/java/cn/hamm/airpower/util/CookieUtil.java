@@ -16,8 +16,8 @@ public class CookieUtil {
     /**
      * <h2>获取一个 {@code Cookie}</h2>
      *
-     * @param key   Key
-     * @param value Value
+     * @param key   {@code Cookie} 键
+     * @param value {@code Cookie} 值
      * @return {@code Cookie}
      * @see CookieConfig
      */

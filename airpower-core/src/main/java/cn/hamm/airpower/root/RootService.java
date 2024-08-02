@@ -1,5 +1,6 @@
 package cn.hamm.airpower.root;
 
+import cn.hamm.airpower.annotation.Desensitize;
 import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Configs;
@@ -61,29 +62,38 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>导出文件夹前缀</h2>
      */
     private static final String EXPORT_DIR_PREFIX = "export_";
+
     /**
      * <h2>导出文件前缀</h2>
      */
     private static final String EXPORT_FILE_PREFIX = EXPORT_DIR_PREFIX + "file_";
+
     /**
      * <h2>导出文件后缀</h2>
      */
     private static final String EXPORT_FILE_CSV = ".csv";
+
     /**
      * <h2>数据源</h2>
      */
     @Autowired
     protected R repository;
+
     @Autowired
     private ReflectUtil reflectUtil;
+
     @Autowired
     private TaskUtil taskUtil;
+
     @Autowired
     private RedisUtil redisUtil;
+
     @Autowired
     private RandomUtil randomUtil;
+
     @Autowired
     private DateTimeUtil dateTimeUtil;
+
     @Autowired
     private EntityManager entityManager;
 
@@ -549,7 +559,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>添加搜索的查询条件</h2>
      *
-     * @param root    ROOT
+     * @param root    {@code ROOT}
      * @param builder 参数构造器
      * @param search  原始查询对象
      * @return 查询条件列表
@@ -704,7 +714,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>添加查询条件({@code value}不为{@code null}时)</h2>
      *
-     * @param root          ROOT
+     * @param root          {@code ROOT}
      * @param predicateList 查询条件列表
      * @param fieldName     所属的字段名称
      * @param expression    表达式
@@ -722,9 +732,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>尝试获取当前登录用户ID</h2>
+     * <h2>尝试获取当前登录用户 {@code ID}</h2>
      *
-     * @return 用户ID
+     * @return 用户 {@code ID}
      */
     private long tryToGetCurrentUserId() {
         try {
@@ -857,7 +867,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @param id 主键 {@code ID}
      * @return 实体
-     * @apiNote 查不到返回null，不抛异常
+     * @apiNote 查不到返回 {@code null}，不抛异常
      */
     private @Nullable E getByIdMaybeNull(long id) {
         try {
@@ -896,7 +906,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 如果数据库是null 且 传入的也是null 签名给空字符串
                 entity.setRemark(Constant.EMPTY_STRING);
             }
-            entity = withNull ? entity : getEntityForSave(entity, existEntity);
+            entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
         }
         if (Objects.isNull(entity.getCreateUserId())) {
             entity.setCreateUserId(tryToGetCurrentUserId());
@@ -916,7 +926,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (Objects.isNull(entity.getUpdateUserId())) {
             entity.setUpdateUserId(tryToGetCurrentUserId());
         }
-        entity = withNull ? entity : getEntityForSave(entity, existEntity);
+        entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
         return saveAndFlush(entity);
     }
 
@@ -945,9 +955,27 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 目标实体
      */
     @Contract("_, _ -> param2")
-    private @NotNull E getEntityForSave(@NotNull E sourceEntity, @NotNull E existEntity) {
+    private @NotNull E getEntityForUpdate(@NotNull E sourceEntity, @NotNull E existEntity) {
         String[] nullProperties = getNullProperties(sourceEntity);
         BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
+        List<Field> fieldList = reflectUtil.getFieldList(getEntityClass());
+        for (Field field : fieldList) {
+            Desensitize desensitize = reflectUtil.getAnnotation(Desensitize.class, field);
+            if (Objects.isNull(desensitize)) {
+                // 非脱敏注解标记属性
+                continue;
+            }
+            // 脱敏字段
+            Object fieldValue = reflectUtil.getFieldValue(existEntity, field);
+            if (Objects.isNull(fieldValue)) {
+                // 值本身是空
+                continue;
+            }
+            if (fieldValue.toString().contains(desensitize.symbol())) {
+                // 如果值包含脱敏字符
+                reflectUtil.setFieldValue(existEntity, field, null);
+            }
+        }
         return existEntity;
     }
 
@@ -1048,7 +1076,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>创建{@code Sort}</h2>
      *
      * @param sort 排序对象
-     * @return Sort Spring的排序对象
+     * @return Sort {@code Spring} 的排序对象
      */
     private @NotNull org.springframework.data.domain.Sort createSort(Sort sort) {
         sort = Objects.requireNonNullElse(sort, new Sort());
@@ -1088,13 +1116,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>获取查询条件列表</h2>
      *
-     * @param root    root
-     * @param builder builder
+     * @param root    {@code root}
+     * @param builder {@code builder}
      * @param search  搜索实体
      * @param isEqual 是否强匹配
      * @return 搜索条件
      */
-    @SuppressWarnings("AlibabaSwitchStatement")
     private @NotNull List<jakarta.persistence.criteria.Predicate> getPredicateList(
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
@@ -1138,7 +1165,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>添加创建时间和更新时间的查询条件</h2>
      *
-     * @param root          ROOT
+     * @param root          {@code ROOT}
      * @param builder       参数构造器
      * @param search        原始查询对象
      * @param predicateList 查询条件列表
@@ -1167,11 +1194,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>创建Predicate</h2>
+     * <h2>创建 {@code Predicate}</h2>
      *
-     * @param root          root
-     * @param criteriaQuery query
-     * @param builder       builder
+     * @param root          {@code root}
+     * @param criteriaQuery {@code query}
+     * @param builder       {@code builder}
      * @param filter        过滤器实体
      * @return 查询条件
      */
