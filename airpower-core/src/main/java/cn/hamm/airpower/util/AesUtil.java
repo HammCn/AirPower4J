@@ -71,9 +71,9 @@ public class AesUtil {
     }
 
     /**
-     * <h2>获取随机密钥</h2>
+     * <h2>获取随机向量</h2>
      *
-     * @return 随机密钥
+     * @return 随机向量
      */
     @Contract(" -> new")
     public static @NotNull String getRandomIv() {
