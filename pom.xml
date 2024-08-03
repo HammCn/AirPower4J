@@ -124,7 +124,7 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                            <keyname>A8AB1B02BDE59B7F</keyname>
+                            <keyname>5FE4833A28EDA3991EA4F1D239A8BA7AF33610A8</keyname>
                         </configuration>
                     </execution>
                 </executions>
