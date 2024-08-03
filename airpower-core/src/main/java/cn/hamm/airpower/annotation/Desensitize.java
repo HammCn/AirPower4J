@@ -32,6 +32,8 @@ public @interface Desensitize {
 
     /**
      * <h2>脱敏符号</h2>
+     *
+     * @apiNote 如字段标记脱敏且提交的数据包含脱敏符号，则该类数据不更新到数据库
      */
     String symbol() default "*";
 

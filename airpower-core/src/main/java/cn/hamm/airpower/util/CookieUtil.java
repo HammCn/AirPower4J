@@ -23,9 +23,10 @@ public class CookieUtil {
      */
     public final @NotNull Cookie getCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
-        cookie.setHttpOnly(Configs.getCookieConfig().isCookieHttpOnly());
-        cookie.setMaxAge(Configs.getCookieConfig().getCookieMaxAge());
-        cookie.setSecure(Configs.getCookieConfig().isCookieSecurity());
+        CookieConfig cookieConfig = Configs.getCookieConfig();
+        cookie.setHttpOnly(cookieConfig.isCookieHttpOnly());
+        cookie.setMaxAge(cookieConfig.getCookieMaxAge());
+        cookie.setSecure(cookieConfig.isCookieSecurity());
         cookie.setPath(cookie.getPath());
         return cookie;
     }

@@ -62,7 +62,7 @@ public class DictionaryUtil {
      * <h2>获取指定枚举类的 {@code ListMap} 数据</h2>
      *
      * @param clazz 枚举类
-     * @return ListMap
+     * @return 枚举选项列表
      */
     public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(@NotNull Class<D> clazz) {
         return getDictionaryList(clazz, IDictionary::getKey, IDictionary::getLabel);
@@ -74,20 +74,21 @@ public class DictionaryUtil {
      * @param clazz   枚举字典类
      * @param lambdas 需要获取的方法表达式
      * @param <D>     字典类型
-     * @return ListMap
+     * @return 枚举选项列表
      */
     @SafeVarargs
     public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(
             @NotNull Class<D> clazz, IFunction<D, Object>... lambdas
     ) {
         List<Map<String, Object>> mapList = new ArrayList<>();
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
         for (D obj : clazz.getEnumConstants()) {
             //取出所有枚举类型
             Map<String, Object> item = new HashMap<>(lambdas.length);
             for (IFunction<D, Object> lambda : lambdas) {
                 // 依次取出参数的值
                 try {
-                    item.put(StringUtils.uncapitalize(Utils.getReflectUtil().getLambdaFunctionName(lambda)), lambda.apply(obj));
+                    item.put(StringUtils.uncapitalize(reflectUtil.getLambdaFunctionName(lambda)), lambda.apply(obj));
                 } catch (Exception exception) {
                     log.error(exception.getMessage(), exception);
                 }

@@ -3,9 +3,11 @@ package cn.hamm.airpower.interceptor;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MessageConstant;
+import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.Access;
+import cn.hamm.airpower.util.AccessUtil;
 import cn.hamm.airpower.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -87,16 +89,18 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     private void handleRequest(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, Class<?> clazz, Method method) {
         interceptRequest(request, response, clazz, method);
-        Access access = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
+        AccessUtil accessUtil = Utils.getAccessUtil();
+        Access access = accessUtil.getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
             return;
         }
         //需要登录
-        String accessToken = request.getHeader(Configs.getServiceConfig().getAuthorizeHeader());
+        ServiceConfig serviceConfig = Configs.getServiceConfig();
+        String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
 
         // 优先使用 Get 参数传入的身份
-        String accessTokenFromParam = request.getParameter(Configs.getServiceConfig().getAuthorizeHeader());
+        String accessTokenFromParam = request.getParameter(serviceConfig.getAuthorizeHeader());
         if (StringUtils.hasText(accessTokenFromParam)) {
             accessToken = accessTokenFromParam;
         }
@@ -105,7 +109,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
-            checkUserPermission(userId, Utils.getAccessUtil().getPermissionIdentity(clazz, method), request);
+            checkUserPermission(userId, accessUtil.getPermissionIdentity(clazz, method), request);
         }
     }
 

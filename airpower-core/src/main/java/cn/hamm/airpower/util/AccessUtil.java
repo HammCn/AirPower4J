@@ -113,6 +113,8 @@ public class AccessUtil {
             Resource[] resources = resourcePatternResolver.getResources(pattern);
             MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
 
+            ReflectUtil reflectUtil = Utils.getReflectUtil();
+            DictionaryUtil dictionaryUtil = Utils.getDictionaryUtil();
             for (Resource resource : resources) {
                 // 用于读取类信息
                 MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
@@ -120,13 +122,13 @@ public class AccessUtil {
                 String className = metadataReader.getClassMetadata().getClassName();
                 Class<?> clazz = Class.forName(className);
 
-                ApiController apiController = Utils.getReflectUtil().getAnnotation(ApiController.class, clazz);
+                ApiController apiController = reflectUtil.getAnnotation(ApiController.class, clazz);
                 if (Objects.isNull(apiController)) {
                     // 不是rest控制器或者是指定的几个白名单控制器
                     continue;
                 }
 
-                String customClassName = Utils.getReflectUtil().getDescription(clazz);
+                String customClassName = reflectUtil.getDescription(clazz);
                 String identity = clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING);
                 P permission = permissionClass.getConstructor().newInstance();
 
@@ -139,12 +141,12 @@ public class AccessUtil {
                 Method[] methods = clazz.getMethods();
 
                 // 取出控制器类上的Extends注解 如自己没标 则使用父类的
-                Extends extendsApi = Utils.getReflectUtil().getAnnotation(Extends.class, clazz);
+                Extends extendsApi = reflectUtil.getAnnotation(Extends.class, clazz);
                 for (Method method : methods) {
 
                     if (Objects.nonNull(extendsApi)) {
                         try {
-                            Api current = Utils.getDictionaryUtil().getDictionary(Api.class, Api::getMethodName, method.getName());
+                            Api current = dictionaryUtil.getDictionary(Api.class, Api::getMethodName, method.getName());
                             if (checkApiExcluded(current, extendsApi)) {
                                 continue;
                             }
@@ -155,7 +157,7 @@ public class AccessUtil {
                     if (apiPath.equals(subIdentity)) {
                         continue;
                     }
-                    String customMethodName = Utils.getReflectUtil().getDescription(method);
+                    String customMethodName = reflectUtil.getDescription(method);
                     Access accessConfig = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
                     if (!accessConfig.isLogin() || !accessConfig.isAuthorize()) {
                         // 这里可以选择是否不读取这些接口的权限，但前端可能需要
@@ -182,10 +184,10 @@ public class AccessUtil {
      */
     private boolean checkApiExcluded(Api api, @NotNull Extends extend) {
         List<Api> excludeList = Arrays.asList(extend.exclude());
-        List<Api> includeList = Arrays.asList(extend.value());
         if (excludeList.contains(api)) {
             return true;
         }
+        List<Api> includeList = Arrays.asList(extend.value());
         if (includeList.isEmpty()) {
             return false;
         }
@@ -200,9 +202,10 @@ public class AccessUtil {
      * @return 权限标识
      */
     private @NotNull String getMethodPermissionIdentity(Method method, String apiPath) {
-        RequestMapping requestMapping = Utils.getReflectUtil().getAnnotation(RequestMapping.class, method);
-        PostMapping postMapping = Utils.getReflectUtil().getAnnotation(PostMapping.class, method);
-        GetMapping getMapping = Utils.getReflectUtil().getAnnotation(GetMapping.class, method);
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
+        RequestMapping requestMapping = reflectUtil.getAnnotation(RequestMapping.class, method);
+        PostMapping postMapping = reflectUtil.getAnnotation(PostMapping.class, method);
+        GetMapping getMapping = reflectUtil.getAnnotation(GetMapping.class, method);
 
         if (Objects.isNull(requestMapping) && Objects.isNull(postMapping) && Objects.isNull(getMapping)) {
             return apiPath;

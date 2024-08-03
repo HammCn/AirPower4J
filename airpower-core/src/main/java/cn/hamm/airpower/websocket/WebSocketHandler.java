@@ -2,8 +2,10 @@ package cn.hamm.airpower.websocket;
 
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
+import cn.hamm.airpower.config.WebSocketConfig;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
+import cn.hamm.airpower.util.MqttUtil;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
@@ -71,9 +73,10 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     @Override
     protected final void handleTextMessage(@NonNull WebSocketSession session, @NotNull TextMessage textMessage) {
         final String message = textMessage.getPayload();
-        if (Configs.getWebsocketConfig().getPing().equalsIgnoreCase(message)) {
+        WebSocketConfig websocketConfig = Configs.getWebsocketConfig();
+        if (websocketConfig.getPing().equalsIgnoreCase(message)) {
             try {
-                session.sendMessage(new TextMessage(Configs.getWebsocketConfig().getPong()));
+                session.sendMessage(new TextMessage(websocketConfig.getPong()));
             } catch (IOException e) {
                 log.error("发送Websocket消息失败: {}", e.getMessage());
             }
@@ -179,7 +182,8 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * @param userId  用户 {@code ID}
      */
     private void startMqttListener(@NotNull WebSocketSession session, long userId) {
-        try (MqttClient mqttClient = Utils.getMqttUtil().createClient()) {
+        MqttUtil mqttUtil = Utils.getMqttUtil();
+        try (MqttClient mqttClient = mqttUtil.createClient()) {
             mqttClient.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable throwable) {
@@ -197,7 +201,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
 
                 }
             });
-            mqttClient.connect(Utils.getMqttUtil().createOption());
+            mqttClient.connect(mqttUtil.createOption());
             final String personalChannel = CHANNEL_USER_PREFIX + userId;
             String[] topics = {CHANNEL_ALL, personalChannel};
             mqttClient.subscribe(topics);

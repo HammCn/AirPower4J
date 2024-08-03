@@ -5,6 +5,7 @@ import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.root.RootModel;
+import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
@@ -94,8 +95,9 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             return result;
         }
 
-        Filter filter = Utils.getReflectUtil().getAnnotation(Filter.class, method);
-        DesensitizeExclude desensitizeExclude = Utils.getReflectUtil().getAnnotation(DesensitizeExclude.class, method);
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
+        Filter filter = reflectUtil.getAnnotation(Filter.class, method);
+        DesensitizeExclude desensitizeExclude = reflectUtil.getAnnotation(DesensitizeExclude.class, method);
         if (json.getData() instanceof QueryPageResponse) {
             QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) json.getData();
             // 如果 data 分页对象
@@ -111,13 +113,13 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             collection.stream()
                     .toList()
                     .forEach(item -> {
-                        if (Utils.getReflectUtil().isModel(item.getClass())) {
+                        if (reflectUtil.isModel(item.getClass())) {
                             ((M) item).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude));
                         }
                     });
             return json.setData(collection);
         }
-        if (Utils.getReflectUtil().isModel(dataCls)) {
+        if (reflectUtil.isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
             return json.setData(((M) json.getData()).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude)));

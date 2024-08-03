@@ -29,7 +29,7 @@ public class Constant {
     public static final String ID = "id";
 
     /**
-     * <h2>一分钟 {@code 60}</h2>
+     * <h2>一分钟 {@code 60} 秒</h2>
      */
     public static final int SECOND_PER_MINUTE = 60;
 

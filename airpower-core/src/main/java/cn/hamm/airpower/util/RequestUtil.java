@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -57,18 +58,14 @@ public class RequestUtil {
     public final String getIpAddress(HttpServletRequest request) {
         String ipAddress;
         try {
-            ipAddress = request.getHeader("x-forwarded-for");
-            if (isValidAddress(ipAddress)) {
-                return ipAddress;
+            List<String> ipHeaders = List.of("x-forwarded-for", "Proxy-Client-IP", "WL-Proxy-Client-IP");
+            for (String ipHeader : ipHeaders) {
+                ipAddress = request.getHeader(ipHeader);
+                if (isValidAddress(ipAddress)) {
+                    return ipAddress;
+                }
             }
-            ipAddress = request.getHeader("Proxy-Client-IP");
-            if (isValidAddress(ipAddress)) {
-                return ipAddress;
-            }
-            ipAddress = request.getHeader("WL-Proxy-Client-IP");
-            if (isValidAddress(ipAddress)) {
-                return ipAddress;
-            }
+
             ipAddress = request.getRemoteAddr();
             if (Constant.LOCAL_IP_ADDRESS.equals(ipAddress)) {
                 // 根据网卡取本机配置的IP

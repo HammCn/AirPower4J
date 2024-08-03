@@ -36,10 +36,9 @@ public class TreeUtil {
     private <E extends ITree<E>> List<E> buildTreeList(@NotNull List<E> list, Long parentId) {
         return list.stream()
                 .filter(item -> parentId.equals(item.getParentId()))
-                .peek(item -> {
-                    List<E> children = buildTreeList(list, item.getId());
-                    item.setChildren(children);
-                })
+                .peek(item -> item.setChildren(
+                        buildTreeList(list, item.getId())
+                ))
                 .toList();
     }
 }
