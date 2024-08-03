@@ -2,6 +2,7 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.MessageConstant;
+import cn.hamm.airpower.config.MqttConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -37,8 +38,9 @@ public class MqttUtil {
      * @throws MqttException 异常
      */
     public @NotNull MqttClient createClient(String id) throws MqttException {
+        MqttConfig mqttConfig = Configs.getMqttConfig();
         return new MqttClient(
-                "tcp://" + Configs.getMqttConfig().getHost() + ":" + Configs.getMqttConfig().getPort(),
+                "tcp://" + mqttConfig.getHost() + ":" + mqttConfig.getPort(),
                 id,
                 new MemoryPersistence()
         );
@@ -52,8 +54,9 @@ public class MqttUtil {
     public MqttConnectOptions createOption() {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(false);
-        options.setUserName(Configs.getMqttConfig().getUser());
-        options.setPassword(Configs.getMqttConfig().getPass().toCharArray());
+        MqttConfig mqttConfig = Configs.getMqttConfig();
+        options.setUserName(mqttConfig.getUser());
+        options.setPassword(mqttConfig.getPass().toCharArray());
         options.setConnectionTimeout(30);
         options.setKeepAliveInterval(10);
         return options;
