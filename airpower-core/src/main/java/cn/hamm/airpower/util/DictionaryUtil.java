@@ -81,13 +81,14 @@ public class DictionaryUtil {
             @NotNull Class<D> clazz, IFunction<D, Object>... lambdas
     ) {
         List<Map<String, Object>> mapList = new ArrayList<>();
+        ReflectUtil reflectUtil = Utils.getReflectUtil();
         for (D obj : clazz.getEnumConstants()) {
             //取出所有枚举类型
             Map<String, Object> item = new HashMap<>(lambdas.length);
             for (IFunction<D, Object> lambda : lambdas) {
                 // 依次取出参数的值
                 try {
-                    item.put(StringUtils.uncapitalize(Utils.getReflectUtil().getLambdaFunctionName(lambda)), lambda.apply(obj));
+                    item.put(StringUtils.uncapitalize(reflectUtil.getLambdaFunctionName(lambda)), lambda.apply(obj));
                 } catch (Exception exception) {
                     log.error(exception.getMessage(), exception);
                 }
