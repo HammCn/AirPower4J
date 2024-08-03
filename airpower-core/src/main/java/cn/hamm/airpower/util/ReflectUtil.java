@@ -41,6 +41,7 @@ public class ReflectUtil {
      * <h2>缓存字段列表</h2>
      */
     private final static ConcurrentHashMap<Class<?>, List<Field>> FIELD_LIST_MAP = new ConcurrentHashMap<>();
+
     /**
      * <h2>缓存属性列表</h2>
      *
