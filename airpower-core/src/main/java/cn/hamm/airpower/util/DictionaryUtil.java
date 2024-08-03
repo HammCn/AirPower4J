@@ -62,7 +62,7 @@ public class DictionaryUtil {
      * <h2>获取指定枚举类的 {@code ListMap} 数据</h2>
      *
      * @param clazz 枚举类
-     * @return ListMap
+     * @return 枚举选项列表
      */
     public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(@NotNull Class<D> clazz) {
         return getDictionaryList(clazz, IDictionary::getKey, IDictionary::getLabel);
@@ -74,7 +74,7 @@ public class DictionaryUtil {
      * @param clazz   枚举字典类
      * @param lambdas 需要获取的方法表达式
      * @param <D>     字典类型
-     * @return ListMap
+     * @return 枚举选项列表
      */
     @SafeVarargs
     public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(

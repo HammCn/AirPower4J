@@ -38,6 +38,17 @@ import java.util.stream.Collectors;
 @Component
 public class ReflectUtil {
     /**
+     * <h2>缓存字段列表</h2>
+     */
+    private final static ConcurrentHashMap<Class<?>, List<Field>> FIELD_LIST_MAP = new ConcurrentHashMap<>();
+    /**
+     * <h2>缓存属性列表</h2>
+     *
+     * @apiNote 声明属性列表
+     */
+    private final static ConcurrentHashMap<String, Field[]> DECLARED_FIELD_LIST_MAP = new ConcurrentHashMap<>();
+
+    /**
      * <h2>获取对象指定属性的值</h2>
      *
      * @param object 对象
@@ -244,17 +255,6 @@ public class ReflectUtil {
         }
         return isModel(clazz.getSuperclass());
     }
-
-    /**
-     * <h2>缓存字段列表</h2>
-     */
-    private final static ConcurrentHashMap<Class<?>, List<Field>> FIELD_LIST_MAP = new ConcurrentHashMap<>();
-    /**
-     * <h2>缓存属性列表</h2>
-     *
-     * @apiNote 声明属性列表
-     */
-    private final static ConcurrentHashMap<String, Field[]> DECLARED_FIELD_LIST_MAP = new ConcurrentHashMap<>();
 
     /**
      * <h2>获取指定类的字段列表</h2>
