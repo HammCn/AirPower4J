@@ -36,7 +36,7 @@ public class SecurityUtil {
     public final String createAccessToken(Long id) {
         ServiceConfig serviceConfig = Configs.getServiceConfig();
         return Utils.getTokenUtil().addPayload(Constant.ID, id)
-                .setExpireMillisecond(serviceConfig.getAuthorizeExpireSecond() * 1000)
+                .setExpireMillisecond(serviceConfig.getAuthorizeExpireSecond() * Constant.MILLISECONDS_PER_SECOND)
                 .create(serviceConfig.getAccessTokenSecret());
     }
 }
