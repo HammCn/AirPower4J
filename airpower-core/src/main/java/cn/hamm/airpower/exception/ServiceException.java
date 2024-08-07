@@ -46,7 +46,7 @@ public class ServiceException extends RuntimeException implements IException {
      * @param errorCode 异常
      */
     public ServiceException(@NotNull ServiceError errorCode) {
-        this.setCode(errorCode.getCode()).setMessage(errorCode.getMessage());
+        setCode(errorCode.getCode()).setMessage(errorCode.getMessage());
     }
 
     /**
@@ -56,8 +56,7 @@ public class ServiceException extends RuntimeException implements IException {
      * @param message   错误信息
      */
     public ServiceException(@NotNull ServiceError errorCode, String message) {
-        this.setCode(errorCode.getCode())
-                .setMessage(message);
+        setCode(errorCode.getCode()).setMessage(message);
     }
 
     /**
@@ -67,7 +66,7 @@ public class ServiceException extends RuntimeException implements IException {
      * @param message 错误信息
      */
     public ServiceException(int code, String message) {
-        this.setCode(code).setMessage(message);
+        setCode(code).setMessage(message);
     }
 
     /**
@@ -76,6 +75,6 @@ public class ServiceException extends RuntimeException implements IException {
      * @param exception 异常
      */
     public ServiceException(@NotNull Exception exception) {
-        this.setCode(ServiceError.SERVICE_ERROR.getCode()).setMessage(exception.getMessage());
+        setCode(ServiceError.SERVICE_ERROR.getCode()).setMessage(exception.getMessage());
     }
 }
