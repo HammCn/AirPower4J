@@ -1142,7 +1142,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             switch (searchMode.value()) {
                 case JOIN:
                     Join<?, ?> payload = root.join(field.getName(), JoinType.INNER);
-                    predicateList.addAll(this.getPredicateList(payload, builder, fieldValue, isEqual));
+                    predicateList.addAll(getPredicateList(payload, builder, fieldValue, isEqual));
                     break;
                 case LIKE:
                     if (!isEqual) {
@@ -1206,7 +1206,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             @NotNull Root<E> root, @NotNull CriteriaQuery<?> criteriaQuery,
             @NotNull CriteriaBuilder builder, @NotNull E filter, boolean isEqual
     ) {
-        List<Predicate> predicateList = this.getPredicateList(root, builder, filter, isEqual);
+        List<Predicate> predicateList = getPredicateList(root, builder, filter, isEqual);
         predicateList.addAll(addSearchPredicate(root, builder, filter));
         addCreateAndUpdateTimePredicate(root, builder, filter, predicateList);
         Predicate[] predicates = new Predicate[predicateList.size()];

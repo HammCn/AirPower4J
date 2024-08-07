@@ -48,7 +48,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * <h2>忽略只读字段</h2>
      */
     public final void ignoreReadOnlyFields() {
-        reflectUtil.getFieldList(this.getClass()).stream()
+        reflectUtil.getFieldList(getClass()).stream()
                 .filter(field -> Objects.nonNull(reflectUtil.getAnnotation(ReadOnly.class, field)))
                 .forEach(field -> reflectUtil.clearFieldValue(this, field));
     }
@@ -80,7 +80,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @see #filter(Class)
      */
     public final M filterAndDesensitize(@NotNull Class<?> filterClass, boolean isDesensitize) {
-        Class<M> clazz = (Class<M>) this.getClass();
+        Class<M> clazz = (Class<M>) getClass();
         List<Field> allFields = reflectUtil.getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
         // 类中没有标排除 则所有字段全暴露 走黑名单

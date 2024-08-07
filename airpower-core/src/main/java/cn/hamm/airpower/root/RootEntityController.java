@@ -394,7 +394,7 @@ public class RootEntityController<
      * <h2>检查Api可用状态</h2>
      */
     private void checkApiAvailableStatus(Api api) {
-        Extends extendsApi = this.getClass().getAnnotation(Extends.class);
+        Extends extendsApi = getClass().getAnnotation(Extends.class);
         if (Objects.isNull(extendsApi)) {
             // 没配置
             return;

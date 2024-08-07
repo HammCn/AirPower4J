@@ -124,7 +124,7 @@ public class HttpUtil {
     private HttpRequest getHttpRequest() {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(url));
-        this.headers.forEach((key, value) -> requestBuilder.header(key, value.toString()));
+        headers.forEach((key, value) -> requestBuilder.header(key, value.toString()));
         HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofString(body);
         switch (method) {
             case GET -> requestBuilder.GET();
