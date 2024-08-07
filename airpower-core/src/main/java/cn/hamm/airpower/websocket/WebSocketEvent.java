@@ -64,15 +64,13 @@ public class WebSocketEvent {
      * @return 事件
      */
     private static @NotNull WebSocketEvent create() {
-        WebSocketEvent webSocketEvent = new WebSocketEvent();
-        webSocketEvent.resetEvent();
-        return webSocketEvent;
+        return new WebSocketEvent().resetEvent();
     }
 
     /**
      * <h2>重置事件的 {@code ID} 和事件</h2>
      */
-    protected final void resetEvent() {
+    protected final WebSocketEvent resetEvent() {
         time = System.currentTimeMillis();
         id = Base64.getEncoder().encodeToString((String.format(
                 "%s-%s-%s",
@@ -80,5 +78,6 @@ public class WebSocketEvent {
                 CURRENT_EVENT_ID.incrementAndGet(),
                 time
         )).getBytes(StandardCharsets.UTF_8));
+        return this;
     }
 }

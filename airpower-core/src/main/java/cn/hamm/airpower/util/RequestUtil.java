@@ -107,9 +107,7 @@ public class RequestUtil {
      * @return 判定结果
      */
     private boolean isValidAddress(String ipAddress) {
-        return Objects.nonNull(ipAddress) &&
-                !ipAddress.isEmpty() &&
-                !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
+        return Objects.nonNull(ipAddress) && !ipAddress.isEmpty() && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
     }
 
     /**

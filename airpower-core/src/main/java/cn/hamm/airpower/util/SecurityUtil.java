@@ -2,6 +2,7 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
+import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.ServiceError;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +34,9 @@ public class SecurityUtil {
      * @return {@code AccessToken}
      */
     public final String createAccessToken(Long id) {
+        ServiceConfig serviceConfig = Configs.getServiceConfig();
         return Utils.getTokenUtil().addPayload(Constant.ID, id)
-                .setExpireMillisecond(Configs.getServiceConfig().getAuthorizeExpireSecond() * 1000)
-                .create(Configs.getServiceConfig().getAccessTokenSecret());
+                .setExpireMillisecond(serviceConfig.getAuthorizeExpireSecond() * 1000)
+                .create(serviceConfig.getAccessTokenSecret());
     }
 }
