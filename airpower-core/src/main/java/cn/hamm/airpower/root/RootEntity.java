@@ -202,8 +202,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     public final @org.jetbrains.annotations.NotNull E copyOnlyId() {
         try {
             E target = (E) getClass().getConstructor().newInstance();
-            target.setId(this.getId());
-            return target;
+            return target.setId(getId());
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
