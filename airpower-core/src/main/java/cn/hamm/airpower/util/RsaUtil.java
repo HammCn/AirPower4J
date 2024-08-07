@@ -124,12 +124,9 @@ public class RsaUtil {
      */
     @Contract("_, _, _ -> new")
     private @NotNull String decrypt(String encryptedContent, Key key, int blockSize) throws Exception {
-        byte[] srcBytes = Base64.getDecoder().decode(encryptedContent);
-        Cipher deCipher;
-        deCipher = Cipher.getInstance(CRYPT_METHOD);
+        Cipher deCipher = Cipher.getInstance(CRYPT_METHOD);
         deCipher.init(Cipher.DECRYPT_MODE, key);
-        byte[] resultBytes;
-        resultBytes = rsaDoFinal(deCipher, srcBytes, blockSize);
+        byte[] resultBytes = rsaDoFinal(deCipher, Base64.getDecoder().decode(encryptedContent), blockSize);
         return new String(resultBytes);
     }
 
@@ -142,12 +139,9 @@ public class RsaUtil {
      * @return 密文
      */
     private String encrypt(@NotNull String sourceContent, Key key, int blockSize) throws Exception {
-        byte[] srcBytes = sourceContent.getBytes();
-        Cipher cipher;
-        cipher = Cipher.getInstance(CRYPT_METHOD);
+        Cipher cipher = Cipher.getInstance(CRYPT_METHOD);
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte[] resultBytes;
-        resultBytes = rsaDoFinal(cipher, srcBytes, blockSize);
+        byte[] resultBytes = rsaDoFinal(cipher, sourceContent.getBytes(), blockSize);
         return Base64.getEncoder().encodeToString(resultBytes);
     }
 
@@ -224,8 +218,7 @@ public class RsaUtil {
      * @return {@code PEM}
      */
     public final @NotNull String convertPublicKeyToPem(@NotNull PublicKey publicKey) {
-        byte[] encoded = publicKey.getEncoded();
-        String base64Encoded = Base64.getEncoder().encodeToString(encoded);
+        String base64Encoded = Base64.getEncoder().encodeToString(publicKey.getEncoded());
         return "-----BEGIN PUBLIC KEY-----\n" +
                 wrapBase64Text(base64Encoded) +
                 "-----END PUBLIC KEY-----";
@@ -238,8 +231,7 @@ public class RsaUtil {
      * @return {@code PEM}
      */
     public final @NotNull String convertPrivateKeyToPem(@NotNull PrivateKey privateKey) {
-        byte[] encoded = privateKey.getEncoded();
-        String base64Encoded = Base64.getEncoder().encodeToString(encoded);
+        String base64Encoded = Base64.getEncoder().encodeToString(privateKey.getEncoded());
         return "-----BEGIN RSA PRIVATE KEY-----\n" +
                 wrapBase64Text(base64Encoded) +
                 "-----END RSA PRIVATE KEY-----";
