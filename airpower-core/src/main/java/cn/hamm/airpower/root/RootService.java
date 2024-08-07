@@ -173,7 +173,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             for (String fieldName : fieldNameList) {
                 Object value = map.get(fieldName);
                 value = prepareExcelColumn(fieldName, value, fieldList);
-                value = value.toString().replaceAll(Constant.COMMA, Constant.SPACE).replaceAll(Constant.LINE_BREAK, Constant.SPACE);
+                value = value.toString()
+                        .replaceAll(Constant.COMMA, Constant.SPACE)
+                        .replaceAll(Constant.LINE_BREAK, Constant.SPACE);
                 columnList.add(value.toString());
             }
             rowList.add(String.join(Constant.COMMA, columnList));
@@ -486,7 +488,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 处理后的查询请求
      * <ul>
      *     <li>{@link #getList(QueryRequest)} {@link #getPage(QueryPageRequest)} {@link #createExportTask(QueryRequest)}均会触发此前置方法</li>
-     *     <li>{@link #beforeGetList(QueryRequest)} {@link #beforeGetPage(QueryPageRequest)} {@link #beforeExportQuery(QueryRequest)}} 先触发</li>
+     *     <li>{@link #beforeGetList(QueryRequest)} {@link #beforeGetPage(QueryPageRequest)} {@link #beforeExportQuery(QueryRequest)} 先触发</li>
      * </ul>
      */
     protected QueryRequest<E> beforeQuery(@NotNull QueryRequest<E> queryRequest) {
@@ -784,7 +786,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             value = Constant.LINE;
         }
         try {
-            Field field = fieldList.stream().filter(item -> item.getName().equals(fieldName)).findFirst().orElse(null);
+            Field field = fieldList.stream()
+                    .filter(item -> item.getName().equals(fieldName))
+                    .findFirst()
+                    .orElse(null);
             if (Objects.isNull(field)) {
                 return value;
             }
@@ -792,7 +797,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             if (Objects.isNull(excelColumn)) {
                 return value;
             }
-
+            DictionaryUtil dictionaryUtil = Utils.getDictionaryUtil();
             return switch (excelColumn.value()) {
                 case DATETIME -> Constant.TAB + dateTimeUtil.format(Long.parseLong(value.toString()));
                 case TEXT -> Constant.TAB + value;
@@ -802,7 +807,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     if (Objects.isNull(dictionary)) {
                         yield value;
                     } else {
-                        IDictionary dict = Utils.getDictionaryUtil().getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
+                        IDictionary dict = dictionaryUtil.getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
                         yield dict.getLabel();
                     }
                 }
