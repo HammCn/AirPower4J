@@ -5,6 +5,7 @@ import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootModel;
+import cn.hamm.airpower.util.RedisUtil;
 import cn.hamm.airpower.util.Utils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -80,7 +81,7 @@ public class OpenRequest {
      * @apiNote 无需手动调用
      */
     public final void checkSignature() {
-        ServiceError.SIGNATURE_INVALID.whenNotEquals(this.signature, this.sign());
+        ServiceError.SIGNATURE_INVALID.whenNotEquals(signature, sign());
         checkNonce();
         checkTimestamp();
     }
@@ -91,9 +92,7 @@ public class OpenRequest {
      * @return 签名后的字符串
      */
     public final @org.jetbrains.annotations.NotNull String sign() {
-        return DigestUtils.sha1Hex(
-                this.openApp.getAppSecret() + this.appKey + this.version + this.timestamp + this.nonce + this.content
-        );
+        return DigestUtils.sha1Hex(openApp.getAppSecret() + appKey + version + timestamp + nonce + content);
     }
 
     /**
@@ -117,14 +116,14 @@ public class OpenRequest {
      * @return 请求数据
      */
     public final String decodeContent() {
-        String request = this.content;
+        String request = content;
         OpenArithmeticType appArithmeticType = Utils.getDictionaryUtil().getDictionary(
-                OpenArithmeticType.class, this.openApp.getArithmetic()
+                OpenArithmeticType.class, openApp.getArithmetic()
         );
         try {
             switch (appArithmeticType) {
                 case AES -> request = Utils.getAesUtil()
-                        .setKey(this.openApp.getAppSecret())
+                        .setKey(openApp.getAppSecret())
                         .decrypt(request);
                 case RSA -> request = Utils.getRsaUtil()
                         .setPrivateKey(openApp.getPrivateKey())
@@ -146,8 +145,8 @@ public class OpenRequest {
      */
     private void checkTimestamp() {
         ServiceError.TIMESTAMP_INVALID.when(
-                this.timestamp > System.currentTimeMillis() + NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND ||
-                        this.timestamp < System.currentTimeMillis() - NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND
+                timestamp > System.currentTimeMillis() + NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND ||
+                        timestamp < System.currentTimeMillis() - NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND
         );
     }
 
@@ -155,8 +154,9 @@ public class OpenRequest {
      * <h2>防重放检测</h2>
      */
     private void checkNonce() {
-        Object savedNonce = Utils.getRedisUtil().get(NONCE_CACHE_PREFIX + this.nonce);
+        RedisUtil redisUtil = Utils.getRedisUtil();
+        Object savedNonce = redisUtil.get(NONCE_CACHE_PREFIX + nonce);
         ServiceError.REPEAT_REQUEST.whenNotNull(savedNonce);
-        Utils.getRedisUtil().set(NONCE_CACHE_PREFIX + this.nonce, 1, NONCE_CACHE_SECOND);
+        redisUtil.set(NONCE_CACHE_PREFIX + nonce, 1, NONCE_CACHE_SECOND);
     }
 }

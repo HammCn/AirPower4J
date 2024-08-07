@@ -59,8 +59,7 @@ public class RsaUtil {
     public final String publicKeyEncrypt(String sourceContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
-            PublicKey publicKey = getPublicKey(this.publicKey);
-            return encrypt(sourceContent, publicKey, blockSize);
+            return encrypt(sourceContent, getPublicKey(publicKey), blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -76,8 +75,7 @@ public class RsaUtil {
     public final @NotNull String privateKeyDecrypt(String encryptedContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
-            PrivateKey privateKey = getPrivateKey(this.privateKey);
-            return decrypt(encryptedContent, privateKey, blockSize);
+            return decrypt(encryptedContent, getPrivateKey(privateKey), blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -93,8 +91,7 @@ public class RsaUtil {
     public final String privateKeyEncrypt(String sourceContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
-            PrivateKey privateKey = getPrivateKey(this.privateKey);
-            return encrypt(sourceContent, privateKey, blockSize);
+            return encrypt(sourceContent, getPrivateKey(privateKey), blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -110,8 +107,7 @@ public class RsaUtil {
     public final @NotNull String publicKeyDecrypt(String encryptedContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
-            PublicKey publicKey = getPublicKey(this.publicKey);
-            return decrypt(encryptedContent, publicKey, blockSize);
+            return decrypt(encryptedContent, getPublicKey(publicKey), blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);

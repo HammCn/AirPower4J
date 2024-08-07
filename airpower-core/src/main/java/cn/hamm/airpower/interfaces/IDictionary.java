@@ -30,7 +30,7 @@ public interface IDictionary {
      * @return 对比结果
      */
     default boolean equalsKey(int key) {
-        return this.getKey() == key;
+        return getKey() == key;
     }
 
     /**

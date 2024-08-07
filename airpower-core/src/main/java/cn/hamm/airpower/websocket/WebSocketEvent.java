@@ -73,9 +73,8 @@ public class WebSocketEvent {
      * <h2>重置事件的 {@code ID} 和事件</h2>
      */
     protected final void resetEvent() {
-        long time = System.currentTimeMillis();
-        this.time = time;
-        this.id = Base64.getEncoder().encodeToString((String.format(
+        time = System.currentTimeMillis();
+        id = Base64.getEncoder().encodeToString((String.format(
                 "%s-%s-%s",
                 Configs.getServiceConfig().getServiceId(),
                 CURRENT_EVENT_ID.incrementAndGet(),

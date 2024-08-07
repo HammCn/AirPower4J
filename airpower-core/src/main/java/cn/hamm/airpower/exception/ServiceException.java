@@ -37,7 +37,7 @@ public class ServiceException extends RuntimeException implements IException {
      * @param message 错误信息
      */
     public ServiceException(String message) {
-        this.setCode(ServiceError.SERVICE_ERROR.getCode()).setMessage(message);
+        setCode(ServiceError.SERVICE_ERROR.getCode()).setMessage(message);
     }
 
     /**
