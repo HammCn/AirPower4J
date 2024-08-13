@@ -22,19 +22,21 @@ public enum ServiceError implements IException, IDictionary {
     UPGRADE_CLIENT_OPTIONAL(302, "建议升级客户端"),
 
     // 400 请求参数代码
-    PARAM_MISSING(4001, "缺少参数"),
-    PARAM_INVALID(4002, "无效的参数"),
+    PARAM_MISSING(4001, "缺少必要的请求参数"),
+    PARAM_INVALID(4002, "请求的参数验证失败"),
     INVALID_APP_KEY(4003, "传入的AppKey无效"),
-    SIGNATURE_INVALID(4004, "签名无效"),
-    REPEAT_REQUEST(4005, "重复的请求"),
-    TIMESTAMP_INVALID(4006, "请求时间不在允许范围内"),
+    SIGNATURE_INVALID(4004, "签名无效，请确认使用了正确的签名方式"),
+    REPEAT_REQUEST(4005, "重复的请求，请确认传入的nonce是否重复"),
+    TIMESTAMP_INVALID(4006, "请求时间不在允许范围内(±5分钟)"),
+    MISSING_REQUEST_ADDRESS(4007, "请求来源地址异常"),
+    INVALID_REQUEST_ADDRESS(4008, "请求来源不在应用配置的白名单内"),
 
     // 401 需要登录代码
     UNAUTHORIZED(401, "获取身份信息失败,请重新登录!"),
 
     // 403 无权限代码
-    FORBIDDEN(403, "无权限"),
-    FORBIDDEN_EXIST(4031, "唯一约束,无权重复"),
+    FORBIDDEN(403, "无权操作"),
+    FORBIDDEN_EXIST(4031, "无权重复添加"),
     FORBIDDEN_EDIT(4032, "无权修改"),
     FORBIDDEN_DELETE(4033, "无权删除"),
     FORBIDDEN_DELETE_USED(4034, "数据正在使用中,无法被删除!"),
@@ -51,9 +53,9 @@ public enum ServiceError implements IException, IDictionary {
 
     // 500 服务基础代码
     SERVICE_ERROR(500, "服务发生错误,请稍后再试"),
-    DECRYPT_DATA_FAIL(5001, "数据解密失败"),
+    DECRYPT_DATA_FAIL(5001, "数据解密失败，请确认AppKey/AppSecret/加密方式是否正确"),
     ENCRYPT_DATA_FAIL(5002, "数据加密失败"),
-    JSON_DECODE_FAIL(5003, "JSON解码失败"),
+    JSON_DECODE_FAIL(5003, "JSON解码失败，请确认有效的JSON数据格式"),
 
     API_SERVICE_UNSUPPORTED(501, "请求的接口暂未实现"),
 
