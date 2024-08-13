@@ -59,8 +59,7 @@ public class RsaUtil {
     public final String publicKeyEncrypt(String sourceContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
-            PublicKey publicKey = getPublicKey(this.publicKey);
-            return encrypt(sourceContent, publicKey, blockSize);
+            return encrypt(sourceContent, getPublicKey(publicKey), blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -76,8 +75,7 @@ public class RsaUtil {
     public final @NotNull String privateKeyDecrypt(String encryptedContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
-            PrivateKey privateKey = getPrivateKey(this.privateKey);
-            return decrypt(encryptedContent, privateKey, blockSize);
+            return decrypt(encryptedContent, getPrivateKey(privateKey), blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -93,8 +91,7 @@ public class RsaUtil {
     public final String privateKeyEncrypt(String sourceContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8 - 11;
-            PrivateKey privateKey = getPrivateKey(this.privateKey);
-            return encrypt(sourceContent, privateKey, blockSize);
+            return encrypt(sourceContent, getPrivateKey(privateKey), blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -110,8 +107,7 @@ public class RsaUtil {
     public final @NotNull String publicKeyDecrypt(String encryptedContent) {
         try {
             int blockSize = CRYPT_KEY_SIZE / 8;
-            PublicKey publicKey = getPublicKey(this.publicKey);
-            return decrypt(encryptedContent, publicKey, blockSize);
+            return decrypt(encryptedContent, getPublicKey(publicKey), blockSize);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             throw new ServiceException(exception);
@@ -128,12 +124,9 @@ public class RsaUtil {
      */
     @Contract("_, _, _ -> new")
     private @NotNull String decrypt(String encryptedContent, Key key, int blockSize) throws Exception {
-        byte[] srcBytes = Base64.getDecoder().decode(encryptedContent);
-        Cipher deCipher;
-        deCipher = Cipher.getInstance(CRYPT_METHOD);
+        Cipher deCipher = Cipher.getInstance(CRYPT_METHOD);
         deCipher.init(Cipher.DECRYPT_MODE, key);
-        byte[] resultBytes;
-        resultBytes = rsaDoFinal(deCipher, srcBytes, blockSize);
+        byte[] resultBytes = rsaDoFinal(deCipher, Base64.getDecoder().decode(encryptedContent), blockSize);
         return new String(resultBytes);
     }
 
@@ -146,12 +139,9 @@ public class RsaUtil {
      * @return 密文
      */
     private String encrypt(@NotNull String sourceContent, Key key, int blockSize) throws Exception {
-        byte[] srcBytes = sourceContent.getBytes();
-        Cipher cipher;
-        cipher = Cipher.getInstance(CRYPT_METHOD);
+        Cipher cipher = Cipher.getInstance(CRYPT_METHOD);
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte[] resultBytes;
-        resultBytes = rsaDoFinal(cipher, srcBytes, blockSize);
+        byte[] resultBytes = rsaDoFinal(cipher, sourceContent.getBytes(), blockSize);
         return Base64.getEncoder().encodeToString(resultBytes);
     }
 
@@ -228,8 +218,7 @@ public class RsaUtil {
      * @return {@code PEM}
      */
     public final @NotNull String convertPublicKeyToPem(@NotNull PublicKey publicKey) {
-        byte[] encoded = publicKey.getEncoded();
-        String base64Encoded = Base64.getEncoder().encodeToString(encoded);
+        String base64Encoded = Base64.getEncoder().encodeToString(publicKey.getEncoded());
         return "-----BEGIN PUBLIC KEY-----\n" +
                 wrapBase64Text(base64Encoded) +
                 "-----END PUBLIC KEY-----";
@@ -242,8 +231,7 @@ public class RsaUtil {
      * @return {@code PEM}
      */
     public final @NotNull String convertPrivateKeyToPem(@NotNull PrivateKey privateKey) {
-        byte[] encoded = privateKey.getEncoded();
-        String base64Encoded = Base64.getEncoder().encodeToString(encoded);
+        String base64Encoded = Base64.getEncoder().encodeToString(privateKey.getEncoded());
         return "-----BEGIN RSA PRIVATE KEY-----\n" +
                 wrapBase64Text(base64Encoded) +
                 "-----END RSA PRIVATE KEY-----";

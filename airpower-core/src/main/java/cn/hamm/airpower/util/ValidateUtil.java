@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -206,8 +205,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public final boolean validRegex(String value, @NotNull Pattern pattern) {
-        Matcher emailMatcher = pattern.matcher(value);
-        return emailMatcher.matches();
+        return pattern.matcher(value).matches();
     }
 
     /**

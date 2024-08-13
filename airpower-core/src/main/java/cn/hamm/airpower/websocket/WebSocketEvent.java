@@ -4,6 +4,7 @@ import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
@@ -63,23 +64,23 @@ public class WebSocketEvent {
      *
      * @return 事件
      */
+    @Contract(" -> new")
     private static @NotNull WebSocketEvent create() {
-        WebSocketEvent webSocketEvent = new WebSocketEvent();
-        webSocketEvent.resetEvent();
-        return webSocketEvent;
+        return new WebSocketEvent().resetEvent();
     }
 
     /**
      * <h2>重置事件的 {@code ID} 和事件</h2>
      */
-    protected final void resetEvent() {
-        long time = System.currentTimeMillis();
-        this.time = time;
-        this.id = Base64.getEncoder().encodeToString((String.format(
+    @Contract(" -> this")
+    protected final WebSocketEvent resetEvent() {
+        time = System.currentTimeMillis();
+        id = Base64.getEncoder().encodeToString((String.format(
                 "%s-%s-%s",
                 Configs.getServiceConfig().getServiceId(),
                 CURRENT_EVENT_ID.incrementAndGet(),
                 time
         )).getBytes(StandardCharsets.UTF_8));
+        return this;
     }
 }

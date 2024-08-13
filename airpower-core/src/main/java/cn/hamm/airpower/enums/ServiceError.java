@@ -78,12 +78,12 @@ public enum ServiceError implements IException, IDictionary {
     @Contract(pure = true)
     @Override
     public int getKey() {
-        return this.code;
+        return code;
     }
 
     @Contract(pure = true)
     @Override
     public String getLabel() {
-        return this.message;
+        return message;
     }
 }

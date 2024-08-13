@@ -74,7 +74,11 @@ public class TokenUtil {
             throw new ServiceException(PAYLOADS_IS_EMPTY);
         }
         String payloadBase = Base64.getUrlEncoder().encodeToString(Json.toString(verifiedToken.getPayloads()).getBytes(StandardCharsets.UTF_8));
-        String content = verifiedToken.getExpireTimestamps() + Constant.DOT + hmacSha256(secret, verifiedToken.getExpireTimestamps() + Constant.DOT + payloadBase) + Constant.DOT + payloadBase;
+        String content = verifiedToken.getExpireTimestamps() +
+                Constant.DOT +
+                hmacSha256(secret, verifiedToken.getExpireTimestamps() + Constant.DOT + payloadBase) +
+                Constant.DOT +
+                payloadBase;
         return Base64.getUrlEncoder().encodeToString(content.getBytes(StandardCharsets.UTF_8));
     }
 

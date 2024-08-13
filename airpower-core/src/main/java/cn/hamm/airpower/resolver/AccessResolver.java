@@ -29,8 +29,7 @@ public class AccessResolver implements HandlerMethodArgumentResolver {
      */
     @Override
     public final boolean supportsParameter(@NotNull MethodParameter parameter) {
-        Class<?> clazz = parameter.getParameterType();
-        return clazz == Long.class;
+        return parameter.getParameterType() == Long.class;
     }
 
     /**
