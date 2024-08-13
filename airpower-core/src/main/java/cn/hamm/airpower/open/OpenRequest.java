@@ -13,6 +13,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * <h1>{@code OpenApi} 请求体</h1>
@@ -76,26 +80,6 @@ public class OpenRequest {
     private IOpenApp openApp;
 
     /**
-     * <h2>签名验证结果</h2>
-     *
-     * @apiNote 无需手动调用
-     */
-    public final void checkSignature() {
-        ServiceError.SIGNATURE_INVALID.whenNotEquals(signature, sign());
-        checkNonce();
-        checkTimestamp();
-    }
-
-    /**
-     * <h2>签名</h2>
-     *
-     * @return 签名后的字符串
-     */
-    public final @org.jetbrains.annotations.NotNull String sign() {
-        return DigestUtils.sha1Hex(openApp.getAppSecret() + appKey + version + timestamp + nonce + content);
-    }
-
-    /**
      * <h2>强转请求数据到指定的类对象</h2>
      *
      * @param clazz 业务数据对象类型
@@ -111,11 +95,21 @@ public class OpenRequest {
     }
 
     /**
+     * <h2>校验请求</h2>
+     */
+    final void check() {
+        checkIpWhiteList();
+        checkTimestamp();
+        checkSignature();
+        checkNonce();
+    }
+
+    /**
      * <h2>解密请求数据</h2>
      *
      * @return 请求数据
      */
-    public final String decodeContent() {
+    final String decodeContent() {
         String request = content;
         OpenArithmeticType appArithmeticType = Utils.getDictionaryUtil().getDictionary(
                 OpenArithmeticType.class, openApp.getArithmetic()
@@ -151,6 +145,35 @@ public class OpenRequest {
     }
 
     /**
+     * <h2>验证IP白名单</h2>
+     */
+    private void checkIpWhiteList() {
+        String ipStr = openApp.getIpWhiteList();
+        if (Objects.isNull(ipStr) || !StringUtils.hasText(ipStr)) {
+            // 未配置IP白名单
+            return;
+        }
+        String[] ipList = ipStr
+                .replaceAll(Constant.SPACE, Constant.EMPTY_STRING)
+                .split(Constant.LINE_BREAK);
+        final String ip = Utils.getRequestUtil().getIpAddress(Utils.getRequest());
+        if (!StringUtils.hasText(ip)) {
+            ServiceError.MISSING_REQUEST_ADDRESS.show();
+        }
+        if (Arrays.stream(ipList).toList().contains(ip)) {
+            return;
+        }
+        ServiceError.INVALID_REQUEST_ADDRESS.show();
+    }
+
+    /**
+     * <h2>签名验证结果</h2>
+     */
+    private void checkSignature() {
+        ServiceError.SIGNATURE_INVALID.whenNotEquals(signature, sign());
+    }
+
+    /**
      * <h2>防重放检测</h2>
      */
     private void checkNonce() {
@@ -158,5 +181,14 @@ public class OpenRequest {
         Object savedNonce = redisUtil.get(NONCE_CACHE_PREFIX + nonce);
         ServiceError.REPEAT_REQUEST.whenNotNull(savedNonce);
         redisUtil.set(NONCE_CACHE_PREFIX + nonce, 1, NONCE_CACHE_SECOND);
+    }
+
+    /**
+     * <h2>签名</h2>
+     *
+     * @return 签名后的字符串
+     */
+    private @org.jetbrains.annotations.NotNull String sign() {
+        return DigestUtils.sha1Hex(openApp.getAppSecret() + appKey + version + timestamp + nonce + content);
     }
 }

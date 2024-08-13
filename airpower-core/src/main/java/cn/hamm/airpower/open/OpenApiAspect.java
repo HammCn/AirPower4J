@@ -63,7 +63,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
             openRequest.setOpenApp(openApp);
             Object object = proceedingJoinPoint.proceed();
             openLogId = addOpenLog(openRequest.getOpenApp(), Utils.getRequest().getRequestURI(), openRequest.decodeContent());
-            openRequest.checkSignature();
+            openRequest.check();
             if (object instanceof Json json) {
                 // 日志记录原始数据
                 response = Json.toString(json);

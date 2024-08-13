@@ -41,4 +41,11 @@ public interface IOpenApp {
      * @return 公钥
      */
     String getPublicKey();
+
+    /**
+     * <h2>获取IP白名单列表</h2>
+     *
+     * @return IP白名单
+     */
+    String getIpWhiteList();
 }
