@@ -34,7 +34,7 @@ public class OpenRequest {
     /**
      * <h2>防重放时长</h2>
      */
-    private static final int NONCE_CACHE_SECOND = 60;
+    private static final int NONCE_CACHE_SECOND = 300;
 
     /**
      * <h2>{@code AppKey}</h2>
@@ -156,7 +156,7 @@ public class OpenRequest {
         String[] ipList = ipStr
                 .replaceAll(Constant.SPACE, Constant.EMPTY_STRING)
                 .split(Constant.LINE_BREAK);
-        final String ip = Utils.getRequestUtil().getIpAddress(Utils.getRequest());
+        final String ip = Utils.getRequest().getRemoteAddr();
         if (!StringUtils.hasText(ip)) {
             ServiceError.MISSING_REQUEST_ADDRESS.show();
         }
