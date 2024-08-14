@@ -156,7 +156,7 @@ public class OpenRequest {
         String[] ipList = ipStr
                 .replaceAll(Constant.SPACE, Constant.EMPTY_STRING)
                 .split(Constant.LINE_BREAK);
-        final String ip = Utils.getRequest().getRemoteAddr();
+        final String ip = Utils.getRequestUtil().getIpAddress(Utils.getRequest());
         if (!StringUtils.hasText(ip)) {
             ServiceError.MISSING_REQUEST_ADDRESS.show();
         }
