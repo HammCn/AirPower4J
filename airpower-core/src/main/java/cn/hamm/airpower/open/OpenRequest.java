@@ -34,7 +34,7 @@ public class OpenRequest {
     /**
      * <h2>防重放时长</h2>
      */
-    private static final int NONCE_CACHE_SECOND = 60;
+    private static final int NONCE_CACHE_SECOND = 300;
 
     /**
      * <h2>{@code AppKey}</h2>
