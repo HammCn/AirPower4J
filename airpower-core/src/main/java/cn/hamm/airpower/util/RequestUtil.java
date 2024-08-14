@@ -50,7 +50,7 @@ public class RequestUtil {
     }
 
     /**
-     * <h2>获取IP地址</h2>
+     * <h2>获取请求的 {@code 真实IP} 地址</h2>
      *
      * @param request 请求
      * @return IP地址
@@ -81,7 +81,7 @@ public class RequestUtil {
                     ServiceError.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
                 }
             }
-            return Constant.LOCAL_IP_ADDRESS;
+            return ipAddress;
         } catch (Exception exception) {
             log.error(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR, exception);
             ServiceError.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
@@ -108,21 +108,5 @@ public class RequestUtil {
      */
     private boolean isValidAddress(String ipAddress) {
         return Objects.nonNull(ipAddress) && !ipAddress.isEmpty() && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
-    }
-
-    /**
-     * <h2>多IP获取真实IP地址</h2>
-     *
-     * @param ipAddress 原始IP地址
-     * @return 处理之后的真实IP
-     */
-    private String getRealIpAddress(String ipAddress) {
-        if (Objects.nonNull(ipAddress) &&
-                ipAddress.length() > MAX_IP_ADDRESS_CHAR_LENGTH &&
-                ipAddress.indexOf(Constant.COMMA) > 0
-        ) {
-            ipAddress = ipAddress.substring(0, ipAddress.indexOf(Constant.COMMA));
-        }
-        return ipAddress;
     }
 }
