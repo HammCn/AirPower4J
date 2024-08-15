@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,9 +26,14 @@ import java.util.Objects;
 @Component
 public class RequestUtil {
     /**
-     * <h2>IP地址字符串最大的长度</h2>
+     * <h2>未知IP</h2>
      */
-    private static final int MAX_IP_ADDRESS_CHAR_LENGTH = 15;
+    private static final String UNKNOWN = "unknown";
+
+    /**
+     * <h2>常用IP反向代理Header头</h2>
+     */
+    private static final List<String> PROXY_IP_HEADERS = List.of("x-forwarded-for", "Proxy-Client-IP", "WL-Proxy-Client-IP");
 
     /**
      * <h2>判断是否是上传请求</h2>
@@ -58,11 +64,13 @@ public class RequestUtil {
     public final String getIpAddress(HttpServletRequest request) {
         String ipAddress;
         try {
-            List<String> ipHeaders = List.of("x-forwarded-for", "Proxy-Client-IP", "WL-Proxy-Client-IP");
-            for (String ipHeader : ipHeaders) {
+            for (String ipHeader : PROXY_IP_HEADERS) {
                 ipAddress = request.getHeader(ipHeader);
+                if (UNKNOWN.equals(ipAddress)) {
+                    continue;
+                }
                 if (isValidAddress(ipAddress)) {
-                    return ipAddress;
+                    return getIpAddressFromMultiIp(ipAddress);
                 }
             }
 
@@ -86,7 +94,7 @@ public class RequestUtil {
             log.error(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR, exception);
             ServiceError.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
         }
-        return Constant.EMPTY_STRING;
+        return Constant.LOCAL_IP_ADDRESS;
     }
 
     /**
@@ -107,6 +115,19 @@ public class RequestUtil {
      * @return 判定结果
      */
     private boolean isValidAddress(String ipAddress) {
-        return Objects.nonNull(ipAddress) && !ipAddress.isEmpty() && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
+        return Objects.nonNull(ipAddress) && StringUtils.hasText(ipAddress) && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
+    }
+
+    /**
+     * <h2>多IP获取真实IP地址</h2>
+     *
+     * @param ipAddress 原始IP地址
+     * @return 处理之后的真实IP
+     */
+    private @NotNull String getIpAddressFromMultiIp(@NotNull String ipAddress) {
+        if (ipAddress.indexOf(Constant.COMMA) > 0) {
+            ipAddress = ipAddress.substring(0, ipAddress.indexOf(Constant.COMMA));
+        }
+        return ipAddress;
     }
 }

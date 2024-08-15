@@ -19,7 +19,7 @@ public class MessageConstant {
     public static final String GET_PAGE_OR_GET_LIST_USE_ONLY = "该字段仅用于查询列表(分页和不分页)的接口作为时间段参数使用";
     public static final String SERVICE_MAINTAINING_AND_TRY_LATER = "服务短暂维护中,请稍后再试：）";
     public static final String BLOCK_SIZE_MUST_BE_GREATER_THAN_ZERO = "分段大小必须大于0";
-    public static final String EXCEPTION_WHEN_GET_IP_ADDR = "获取ID地址异常";
+    public static final String EXCEPTION_WHEN_GET_IP_ADDR = "获取IP地址异常";
     public static final String EXCEPTION_WHEN_REFLECT_FIELD = "反射操作属性失败";
     public static final String PASSWORD_CAN_NOT_BE_NULL = "密码不能为空";
     public static final String PASSWORD_SALT_CAN_NOT_BE_NULL = "盐不能为空";
