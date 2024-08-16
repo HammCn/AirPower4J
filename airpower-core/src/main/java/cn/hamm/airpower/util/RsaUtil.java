@@ -1,6 +1,5 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import lombok.Setter;
@@ -182,7 +181,7 @@ public class RsaUtil {
      * @throws Exception 加解密异常
      */
     private byte @NotNull [] rsaDoFinal(Cipher cipher, byte @NotNull [] sourceBytes, int blockSize) throws Exception {
-        ServiceError.SERVICE_ERROR.when(blockSize <= 0, MessageConstant.BLOCK_SIZE_MUST_BE_GREATER_THAN_ZERO);
+        ServiceError.SERVICE_ERROR.when(blockSize <= 0, "分段大小必须大于0");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int inputLength = sourceBytes.length;
         int currentOffSet = 0;

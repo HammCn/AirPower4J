@@ -1,7 +1,6 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Configs;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.config.MqttConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @Configuration
 @Slf4j
 public class MqttUtil {
-
     /**
      * <h2>创建 {@code MQTT} 客户端</h2>
      *
@@ -76,13 +74,9 @@ public class MqttUtil {
         mqttMessage.setQos(0);
         MqttTopic mqttTopic = client.getTopic(topic);
         MqttDeliveryToken token;
-        try {
-            token = mqttTopic.publish(mqttMessage);
-            token.waitForCompletion();
-            client.disconnect();
-            client.close();
-        } catch (MqttException exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_MQTT_PUBLISH, exception);
-        }
+        token = mqttTopic.publish(mqttMessage);
+        token.waitForCompletion();
+        client.disconnect();
+        client.close();
     }
 }

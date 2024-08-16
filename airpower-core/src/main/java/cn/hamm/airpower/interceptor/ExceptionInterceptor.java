@@ -2,7 +2,6 @@ package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
@@ -48,6 +47,8 @@ import java.util.Set;
 @Slf4j
 public class ExceptionInterceptor {
 
+    public static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
+
     /**
      * <h2>参数验证失败</h2>
      */
@@ -64,7 +65,7 @@ public class ExceptionInterceptor {
         }
         List<FieldError> errors = result.getFieldErrors();
         errors.stream().findFirst().ifPresent(error -> stringBuilder.append(String.format(
-                MessageConstant.MESSAGE_AND_DESCRIPTION, error.getDefaultMessage(), error.getField()
+                MESSAGE_AND_DESCRIPTION, error.getDefaultMessage(), error.getField()
         )));
         return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString());
     }
@@ -78,7 +79,7 @@ public class ExceptionInterceptor {
         StringBuilder stringBuilder = new StringBuilder();
         Set<ConstraintViolation<?>> errors = exception.getConstraintViolations();
         errors.stream().findFirst().ifPresent(error -> stringBuilder.append(String.format(
-                MessageConstant.MESSAGE_AND_DESCRIPTION, error.getMessage(), error.getInvalidValue().toString()
+                MESSAGE_AND_DESCRIPTION, error.getMessage(), error.getInvalidValue().toString()
         )));
         return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString());
     }
@@ -120,7 +121,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Json dataExceptionHandle(@NotNull HttpMessageNotReadableException exception) {
         log.error(exception.getMessage());
-        return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED, MessageConstant.PARAM_INVALID_MAY_BE_NOT_JSON);
+        return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED, "请求参数格式不正确,请检查是否接口支持的JSON");
     }
 
     /**
@@ -131,7 +132,7 @@ public class ExceptionInterceptor {
         log.error(exception.getMessage());
         String supportedMethod = String.join(Constant.SLASH, Objects.requireNonNull(exception.getSupportedMethods()));
         return Json.error(ServiceError.REQUEST_METHOD_UNSUPPORTED, String.format(
-                MessageConstant.REQUEST_METHOD_NOT_SUPPORTED, exception.getMethod(), supportedMethod
+                "%s 不被支持，请使用 %s 方法请求", exception.getMethod(), supportedMethod
         ));
     }
 
@@ -145,7 +146,7 @@ public class ExceptionInterceptor {
             log.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED.getMessage(), exception);
         }
         return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED, String.format(
-                MessageConstant.ONLY_CONTENT_TYPE_JSON_SUPPORTED,
+                "%s 不被支持，请使用JSON请求",
                 Objects.requireNonNull(exception.getContentType()).getType()
         ));
     }
@@ -196,7 +197,7 @@ public class ExceptionInterceptor {
             log.error(ServiceError.DATABASE_UNKNOWN_FIELD.getMessage(), exception);
         }
         return Json.error(ServiceError.DATABASE_UNKNOWN_FIELD, String.format(
-                MessageConstant.MISSING_FIELD_IN_DATABASE, exception.getPropertyName()
+                "数据库缺少字段 %s", exception.getPropertyName()
         ));
     }
 

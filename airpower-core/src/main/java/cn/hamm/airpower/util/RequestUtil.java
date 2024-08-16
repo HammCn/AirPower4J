@@ -1,7 +1,6 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +24,11 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class RequestUtil {
+    /**
+     * <h2>获取IP地址异常</h2>
+     */
+    public static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
+
     /**
      * <h2>未知IP</h2>
      */
@@ -85,14 +89,12 @@ public class RequestUtil {
                         return ipAddress;
                     }
                 } catch (UnknownHostException exception) {
-                    log.error(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR, exception);
-                    ServiceError.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
+                    ServiceError.FORBIDDEN.show(IP_ADDRESS_EXCEPTION);
                 }
             }
             return ipAddress;
         } catch (Exception exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR, exception);
-            ServiceError.FORBIDDEN.show(MessageConstant.EXCEPTION_WHEN_GET_IP_ADDR);
+            ServiceError.FORBIDDEN.show(IP_ADDRESS_EXCEPTION);
         }
         return Constant.LOCAL_IP_ADDRESS;
     }
