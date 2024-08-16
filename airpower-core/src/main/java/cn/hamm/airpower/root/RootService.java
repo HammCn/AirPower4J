@@ -5,7 +5,6 @@ import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.DateTimeFormatter;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
@@ -58,6 +57,11 @@ import java.util.function.BiFunction;
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
+    /**
+     * <h2>提交的数据不允许为空</h2>
+     */
+    public static final String DATA_REQUIRED = "提交的数据不允许为空";
+
     /**
      * <h2>导出文件夹前缀</h2>
      */
@@ -274,7 +278,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final long add(@NotNull E source) {
         source = beforeAdd(source).copy();
-        ServiceError.SERVICE_ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
+        ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark(Constant.EMPTY_STRING);
@@ -705,9 +709,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #updateWithNull(E)
      */
     protected final void updateToDatabase(@NotNull E source, boolean withNull) {
-        ServiceError.SERVICE_ERROR.whenNull(source, MessageConstant.DATA_MUST_NOT_NULL);
+        ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
         ServiceError.PARAM_MISSING.whenNull(source.getId(), String.format(
-                MessageConstant.MISSING_ID_WHEN_UPDATE,
+                "修改失败，请传入%s的ID!",
                 reflectUtil.getDescription(getEntityClass())
         ));
         saveToDatabase(source, withNull);
@@ -856,13 +860,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private @NotNull E getById(long id) {
         ServiceError.PARAM_MISSING.whenNull(id, String.format(
-                MessageConstant.MISSING_ID_WHEN_QUERY,
+                "查询失败，请传入%s的ID！",
                 reflectUtil.getDescription(getEntityClass())
         ));
         return repository.findById(id).orElseThrow(
                 () -> new ServiceException(ServiceError.DATA_NOT_FOUND, String.format(
-                        MessageConstant.QUERY_DATA_NOT_FOUND,
-                        id, reflectUtil.getDescription(getEntityClass()))
+                        "没有查询到ID为%s的%s", id, reflectUtil.getDescription(getEntityClass()))
                 )
         );
     }
@@ -1019,7 +1022,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 修改自己 不校验
                 continue;
             }
-            ServiceError.FORBIDDEN_EXIST.show(String.format(MessageConstant.TARGET_DATA_EXIST, fieldName, fieldValue));
+            ServiceError.FORBIDDEN_EXIST.show(String.format("%s(ID:%s)已经存在！", fieldName, fieldValue));
         }
     }
 

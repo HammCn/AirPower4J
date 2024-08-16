@@ -4,7 +4,6 @@ import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.annotation.Extends;
 import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.annotation.Permission;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.Api;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
@@ -83,7 +82,7 @@ public class RootEntityController<
                 () -> afterAdd(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
-        return Json.entity(id, MessageConstant.SUCCESS_TO_ADD);
+        return Json.entity(id, "添加成功");
     }
 
     /**
@@ -108,7 +107,7 @@ public class RootEntityController<
                 () -> afterUpdate(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
-        return Json.entity(id, MessageConstant.SUCCESS_TO_UPDATE);
+        return Json.entity(id, "修改成功");
     }
 
     /**
@@ -128,7 +127,7 @@ public class RootEntityController<
         Utils.getTaskUtil().run(
                 () -> afterDelete(id)
         );
-        return Json.entity(id, MessageConstant.SUCCESS_TO_DELETE);
+        return Json.entity(id, "删除成功");
     }
 
     /**
@@ -162,7 +161,7 @@ public class RootEntityController<
         Utils.getTaskUtil().run(
                 () -> afterDisable(id)
         );
-        return Json.entity(source.getId(), MessageConstant.SUCCESS_TO_DISABLE);
+        return Json.entity(source.getId(), "禁用成功");
     }
 
     /**
@@ -182,7 +181,7 @@ public class RootEntityController<
         Utils.getTaskUtil().run(
                 () -> afterEnable(id)
         );
-        return Json.entity(source.getId(), MessageConstant.SUCCESS_TO_ENABLE);
+        return Json.entity(source.getId(), "启用成功");
     }
 
     /**

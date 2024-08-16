@@ -2,7 +2,6 @@ package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.interceptor.document.ApiDocument;
@@ -57,7 +56,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             @NotNull HttpServletResponse response,
             @NotNull Object object
     ) {
-        ServiceError.SERVICE_ERROR.when(!Configs.getServiceConfig().isServiceRunning(), MessageConstant.SERVICE_MAINTAINING_AND_TRY_LATER);
+        ServiceError.SERVICE_ERROR.when(!Configs.getServiceConfig().isServiceRunning(), "服务短暂维护中,请稍后再试：）");
         HandlerMethod handlerMethod = (HandlerMethod) object;
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBeanType();

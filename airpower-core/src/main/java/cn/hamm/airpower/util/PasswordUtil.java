@@ -1,6 +1,5 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +20,8 @@ public class PasswordUtil {
      * @return {@code sha1} 散列摘要
      */
     public @NotNull String encode(@NotNull String password, @NotNull String salt) {
-        ServiceError.PARAM_MISSING.whenEmpty(password, MessageConstant.PASSWORD_CAN_NOT_BE_NULL);
-        ServiceError.PARAM_MISSING.whenEmpty(salt, MessageConstant.PASSWORD_SALT_CAN_NOT_BE_NULL);
+        ServiceError.PARAM_MISSING.whenEmpty(password, "密码不能为空");
+        ServiceError.PARAM_MISSING.whenEmpty(salt, "盐不能为空");
         return DigestUtils.sha1Hex(
                 DigestUtils.sha1Hex(password + salt) +
                         DigestUtils.sha1Hex(salt + password)

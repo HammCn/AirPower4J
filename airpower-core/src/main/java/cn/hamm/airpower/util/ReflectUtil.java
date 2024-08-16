@@ -3,7 +3,6 @@ package cn.hamm.airpower.util;
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.annotation.Document;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.interfaces.IFunction;
@@ -38,6 +37,11 @@ import java.util.stream.Collectors;
 @Component
 public class ReflectUtil {
     /**
+     * <h2>反射操作属性失败</h2>
+     */
+    public static final String REFLECT_EXCEPTION = "反射操作属性失败";
+
+    /**
      * <h2>缓存字段列表</h2>
      */
     private final static ConcurrentHashMap<Class<?>, List<Field>> FIELD_LIST_MAP = new ConcurrentHashMap<>();
@@ -61,7 +65,7 @@ public class ReflectUtil {
             field.setAccessible(true);
             return field.get(object);
         } catch (IllegalAccessException exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_REFLECT_FIELD, exception);
+            log.error(REFLECT_EXCEPTION, exception);
             return null;
         } finally {
             field.setAccessible(false);
@@ -80,7 +84,7 @@ public class ReflectUtil {
             field.setAccessible(true);
             field.set(object, value);
         } catch (IllegalAccessException exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_REFLECT_FIELD, exception);
+            log.error(REFLECT_EXCEPTION, exception);
         } finally {
             field.setAccessible(false);
         }

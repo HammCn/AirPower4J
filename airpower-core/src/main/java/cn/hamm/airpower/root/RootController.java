@@ -3,7 +3,6 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
@@ -30,7 +29,6 @@ public class RootController implements IAction {
             String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
             return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
         } catch (Exception exception) {
-            log.error(MessageConstant.FAILED_TO_LOAD_CURRENT_USER_INFO, exception);
             throw new ServiceException(ServiceError.UNAUTHORIZED);
         }
     }
