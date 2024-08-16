@@ -2,7 +2,6 @@ package cn.hamm.airpower.model;
 
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.MessageConstant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IException;
@@ -168,7 +167,6 @@ public class Json {
         try {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_JSON_PARSE, exception);
             throw new ServiceException(exception);
         }
     }
@@ -185,7 +183,6 @@ public class Json {
         try {
             return getObjectMapper().readValue(json, clazz);
         } catch (JsonProcessingException exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_JSON_PARSE, exception);
             throw new ServiceException(exception);
         }
     }
@@ -202,7 +199,6 @@ public class Json {
             };
             return getObjectMapper().readValue(json, typeRef);
         } catch (Exception exception) {
-            log.error(exception.getMessage());
             throw new ServiceException(exception);
         }
     }
@@ -219,7 +215,6 @@ public class Json {
             };
             return getObjectMapper().readValue(json, typeRef);
         } catch (Exception exception) {
-            log.error(exception.getMessage());
             throw new ServiceException(exception);
         }
     }
@@ -234,7 +229,6 @@ public class Json {
         try {
             return getObjectMapper().writeValueAsString(object);
         } catch (JsonProcessingException exception) {
-            log.error(MessageConstant.EXCEPTION_WHEN_JSON_TO_STRING, exception);
             return Constant.EMPTY_STRING;
         }
     }

@@ -26,12 +26,9 @@ public class MessageConstant {
     public static final String EXCEPTION_WHEN_MQTT_PUBLISH = "MQTT发布失败";
     public static final String MAIL_SERVER_CONFIG_MISSING = "未配置邮件服务的信息";
     public static final String FAILED_TO_LOAD_CURRENT_USER_INFO = "获取当前用户信息失败";
-    public static final String EXCEPTION_WHEN_JSON_PARSE = "JSON字符串转对象失败";
-    public static final String EXCEPTION_WHEN_JSON_TO_STRING = "对象转JSON字符串失败";
     public static final String ONLY_CONTENT_TYPE_JSON_SUPPORTED = "%s 不被支持，请使用JSON请求";
     public static final String MISSING_FIELD_IN_DATABASE = "数据库缺少字段%s";
     public static final String PARAM_INVALID_MAY_BE_NOT_JSON = "请求参数格式不正确,请检查是否接口支持的JSON";
     public static final String REQUEST_METHOD_NOT_SUPPORTED = "%s 不被支持，请使用 %s 方法请求";
     public static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
-    public static final String ACCESS_DENIED = "你无权访问 %s (%s)";
 }
