@@ -79,9 +79,9 @@ public class AccessUtil {
      * @return 权限标识
      */
     public final @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
-        return StringUtils.uncapitalize(clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING)) +
-                Constant.UNDERLINE +
-                method.getName();
+        return StringUtils.uncapitalize(clazz.getSimpleName()
+                .replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING)) +
+                Constant.UNDERLINE + method.getName();
     }
 
     /**
@@ -92,7 +92,9 @@ public class AccessUtil {
      * @param <P>             权限类型
      * @return 权限列表
      */
-    public final <P extends IPermission<P>> @NotNull List<P> scanPermission(@NotNull Class<?> clazz, Class<P> permissionClass) {
+    public final <P extends IPermission<P>> @NotNull List<P> scanPermission(
+            @NotNull Class<?> clazz, Class<P> permissionClass
+    ) {
         return scanPermission(clazz.getPackageName(), permissionClass);
     }
 
@@ -104,7 +106,9 @@ public class AccessUtil {
      * @param <P>             权限类型
      * @return 权限列表
      */
-    public final <P extends IPermission<P>> @NotNull List<P> scanPermission(String packageName, Class<P> permissionClass) {
+    public final <P extends IPermission<P>> @NotNull List<P> scanPermission(
+            String packageName, Class<P> permissionClass
+    ) {
         List<P> permissions = new ArrayList<>();
         try {
             ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
@@ -135,7 +139,8 @@ public class AccessUtil {
                 permission.setName(customClassName).setIdentity(identity);
                 permission.setChildren(new ArrayList<>());
 
-                String apiPath = clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING) + Constant.UNDERLINE;
+                String apiPath = clazz.getSimpleName()
+                        .replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING) + Constant.UNDERLINE;
 
                 // 取出所有控制器方法
                 Method[] methods = clazz.getMethods();
@@ -143,7 +148,6 @@ public class AccessUtil {
                 // 取出控制器类上的Extends注解 如自己没标 则使用父类的
                 Extends extendsApi = reflectUtil.getAnnotation(Extends.class, clazz);
                 for (Method method : methods) {
-
                     if (Objects.nonNull(extendsApi)) {
                         try {
                             Api current = dictionaryUtil.getDictionary(Api.class, Api::getMethodName, method.getName());

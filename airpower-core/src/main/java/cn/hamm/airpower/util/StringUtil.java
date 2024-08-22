@@ -100,7 +100,9 @@ public class StringUtil {
      * @return 脱敏后的文本
      */
     @Contract(pure = true)
-    public final @NotNull String desensitize(@NotNull String valueString, Desensitize.@NotNull Type type, int head, int tail, String symbol) {
+    public final @NotNull String desensitize(
+            @NotNull String valueString, Desensitize.@NotNull Type type, int head, int tail, String symbol
+    ) {
         final StringUtil stringUtil = Utils.getStringUtil();
         switch (type) {
             case BANK_CARD,

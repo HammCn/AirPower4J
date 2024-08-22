@@ -23,8 +23,7 @@ public class PasswordUtil {
         ServiceError.PARAM_MISSING.whenEmpty(password, "密码不能为空");
         ServiceError.PARAM_MISSING.whenEmpty(salt, "盐不能为空");
         return DigestUtils.sha1Hex(
-                DigestUtils.sha1Hex(password + salt) +
-                        DigestUtils.sha1Hex(salt + password)
+                DigestUtils.sha1Hex(password + salt) + DigestUtils.sha1Hex(salt + password)
         );
     }
 }

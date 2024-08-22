@@ -119,7 +119,8 @@ public class NumberUtil {
      * @return 商
      */
     public final double div(double first, double second) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE).doubleValue();
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
+                .doubleValue();
     }
 
     /**
@@ -131,7 +132,8 @@ public class NumberUtil {
      * @return 商
      */
     public final double div(double first, double second, int scale) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, DEFAULT_ROUNDING_MODE).doubleValue();
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, DEFAULT_ROUNDING_MODE)
+                .doubleValue();
     }
 
     /**
@@ -144,7 +146,8 @@ public class NumberUtil {
      * @return 商
      */
     public final double div(double first, double second, int scale, RoundingMode roundingMode) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, roundingMode).doubleValue();
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, roundingMode)
+                .doubleValue();
     }
 
     /**
@@ -155,7 +158,8 @@ public class NumberUtil {
      * @return 商
      */
     public final double div(long first, long second) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE).doubleValue();
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
+                .doubleValue();
     }
 
     /**
@@ -167,7 +171,8 @@ public class NumberUtil {
      * @return 商
      */
     public final double div(long first, long second, int scale) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, DEFAULT_ROUNDING_MODE).doubleValue();
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, DEFAULT_ROUNDING_MODE)
+                .doubleValue();
     }
 
     /**
@@ -180,7 +185,8 @@ public class NumberUtil {
      * @return 商
      */
     public final double div(long first, long second, int scale, RoundingMode roundingMode) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, roundingMode).doubleValue();
+        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, roundingMode)
+                .doubleValue();
     }
 
     /**

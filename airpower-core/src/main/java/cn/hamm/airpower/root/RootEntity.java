@@ -192,7 +192,12 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      * @apiNote 舍弃一些基础数据
      */
     public void excludeBaseData() {
-        setCreateTime(null).setUpdateTime(null).setCreateUserId(null).setUpdateUserId(null).setRemark(null).setIsDisabled(null);
+        setCreateTime(null)
+                .setUpdateTime(null)
+                .setCreateUserId(null)
+                .setUpdateUserId(null)
+                .setRemark(null)
+                .setIsDisabled(null);
     }
 
     /**

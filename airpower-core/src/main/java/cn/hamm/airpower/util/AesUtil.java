@@ -129,7 +129,8 @@ public class AesUtil {
      */
     public final String encrypt(String source) {
         try {
-            return Base64.getEncoder().encodeToString(getCipher(Cipher.ENCRYPT_MODE).doFinal(source.getBytes(StandardCharsets.UTF_8)));
+            return Base64.getEncoder().encodeToString(getCipher(Cipher.ENCRYPT_MODE)
+                    .doFinal(source.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -144,7 +145,8 @@ public class AesUtil {
     @Contract("_ -> new")
     public final @NotNull String decrypt(String content) {
         try {
-            return new String(getCipher(Cipher.DECRYPT_MODE).doFinal(Base64.getDecoder().decode(content)), StandardCharsets.UTF_8);
+            return new String(getCipher(Cipher.DECRYPT_MODE)
+                    .doFinal(Base64.getDecoder().decode(content)), StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

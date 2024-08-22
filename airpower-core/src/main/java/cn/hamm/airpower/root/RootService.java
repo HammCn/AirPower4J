@@ -5,6 +5,7 @@ import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
+import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.DateTimeFormatter;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
@@ -811,7 +812,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     if (Objects.isNull(dictionary)) {
                         yield value;
                     } else {
-                        IDictionary dict = dictionaryUtil.getDictionary(dictionary.value(), Integer.parseInt(value.toString()));
+                        IDictionary dict = dictionaryUtil.getDictionary(
+                                dictionary.value(), Integer.parseInt(value.toString())
+                        );
                         yield dict.getLabel();
                     }
                 }
@@ -1069,7 +1072,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param data 分页数据
      * @return 输出分页对象
      */
-    private @NotNull QueryPageResponse<E> getResponsePageList(@NotNull org.springframework.data.domain.Page<E> data) {
+    private @NotNull QueryPageResponse<E> getResponsePageList(
+            @NotNull org.springframework.data.domain.Page<E> data
+    ) {
         return new QueryPageResponse<E>()
                 .setList(data.getContent())
                 .setTotal(Math.toIntExact(data.getTotalElements()))
@@ -1089,14 +1094,15 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private @NotNull org.springframework.data.domain.Sort createSort(Sort sort) {
         sort = Objects.requireNonNullElse(sort, new Sort());
 
+        ServiceConfig serviceConfig = Configs.getServiceConfig();
         if (!StringUtils.hasText(sort.getField())) {
-            sort.setField(Configs.getServiceConfig().getDefaultSortField());
+            sort.setField(serviceConfig.getDefaultSortField());
         }
 
         if (!StringUtils.hasText(sort.getDirection())) {
-            sort.setDirection(Configs.getServiceConfig().getDefaultSortDirection());
+            sort.setDirection(serviceConfig.getDefaultSortDirection());
         }
-        if (!Configs.getServiceConfig().getDefaultSortDirection().equals(sort.getDirection())) {
+        if (!serviceConfig.getDefaultSortDirection().equals(sort.getDirection())) {
             return org.springframework.data.domain.Sort.by(
                     org.springframework.data.domain.Sort.Order.asc(sort.getField())
             );
@@ -1115,7 +1121,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private @NotNull Pageable createPageable(@NotNull QueryPageRequest<E> queryPageData) {
         Page page = Objects.requireNonNullElse(queryPageData.getPage(), new Page());
         page.setPageNum(Objects.requireNonNullElse(page.getPageNum(), 1));
-        page.setPageSize(Objects.requireNonNullElse(page.getPageSize(), Configs.getServiceConfig().getDefaultPageSize()));
+        page.setPageSize(
+                Objects.requireNonNullElse(page.getPageSize(), Configs.getServiceConfig().getDefaultPageSize())
+        );
         int pageNumber = Math.max(0, page.getPageNum() - 1);
         int pageSize = Math.max(1, queryPageData.getPage().getPageSize());
         return PageRequest.of(pageNumber, pageSize, createSort(queryPageData.getSort()));
@@ -1182,10 +1190,18 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             @NotNull Root<E> root, @NotNull CriteriaBuilder builder,
             @NotNull E search, @NotNull List<Predicate> predicateList
     ) {
-        addPredicateNonNull(root, predicateList, Constant.CREATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getCreateTimeFrom());
-        addPredicateNonNull(root, predicateList, Constant.CREATE_TIME_FIELD, builder::lessThan, search.getCreateTimeTo());
-        addPredicateNonNull(root, predicateList, Constant.UPDATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getUpdateTimeFrom());
-        addPredicateNonNull(root, predicateList, Constant.UPDATE_TIME_FIELD, builder::lessThan, search.getUpdateTimeTo());
+        addPredicateNonNull(root, predicateList,
+                Constant.CREATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getCreateTimeFrom()
+        );
+        addPredicateNonNull(root, predicateList,
+                Constant.CREATE_TIME_FIELD, builder::lessThan, search.getCreateTimeTo()
+        );
+        addPredicateNonNull(root, predicateList,
+                Constant.UPDATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getUpdateTimeFrom()
+        );
+        addPredicateNonNull(root, predicateList,
+                Constant.UPDATE_TIME_FIELD, builder::lessThan, search.getUpdateTimeTo()
+        );
     }
 
     /**
@@ -1210,10 +1226,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param filter        过滤器实体
      * @return 查询条件
      */
-    private Predicate createPredicate(
-            @NotNull Root<E> root, @NotNull CriteriaQuery<?> criteriaQuery,
+    private @Nullable Predicate createPredicate(
+            @NotNull Root<E> root, CriteriaQuery<?> criteriaQuery,
             @NotNull CriteriaBuilder builder, @NotNull E filter, boolean isEqual
     ) {
+        if (Objects.isNull(criteriaQuery)) {
+            return null;
+        }
         List<Predicate> predicateList = getPredicateList(root, builder, filter, isEqual);
         predicateList.addAll(addSearchPredicate(root, builder, filter));
         addCreateAndUpdateTimePredicate(root, builder, filter, predicateList);

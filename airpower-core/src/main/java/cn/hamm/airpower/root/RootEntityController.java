@@ -433,6 +433,8 @@ public class RootEntityController<
      */
     @SuppressWarnings("unchecked")
     private Class<E> getEntityClass() {
-        return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        return (Class<E>) ((ParameterizedType) getClass()
+                .getGenericSuperclass())
+                .getActualTypeArguments()[0];
     }
 }
