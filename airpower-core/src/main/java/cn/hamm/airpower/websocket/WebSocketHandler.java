@@ -3,6 +3,7 @@ package cn.hamm.airpower.websocket;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.WebSocketConfig;
+import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.MqttUtil;
@@ -318,9 +319,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      */
     protected final MqttClient getMqttClient(@NotNull WebSocketSession session) {
         MqttClient mqttClient = mqttClientHashMap.get(session.getId());
-        if (Objects.isNull(mqttClient)) {
-            throw new RuntimeException("mqtt client is null");
-        }
+        ServiceError.WEBSOCKET_ERROR.whenNull(mqttClient, "mqttClient is null");
         return mqttClient;
     }
 
@@ -332,13 +331,9 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      */
     protected final Subscription getRedisSubscription(@NotNull WebSocketSession session) {
         RedisConnection redisConnection = redisConnectionHashMap.get(session.getId());
-        if (Objects.isNull(redisConnection)) {
-            throw new RuntimeException("redisConnection is null");
-        }
+        ServiceError.WEBSOCKET_ERROR.whenNull(redisConnection, "redisConnection is null");
         Subscription subscription = redisConnection.getSubscription();
-        if (Objects.isNull(subscription)) {
-            throw new RuntimeException("subscription is null");
-        }
+        ServiceError.WEBSOCKET_ERROR.whenNull(subscription, "subscription is null");
         return subscription;
     }
 }
