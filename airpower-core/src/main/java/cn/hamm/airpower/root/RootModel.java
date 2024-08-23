@@ -269,6 +269,10 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         if (!(value instanceof String valueString)) {
             return;
         }
+        if (desensitize.replace()) {
+            reflectUtil.setFieldValue(this, field, desensitize.symbol());
+            return;
+        }
         reflectUtil.setFieldValue(this, field,
                 Utils.getStringUtil().desensitize(
                         valueString,

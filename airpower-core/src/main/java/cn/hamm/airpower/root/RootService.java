@@ -979,10 +979,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             // 脱敏字段
             Object fieldValue = reflectUtil.getFieldValue(existEntity, field);
             if (Objects.isNull(fieldValue)) {
-                // 值本身是空
+                // 值本身是空的
                 continue;
             }
-            if (fieldValue.toString().contains(desensitize.symbol())) {
+            if (desensitize.replace() && desensitize.symbol().equals(fieldValue.toString())) {
+                // 如果是替换 且没有修改内容
+                reflectUtil.setFieldValue(existEntity, field, null);
+            }
+            if (!desensitize.replace() && fieldValue.toString().contains(desensitize.symbol())) {
                 // 如果值包含脱敏字符
                 reflectUtil.setFieldValue(existEntity, field, null);
             }
