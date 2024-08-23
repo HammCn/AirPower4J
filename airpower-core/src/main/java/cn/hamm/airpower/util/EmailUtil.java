@@ -61,7 +61,9 @@ public class EmailUtil {
      * @param title   标题
      * @param content 内容
      */
-    public final void sendEmail(@NotNull String email, @NotNull String title, @NotNull String content) throws MessagingException {
+    public final void sendEmail(
+            @NotNull String email, @NotNull String title, @NotNull String content
+    ) throws MessagingException {
         ServiceError.EMAIL_ERROR.whenNull(javaMailSender, "未配置邮件服务的信息");
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);

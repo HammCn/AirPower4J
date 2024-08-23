@@ -43,7 +43,9 @@ public class DictionaryUtil {
      * @param <D>       [泛型] 字典类型
      * @return 查到的字典
      */
-    public final <D extends IDictionary> @NotNull D getDictionary(@NotNull Class<D> enumClass, Function<D, Object> function, Object value) {
+    public final <D extends IDictionary> @NotNull D getDictionary(
+            @NotNull Class<D> enumClass, Function<D, Object> function, Object value
+    ) {
         try {
             // 取出所有枚举类型
             D[] objs = enumClass.getEnumConstants();
@@ -64,7 +66,9 @@ public class DictionaryUtil {
      * @param clazz 枚举类
      * @return 枚举选项列表
      */
-    public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(@NotNull Class<D> clazz) {
+    public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(
+            @NotNull Class<D> clazz
+    ) {
         return getDictionaryList(clazz, IDictionary::getKey, IDictionary::getLabel);
     }
 

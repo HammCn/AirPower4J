@@ -33,9 +33,19 @@ public @interface Desensitize {
     /**
      * <h2>脱敏符号</h2>
      *
-     * @apiNote 如字段标记脱敏且提交的数据包含脱敏符号，则该类数据不更新到数据库
+     * @apiNote <ul>
+     * <li>{@code replace==false} 提交的数据包含脱敏符号，则该类数据不更新到数据库</li>
+     * <li>{@code replace==true} 提交的数据和脱敏符号一致，则该类数据不更新到数据库</li>
+     * </ul>
      */
     String symbol() default "*";
+
+    /**
+     * <h2>是否替换</h2>
+     *
+     * @apiNote 如标记为 {@code true}, 则整体脱敏为符号，而不是单个字符替换
+     */
+    boolean replace() default false;
 
     /**
      * <h2>脱敏方式</h2>

@@ -69,11 +69,15 @@ public class TokenUtil {
      * @return {@code AccessToken}
      */
     public final String create(String secret) {
-        ServiceError.PARAM_INVALID.whenEquals(Constant.AIRPOWER, secret, "身份令牌创建失败，请在环境变量配置 airpower.accessTokenSecret");
+        ServiceError.PARAM_INVALID.whenEquals(Constant.AIRPOWER, secret,
+                "身份令牌创建失败，请在环境变量配置 airpower.accessTokenSecret");
         if (verifiedToken.getPayloads().isEmpty()) {
             throw new ServiceException(PAYLOADS_IS_EMPTY);
         }
-        String payloadBase = Base64.getUrlEncoder().encodeToString(Json.toString(verifiedToken.getPayloads()).getBytes(StandardCharsets.UTF_8));
+        String payloadBase = Base64.getUrlEncoder().encodeToString(
+                Json.toString(verifiedToken.getPayloads())
+                        .getBytes(StandardCharsets.UTF_8)
+        );
         String content = verifiedToken.getExpireTimestamps() +
                 Constant.DOT +
                 hmacSha256(secret, verifiedToken.getExpireTimestamps() + Constant.DOT + payloadBase) +

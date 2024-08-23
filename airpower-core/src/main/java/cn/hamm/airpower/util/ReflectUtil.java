@@ -369,7 +369,9 @@ public class ReflectUtil {
      * @param currentClass    所在类
      * @return 装配的注解
      */
-    private <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Method method, Class<?> currentClass) {
+    private <A extends Annotation> @Nullable A getAnnotation(
+            Class<A> annotationClass, @NotNull Method method, Class<?> currentClass
+    ) {
         A annotation = method.getAnnotation(annotationClass);
         if (Objects.nonNull(annotation)) {
             return annotation;

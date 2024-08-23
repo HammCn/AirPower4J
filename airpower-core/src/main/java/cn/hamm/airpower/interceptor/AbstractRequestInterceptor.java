@@ -86,7 +86,11 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param clazz    控制器
      * @param method   方法
      */
-    private void handleRequest(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, Class<?> clazz, Method method) {
+    private void handleRequest(
+            @NotNull HttpServletRequest request,
+            @NotNull HttpServletResponse response,
+            Class<?> clazz, Method method
+    ) {
         interceptRequest(request, response, clazz, method);
         AccessUtil accessUtil = Utils.getAccessUtil();
         Access access = accessUtil.getWhatNeedAccess(clazz, method);

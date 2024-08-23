@@ -137,7 +137,9 @@ public class HttpUtil {
         if (Objects.nonNull(cookies)) {
             List<String> cookieList = new ArrayList<>();
             cookies.forEach((key, value) -> cookieList.add(key + Constant.EQUAL + value));
-            requestBuilder.setHeader(Constant.COOKIE, String.join(Constant.SEMICOLON + Constant.SPACE, cookieList));
+            requestBuilder.setHeader(
+                    Constant.COOKIE, String.join(Constant.SEMICOLON + Constant.SPACE, cookieList)
+            );
         }
         if (Objects.nonNull(contentType)) {
             requestBuilder.header(Constant.CONTENT_TYPE, contentType.getValue());

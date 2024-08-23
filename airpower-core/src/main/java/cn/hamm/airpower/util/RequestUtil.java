@@ -37,7 +37,9 @@ public class RequestUtil {
     /**
      * <h2>常用IP反向代理Header头</h2>
      */
-    private static final List<String> PROXY_IP_HEADERS = List.of("x-forwarded-for", "Proxy-Client-IP", "WL-Proxy-Client-IP");
+    private static final List<String> PROXY_IP_HEADERS = List.of(
+            "x-forwarded-for", "Proxy-Client-IP", "WL-Proxy-Client-IP"
+    );
 
     /**
      * <h2>判断是否是上传请求</h2>
@@ -117,7 +119,9 @@ public class RequestUtil {
      * @return 判定结果
      */
     private boolean isValidAddress(String ipAddress) {
-        return Objects.nonNull(ipAddress) && StringUtils.hasText(ipAddress) && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
+        return Objects.nonNull(ipAddress)
+                && StringUtils.hasText(ipAddress)
+                && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
     }
 
     /**
