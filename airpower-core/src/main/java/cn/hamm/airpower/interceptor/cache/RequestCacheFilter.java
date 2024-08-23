@@ -32,7 +32,9 @@ public class RequestCacheFilter implements Filter {
      * @param filterChain     过滤器链
      */
     @Override
-    public final void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
+    public final void doFilter(
+            ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain
+    ) {
         try {
             HttpServletRequest request = ((HttpServletRequest) servletRequest);
             // 如果是上传 不做任何缓存

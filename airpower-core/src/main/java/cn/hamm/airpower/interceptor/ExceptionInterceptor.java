@@ -121,7 +121,8 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Json dataExceptionHandle(@NotNull HttpMessageNotReadableException exception) {
         log.error(exception.getMessage());
-        return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED, "请求参数格式不正确,请检查是否接口支持的JSON");
+        return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED,
+                "请求参数格式不正确,请检查是否接口支持的JSON");
     }
 
     /**
