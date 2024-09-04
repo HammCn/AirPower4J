@@ -67,7 +67,6 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
             if (object instanceof Json json) {
                 // 日志记录原始数据
                 response = Json.toString(json);
-                updateLogResponse(openLogId, response);
                 // 如果是Json 需要将 Json.data 对输出的数据进行加密
                 json.setData(OpenResponse.encodeResponse(openRequest.getOpenApp(), json.getData()));
             }
