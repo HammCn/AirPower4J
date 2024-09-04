@@ -5,7 +5,7 @@ import cn.hamm.airpower.validate.dictionary.Dictionary;
 import java.lang.annotation.*;
 
 /**
- * <h1>Excel导出列</h1>
+ * <h1>{@code Excel} 导出列</h1>
  *
  * @author Hamm.cn
  */

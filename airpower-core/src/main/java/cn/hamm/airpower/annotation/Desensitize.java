@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.lang.annotation.*;
 
 /**
- * <h1>标记字段在API输出时自动脱敏</h1>
+ * <h1>标记字段在 {@code API} 输出时自动脱敏</h1>
  *
  * @author Hamm.cn
  * @apiNote 如需标记不脱敏的接口，可使用 {@link DesensitizeExclude}
