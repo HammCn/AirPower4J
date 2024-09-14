@@ -131,7 +131,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @param queryListRequest 查询请求
      * @return 处理后的查询请求
      */
-    protected <Q extends QueryListRequest<E>> QueryListRequest<E> beforeExportQuery(QueryListRequest<E> queryListRequest) {
+    protected QueryListRequest<E> beforeExportQuery(QueryListRequest<E> queryListRequest) {
         return queryListRequest;
     }
 
@@ -275,10 +275,9 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @see #afterSaved(long, E)
      */
     public final long add(@NotNull E source) {
-        source = beforeAdd(source).copy();
+        source = beforeAdd(source);
         ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
-        source.setId(null);
-        source.setIsDisabled(false).setCreateTime(System.currentTimeMillis());
+        source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark(Constant.EMPTY_STRING);
         }
@@ -478,7 +477,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @see #afterGetList(List)
      */
     public final @NotNull List<E> getList(QueryListRequest<E> queryListRequest) {
-        queryListRequest = checkQueryRequest(queryListRequest);
+        queryListRequest = requireWithFilterNonNullElse(queryListRequest, new QueryListRequest<>());
         queryListRequest = beforeGetList(queryListRequest);
         List<E> list = query(queryListRequest);
         return afterGetList(list);
@@ -494,7 +493,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      *     <li>{@link #beforeGetList(QueryListRequest)} {@link #beforeGetPage(QueryPageRequest)} {@link #beforeExportQuery(QueryListRequest)} 先触发</li>
      * </ul>
      */
-    protected <Q extends QueryListRequest<E>> QueryListRequest<E> beforeQuery(@NotNull QueryListRequest<E> queryListRequest) {
+    protected QueryListRequest<E> beforeQuery(@NotNull QueryListRequest<E> queryListRequest) {
         return queryListRequest;
     }
 
@@ -515,7 +514,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @param sort   排序
      * @return List数据
      */
-    public final <Q extends QueryListRequest<E>> @NotNull List<E> filter(E filter, Sort sort) {
+    public final @NotNull List<E> filter(E filter, Sort sort) {
         QueryListRequest<E> queryListRequest = new QueryListRequest<>();
         queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), filter));
         return repository.findAll(createSpecification(filter, true), createSort(sort));
@@ -639,7 +638,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @see #afterGetPage(QueryPageResponse)
      */
     public final @NotNull QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
-        queryPageRequest = (QueryPageRequest<E>) checkQueryRequest(queryPageRequest);
+        queryPageRequest = requireWithFilterNonNullElse(queryPageRequest, new QueryPageRequest<>());
         queryPageRequest = beforeGetPage(queryPageRequest);
         org.springframework.data.domain.Page<E> pageData = repository.findAll(
                 createSpecification(queryPageRequest.getFilter(), false), createPageable(queryPageRequest)
@@ -756,9 +755,9 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @param queryListRequest 查询请求
      * @return 查询结果
      */
-    private @NotNull <Q extends QueryListRequest<E>> List<E> exportQuery(QueryListRequest<E> queryListRequest) {
-        queryListRequest = checkQueryRequest(queryListRequest);
-        queryListRequest = beforeExportQuery(queryListRequest).copy();
+    private @NotNull List<E> exportQuery(QueryListRequest<E> queryListRequest) {
+        queryListRequest = requireWithFilterNonNullElse(queryListRequest, new QueryListRequest<>());
+        queryListRequest = beforeExportQuery(queryListRequest);
         List<E> list = query(queryListRequest);
         return afterExportQuery(list);
     }
@@ -825,13 +824,14 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>检查查询请求</h2>
+     * <h2>验证非空查询请求且非空过滤器请求</h2>
      *
      * @param queryListRequest 查询请求
+     * @param newInstance      新实例
      * @return 检查后的查询请求
      */
-    private @NotNull QueryListRequest<E> checkQueryRequest(QueryListRequest<E> queryListRequest) {
-        queryListRequest = Objects.requireNonNullElse(queryListRequest, new QueryListRequest<>());
+    private <Q extends QueryListRequest<E>> @NotNull Q requireWithFilterNonNullElse(Q queryListRequest, Q newInstance) {
+        queryListRequest = Objects.requireNonNullElse(queryListRequest, newInstance);
         queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
         return queryListRequest;
     }
@@ -844,7 +844,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      */
     private void updateToDatabase(boolean withNull, @NotNull E source) {
         long id = source.getId();
-        source = beforeUpdate(source).copy();
+        source = beforeUpdate(source);
         updateToDatabase(source, withNull);
         E finalSource = source;
         taskUtil.run(
@@ -949,7 +949,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
     private long saveAndFlush(@NotNull E entity) {
         E target = getNewInstance();
         BeanUtils.copyProperties(entity, target);
-        target = beforeSaveToDatabase(target).copy();
+        target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
         // 新增完毕，清掉查询缓存，避免查询到旧数据
         entityManager.clear();
