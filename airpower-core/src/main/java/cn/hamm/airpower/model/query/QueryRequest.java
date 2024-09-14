@@ -31,12 +31,6 @@ public class QueryRequest<M extends RootModel<M>> extends RootModel<QueryRequest
     private M filter = null;
 
     /**
-     * <h2>关键词搜索</h2>
-     */
-    @Description("搜索关键词")
-    private String keyword;
-
-    /**
      * <h2>设置过滤器</h2>
      *
      * @param filter 过滤器
@@ -55,17 +49,6 @@ public class QueryRequest<M extends RootModel<M>> extends RootModel<QueryRequest
      */
     public QueryRequest<M> setSort(Sort sort) {
         this.sort = sort;
-        return this;
-    }
-
-    /**
-     * <h2>设置查询关键词</h2>
-     *
-     * @param keyword 关键词
-     * @return 请求
-     */
-    public QueryRequest<M> setKeyword(String keyword) {
-        this.keyword = keyword;
         return this;
     }
 }
