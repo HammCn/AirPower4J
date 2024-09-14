@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Description("负载模型")
-public class Payload<T> extends RootModel<Payload<T>> {
+public class Payload<T> extends RootModel {
     /**
      * <h2>键名</h2>
      */

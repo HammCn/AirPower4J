@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Description("查询排序对象")
-public class Sort extends RootModel<Sort> {
+public class Sort extends RootModel {
     /**
      * <h2>排序字段</h2>
      */

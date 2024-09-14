@@ -85,7 +85,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
      */
     @Contract("null, _ -> null")
     @SuppressWarnings({"unchecked", "RedundantSuppression"})
-    private <M extends RootModel<M>> Object getResult(Object result, Method method) {
+    private <M extends RootModel> Object getResult(Object result, Method method) {
         if (!(result instanceof Json json)) {
             // 返回不是JsonData 原样返回
             return result;

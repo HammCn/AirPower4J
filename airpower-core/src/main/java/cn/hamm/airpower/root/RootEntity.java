@@ -36,8 +36,8 @@ import java.io.Serializable;
 @Description(Constant.EMPTY_STRING)
 @Slf4j
 @SuppressWarnings("unchecked")
-public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
-        implements Serializable, IEntity<E>, IEntityAction {
+public class RootEntity extends RootModel
+        implements Serializable, IEntity, IEntityAction {
     public static final String QUERY_USE_ONLY = "该查询列表(分页和不分页)时传入";
 
     @Description("主键ID")
@@ -114,8 +114,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      * @param id {@code ID}
      * @return 实体
      */
-    @Override
-    public E setId(Long id) {
+    public <E extends RootEntity> E setId(Long id) {
         this.id = id;
         return (E) this;
     }
@@ -126,7 +125,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      * @param remark 备注
      * @return 备注
      */
-    public E setRemark(String remark) {
+    public <E extends RootEntity> E setRemark(String remark) {
         this.remark = remark;
         return (E) this;
     }
@@ -137,7 +136,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      * @param isDisabled 禁用
      * @return 实体
      */
-    public E setIsDisabled(Boolean isDisabled) {
+    public <E extends RootEntity> E setIsDisabled(Boolean isDisabled) {
         this.isDisabled = isDisabled;
         return (E) this;
     }
@@ -148,7 +147,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      * @param createTime 创建时间
      * @return 实体
      */
-    public E setCreateTime(Long createTime) {
+    public <E extends RootEntity> E setCreateTime(Long createTime) {
         this.createTime = createTime;
         return (E) this;
     }
@@ -159,7 +158,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      * @param createUserId 创建人 {@code ID}
      * @return 实体
      */
-    public E setCreateUserId(Long createUserId) {
+    public <E extends RootEntity> E setCreateUserId(Long createUserId) {
         this.createUserId = createUserId;
         return (E) this;
     }
@@ -170,7 +169,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      * @param updateUserId 修改人 {@code ID}
      * @return 实体
      */
-    public E setUpdateUserId(Long updateUserId) {
+    public <E extends RootEntity> E setUpdateUserId(Long updateUserId) {
         this.updateUserId = updateUserId;
         return (E) this;
     }
@@ -181,7 +180,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      * @param updateTime 更新时间
      * @return 实体
      */
-    public E setUpdateTime(Long updateTime) {
+    public <E extends RootEntity> E setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
         return (E) this;
     }
@@ -205,7 +204,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
      *
      * @return 只复制 {@code ID} 的实体
      */
-    public final @org.jetbrains.annotations.NotNull E copyOnlyId() {
+    public final <E extends RootEntity> @org.jetbrains.annotations.NotNull E copyOnlyId() {
         try {
             E target = (E) getClass().getConstructor().newInstance();
             return target.setId(getId());

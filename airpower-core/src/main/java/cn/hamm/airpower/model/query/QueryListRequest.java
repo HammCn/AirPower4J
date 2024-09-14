@@ -11,14 +11,13 @@ import lombok.experimental.Accessors;
  * <h1>查询列表请求</h1>
  *
  * @param <M> 数据模型
- * @param <Q> 请求类型
  * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
 @Description("查询列表请求")
-public class QueryListRequest<M extends RootModel<M>, Q extends QueryListRequest<M, Q>> extends QueryRequest<M, Q> {
+public class QueryListRequest<M extends RootModel> extends QueryRequest<M> {
     /**
      * <h2>排序对象</h2>
      */
@@ -31,8 +30,9 @@ public class QueryListRequest<M extends RootModel<M>, Q extends QueryListRequest
      * @param sort 排序
      * @return 请求
      */
-    public QueryListRequest<M, Q> setSort(Sort sort) {
+    public <Q extends QueryListRequest<M>> Q setSort(Sort sort) {
         this.sort = sort;
-        return this;
+        //noinspection unchecked
+        return (Q) this;
     }
 }

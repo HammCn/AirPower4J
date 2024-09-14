@@ -5,7 +5,7 @@ package cn.hamm.airpower.interfaces;
  *
  * @author Hamm.cn
  */
-public interface IFile<E extends IFile<E>> extends IEntity<E> {
+public interface IFile<E extends IFile<E>> extends IEntity {
     /**
      * <h2>获取文件的 {@code URL}</h2>
      *

@@ -7,6 +7,6 @@ import cn.hamm.airpower.root.RootModel;
  *
  * @author Hamm.cn
  */
-public class OpenBaseModel<T extends OpenBaseModel<T>> extends RootModel<T> {
+public class OpenBaseModel extends RootModel {
 
 }

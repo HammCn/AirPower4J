@@ -35,7 +35,7 @@ import java.util.Objects;
  */
 @Permission
 public class RootEntityController<
-        E extends RootEntity<E>,
+        E extends RootEntity,
         S extends RootService<E, R>,
         R extends RootRepository<E>> extends RootController implements IEntityAction {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -47,7 +47,7 @@ public class RootEntityController<
      */
     @Description("创建导出任务")
     @RequestMapping("export")
-    public Json export(@RequestBody QueryListRequest<E> queryListRequest) {
+    public <Q extends QueryListRequest<E>> Json export(@RequestBody QueryListRequest<E> queryListRequest) {
         return Json.data(service.createExportTask(queryListRequest), "导出任务创建成功");
     }
 
@@ -75,7 +75,7 @@ public class RootEntityController<
     public Json add(@RequestBody @Validated(WhenAdd.class) E source) {
         checkApiAvailableStatus(Api.Add);
         source.ignoreReadOnlyFields();
-        source = beforeAdd(source).copy();
+        source = beforeAdd(source);
         final E finalSource = source;
         long id = service.add(source);
         Utils.getTaskUtil().run(
@@ -100,7 +100,7 @@ public class RootEntityController<
         checkApiAvailableStatus(Api.Update);
         long id = source.getId();
         source.ignoreReadOnlyFields();
-        source = beforeUpdate(source).copy();
+        source = beforeUpdate(source);
         final E finalSource = source;
         service.update(source);
         Utils.getTaskUtil().run(
@@ -197,7 +197,7 @@ public class RootEntityController<
     public Json getList(@RequestBody QueryListRequest<E> queryListRequest) {
         checkApiAvailableStatus(Api.GetList);
         queryListRequest = getQueryRequest(queryListRequest);
-        queryListRequest = beforeGetList(queryListRequest).copy();
+        queryListRequest = beforeGetList(queryListRequest);
         return Json.data(afterGetList(service.getList(queryListRequest)));
     }
 
@@ -214,7 +214,7 @@ public class RootEntityController<
     public Json getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         checkApiAvailableStatus(Api.GetPage);
         queryPageRequest = getQueryRequest(queryPageRequest);
-        queryPageRequest = (QueryPageRequest<E>) beforeGetPage(queryPageRequest).copy();
+        queryPageRequest = beforeGetPage(queryPageRequest);
         return Json.data(afterGetPage(service.getPage(queryPageRequest)));
     }
 
@@ -242,7 +242,7 @@ public class RootEntityController<
      *
      * @apiNote 可重写后重新设置查询条件
      */
-    protected <T extends QueryListRequest<E>> T beforeGetList(T queryRequest) {
+    protected <T extends QueryListRequest<E>, Q extends QueryListRequest<E>> T beforeGetList(T queryRequest) {
         return queryRequest;
     }
 

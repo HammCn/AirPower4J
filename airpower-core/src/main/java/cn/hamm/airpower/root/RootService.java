@@ -54,7 +54,7 @@ import java.util.function.BiFunction;
  */
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
-public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
+public class RootService<E extends RootEntity, R extends RootRepository<E>> {
     /**
      * <h2>提交的数据不允许为空</h2>
      */
@@ -108,7 +108,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #afterExportQuery(List)
      * @see #createExportStream(List)
      */
-    public final String createExportTask(QueryListRequest<E, ?> queryListRequest) {
+    public final String createExportTask(QueryListRequest<E> queryListRequest) {
         String fileCode = randomUtil.randomString().toLowerCase();
         final String fileCacheKey = EXPORT_FILE_PREFIX + fileCode;
         Object object = redisUtil.get(fileCacheKey);
@@ -131,7 +131,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param queryListRequest 查询请求
      * @return 处理后的查询请求
      */
-    protected <Q extends QueryListRequest<E, Q>> QueryListRequest<E, Q> beforeExportQuery(QueryListRequest<E, Q> queryListRequest) {
+    protected <Q extends QueryListRequest<E>> QueryListRequest<E> beforeExportQuery(QueryListRequest<E> queryListRequest) {
         return queryListRequest;
     }
 
@@ -277,7 +277,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final long add(@NotNull E source) {
         source = beforeAdd(source).copy();
         ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
-        source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
+        source.setId(null);
+        source.setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         if (Objects.isNull(source.getRemark())) {
             source.setRemark(Constant.EMPTY_STRING);
         }
@@ -464,7 +465,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 处理后的查询条件
      * @see #getList(QueryListRequest)
      */
-    protected <T extends QueryListRequest<E, ?>> @NotNull T beforeGetList(@NotNull T sourceRequestData) {
+    protected <T extends QueryListRequest<E>> @NotNull T beforeGetList(@NotNull T sourceRequestData) {
         return sourceRequestData;
     }
 
@@ -476,7 +477,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #beforeGetList(QueryListRequest)
      * @see #afterGetList(List)
      */
-    public final @NotNull List<E> getList(QueryListRequest<E, ?> queryListRequest) {
+    public final @NotNull List<E> getList(QueryListRequest<E> queryListRequest) {
         queryListRequest = checkQueryRequest(queryListRequest);
         queryListRequest = beforeGetList(queryListRequest);
         List<E> list = query(queryListRequest);
@@ -493,7 +494,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *     <li>{@link #beforeGetList(QueryListRequest)} {@link #beforeGetPage(QueryPageRequest)} {@link #beforeExportQuery(QueryListRequest)} 先触发</li>
      * </ul>
      */
-    protected <Q extends QueryListRequest<E, Q>> QueryListRequest<E, Q> beforeQuery(@NotNull QueryListRequest<E, Q> queryListRequest) {
+    protected <Q extends QueryListRequest<E>> QueryListRequest<E> beforeQuery(@NotNull QueryListRequest<E> queryListRequest) {
         return queryListRequest;
     }
 
@@ -514,8 +515,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param sort   排序
      * @return List数据
      */
-    public final <Q extends QueryListRequest<E, Q>> @NotNull List<E> filter(E filter, Sort sort) {
-        QueryListRequest<E, Q> queryListRequest = new QueryListRequest<>();
+    public final <Q extends QueryListRequest<E>> @NotNull List<E> filter(E filter, Sort sort) {
+        QueryListRequest<E> queryListRequest = new QueryListRequest<>();
         queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), filter));
         return repository.findAll(createSpecification(filter, true), createSort(sort));
     }
@@ -755,7 +756,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param queryListRequest 查询请求
      * @return 查询结果
      */
-    private @NotNull <Q extends QueryListRequest<E, Q>> List<E> exportQuery(QueryListRequest<E, Q> queryListRequest) {
+    private @NotNull <Q extends QueryListRequest<E>> List<E> exportQuery(QueryListRequest<E> queryListRequest) {
         queryListRequest = checkQueryRequest(queryListRequest);
         queryListRequest = beforeExportQuery(queryListRequest).copy();
         List<E> list = query(queryListRequest);
@@ -768,7 +769,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param queryListRequest 查询请求
      * @return 查询结果数据列表
      */
-    private @NotNull <Q extends QueryListRequest<E, Q>> List<E> query(@NotNull QueryListRequest<E, Q> queryListRequest) {
+    private @NotNull List<E> query(@NotNull QueryListRequest<E> queryListRequest) {
         queryListRequest = beforeQuery(queryListRequest);
         return repository.findAll(
                 createSpecification(queryListRequest.getFilter(), false), createSort(queryListRequest.getSort())
@@ -829,7 +830,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param queryListRequest 查询请求
      * @return 检查后的查询请求
      */
-    private @NotNull <Q extends QueryListRequest<E, Q>> QueryListRequest<E, Q> checkQueryRequest(QueryListRequest<E, Q> queryListRequest) {
+    private @NotNull QueryListRequest<E> checkQueryRequest(QueryListRequest<E> queryListRequest) {
         queryListRequest = Objects.requireNonNullElse(queryListRequest, new QueryListRequest<>());
         queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
         return queryListRequest;
