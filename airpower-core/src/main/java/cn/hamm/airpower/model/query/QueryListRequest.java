@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * <h1>查询请求</h1>
+ * <h1>查询列表请求</h1>
  *
  * @param <M> 数据模型
  * @param <Q> 请求类型
@@ -17,22 +17,22 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-@Description("查询请求")
-public class QueryRequest<M extends RootModel<M>, Q extends QueryRequest<M, Q>> extends RootModel<Q> {
+@Description("查询列表请求")
+public class QueryListRequest<M extends RootModel<M>, Q extends QueryListRequest<M, Q>> extends QueryRequest<M, Q> {
     /**
-     * <h2>搜索过滤器</h2>
+     * <h2>排序对象</h2>
      */
-    @Description("过滤器")
-    private M filter = null;
+    @Description("排序对象")
+    private Sort sort = null;
 
     /**
-     * <h2>设置过滤器</h2>
+     * <h2>设置排序</h2>
      *
-     * @param filter 过滤器
+     * @param sort 排序
      * @return 请求
      */
-    public QueryRequest<M, Q> setFilter(M filter) {
-        this.filter = filter;
+    public QueryListRequest<M, Q> setSort(Sort sort) {
+        this.sort = sort;
         return this;
     }
 }

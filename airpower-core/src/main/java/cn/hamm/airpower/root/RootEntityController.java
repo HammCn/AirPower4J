@@ -12,7 +12,7 @@ import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryExport;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
-import cn.hamm.airpower.model.query.QueryRequest;
+import cn.hamm.airpower.model.query.QueryListRequest;
 import cn.hamm.airpower.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +47,8 @@ public class RootEntityController<
      */
     @Description("创建导出任务")
     @RequestMapping("export")
-    public Json export(@RequestBody QueryRequest<E> queryRequest) {
-        return Json.data(service.createExportTask(queryRequest), "导出任务创建成功");
+    public Json export(@RequestBody QueryListRequest<E> queryListRequest) {
+        return Json.data(service.createExportTask(queryListRequest), "导出任务创建成功");
     }
 
     /**
@@ -188,17 +188,17 @@ public class RootEntityController<
      * <h2>不分页查询</h2>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
-     * @see #beforeGetList(QueryRequest)
+     * @see #beforeGetList(QueryListRequest)
      * @see #afterGetList(List)
      */
     @Description("不分页查询")
     @RequestMapping("getList")
     @Filter(WhenGetList.class)
-    public Json getList(@RequestBody QueryRequest<E> queryRequest) {
+    public Json getList(@RequestBody QueryListRequest<E> queryListRequest) {
         checkApiAvailableStatus(Api.GetList);
-        queryRequest = getQueryRequest(queryRequest);
-        queryRequest = beforeGetList(queryRequest).copy();
-        return Json.data(afterGetList(service.getList(queryRequest)));
+        queryListRequest = getQueryRequest(queryListRequest);
+        queryListRequest = beforeGetList(queryListRequest).copy();
+        return Json.data(afterGetList(service.getList(queryListRequest)));
     }
 
     /**
@@ -242,7 +242,7 @@ public class RootEntityController<
      *
      * @apiNote 可重写后重新设置查询条件
      */
-    protected <T extends QueryRequest<E>> T beforeGetList(T queryRequest) {
+    protected <T extends QueryListRequest<E>> T beforeGetList(T queryRequest) {
         return queryRequest;
     }
 
@@ -383,8 +383,8 @@ public class RootEntityController<
      * @return 处理后的查询请求
      */
     @SuppressWarnings("unchecked")
-    private <T extends QueryRequest<E>> @NotNull T getQueryRequest(T queryRequest) {
-        queryRequest = Objects.requireNonNullElse(queryRequest, (T) new QueryRequest<E>());
+    private <T extends QueryListRequest<E>> @NotNull T getQueryRequest(T queryRequest) {
+        queryRequest = Objects.requireNonNullElse(queryRequest, (T) new QueryListRequest<E>());
         queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
         return queryRequest;
     }
