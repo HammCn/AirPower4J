@@ -223,7 +223,7 @@ public class RootEntityController<
      *
      * @see #getPage(QueryPageRequest)
      */
-    protected <T extends QueryPageResponse<E>> T afterGetPage(T queryPageResponse) {
+    protected QueryPageResponse<E> afterGetPage(QueryPageResponse<E> queryPageResponse) {
         return queryPageResponse;
     }
 
@@ -233,7 +233,7 @@ public class RootEntityController<
      * @apiNote 可重写后重新设置查询条件
      * @see #getPage(QueryPageRequest)
      */
-    protected <T extends QueryPageRequest<E>> T beforeGetPage(T queryPageRequest) {
+    protected QueryPageRequest<E> beforeGetPage(QueryPageRequest<E> queryPageRequest) {
         return queryPageRequest;
     }
 
@@ -242,7 +242,7 @@ public class RootEntityController<
      *
      * @apiNote 可重写后重新设置查询条件
      */
-    protected <T extends QueryListRequest<E>, Q extends QueryListRequest<E>> T beforeGetList(T queryRequest) {
+    protected QueryListRequest<E> beforeGetList(QueryListRequest<E> queryRequest) {
         return queryRequest;
     }
 
@@ -385,8 +385,7 @@ public class RootEntityController<
     @SuppressWarnings("unchecked")
     private <T extends QueryListRequest<E>> @NotNull T getQueryRequest(T queryRequest) {
         queryRequest = Objects.requireNonNullElse(queryRequest, (T) new QueryListRequest<E>());
-        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
-        return queryRequest;
+        return queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
     }
 
     /**
