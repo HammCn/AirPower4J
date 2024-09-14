@@ -84,7 +84,7 @@ public class OpenRequest {
      *
      * @param clazz 业务数据对象类型
      */
-    public final <T extends RootModel<T>> T parse(Class<T> clazz) {
+    public final <T extends RootModel> T parse(Class<T> clazz) {
         String json = decodeContent();
         try {
             return Json.parse(json, clazz);

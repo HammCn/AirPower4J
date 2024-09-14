@@ -82,12 +82,11 @@ public class Json {
     /**
      * <h2>输出实体</h2>
      *
-     * @param id  实体 {@code ID}
-     * @param <E> 实体类型
+     * @param id 实体 {@code ID}
      * @return {@code Json}
      */
-    public static <E extends RootEntity<E>> Json entity(@NotNull Long id) {
-        return data(new RootEntity<E>().setId(id));
+    public static Json entity(@NotNull Long id) {
+        return data(new RootEntity().setId(id));
     }
 
     /**

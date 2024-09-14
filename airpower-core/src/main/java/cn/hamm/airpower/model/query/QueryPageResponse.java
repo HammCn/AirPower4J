@@ -12,15 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <h1>响应分页类</h1>
+ * <h1>分页查询响应类</h1>
  *
  * @author Hamm.cn
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-@Description("分页查询响应对象")
-public class QueryPageResponse<M extends RootModel<M>> extends RootModel<QueryPageResponse<M>> {
+@Description("分页查询响应类")
+public class QueryPageResponse<M extends RootModel> extends RootModel {
     /**
      * <h2>总数量</h2>
      */

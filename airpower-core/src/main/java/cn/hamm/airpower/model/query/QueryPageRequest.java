@@ -17,9 +17,9 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Description("查询分页请求")
-public class QueryPageRequest<M extends RootModel<M>> extends QueryRequest<M> {
+public class QueryPageRequest<M extends RootModel> extends QueryListRequest<M> {
     /**
-     * <h2>分页</h2>
+     * <h2>分页信息</h2>
      */
     @Description("分页信息")
     private Page page = new Page();

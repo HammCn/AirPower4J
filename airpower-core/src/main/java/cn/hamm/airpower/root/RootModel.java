@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 @Slf4j
 @EqualsAndHashCode
 @SuppressWarnings("unchecked")
-public class RootModel<M extends RootModel<M>> implements IAction {
+public class RootModel implements IAction {
     @JsonIgnore
     private final ReflectUtil reflectUtil;
 
@@ -58,7 +58,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      *
      * @return 返回实例
      */
-    public final @NotNull M copy() {
+    public final <M extends RootModel> @NotNull M copy() {
         try {
             M target = (M) getClass().getConstructor().newInstance();
             BeanUtils.copyProperties(this, target);
@@ -79,7 +79,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @see #desensitize(Field)
      * @see #filter(Class)
      */
-    public final M filterAndDesensitize(@NotNull Class<?> filterClass, boolean isDesensitize) {
+    public final <M extends RootModel> M filterAndDesensitize(@NotNull Class<?> filterClass, boolean isDesensitize) {
         Class<M> clazz = (Class<M>) getClass();
         List<Field> allFields = reflectUtil.getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
@@ -107,7 +107,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @see #filterAndDesensitize(Filter, boolean)
      * @see #filter(Class)
      */
-    public final M deserialize() {
+    public final <M extends RootModel> M deserialize() {
         return filterAndDesensitize(Void.class, true);
     }
 
@@ -120,7 +120,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @see #filterAndDesensitize(Filter, boolean)
      * @see #desensitize(Field)
      */
-    public final M filter(Class<?> filterClass) {
+    public final <M extends RootModel> M filter(Class<?> filterClass) {
         return filterAndDesensitize(filterClass, false);
     }
 
@@ -134,7 +134,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @see #filter(Class)
      * @see #desensitize(Field)
      */
-    public final M filterAndDesensitize(@Nullable Filter filter, boolean isDesensitize) {
+    public final <M extends RootModel> M filterAndDesensitize(@Nullable Filter filter, boolean isDesensitize) {
         if (Objects.isNull(filter)) {
             return filterAndDesensitize(Void.class, isDesensitize);
         }
@@ -227,7 +227,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      */
     private void filterField(@NotNull Field field, Class<?> filterClass, boolean isDesensitize) {
         Object fieldValue = reflectUtil.getFieldValue(this, field);
-        Collection<RootModel<?>> collection;
+        Collection<RootModel> collection;
         if (fieldValue instanceof Collection<?>) {
             Class<?> fieldClass = field.getType();
             if (!reflectUtil.isModel(fieldClass)) {
@@ -235,7 +235,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             }
             CollectionUtil collectionUtil = Utils.getCollectionUtil();
             collection = collectionUtil.getCollectWithoutNull(
-                    (Collection<RootModel<?>>) fieldValue, fieldClass
+                    (Collection<RootModel>) fieldValue, fieldClass
             );
             collection.forEach(item -> item.filterAndDesensitize(filterClass, isDesensitize));
             reflectUtil.setFieldValue(this, field, collection);
@@ -248,7 +248,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return;
         }
         reflectUtil.setFieldValue(this, field,
-                ((RootModel<?>) fieldValue).filterAndDesensitize(filterClass, isDesensitize)
+                ((RootModel) fieldValue).filterAndDesensitize(filterClass, isDesensitize)
         );
     }
 

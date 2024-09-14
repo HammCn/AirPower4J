@@ -12,7 +12,7 @@ import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryExport;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
-import cn.hamm.airpower.model.query.QueryRequest;
+import cn.hamm.airpower.model.query.QueryListRequest;
 import cn.hamm.airpower.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import java.util.Objects;
  */
 @Permission
 public class RootEntityController<
-        E extends RootEntity<E>,
+        E extends RootEntity,
         S extends RootService<E, R>,
         R extends RootRepository<E>> extends RootController implements IEntityAction {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -47,8 +47,8 @@ public class RootEntityController<
      */
     @Description("创建导出任务")
     @RequestMapping("export")
-    public Json export(@RequestBody QueryRequest<E> queryRequest) {
-        return Json.data(service.createExportTask(queryRequest), "导出任务创建成功");
+    public Json export(@RequestBody QueryListRequest<E> queryListRequest) {
+        return Json.data(service.createExportTask(queryListRequest), "导出任务创建成功");
     }
 
     /**
@@ -75,7 +75,7 @@ public class RootEntityController<
     public Json add(@RequestBody @Validated(WhenAdd.class) E source) {
         checkApiAvailableStatus(Api.Add);
         source.ignoreReadOnlyFields();
-        source = beforeAdd(source).copy();
+        source = beforeAdd(source);
         final E finalSource = source;
         long id = service.add(source);
         Utils.getTaskUtil().run(
@@ -100,7 +100,7 @@ public class RootEntityController<
         checkApiAvailableStatus(Api.Update);
         long id = source.getId();
         source.ignoreReadOnlyFields();
-        source = beforeUpdate(source).copy();
+        source = beforeUpdate(source);
         final E finalSource = source;
         service.update(source);
         Utils.getTaskUtil().run(
@@ -188,17 +188,17 @@ public class RootEntityController<
      * <h2>不分页查询</h2>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
-     * @see #beforeGetList(QueryRequest)
+     * @see #beforeGetList(QueryListRequest)
      * @see #afterGetList(List)
      */
     @Description("不分页查询")
     @RequestMapping("getList")
     @Filter(WhenGetList.class)
-    public Json getList(@RequestBody QueryRequest<E> queryRequest) {
+    public Json getList(@RequestBody QueryListRequest<E> queryListRequest) {
         checkApiAvailableStatus(Api.GetList);
-        queryRequest = getQueryRequest(queryRequest);
-        queryRequest = beforeGetList(queryRequest).copy();
-        return Json.data(afterGetList(service.getList(queryRequest)));
+        queryListRequest = requireQueryAndFilterNonNullElse(queryListRequest, new QueryListRequest<>());
+        queryListRequest = beforeGetList(queryListRequest);
+        return Json.data(afterGetList(service.getList(queryListRequest)));
     }
 
     /**
@@ -213,8 +213,8 @@ public class RootEntityController<
     @Filter(WhenGetPage.class)
     public Json getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         checkApiAvailableStatus(Api.GetPage);
-        queryPageRequest = getQueryRequest(queryPageRequest);
-        queryPageRequest = (QueryPageRequest<E>) beforeGetPage(queryPageRequest).copy();
+        queryPageRequest = requireQueryAndFilterNonNullElse(queryPageRequest, new QueryPageRequest<>());
+        queryPageRequest = beforeGetPage(queryPageRequest);
         return Json.data(afterGetPage(service.getPage(queryPageRequest)));
     }
 
@@ -223,7 +223,7 @@ public class RootEntityController<
      *
      * @see #getPage(QueryPageRequest)
      */
-    protected <T extends QueryPageResponse<E>> T afterGetPage(T queryPageResponse) {
+    protected QueryPageResponse<E> afterGetPage(QueryPageResponse<E> queryPageResponse) {
         return queryPageResponse;
     }
 
@@ -233,7 +233,7 @@ public class RootEntityController<
      * @apiNote 可重写后重新设置查询条件
      * @see #getPage(QueryPageRequest)
      */
-    protected <T extends QueryPageRequest<E>> T beforeGetPage(T queryPageRequest) {
+    protected QueryPageRequest<E> beforeGetPage(QueryPageRequest<E> queryPageRequest) {
         return queryPageRequest;
     }
 
@@ -242,8 +242,8 @@ public class RootEntityController<
      *
      * @apiNote 可重写后重新设置查询条件
      */
-    protected <T extends QueryRequest<E>> T beforeGetList(T queryRequest) {
-        return queryRequest;
+    protected QueryListRequest<E> beforeGetList(QueryListRequest<E> queryListRequest) {
+        return queryListRequest;
     }
 
     /**
@@ -376,17 +376,16 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>获取查询请求</h2>
+     * <h2>验证非空查询请求且非空过滤器请求</h2>
      *
-     * @param queryRequest 传入的查询请求
+     * @param queryListRequest 传入的查询请求
+     * @param newInstance  新实例
      * @param <T>          QueryRequest子类
      * @return 处理后的查询请求
      */
-    @SuppressWarnings("unchecked")
-    private <T extends QueryRequest<E>> @NotNull T getQueryRequest(T queryRequest) {
-        queryRequest = Objects.requireNonNullElse(queryRequest, (T) new QueryRequest<E>());
-        queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
-        return queryRequest;
+    private <T extends QueryListRequest<E>> @NotNull T requireQueryAndFilterNonNullElse(T queryListRequest, T newInstance) {
+        queryListRequest = Objects.requireNonNullElse(queryListRequest, newInstance);
+        return queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
     }
 
     /**

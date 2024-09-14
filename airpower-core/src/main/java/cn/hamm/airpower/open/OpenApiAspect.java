@@ -28,10 +28,10 @@ import java.util.Objects;
 @Component
 public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService> {
     @Autowired(required = false)
-    S openAppService;
+    private S openAppService;
 
     @Autowired(required = false)
-    LS openLogService;
+    private LS openLogService;
 
     @SuppressWarnings("EmptyMethod")
     @Pointcut("@annotation(cn.hamm.airpower.open.OpenApi)")

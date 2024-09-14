@@ -136,8 +136,7 @@ public class AccessUtil {
                 String identity = clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING);
                 P permission = permissionClass.getConstructor().newInstance();
 
-                permission.setName(customClassName).setIdentity(identity);
-                permission.setChildren(new ArrayList<>());
+                permission.setName(customClassName).setIdentity(identity).setChildren(new ArrayList<>());
 
                 String apiPath = clazz.getSimpleName()
                         .replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING) + Constant.UNDERLINE;
