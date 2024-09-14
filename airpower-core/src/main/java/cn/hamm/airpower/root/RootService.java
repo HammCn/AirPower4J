@@ -464,7 +464,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @return 处理后的查询条件
      * @see #getList(QueryListRequest)
      */
-    protected <T extends QueryListRequest<E>> @NotNull T beforeGetList(@NotNull T sourceRequestData) {
+    protected @NotNull QueryListRequest<E> beforeGetList(@NotNull QueryListRequest<E> sourceRequestData) {
         return sourceRequestData;
     }
 
@@ -537,7 +537,7 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @param sourceRequestData 原始请求的数据
      * @return 处理后的请求数据
      */
-    protected <T extends QueryPageRequest<E>> @NotNull T beforeGetPage(@NotNull T sourceRequestData) {
+    protected @NotNull QueryPageRequest<E> beforeGetPage(@NotNull QueryPageRequest<E> sourceRequestData) {
         return sourceRequestData;
     }
 
