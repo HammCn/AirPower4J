@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @Description("查询分页请求")
 public class QueryPageRequest<M extends RootModel> extends QueryListRequest<M> {
     /**
-     * <h2>分页</h2>
+     * <h2>分页信息</h2>
      */
     @Description("分页信息")
     private Page page = new Page();
