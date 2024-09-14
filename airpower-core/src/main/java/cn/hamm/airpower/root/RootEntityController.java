@@ -376,7 +376,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>获取查询请求</h2>
+     * <h2>验证非空查询请求且非空过滤器请求</h2>
      *
      * @param queryRequest 传入的查询请求
      * @param newInstance  新实例
