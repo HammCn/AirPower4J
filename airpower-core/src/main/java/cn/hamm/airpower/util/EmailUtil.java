@@ -17,8 +17,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class EmailUtil {
+    private final JavaMailSender javaMailSender;
+
     @Autowired(required = false)
-    private JavaMailSender javaMailSender;
+    EmailUtil(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
     /**
      * <h2>发件人/用户名</h2>

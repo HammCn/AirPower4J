@@ -18,8 +18,12 @@ public class DataSourceConfiguration {
     /**
      * <h2>数据源配置对象</h2>
      */
+    private final DataSourceProperties dataSourceProperties;
+
     @Autowired
-    private DataSourceProperties dataSourceProperties;
+    DataSourceConfiguration(DataSourceProperties dataSourceProperties) {
+        this.dataSourceProperties = dataSourceProperties;
+    }
 
     /**
      * <h2>设置主要的数据源</h2>
