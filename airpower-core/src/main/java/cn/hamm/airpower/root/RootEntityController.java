@@ -47,7 +47,7 @@ public class RootEntityController<
      */
     @Description("创建导出任务")
     @RequestMapping("export")
-    public <Q extends QueryListRequest<E>> Json export(@RequestBody QueryListRequest<E> queryListRequest) {
+    public Json export(@RequestBody QueryListRequest<E> queryListRequest) {
         return Json.data(service.createExportTask(queryListRequest), "导出任务创建成功");
     }
 
@@ -196,7 +196,7 @@ public class RootEntityController<
     @Filter(WhenGetList.class)
     public Json getList(@RequestBody QueryListRequest<E> queryListRequest) {
         checkApiAvailableStatus(Api.GetList);
-        queryListRequest = getQueryRequest(queryListRequest);
+        queryListRequest = requireQueryAndFilterNonNullElse(queryListRequest, new QueryListRequest<>());
         queryListRequest = beforeGetList(queryListRequest);
         return Json.data(afterGetList(service.getList(queryListRequest)));
     }
@@ -213,7 +213,7 @@ public class RootEntityController<
     @Filter(WhenGetPage.class)
     public Json getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         checkApiAvailableStatus(Api.GetPage);
-        queryPageRequest = getQueryRequest(queryPageRequest);
+        queryPageRequest = requireQueryAndFilterNonNullElse(queryPageRequest, new QueryPageRequest<>());
         queryPageRequest = beforeGetPage(queryPageRequest);
         return Json.data(afterGetPage(service.getPage(queryPageRequest)));
     }
@@ -379,12 +379,12 @@ public class RootEntityController<
      * <h2>获取查询请求</h2>
      *
      * @param queryRequest 传入的查询请求
+     * @param newInstance  新实例
      * @param <T>          QueryRequest子类
      * @return 处理后的查询请求
      */
-    @SuppressWarnings("unchecked")
-    private <T extends QueryListRequest<E>> @NotNull T getQueryRequest(T queryRequest) {
-        queryRequest = Objects.requireNonNullElse(queryRequest, (T) new QueryListRequest<E>());
+    private <T extends QueryListRequest<E>> @NotNull T requireQueryAndFilterNonNullElse(T queryRequest, T newInstance) {
+        queryRequest = Objects.requireNonNullElse(queryRequest, newInstance);
         return queryRequest.setFilter(Objects.requireNonNullElse(queryRequest.getFilter(), getNewInstance()));
     }
 
