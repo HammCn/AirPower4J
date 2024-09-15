@@ -14,7 +14,7 @@ public interface IEntity<E extends IEntity<E>> {
     Long getId();
 
     /**
-     * <h2>设置实体主键 {@code ID}</h2>
+     * <h2>设置主键 {@code ID}</h2>
      *
      * @param id 主键 {@code ID}
      * @return 实体
