@@ -830,9 +830,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param newInstance      新实例
      * @return 检查后的查询请求
      */
-    private <Q extends QueryListRequest<E>> @NotNull Q requireWithFilterNonNullElse(Q queryListRequest, Q newInstance) {
+    private <Q extends QueryListRequest<E>> @NotNull Q requireWithFilterNonNullElse(
+            Q queryListRequest, Q newInstance) {
         queryListRequest = Objects.requireNonNullElse(queryListRequest, newInstance);
-        return queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
+        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
+        return queryListRequest;
     }
 
     /**

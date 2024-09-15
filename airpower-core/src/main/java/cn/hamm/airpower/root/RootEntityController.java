@@ -379,13 +379,15 @@ public class RootEntityController<
      * <h2>验证非空查询请求且非空过滤器请求</h2>
      *
      * @param queryListRequest 传入的查询请求
-     * @param newInstance  新实例
-     * @param <T>          QueryRequest子类
+     * @param newInstance      新实例
+     * @param <Q>              QueryRequest子类
      * @return 处理后的查询请求
      */
-    private <T extends QueryListRequest<E>> @NotNull T requireQueryAndFilterNonNullElse(T queryListRequest, T newInstance) {
+    private <Q extends QueryListRequest<E>> @NotNull Q requireQueryAndFilterNonNullElse(
+            Q queryListRequest, Q newInstance) {
         queryListRequest = Objects.requireNonNullElse(queryListRequest, newInstance);
-        return queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
+        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
+        return queryListRequest;
     }
 
     /**
