@@ -36,7 +36,8 @@ import java.io.Serializable;
 @Description(Constant.EMPTY_STRING)
 @Slf4j
 @SuppressWarnings("unchecked")
-public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements Serializable, IEntity, IEntityAction {
+public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
+        implements Serializable, IEntity<E>, IEntityAction {
     public static final String QUERY_USE_ONLY = "该查询列表(分页和不分页)时传入";
 
     @Description("主键ID")
@@ -113,6 +114,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E> implements
      * @param id {@code ID}
      * @return 实体
      */
+    @Override
     public E setId(Long id) {
         this.id = id;
         return (E) this;
