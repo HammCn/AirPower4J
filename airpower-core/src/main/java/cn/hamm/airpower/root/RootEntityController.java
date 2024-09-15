@@ -35,7 +35,7 @@ import java.util.Objects;
  */
 @Permission
 public class RootEntityController<
-        E extends RootEntity,
+        E extends RootEntity<E>,
         S extends RootService<E, R>,
         R extends RootRepository<E>> extends RootController implements IEntityAction {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")

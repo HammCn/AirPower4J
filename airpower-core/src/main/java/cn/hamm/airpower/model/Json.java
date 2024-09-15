@@ -85,8 +85,8 @@ public class Json {
      * @param id 实体 {@code ID}
      * @return {@code Json}
      */
-    public static Json entity(@NotNull Long id) {
-        return data(new RootEntity().setId(id));
+    public static <E extends RootEntity<E>> Json entity(@NotNull Long id) {
+        return data(new RootEntity<E>().setId(id));
     }
 
     /**

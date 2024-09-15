@@ -54,7 +54,7 @@ import java.util.function.BiFunction;
  */
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
-public class RootService<E extends RootEntity, R extends RootRepository<E>> {
+public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>提交的数据不允许为空</h2>
      */

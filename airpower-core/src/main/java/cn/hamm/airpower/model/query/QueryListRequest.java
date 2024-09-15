@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Description("查询列表请求")
-public class QueryListRequest<M extends RootModel> extends QueryRequest<M> {
+public class QueryListRequest<M extends RootModel<M>> extends QueryRequest<M> {
     /**
      * <h2>排序对象</h2>
      */

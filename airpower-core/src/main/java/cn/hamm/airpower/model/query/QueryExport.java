@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QueryExport extends RootModel {
+public class QueryExport extends RootModel<QueryExport> {
     @NotBlank(message = "文件Code不能为空")
     @Description("文件Code")
     private String fileCode;

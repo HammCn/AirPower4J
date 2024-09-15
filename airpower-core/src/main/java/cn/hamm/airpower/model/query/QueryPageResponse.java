@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @Description("分页查询响应类")
-public class QueryPageResponse<M extends RootModel> extends RootModel {
+public class QueryPageResponse<M extends RootModel<M>> extends RootModel<M> {
     /**
      * <h2>总数量</h2>
      */

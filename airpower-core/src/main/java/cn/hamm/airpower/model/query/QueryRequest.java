@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Description("查询请求")
-public class QueryRequest<M extends RootModel> extends RootModel {
+public class QueryRequest<M extends RootModel<M>> extends RootModel<M> {
     /**
      * <h2>搜索过滤器</h2>
      */
