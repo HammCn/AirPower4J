@@ -5,7 +5,7 @@ package cn.hamm.airpower.interfaces;
  *
  * @author Hamm.cn
  */
-public interface IEntity<E> {
+public interface IEntity<E extends IEntity<E>> {
     /**
      * <h2>获取主键 {@code ID}</h2>
      *
@@ -17,7 +17,7 @@ public interface IEntity<E> {
      * <h2>设置主键 {@code ID}</h2>
      *
      * @param id 主键 {@code ID}
-     * @return 实例
+     * @return 实体
      */
     E setId(Long id);
 }
