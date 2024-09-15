@@ -13,7 +13,10 @@ import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
-import cn.hamm.airpower.model.query.*;
+import cn.hamm.airpower.model.query.QueryExport;
+import cn.hamm.airpower.model.query.QueryListRequest;
+import cn.hamm.airpower.model.query.QueryPageRequest;
+import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.util.*;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import jakarta.persistence.Column;
@@ -516,7 +519,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final @NotNull List<E> filter(E filter, Sort sort) {
         QueryListRequest<E> queryListRequest = new QueryListRequest<>();
-        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), filter));
+        filter = Objects.requireNonNullElse(filter, getNewInstance());
+        queryListRequest.setFilter(filter);
         return repository.findAll(createSpecification(filter, true), createSort(sort));
     }
 
