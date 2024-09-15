@@ -14,36 +14,120 @@
 <a href="https://github.com/HammCn/AirPower4J">GitHub</a> / <a href="https://gitee.com/air-power/AirPower4J">Gitee</a> / <a href="./CHANGELOG.md">CHANGELOG</a> / <a href="https://central.sonatype.com/namespace/cn.hamm">Maven</a>
 </p>
 
-## 📖 这是个什么项目
+## 📖 一、这是个什么项目
 
 为了满足开发标准化、工程化、系统化等等需求，我们设计并开发了一个基于 **Java17**、**SpringBoot3.x**、**JPA&MySQL**
 的后端开发脚手架，其中包含了一些 **RBAC**、**请求验证**、**CURD封装**、**异常处理**、**多租户SaaS**、**加解密与安全**、
 **WebSocket**等模块，以满足日常开发的快捷、稳健、标准化等要求。
 
-## 🎈 为何起名**AirPower**
+当然，
 
-因为前端项目起了 **AirPower4T** 这个名字，于是后端就直接起名 **AirPower4J** 得了。
+> 如果你对全栈感兴趣，也可以和我们的 **`AirPower4T`**（[Github](https://github.com/HammCn/AirPower4T)/[Gitee](https://gitee.com/air-power/AirPower4T)） 一起玩耍，`AirPower4T` 是一个基于 `Vue3`/`TypeScript`/`ElementPlus`/`Vite` 等技术栈的一个基础开发脚手架，`AirPower4J`和`AirPower4T` 的联合可以为你的全栈之路增加另外一份很不一样的开发体验。
 
-## 🔑 如何使用(初始化)?
+## 🔑 二、如何使用(初始化)?
 
-通过我们提供的 ```AirPower宿主仓库``` 项目来完成 **AirPower** 宿主项目的初始化:
+通过我们提供的 ```AirPowerJavaStarter``` 项目来完成 **AirPower4J** 宿主项目的初始化:
 
-AirPowerJavaStarter
-via [GitHub](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md) / [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md)
+> [GitHub](https://github.com/HammCn/AirPowerJavaStarter/blob/main/README.md) / [Gitee](https://gitee.com/air-power/AirPowerJavaStarter/blob/main/README.md)
 
-## 🛎 问题反馈与建议
+## 💐 三、项目架构
+
+### 1. 环境变量说明
+
+我们使用了 `JPA` 的自动初始化数据库 `ddl-auto: create-drop` 模式，所以你在此项目中看不到SQL文件。
+
+所以在初始化代码库完成后只需要先创建数据库，并设置 `utf8mb4_unicode_ci` 字符集。
+
+接下来在环境变量中配置 `ddl-auto: create-drop` 即可。
+
+> 请注意，生产环境请勿使用这种方式。
+
+### 2. 基本架构说明
+
+我们使用标准的 `Controller`/`Service`/`Repository` 架构，原则上不涉及 `EO`/`VO`/`DTO` 等，整个项目使用 `Entity` 作为数据结构。
+
+> 一些比较特殊的需求除外。
+
+### 3. 注解
+
+我们提供了一系列的注解：
+
+#### 3.1 ``@ApiController``
+
+标记为控制器方法，等同于 `@RequestMapping` + `@RestController` 的整合。
+
+#### 3.2 `@Description` 与 `@Document`
+
+类或属性的文案，将显示在错误信息、验证信息、文档等处。
+
+#### 3.3 `@Desensitize` 与 `@DesensitizeExclude`
+
+标记脱敏字段和不脱敏的接口。
+
+#### 3.4 `@ExcelColumn`
+
+标记为Excel导出列，可配置导出列的数据类型。
+
+#### 3.5 `@ReadOnly`、`@Exclude` 和 `@Expose`
+
+标记列在指定的过滤器下暴露或者过滤。可为属性标记 `@ReadOnly` 表示该属性不参与控制器修改。
+
+#### 3.6 `@Filter`
+
+标记过滤器，`3.5` 中的规则可使用此类过滤器进行过滤或者暴露。
+
+#### 3.7 `@Extends`
+
+标记控制器需要从父类控制器中继承或排除哪些方法。
+
+#### 3.8 `@Search`
+
+标记属性参与搜索，可配置为模糊匹配、精确匹配、相等。
+
+#### 3.9 `@Dictionary`
+
+标记为字典属性，可使用下方 `4` 中的枚举字典接口的实现类。
+
+### 4. 枚举字典
+
+枚举字典需要实现 `IDictionary` 接口，即可使用 `3.9` 中的注解对属性进行标记，会自动进行判断和翻译。
+
+### 5. `Root` 系类超类
+
+所有参与API数据交互的部分都需要继承 `RootModel`, 一切需要入库的数据都需要继承 `RootEntity`。
+
+所有控制器均需要继承 `RootController`，其中，如果是数据库相关的控制器，需要继承 `RootEntityController`。
+
+### 6. 自定义异常
+
+自定义异常需要实现 `IException` 接口，即可使用异常的快捷抛出等方法。
+
+### 7. 标准树
+
+实现了 `ITree` 的类都可实现标准的树结构，可使用 `TreeUtil` 的一系列方法。
+
+### 8. 系统配置
+
+`ServiceConfig`、`CookieConfig`、`WebSocketConfig` 等可以保存一些基础的服务配置，可通过环境变量注入。
+
+### 9. `Utils`
+
+提供了大量的工具包以供使用，可以查看 `cn.hamm.airpower.util` 包下的类，也可以直接使用 `Utils.getXXX()` 直接获取工具类使用。
+
+
+## 🛎 四、问题反馈与建议
 
 如果你有什么疑问或者问题，你也可以加入开发者交流QQ群(```555156313```)
 进行咨询，当然，我们更建议你发起 [Github issue](https://github.com/HammCn/AirPower4J/issues/new) / [Gitee issue](https://gitee.com/air-power/AirPower4J/issues/new)
 
-## ⏰ Enjoy it
+## ⏰ 五、Enjoy it
 
 好了, 那么接下来你可以愉快地开发了, 如果你有什么建议或者意见, 可以在本仓库中提交你的 **issues**, 你可以为这个依赖库进行
 **添砖加瓦**!
 
 > ☕️Java: 加瓦? 什么Java?
 
-## 服务中的企业/用户
+## 🎱 六、服务中的企业/用户
 
 **AirPower4J** 正在为以下的公司/用户提供技术支持:
 
