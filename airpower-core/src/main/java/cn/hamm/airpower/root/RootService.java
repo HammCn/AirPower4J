@@ -13,7 +13,10 @@ import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
-import cn.hamm.airpower.model.query.*;
+import cn.hamm.airpower.model.query.QueryExport;
+import cn.hamm.airpower.model.query.QueryListRequest;
+import cn.hamm.airpower.model.query.QueryPageRequest;
+import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.util.*;
 import cn.hamm.airpower.validate.dictionary.Dictionary;
 import jakarta.persistence.Column;
@@ -54,7 +57,7 @@ import java.util.function.BiFunction;
  */
 @SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
-public class RootService<E extends RootEntity, R extends RootRepository<E>> {
+public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>提交的数据不允许为空</h2>
      */
@@ -516,7 +519,8 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      */
     public final @NotNull List<E> filter(E filter, Sort sort) {
         QueryListRequest<E> queryListRequest = new QueryListRequest<>();
-        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), filter));
+        filter = Objects.requireNonNullElse(filter, getNewInstance());
+        queryListRequest.setFilter(filter);
         return repository.findAll(createSpecification(filter, true), createSort(sort));
     }
 
@@ -830,9 +834,11 @@ public class RootService<E extends RootEntity, R extends RootRepository<E>> {
      * @param newInstance      新实例
      * @return 检查后的查询请求
      */
-    private <Q extends QueryListRequest<E>> @NotNull Q requireWithFilterNonNullElse(Q queryListRequest, Q newInstance) {
+    private <Q extends QueryListRequest<E>> @NotNull Q requireWithFilterNonNullElse(
+            Q queryListRequest, Q newInstance) {
         queryListRequest = Objects.requireNonNullElse(queryListRequest, newInstance);
-        return queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
+        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
+        return queryListRequest;
     }
 
     /**

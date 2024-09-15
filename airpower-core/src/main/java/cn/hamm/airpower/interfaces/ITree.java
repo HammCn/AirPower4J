@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author Hamm.cn
  */
-public interface ITree<E extends ITree<E>> extends IEntity {
+public interface ITree<E extends ITree<E>> extends IEntity<E> {
     /**
      * <h2>获取树的名称</h2>
      *

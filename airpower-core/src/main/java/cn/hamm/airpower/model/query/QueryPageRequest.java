@@ -5,7 +5,6 @@ import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.root.RootModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
 /**
  * <h1>查询分页请求</h1>
@@ -15,9 +14,8 @@ import lombok.experimental.Accessors;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Accessors(chain = true)
 @Description("查询分页请求")
-public class QueryPageRequest<M extends RootModel> extends QueryListRequest<M> {
+public class QueryPageRequest<M extends RootModel<M>> extends QueryListRequest<M> {
     /**
      * <h2>分页信息</h2>
      */

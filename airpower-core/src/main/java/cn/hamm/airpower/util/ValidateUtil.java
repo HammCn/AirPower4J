@@ -215,7 +215,7 @@ public class ValidateUtil {
      * @param actions {@code 可选} 校验分组
      * @param <M>     模型类型
      */
-    public final <M extends RootModel> void valid(M model, Class<?>... actions) {
+    public final <M extends RootModel<M>> void valid(M model, Class<?>... actions) {
         if (Objects.isNull(model)) {
             return;
         }

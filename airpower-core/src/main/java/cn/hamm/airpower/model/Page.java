@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Description("分页类")
-public class Page extends RootModel {
+public class Page extends RootModel<Page> {
     /**
      * <h2>当前页码</h2>
      */
