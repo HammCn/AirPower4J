@@ -22,8 +22,8 @@
 
 当然，
 
-> 如果你对全栈感兴趣，也可以和我们的 **`AirPower4T`
-**（[Github](https://github.com/HammCn/AirPower4T)/[Gitee](https://gitee.com/air-power/AirPower4T)） 一起玩耍，`AirPower4T`
+> 如果你对全栈感兴趣，也可以和我们的 **`AirPower4T`**
+> （[Github](https://github.com/HammCn/AirPower4T)/[Gitee](https://gitee.com/air-power/AirPower4T)） 一起玩耍，`AirPower4T`
 > 是一个基于 `Vue3`/`TypeScript`/`ElementPlus`/`Vite` 等技术栈的一个基础开发脚手架，`AirPower4J`和`AirPower4T`
 > 的联合可以为你的全栈之路增加另外一份很不一样的开发体验。
 
@@ -138,8 +138,6 @@
 - **重庆某工业互联网科技有限公司**
 
 > 如果你的公司/企业正在使用我们的服务，欢迎通过 `Issues` 提交，我们将在上面的列表中列出。
-
----
 
 ---
 
