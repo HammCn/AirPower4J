@@ -22,7 +22,10 @@
 
 当然，
 
-> 如果你对全栈感兴趣，也可以和我们的 **`AirPower4T`**（[Github](https://github.com/HammCn/AirPower4T)/[Gitee](https://gitee.com/air-power/AirPower4T)） 一起玩耍，`AirPower4T` 是一个基于 `Vue3`/`TypeScript`/`ElementPlus`/`Vite` 等技术栈的一个基础开发脚手架，`AirPower4J`和`AirPower4T` 的联合可以为你的全栈之路增加另外一份很不一样的开发体验。
+> 如果你对全栈感兴趣，也可以和我们的 **`AirPower4T`**
+> （[Github](https://github.com/HammCn/AirPower4T)/[Gitee](https://gitee.com/air-power/AirPower4T)） 一起玩耍，`AirPower4T`
+> 是一个基于 `Vue3`/`TypeScript`/`ElementPlus`/`Vite` 等技术栈的一个基础开发脚手架，`AirPower4J`和`AirPower4T`
+> 的联合可以为你的全栈之路增加另外一份很不一样的开发体验。
 
 ## 🔑 二、如何使用(初始化)?
 
@@ -56,9 +59,9 @@
 
 标记为控制器方法，等同于 `@RequestMapping` + `@RestController` 的整合。
 
-#### 3.2 `@Description` 与 `@Document`
+#### 3.2 `@Description`
 
-类或属性的文案，将显示在错误信息、验证信息、文档等处。
+类或属性的文案，将显示在错误信息、验证信息等处。
 
 #### 3.3 `@Desensitize` 与 `@DesensitizeExclude`
 
@@ -114,7 +117,6 @@
 
 提供了大量的工具包以供使用，可以查看 `cn.hamm.airpower.util` 包下的类，也可以直接使用 `Utils.getXXX()` 直接获取工具类使用。
 
-
 ## 🛎 四、问题反馈与建议
 
 如果你有什么疑问或者问题，你也可以加入开发者交流QQ群(```555156313```)
@@ -136,8 +138,6 @@
 - **重庆某工业互联网科技有限公司**
 
 > 如果你的公司/企业正在使用我们的服务，欢迎通过 `Issues` 提交，我们将在上面的列表中列出。
-
----
 
 ---
 
