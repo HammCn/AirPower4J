@@ -4,7 +4,6 @@ import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.ServiceError;
-import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.Access;
 import cn.hamm.airpower.util.AccessUtil;
 import cn.hamm.airpower.util.Utils;
@@ -12,10 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.method.HandlerMethod;
@@ -63,17 +60,6 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         Method method = handlerMethod.getMethod();
 
         setShareData(REQUEST_METHOD_KEY, method);
-
-        if (HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()) &&
-                Configs.getServiceConfig().isEnableDocument()) {
-            // 如果是GET 方法，并且开启了文档
-            GetMapping getMapping = Utils.getReflectUtil().getAnnotation(GetMapping.class, method);
-            if (Objects.isNull(getMapping)) {
-                // 如果没有GetMapping注解，则直接返回文档
-                ApiDocument.writeApiDocument(response, clazz, method);
-                return false;
-            }
-        }
         handleRequest(request, response, clazz, method);
         return true;
     }

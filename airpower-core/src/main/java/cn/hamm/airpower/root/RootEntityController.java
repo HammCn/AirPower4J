@@ -10,15 +10,15 @@ import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IEntityAction;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryExport;
+import cn.hamm.airpower.model.query.QueryListRequest;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
-import cn.hamm.airpower.model.query.QueryListRequest;
 import cn.hamm.airpower.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public class RootEntityController<
      * <h2>创建导出任务</h2>
      */
     @Description("创建导出任务")
-    @RequestMapping("export")
+    @PostMapping("export")
     public Json export(@RequestBody QueryListRequest<E> queryListRequest) {
         return Json.data(service.createExportTask(queryListRequest), "导出任务创建成功");
     }
@@ -55,7 +55,7 @@ public class RootEntityController<
      * <h2>查询异步导出结果</h2>
      */
     @Description("查询异步导出结果")
-    @RequestMapping("queryExport")
+    @PostMapping("queryExport")
     @Permission(authorize = false)
     public Json queryExport(@RequestBody @Validated QueryExport queryExport) {
         return Json.data(service.queryExport(queryExport), "请下载导出的文件");
@@ -70,7 +70,7 @@ public class RootEntityController<
      * @see #afterSaved(long, E)
      */
     @Description("添加")
-    @RequestMapping("add")
+    @PostMapping("add")
     @Filter(WhenGetDetail.class)
     public Json add(@RequestBody @Validated(WhenAdd.class) E source) {
         checkApiAvailableStatus(Api.Add);
@@ -94,7 +94,7 @@ public class RootEntityController<
      * @see #afterSaved(long, E)
      */
     @Description("修改")
-    @RequestMapping("update")
+    @PostMapping("update")
     @Filter(WhenGetDetail.class)
     public Json update(@RequestBody @Validated(WhenUpdate.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Update);
@@ -118,7 +118,7 @@ public class RootEntityController<
      * @see #afterDelete(long)
      */
     @Description("删除")
-    @RequestMapping("delete")
+    @PostMapping("delete")
     public Json delete(@RequestBody @Validated(WhenIdRequired.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Delete);
         long id = source.getId();
@@ -137,7 +137,7 @@ public class RootEntityController<
      * @see #afterGetDetail(E)
      */
     @Description("查询详情")
-    @RequestMapping("getDetail")
+    @PostMapping("getDetail")
     @Filter(WhenGetDetail.class)
     public Json getDetail(@RequestBody @Validated(WhenIdRequired.class) @NotNull E source) {
         checkApiAvailableStatus(Api.GetDetail);
@@ -152,7 +152,7 @@ public class RootEntityController<
      * @see #afterDisable(long)
      */
     @Description("禁用")
-    @RequestMapping("disable")
+    @PostMapping("disable")
     public Json disable(@RequestBody @Validated(WhenIdRequired.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Disable);
         long id = source.getId();
@@ -172,7 +172,7 @@ public class RootEntityController<
      * @see #afterEnable(long)
      */
     @Description("启用")
-    @RequestMapping("enable")
+    @PostMapping("enable")
     public Json enable(@RequestBody @Validated(WhenIdRequired.class) @NotNull E source) {
         checkApiAvailableStatus(Api.Enable);
         long id = source.getId();
@@ -192,7 +192,7 @@ public class RootEntityController<
      * @see #afterGetList(List)
      */
     @Description("不分页查询")
-    @RequestMapping("getList")
+    @PostMapping("getList")
     @Filter(WhenGetList.class)
     public Json getList(@RequestBody QueryListRequest<E> queryListRequest) {
         checkApiAvailableStatus(Api.GetList);
@@ -209,7 +209,7 @@ public class RootEntityController<
      * @see #afterGetPage(QueryPageResponse)
      */
     @Description("分页查询")
-    @RequestMapping("getPage")
+    @PostMapping("getPage")
     @Filter(WhenGetPage.class)
     public Json getPage(@RequestBody QueryPageRequest<E> queryPageRequest) {
         checkApiAvailableStatus(Api.GetPage);

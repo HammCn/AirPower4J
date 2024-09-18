@@ -1,7 +1,6 @@
 package cn.hamm.airpower.model;
 
 import cn.hamm.airpower.annotation.Description;
-import cn.hamm.airpower.annotation.Document;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -24,6 +23,5 @@ public class Sort {
      * <h2>排序方法</h2>
      */
     @Description("排序方法")
-    @Document("asc / desc")
     private String direction;
 }

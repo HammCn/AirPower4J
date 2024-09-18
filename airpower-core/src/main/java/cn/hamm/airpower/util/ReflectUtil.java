@@ -1,7 +1,6 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.annotation.Description;
-import cn.hamm.airpower.annotation.Document;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IDictionary;
@@ -191,42 +190,6 @@ public class ReflectUtil {
     public final String getDescription(Field field) {
         Description description = getAnnotation(Description.class, field);
         return Objects.isNull(description) ? field.getName() : description.value();
-    }
-
-    /**
-     * <h2>递归获取类的文档</h2>
-     *
-     * @param clazz 类
-     * @return 文档
-     * @see Document
-     */
-    public final String getDocument(Class<?> clazz) {
-        Document document = getAnnotation(Document.class, clazz);
-        return Objects.isNull(document) ? Constant.EMPTY_STRING : document.value();
-    }
-
-    /**
-     * <h2>递归获取方法的文档</h2>
-     *
-     * @param method 方法
-     * @return 文档
-     * @see Document
-     */
-    public final String getDocument(Method method) {
-        Document document = getAnnotation(Document.class, method);
-        return Objects.isNull(document) ? Constant.EMPTY_STRING : document.value();
-    }
-
-    /**
-     * <h2>递归获取字段的文档</h2>
-     *
-     * @param field 字段
-     * @return 文档
-     * @see Document
-     */
-    public final String getDocument(Field field) {
-        Document document = getAnnotation(Document.class, field);
-        return Objects.isNull(document) ? Constant.EMPTY_STRING : document.value();
     }
 
     /**

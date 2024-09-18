@@ -1,6 +1,9 @@
 package cn.hamm.airpower.root;
 
-import cn.hamm.airpower.annotation.*;
+import cn.hamm.airpower.annotation.Description;
+import cn.hamm.airpower.annotation.ExcelColumn;
+import cn.hamm.airpower.annotation.ReadOnly;
+import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IEntity;
@@ -38,8 +41,6 @@ import java.io.Serializable;
 @SuppressWarnings("unchecked")
 public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
         implements Serializable, IEntity<E>, IEntityAction {
-    public static final String QUERY_USE_ONLY = "该查询列表(分页和不分页)时传入";
-
     @Description("主键ID")
     @Id
     @Search(Search.Mode.EQUALS)
@@ -90,22 +91,18 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
 
     @Transient
     @Description("创建时间开始")
-    @Document(QUERY_USE_ONLY)
     private Long createTimeFrom;
 
     @Transient
     @Description("创建时间结束")
-    @Document(QUERY_USE_ONLY)
     private Long createTimeTo;
 
     @Transient
     @Description("修改时间开始")
-    @Document(QUERY_USE_ONLY)
     private Long updateTimeFrom;
 
     @Transient
     @Description("修改时间结束")
-    @Document(QUERY_USE_ONLY)
     private Long updateTimeTo;
 
     /**
