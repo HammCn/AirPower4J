@@ -139,8 +139,6 @@
 
 ---
 
----
-
 <p align="center">
 ATTENTION: Contributor list is just for fun!!!
 </p>
