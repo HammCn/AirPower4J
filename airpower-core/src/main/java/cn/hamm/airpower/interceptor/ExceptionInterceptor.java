@@ -4,7 +4,6 @@ import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
-import cn.hamm.airpower.interceptor.document.ApiDocument;
 import cn.hamm.airpower.model.Json;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
@@ -102,16 +101,6 @@ public class ExceptionInterceptor {
     @ExceptionHandler(NoHandlerFoundException.class)
     public Json notFoundHandle(@NotNull NoHandlerFoundException exception, HttpServletResponse response) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isEnableDocument()) {
-            String[] arr = exception.getRequestURL().split(Constant.SLASH);
-            if (arr.length > 1) {
-                String packageName = arr[arr.length - 1];
-                boolean result = ApiDocument.writeEntityDocument(packageName, response);
-                if (!result) {
-                    response.reset();
-                }
-            }
-        }
         return Json.error(ServiceError.API_SERVICE_UNSUPPORTED);
     }
 

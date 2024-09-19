@@ -29,11 +29,6 @@ public class ServiceConfig {
     private int serviceId = Constant.ZERO_INT;
 
     /**
-     * <h2>是否开启文档</h2>
-     */
-    private boolean enableDocument = false;
-
-    /**
      * <h2>{@code AccessToken} 的密钥</h2>
      */
     private String accessTokenSecret = Constant.AIRPOWER;

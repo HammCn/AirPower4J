@@ -1,5 +1,6 @@
 package cn.hamm.airpower.root;
 
+import cn.hamm.airpower.annotation.ApiController;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
@@ -8,7 +9,6 @@ import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * <h1>控制器根类</h1>
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Hamm.cn
  */
 @Permission(login = false)
-@RequestMapping(Constant.EMPTY_STRING)
+@ApiController(Constant.EMPTY_STRING)
 @Slf4j
 public class RootController implements IAction {
     /**

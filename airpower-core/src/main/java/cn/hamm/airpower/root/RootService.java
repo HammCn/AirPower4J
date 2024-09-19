@@ -246,11 +246,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h2>查询导出结果</h2>
      *
-     * @param queryExportModel 查询导出模型
+     * @param queryExport 查询导出模型
      * @return 导出文件地址
      */
-    protected final String queryExport(@NotNull QueryExport queryExportModel) {
-        final String fileCacheKey = EXPORT_FILE_PREFIX + queryExportModel.getFileCode();
+    protected final String queryExport(@NotNull QueryExport queryExport) {
+        final String fileCacheKey = EXPORT_FILE_PREFIX + queryExport.getFileCode();
         Object object = redisUtil.get(fileCacheKey);
         ServiceError.DATA_NOT_FOUND.whenNull(object, "错误的FileCode");
         ServiceError.DATA_NOT_FOUND.whenEmpty(object, "文件暂未准备完毕");

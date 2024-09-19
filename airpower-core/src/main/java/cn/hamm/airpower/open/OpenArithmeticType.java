@@ -1,5 +1,6 @@
 package cn.hamm.airpower.open;
 
+import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.interfaces.IDictionary;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@Description("开放应用加密方式")
 public enum OpenArithmeticType implements IDictionary {
     /**
      * <h2>{@code AES} 算法</h2>
