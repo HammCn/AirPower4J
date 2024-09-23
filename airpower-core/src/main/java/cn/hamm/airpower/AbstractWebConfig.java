@@ -5,7 +5,6 @@ import cn.hamm.airpower.config.WebSocketConfig;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interceptor.AbstractRequestInterceptor;
 import cn.hamm.airpower.interceptor.cache.RequestCacheFilter;
-import cn.hamm.airpower.resolver.AccessResolver;
 import cn.hamm.airpower.websocket.WebSocketHandler;
 import cn.hamm.airpower.websocket.WebSocketSupport;
 import org.jetbrains.annotations.NotNull;
@@ -14,13 +13,11 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -30,9 +27,6 @@ import java.util.Objects;
  */
 @Configuration
 public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketConfigurer {
-    @Autowired
-    private AccessResolver accessResolver;
-
     @Autowired
     private WebSocketConfig webSocketConfig;
 
@@ -68,16 +62,6 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
         registry.addInterceptor(getAccessInterceptor())
                 .addPathPatterns("/**");
         addCustomInterceptors(registry);
-    }
-
-    /**
-     * <h2>添加参数解析器</h2>
-     *
-     * @param resolvers 参数解析器
-     */
-    @Override
-    public final void addArgumentResolvers(@NotNull List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(accessResolver);
     }
 
     /**
