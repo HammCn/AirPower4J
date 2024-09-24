@@ -203,8 +203,7 @@ public class AccessUtil {
     /**
      * <h2>获取方法权限标识</h2>
      *
-     * @param method  方法
-     * @param apiPath Api路径
+     * @param method 方法
      * @return 权限标识
      */
     private @Nullable String getMethodPermissionIdentity(Method method) {
