@@ -21,6 +21,7 @@ import cn.hamm.airpower.validate.dictionary.Dictionary;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -109,6 +110,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
     @Autowired
     protected ServiceConfig serviceConfig;
+
+    @Autowired
+    protected HttpServletRequest request;
 
     /**
      * <h2>创建导出任务</h2>
@@ -754,7 +758,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private long tryToGetCurrentUserId() {
         try {
-            String accessToken = Utils.getRequest().getHeader(serviceConfig.getAuthorizeHeader());
+            String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
             return securityUtil.getIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             return Constant.ZERO_LONG;
