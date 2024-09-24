@@ -1043,7 +1043,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 修改自己 不校验
                 continue;
             }
-            ServiceError.FORBIDDEN_EXIST.show(String.format("%s(ID:%s)已经存在！", fieldName, fieldValue));
+            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！", fieldName, fieldValue));
         }
     }
 
