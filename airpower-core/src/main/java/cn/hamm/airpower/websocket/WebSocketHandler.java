@@ -1,13 +1,12 @@
 package cn.hamm.airpower.websocket;
 
-import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.WebSocketConfig;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.MqttUtil;
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.jetbrains.annotations.Contract;
@@ -58,12 +57,22 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * <h2>用户 {@code ID} 列表</h2>
      */
     protected final ConcurrentHashMap<String, Long> userIdHashMap = new ConcurrentHashMap<>();
-
+    /**
+     * <h2>{@code WebSocket}配置</h2>
+     */
+    @Autowired
+    protected WebSocketConfig webSocketConfig;
     /**
      * <h2>{@code Redis} 连接工厂</h2>
      */
     @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
+    protected RedisConnectionFactory redisConnectionFactory;
+
+    @Autowired
+    protected SecurityUtil securityUtil;
+
+    @Autowired
+    protected MqttUtil mqttUtil;
 
     /**
      * <h2>收到 {@code Websocket} 消息时</h2>
@@ -74,10 +83,9 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     @Override
     protected final void handleTextMessage(@NonNull WebSocketSession session, @NotNull TextMessage textMessage) {
         final String message = textMessage.getPayload();
-        WebSocketConfig websocketConfig = Configs.getWebsocketConfig();
-        if (websocketConfig.getPing().equalsIgnoreCase(message)) {
+        if (webSocketConfig.getPing().equalsIgnoreCase(message)) {
             try {
-                session.sendMessage(new TextMessage(websocketConfig.getPong()));
+                session.sendMessage(new TextMessage(webSocketConfig.getPong()));
             } catch (IOException e) {
                 log.error("发送Websocket消息失败: {}", e.getMessage());
             }
@@ -130,8 +138,8 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             closeConnection(session);
             return;
         }
-        long userId = Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
-        switch (Configs.getWebsocketConfig().getSupport()) {
+        long userId = securityUtil.getIdFromAccessToken(accessToken);
+        switch (webSocketConfig.getSupport()) {
             case REDIS -> startRedisListener(session, userId);
             case MQTT -> startMqttListener(session, userId);
             case NO -> {
@@ -183,7 +191,6 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * @param userId  用户 {@code ID}
      */
     private void startMqttListener(@NotNull WebSocketSession session, long userId) {
-        MqttUtil mqttUtil = Utils.getMqttUtil();
         try (MqttClient mqttClient = mqttUtil.createClient()) {
             mqttClient.setCallback(new MqttCallback() {
                 @Override
@@ -281,8 +288,9 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * @param channel 传入的频道
      * @return 带前缀的真实频道
      */
+    @Contract(pure = true)
     protected final @NotNull String getRealChannel(String channel) {
-        return Configs.getWebsocketConfig().getChannelPrefix() + Constant.UNDERLINE + channel;
+        return webSocketConfig.getChannelPrefix() + Constant.UNDERLINE + channel;
     }
 
     /**

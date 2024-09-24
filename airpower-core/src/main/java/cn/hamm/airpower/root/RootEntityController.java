@@ -13,7 +13,7 @@ import cn.hamm.airpower.model.query.QueryExport;
 import cn.hamm.airpower.model.query.QueryListRequest;
 import cn.hamm.airpower.model.query.QueryPageRequest;
 import cn.hamm.airpower.model.query.QueryPageResponse;
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.TaskUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -41,6 +41,9 @@ public class RootEntityController<
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected S service;
+
+    @Autowired
+    protected TaskUtil taskUtil;
 
     /**
      * <h2>创建导出任务</h2>
@@ -78,7 +81,7 @@ public class RootEntityController<
         source = beforeAdd(source);
         final E finalSource = source;
         long id = service.add(source);
-        Utils.getTaskUtil().run(
+        taskUtil.run(
                 () -> afterAdd(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -103,7 +106,7 @@ public class RootEntityController<
         source = beforeUpdate(source);
         final E finalSource = source;
         service.update(source);
-        Utils.getTaskUtil().run(
+        taskUtil.run(
                 () -> afterUpdate(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -124,7 +127,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDelete(id);
         service.delete(id);
-        Utils.getTaskUtil().run(
+        taskUtil.run(
                 () -> afterDelete(id)
         );
         return Json.entity(id, "删除成功");
@@ -158,7 +161,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDisable(id);
         service.disable(id);
-        Utils.getTaskUtil().run(
+        taskUtil.run(
                 () -> afterDisable(id)
         );
         return Json.entity(source.getId(), "禁用成功");
@@ -178,7 +181,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeEnable(id);
         service.enable(id);
-        Utils.getTaskUtil().run(
+        taskUtil.run(
                 () -> afterEnable(id)
         );
         return Json.entity(source.getId(), "启用成功");

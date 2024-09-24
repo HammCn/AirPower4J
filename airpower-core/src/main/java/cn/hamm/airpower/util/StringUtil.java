@@ -103,7 +103,6 @@ public class StringUtil {
     public final @NotNull String desensitize(
             @NotNull String valueString, Desensitize.@NotNull Type type, int head, int tail, String symbol
     ) {
-        final StringUtil stringUtil = Utils.getStringUtil();
         switch (type) {
             case BANK_CARD,
                  ID_CARD,
@@ -115,7 +114,7 @@ public class StringUtil {
                 tail = Math.max(type.getMinTail(), tail);
             }
             case IP_V4 -> {
-                return stringUtil.desensitizeIpv4Address(valueString, symbol);
+                return desensitizeIpv4Address(valueString, symbol);
             }
             case CHINESE_NAME -> {
                 head = Math.max(type.getMinHead(), head);
@@ -133,6 +132,6 @@ public class StringUtil {
             default -> {
             }
         }
-        return stringUtil.replace(valueString, head, tail, symbol);
+        return replace(valueString, head, tail, symbol);
     }
 }

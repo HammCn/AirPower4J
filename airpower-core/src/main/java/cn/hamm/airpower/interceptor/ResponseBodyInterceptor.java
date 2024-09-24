@@ -5,12 +5,13 @@ import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.query.QueryPageResponse;
 import cn.hamm.airpower.root.RootModel;
+import cn.hamm.airpower.util.CollectionUtil;
 import cn.hamm.airpower.util.ReflectUtil;
-import cn.hamm.airpower.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -33,6 +34,12 @@ import java.util.Objects;
 @ControllerAdvice
 @Slf4j
 public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
+    @Autowired
+    private ReflectUtil reflectUtil;
+
+    @Autowired
+    private CollectionUtil collectionUtil;
+
     /**
      * <h2>是否支持</h2>
      *
@@ -95,7 +102,6 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             return result;
         }
 
-        ReflectUtil reflectUtil = Utils.getReflectUtil();
         Filter filter = reflectUtil.getAnnotation(Filter.class, method);
         DesensitizeExclude desensitizeExclude = reflectUtil.getAnnotation(DesensitizeExclude.class, method);
         if (json.getData() instanceof QueryPageResponse) {
@@ -109,7 +115,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
 
         Class<?> dataCls = json.getData().getClass();
         if (json.getData() instanceof Collection) {
-            Collection<?> collection = Utils.getCollectionUtil().getCollectWithoutNull(
+            Collection<?> collection = collectionUtil.getCollectWithoutNull(
                     (Collection<?>) json.getData(), dataCls
             );
             collection.stream()

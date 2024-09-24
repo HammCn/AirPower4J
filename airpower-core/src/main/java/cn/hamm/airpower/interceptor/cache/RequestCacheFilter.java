@@ -1,6 +1,6 @@
 package cn.hamm.airpower.interceptor.cache;
 
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.RequestUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,9 @@ import java.util.Objects;
 @WebFilter
 @Slf4j
 public class RequestCacheFilter implements Filter {
+    @Autowired
+    private RequestUtil requestUtil;
+
     /**
      * <h2>过滤器</h2>
      *
@@ -67,6 +71,6 @@ public class RequestCacheFilter implements Filter {
             return false;
         }
         // 上传请求不缓存
-        return !Utils.getRequestUtil().isUploadRequest(request);
+        return !requestUtil.isUploadRequest(request);
     }
 }

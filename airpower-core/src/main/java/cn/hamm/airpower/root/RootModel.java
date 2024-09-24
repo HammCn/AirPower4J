@@ -39,9 +39,13 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     @JsonIgnore
     private final ReflectUtil reflectUtil;
 
+    @JsonIgnore
+    private final CollectionUtil collectionUtil;
+
     @Contract(pure = true)
     public RootModel() {
         reflectUtil = Utils.getReflectUtil();
+        collectionUtil = Utils.getCollectionUtil();
     }
 
     /**
@@ -233,7 +237,6 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             if (!reflectUtil.isModel(fieldClass)) {
                 return;
             }
-            CollectionUtil collectionUtil = Utils.getCollectionUtil();
             collection = collectionUtil.getCollectWithoutNull(
                     (Collection<RootModel<?>>) fieldValue, fieldClass
             );
