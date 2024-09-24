@@ -9,6 +9,7 @@ import cn.hamm.airpower.interfaces.IPermission;
 import cn.hamm.airpower.model.Access;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -119,6 +120,7 @@ public class AccessUtil {
 
             ReflectUtil reflectUtil = Utils.getReflectUtil();
             DictionaryUtil dictionaryUtil = Utils.getDictionaryUtil();
+            AccessUtil accessUtil = Utils.getAccessUtil();
             for (Resource resource : resources) {
                 // 用于读取类信息
                 MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
@@ -156,12 +158,13 @@ public class AccessUtil {
                         } catch (Exception ignored) {
                         }
                     }
-                    String subIdentity = getMethodPermissionIdentity(method, apiPath);
-                    if (apiPath.equals(subIdentity)) {
+                    String subIdentity = getMethodPermissionIdentity(method);
+                    if (Objects.isNull(subIdentity)) {
                         continue;
                     }
+                    subIdentity = apiPath + subIdentity;
                     String customMethodName = reflectUtil.getDescription(method);
-                    Access accessConfig = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
+                    Access accessConfig = accessUtil.getWhatNeedAccess(clazz, method);
                     if (!accessConfig.isLogin() || !accessConfig.isAuthorize()) {
                         // 这里可以选择是否不读取这些接口的权限，但前端可能需要
                         continue;
@@ -204,15 +207,15 @@ public class AccessUtil {
      * @param apiPath Api路径
      * @return 权限标识
      */
-    private @NotNull String getMethodPermissionIdentity(Method method, String apiPath) {
+    private @Nullable String getMethodPermissionIdentity(Method method) {
         ReflectUtil reflectUtil = Utils.getReflectUtil();
         RequestMapping requestMapping = reflectUtil.getAnnotation(RequestMapping.class, method);
         PostMapping postMapping = reflectUtil.getAnnotation(PostMapping.class, method);
         GetMapping getMapping = reflectUtil.getAnnotation(GetMapping.class, method);
 
         if (Objects.isNull(requestMapping) && Objects.isNull(postMapping) && Objects.isNull(getMapping)) {
-            return apiPath;
+            return null;
         }
-        return apiPath + method.getName();
+        return method.getName();
     }
 }
