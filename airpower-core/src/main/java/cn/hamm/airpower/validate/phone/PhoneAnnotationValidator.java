@@ -1,10 +1,11 @@
 package cn.hamm.airpower.validate.phone;
 
-import cn.hamm.airpower.util.Utils;
 import cn.hamm.airpower.util.ValidateUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
@@ -12,7 +13,11 @@ import org.springframework.util.StringUtils;
  *
  * @author Hamm.cn
  */
+@Component
 public class PhoneAnnotationValidator implements ConstraintValidator<Phone, String> {
+    @Autowired
+    private ValidateUtil validateUtil;
+    
     /**
      * <h2>是否座机</h2>
      */
@@ -39,7 +44,6 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
             // 不允许座机也不允许手机 验证个鬼啊
             return true;
         }
-        ValidateUtil validateUtil = Utils.getValidateUtil();
         if (!mobile) {
             // 只允许座机
             return validateUtil.isTelPhone(value);

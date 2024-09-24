@@ -3,7 +3,6 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Desensitize;
 import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
-import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.DateTimeFormatter;
@@ -22,6 +21,7 @@ import cn.hamm.airpower.validate.dictionary.Dictionary;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -85,22 +85,34 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected R repository;
 
     @Autowired
-    private ReflectUtil reflectUtil;
+    protected EntityManager entityManager;
 
     @Autowired
-    private TaskUtil taskUtil;
+    protected ReflectUtil reflectUtil;
 
     @Autowired
-    private RedisUtil redisUtil;
+    protected TaskUtil taskUtil;
 
     @Autowired
-    private RandomUtil randomUtil;
+    protected RedisUtil redisUtil;
 
     @Autowired
-    private DateTimeUtil dateTimeUtil;
+    protected RandomUtil randomUtil;
 
     @Autowired
-    private EntityManager entityManager;
+    protected DateTimeUtil dateTimeUtil;
+
+    @Autowired
+    protected SecurityUtil securityUtil;
+
+    @Autowired
+    protected DictionaryUtil dictionaryUtil;
+
+    @Autowired
+    protected ServiceConfig serviceConfig;
+
+    @Autowired
+    protected HttpServletRequest request;
 
     /**
      * <h2>创建导出任务</h2>
@@ -199,7 +211,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected String saveExportFile(InputStream exportFileStream) {
         // 准备导出的相对路径
         String exportFilePath = EXPORT_DIR_PREFIX;
-        final String absolutePath = Configs.getServiceConfig().getExportFilePath() + File.separator;
+        final String absolutePath = serviceConfig.getExportFilePath() + File.separator;
         ServiceError.SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
 
         try {
@@ -746,8 +758,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private long tryToGetCurrentUserId() {
         try {
-            String accessToken = Utils.getRequest().getHeader(Configs.getServiceConfig().getAuthorizeHeader());
-            return Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
+            String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
+            return securityUtil.getIdFromAccessToken(accessToken);
         } catch (Exception exception) {
             return Constant.ZERO_LONG;
         }
@@ -803,7 +815,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             if (Objects.isNull(excelColumn)) {
                 return value;
             }
-            DictionaryUtil dictionaryUtil = Utils.getDictionaryUtil();
             return switch (excelColumn.value()) {
                 case DATETIME -> Constant.TAB + dateTimeUtil.format(Long.parseLong(value.toString()));
                 case TEXT -> Constant.TAB + value;
@@ -1032,7 +1043,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 修改自己 不校验
                 continue;
             }
-            ServiceError.FORBIDDEN_EXIST.show(String.format("%s(ID:%s)已经存在！", fieldName, fieldValue));
+            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！", fieldName, fieldValue));
         }
     }
 
@@ -1101,7 +1112,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private @NotNull org.springframework.data.domain.Sort createSort(Sort sort) {
         sort = Objects.requireNonNullElse(sort, new Sort());
 
-        ServiceConfig serviceConfig = Configs.getServiceConfig();
         if (!StringUtils.hasText(sort.getField())) {
             sort.setField(serviceConfig.getDefaultSortField());
         }
@@ -1129,7 +1139,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Page page = Objects.requireNonNullElse(queryPageData.getPage(), new Page());
         page.setPageNum(Objects.requireNonNullElse(page.getPageNum(), 1));
         page.setPageSize(
-                Objects.requireNonNullElse(page.getPageSize(), Configs.getServiceConfig().getDefaultPageSize())
+                Objects.requireNonNullElse(page.getPageSize(), serviceConfig.getDefaultPageSize())
         );
         int pageNumber = Math.max(0, page.getPageNum() - 1);
         int pageSize = Math.max(1, queryPageData.getPage().getPageSize());

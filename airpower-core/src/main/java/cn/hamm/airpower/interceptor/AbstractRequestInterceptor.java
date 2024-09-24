@@ -1,16 +1,17 @@
 package cn.hamm.airpower.interceptor;
 
-import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.model.Access;
 import cn.hamm.airpower.util.AccessUtil;
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.RequestUtil;
+import cn.hamm.airpower.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
@@ -39,6 +40,18 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     protected static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
 
+    @Autowired
+    protected SecurityUtil securityUtil;
+
+    @Autowired
+    protected AccessUtil accessUtil;
+
+    @Autowired
+    protected ServiceConfig serviceConfig;
+
+    @Autowired
+    protected RequestUtil requestUtil;
+
     /**
      * <h2>拦截器</h2>
      *
@@ -53,7 +66,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             @NotNull HttpServletResponse response,
             @NotNull Object object
     ) {
-        ServiceError.SERVICE_ERROR.when(!Configs.getServiceConfig().isServiceRunning(), "服务短暂维护中,请稍后再试：）");
+        ServiceError.SERVICE_ERROR.when(!serviceConfig.isServiceRunning(), "服务短暂维护中,请稍后再试：）");
         HandlerMethod handlerMethod = (HandlerMethod) object;
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBeanType();
@@ -78,14 +91,12 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             Class<?> clazz, Method method
     ) {
         interceptRequest(request, response, clazz, method);
-        AccessUtil accessUtil = Utils.getAccessUtil();
         Access access = accessUtil.getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
             return;
         }
         //需要登录
-        ServiceConfig serviceConfig = Configs.getServiceConfig();
         String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
 
         // 优先使用 Get 参数传入的身份
@@ -94,7 +105,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             accessToken = accessTokenFromParam;
         }
         ServiceError.UNAUTHORIZED.whenEmpty(accessToken);
-        Long userId = Utils.getSecurityUtil().getIdFromAccessToken(accessToken);
+        Long userId = securityUtil.getIdFromAccessToken(accessToken);
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
@@ -151,7 +162,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     protected final @NotNull String getRequestBody(HttpServletRequest request) {
         // 文件上传的请求 返回空
-        if (Utils.getRequestUtil().isUploadRequest(request)) {
+        if (requestUtil.isUploadRequest(request)) {
             return Constant.EMPTY_STRING;
         }
         try {

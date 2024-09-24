@@ -1,9 +1,9 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.CookieConfig;
 import jakarta.servlet.http.Cookie;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CookieUtil {
+    @Autowired
+    private CookieConfig cookieConfig;
+
     /**
      * <h2>获取一个 {@code Cookie}</h2>
      *
@@ -23,7 +26,6 @@ public class CookieUtil {
      */
     public final @NotNull Cookie getCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
-        CookieConfig cookieConfig = Configs.getCookieConfig();
         cookie.setHttpOnly(cookieConfig.isCookieHttpOnly());
         cookie.setMaxAge(cookieConfig.getCookieMaxAge());
         cookie.setSecure(cookieConfig.isCookieSecurity());
@@ -39,6 +41,6 @@ public class CookieUtil {
      * @see CookieConfig
      */
     public final @NotNull Cookie getAuthorizeCookie(String value) {
-        return getCookie(Configs.getCookieConfig().getAuthCookieName(), value);
+        return getCookie(cookieConfig.getAuthCookieName(), value);
     }
 }

@@ -1,6 +1,5 @@
 package cn.hamm.airpower;
 
-import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.WebSocketConfig;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interceptor.AbstractRequestInterceptor;
@@ -28,10 +27,10 @@ import java.util.Objects;
 @Configuration
 public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketConfigurer {
     @Autowired
-    private WebSocketConfig webSocketConfig;
+    protected WebSocketConfig webSocketConfig;
 
     @Autowired
-    private WebSocketHandler webSocketHandler;
+    protected WebSocketHandler webSocketHandler;
 
     /**
      * <h2>获取一个拦截器实例</h2>
@@ -93,15 +92,14 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
      */
     @Override
     public final void registerWebSocketHandlers(@NotNull WebSocketHandlerRegistry registry) {
-        WebSocketConfig websocketConfig = Configs.getWebsocketConfig();
-        if (websocketConfig.getSupport().equals(WebSocketSupport.NO)) {
+        if (webSocketConfig.getSupport().equals(WebSocketSupport.NO)) {
             return;
         }
-        final String channelPrefix = websocketConfig.getChannelPrefix();
+        final String channelPrefix = webSocketConfig.getChannelPrefix();
         if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
-        registry.addHandler(getWebsocketHandler(), websocketConfig.getPath())
+        registry.addHandler(getWebsocketHandler(), webSocketConfig.getPath())
                 .setAllowedOrigins(webSocketConfig.getAllowedOrigins());
     }
 }

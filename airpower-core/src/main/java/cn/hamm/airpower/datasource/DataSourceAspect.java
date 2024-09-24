@@ -1,11 +1,12 @@
 package cn.hamm.airpower.datasource;
 
-import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.config.ServiceConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -19,6 +20,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Component
 public class DataSourceAspect {
+    @Autowired
+    private ServiceConfig serviceConfig;
+
     @SuppressWarnings("EmptyMethod")
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)||" +
             "@annotation(org.springframework.web.bind.annotation.GetMapping)||" +
@@ -34,7 +38,7 @@ public class DataSourceAspect {
     public Object multipleDataSource(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes()))
                 .getRequest();
-        String database = request.getHeader(Configs.getServiceConfig().getTenantHeader());
+        String database = request.getHeader(serviceConfig.getTenantHeader());
         if (!StringUtils.hasText(database)) {
             return proceedingJoinPoint.proceed();
         }

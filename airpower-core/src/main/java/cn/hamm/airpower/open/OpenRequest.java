@@ -138,9 +138,11 @@ public class OpenRequest {
      * <h2>时间戳检测</h2>
      */
     private void checkTimestamp() {
+        long currentTimeMillis = System.currentTimeMillis();
+        int nonceExpireMillisecond = NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND;
         ServiceError.TIMESTAMP_INVALID.when(
-                timestamp > System.currentTimeMillis() + NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND ||
-                        timestamp < System.currentTimeMillis() - NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND
+                timestamp > currentTimeMillis + nonceExpireMillisecond ||
+                        timestamp < currentTimeMillis - nonceExpireMillisecond
         );
     }
 

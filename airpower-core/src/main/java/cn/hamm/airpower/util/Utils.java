@@ -242,7 +242,7 @@ public class Utils {
     }
 
     /**
-     * <h2>获取TokenUtil</h2>
+     * <h2>获取 {@code TokenUtil} (非单例)</h2>
      *
      * @return TokenUtil
      */

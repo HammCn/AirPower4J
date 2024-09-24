@@ -218,7 +218,7 @@ public class NumberUtil {
      * @param roundingMode 舍弃方式
      * @return 商
      */
-    private BigDecimal div(BigDecimal first, BigDecimal second, int scale, RoundingMode roundingMode) {
+    private @NotNull BigDecimal div(BigDecimal first, BigDecimal second, int scale, RoundingMode roundingMode) {
         try {
             if (BigDecimal.valueOf(0).equals(second)) {
                 throw new RuntimeException("除数不能为0");

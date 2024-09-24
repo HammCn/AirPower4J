@@ -32,16 +32,16 @@ public enum ServiceError implements IException, IDictionary {
     INVALID_REQUEST_ADDRESS(4008, "请求来源不在应用配置的白名单内"),
 
     // 401 需要登录代码
-    UNAUTHORIZED(401, "获取身份信息失败,请重新登录!"),
+    UNAUTHORIZED(401, "获取你的身份信息失败，请重新登录后再试"),
 
     // 403 无权限代码
     FORBIDDEN(403, "无权操作"),
-    FORBIDDEN_EXIST(4031, "无权重复添加"),
-    FORBIDDEN_EDIT(4032, "无权修改"),
-    FORBIDDEN_DELETE(4033, "无权删除"),
-    FORBIDDEN_DELETE_USED(4034, "数据正在使用中,无法被删除!"),
+    FORBIDDEN_EXIST(4031, "添加失败，数据已存在"),
+    FORBIDDEN_EDIT(4032, "修改失败"),
+    FORBIDDEN_DELETE(4033, "删除失败"),
+    FORBIDDEN_DELETE_USED(4034, "删除失败，数据正在使用中"),
     FORBIDDEN_UPLOAD_MAX_SIZE(4035, "上传的文件大小超过最大限制"),
-    FORBIDDEN_DISABLED(4036, "ID为%s的%s已被禁用"),
+    FORBIDDEN_DISABLED(4036, "ID %s 的 %s 已被禁用"),
     OPEN_APP_DISABLED(4037, "当前应用已被禁用"),
 
     // 404 没有查到数据代码
@@ -52,7 +52,7 @@ public enum ServiceError implements IException, IDictionary {
     REQUEST_CONTENT_TYPE_UNSUPPORTED(415, "不支持的数据类型"),
 
     // 500 服务基础代码
-    SERVICE_ERROR(500, "服务发生错误,请稍后再试"),
+    SERVICE_ERROR(500, "服务出了一点点异常，请稍后再试或联系技术支持"),
     DECRYPT_DATA_FAIL(5001, "数据解密失败，请确认AppKey/AppSecret/加密方式是否正确"),
     ENCRYPT_DATA_FAIL(5002, "数据加密失败"),
     JSON_DECODE_FAIL(5003, "JSON解码失败，请确认有效的JSON数据格式"),
@@ -70,7 +70,7 @@ public enum ServiceError implements IException, IDictionary {
     REDIS_ERROR(5022, "REDIS服务连接失败，请稍后再试"),
 
     // 5023 邮件相关代码
-    EMAIL_ERROR(5023, "发送邮件可能出现异常,请检查收件箱"),
+    EMAIL_ERROR(5023, "发送邮件异常"),
 
     // 5024 websocket相关代码
     WEBSOCKET_ERROR(5024, "WebSocket服务发生错误，请稍后再试");

@@ -1,18 +1,24 @@
 package cn.hamm.airpower.validate.dictionary;
 
 import cn.hamm.airpower.interfaces.IDictionary;
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.DictionaryUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * <h1>枚举字典验证实现类</h1>
  *
  * @author Hamm.cn
  */
+@Component
 public class DictionaryAnnotationValidator implements ConstraintValidator<Dictionary, Integer> {
+    @Autowired
+    private DictionaryUtil dictionaryUtil;
+
     /**
      * <h2>标记的枚举类</h2>
      */
@@ -32,7 +38,7 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
             return true;
         }
         try {
-            Utils.getDictionaryUtil().getDictionary(enumClazz, value);
+            dictionaryUtil.getDictionary(enumClazz, value);
         } catch (Exception e) {
             return false;
         }

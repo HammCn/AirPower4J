@@ -1,7 +1,7 @@
 package cn.hamm.airpower.interceptor;
 
-import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
+import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
@@ -10,6 +10,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -47,6 +48,9 @@ import java.util.Set;
 public class ExceptionInterceptor {
 
     public static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
+
+    @Autowired
+    private ServiceConfig serviceConfig;
 
     /**
      * <h2>参数验证失败</h2>
@@ -87,9 +91,9 @@ public class ExceptionInterceptor {
      * <h2>删除时的数据关联校验异常</h2>
      */
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
-    public Json deleteUsingDataException(@NotNull java.lang.Exception exception) {
+    public Json deleteUsingDataException(@NotNull Exception exception) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.FORBIDDEN_DELETE_USED.getMessage(), exception);
         }
         return Json.error(ServiceError.FORBIDDEN_DELETE_USED);
@@ -132,7 +136,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED.getMessage(), exception);
         }
         return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED, String.format(
@@ -147,7 +151,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(CannotCreateTransactionException.class)
     public Json databaseExceptionHandle(@NotNull CannotCreateTransactionException exception) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.DATABASE_ERROR.getMessage(), exception);
         }
         return Json.error(ServiceError.DATABASE_ERROR);
@@ -159,7 +163,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(RedisConnectionFailureException.class)
     public Json redisExceptionHandle(@NotNull RedisConnectionFailureException exception) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
         }
         return Json.error(ServiceError.REDIS_ERROR);
@@ -171,7 +175,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(ServiceException.class)
     public Json systemExceptionHandle(@NotNull ServiceException exception) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.SERVICE_ERROR.getMessage(), exception);
         }
         return Json.error(exception).setData(exception.getData());
@@ -183,7 +187,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = PropertyReferenceException.class)
     public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.DATABASE_UNKNOWN_FIELD.getMessage(), exception);
         }
         return Json.error(ServiceError.DATABASE_UNKNOWN_FIELD, String.format(
@@ -199,7 +203,7 @@ public class ExceptionInterceptor {
             @NotNull InvalidDataAccessResourceUsageException exception
     ) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.DATABASE_TABLE_OR_FIELD_ERROR.getMessage(), exception);
         }
         return Json.error(ServiceError.DATABASE_TABLE_OR_FIELD_ERROR);
@@ -211,7 +215,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(value = MaxUploadSizeExceededException.class)
     public Json maxUploadSizeExceededExceptionHandle(@NotNull MaxUploadSizeExceededException exception) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.FORBIDDEN_UPLOAD_MAX_SIZE.getMessage(), exception);
         }
         return Json.error(ServiceError.FORBIDDEN_UPLOAD_MAX_SIZE);
@@ -220,10 +224,10 @@ public class ExceptionInterceptor {
     /**
      * <h2>其他异常</h2>
      */
-    @ExceptionHandler(value = {java.lang.Exception.class, RuntimeException.class})
-    public Object otherExceptionHandle(@NotNull java.lang.Exception exception) {
+    @ExceptionHandler(value = {Exception.class, RuntimeException.class})
+    public Object otherExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
-        if (Configs.getServiceConfig().isDebug()) {
+        if (serviceConfig.isDebug()) {
             log.error(ServiceError.SERVICE_ERROR.getMessage(), exception);
         }
         return Json.error(ServiceError.SERVICE_ERROR);

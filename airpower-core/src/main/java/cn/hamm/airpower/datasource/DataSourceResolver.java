@@ -2,10 +2,12 @@ package cn.hamm.airpower.datasource;
 
 import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
+import cn.hamm.airpower.config.ServiceConfig;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,9 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      * <h2>线程</h2>
      */
     private static final ThreadLocal<String> THREAD_LOCAL = new ThreadLocal<>();
+
+    @Autowired
+    private ServiceConfig serviceConfig;
 
     /**
      * <h2>初始化空列表</h2>
@@ -120,7 +125,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
             //noinspection SqlSourceToSinkFlow
             statement.execute(
                     "CREATE DATABASE IF NOT EXISTS " +
-                            Configs.getServiceConfig().getDatabasePrefix() +
+                            serviceConfig.getDatabasePrefix() +
                             dataSource.getDatabase() +
                             " DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci"
             );
@@ -152,7 +157,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
         dataSource.setUsername(dataSourceInfo.getUser());
         dataSource.setPassword(dataSourceInfo.getPassword());
         DATA_SOURCE_LIST.put(
-                Configs.getServiceConfig().getDatabasePrefix() + dataSourceInfo.getDatabase(),
+                serviceConfig.getDatabasePrefix() + dataSourceInfo.getDatabase(),
                 dataSource
         );
         super.afterPropertiesSet();

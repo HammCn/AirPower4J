@@ -5,6 +5,7 @@ import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.interfaces.IFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -22,6 +23,9 @@ import java.util.function.Function;
 @Slf4j
 @Component
 public class DictionaryUtil {
+    @Autowired
+    private ReflectUtil reflectUtil;
+    
     /**
      * <h2>查字典</h2>
      *
@@ -85,7 +89,6 @@ public class DictionaryUtil {
             @NotNull Class<D> clazz, IFunction<D, Object>... lambdas
     ) {
         List<Map<String, Object>> mapList = new ArrayList<>();
-        ReflectUtil reflectUtil = Utils.getReflectUtil();
         for (D obj : clazz.getEnumConstants()) {
             //取出所有枚举类型
             Map<String, Object> item = new HashMap<>(lambdas.length);

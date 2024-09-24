@@ -1,9 +1,9 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.ServiceError;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SecurityUtil {
+    @Autowired
+    private ServiceConfig serviceConfig;
+
     /**
      * <h2>从 {@code AccessToken} 中获取 {@code ID}</h2>
      *
@@ -21,7 +24,7 @@ public class SecurityUtil {
     public final long getIdFromAccessToken(String accessToken) {
         ServiceError.UNAUTHORIZED.whenNull(accessToken);
         Object userId = Utils.getTokenUtil()
-                .verify(accessToken, Configs.getServiceConfig().getAccessTokenSecret())
+                .verify(accessToken, serviceConfig.getAccessTokenSecret())
                 .getPayload(Constant.ID);
         ServiceError.UNAUTHORIZED.whenNull(userId);
         return Long.parseLong(userId.toString());
@@ -34,7 +37,6 @@ public class SecurityUtil {
      * @return {@code AccessToken}
      */
     public final String createAccessToken(Long id) {
-        ServiceConfig serviceConfig = Configs.getServiceConfig();
         return Utils.getTokenUtil().addPayload(Constant.ID, id)
                 .setExpireMillisecond(
                         serviceConfig.getAuthorizeExpireSecond() * Constant.MILLISECONDS_PER_SECOND

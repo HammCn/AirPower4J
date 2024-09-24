@@ -1,11 +1,11 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.MqttConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.UUID;
@@ -18,6 +18,9 @@ import java.util.UUID;
 @Configuration
 @Slf4j
 public class MqttUtil {
+    @Autowired
+    private MqttConfig mqttConfig;
+
     /**
      * <h2>创建 {@code MQTT} 客户端</h2>
      *
@@ -36,7 +39,6 @@ public class MqttUtil {
      * @throws MqttException 异常
      */
     public @NotNull MqttClient createClient(String id) throws MqttException {
-        MqttConfig mqttConfig = Configs.getMqttConfig();
         return new MqttClient(
                 "tcp://" + mqttConfig.getHost() + ":" + mqttConfig.getPort(),
                 id,
@@ -52,7 +54,6 @@ public class MqttUtil {
     public MqttConnectOptions createOption() {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(false);
-        MqttConfig mqttConfig = Configs.getMqttConfig();
         options.setUserName(mqttConfig.getUser());
         options.setPassword(mqttConfig.getPass().toCharArray());
         options.setConnectionTimeout(30);

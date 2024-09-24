@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -20,7 +19,6 @@ import java.util.Objects;
  *
  * @author Hamm.cn
  */
-@Component
 @WebFilter
 @Slf4j
 public class RequestCacheFilter implements Filter {

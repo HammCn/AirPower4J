@@ -9,6 +9,8 @@ import cn.hamm.airpower.interfaces.IPermission;
 import cn.hamm.airpower.model.Access;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -40,6 +42,12 @@ public class AccessUtil {
      * <h2>控制器字节码文件路径</h2>
      */
     private static final String CONTROLLER_CLASS_PATH = "/**/*" + Constant.CONTROLLER_SUFFIX + ".class";
+    
+    @Autowired
+    private ReflectUtil reflectUtil;
+
+    @Autowired
+    private DictionaryUtil dictionaryUtil;
 
     /**
      * <h2>获取需要被授权的类型</h2>
@@ -117,8 +125,6 @@ public class AccessUtil {
             Resource[] resources = resourcePatternResolver.getResources(pattern);
             MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
 
-            ReflectUtil reflectUtil = Utils.getReflectUtil();
-            DictionaryUtil dictionaryUtil = Utils.getDictionaryUtil();
             for (Resource resource : resources) {
                 // 用于读取类信息
                 MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
@@ -156,12 +162,13 @@ public class AccessUtil {
                         } catch (Exception ignored) {
                         }
                     }
-                    String subIdentity = getMethodPermissionIdentity(method, apiPath);
-                    if (apiPath.equals(subIdentity)) {
+                    String subIdentity = getMethodPermissionIdentity(method);
+                    if (Objects.isNull(subIdentity)) {
                         continue;
                     }
+                    subIdentity = apiPath + subIdentity;
                     String customMethodName = reflectUtil.getDescription(method);
-                    Access accessConfig = Utils.getAccessUtil().getWhatNeedAccess(clazz, method);
+                    Access accessConfig = getWhatNeedAccess(clazz, method);
                     if (!accessConfig.isLogin() || !accessConfig.isAuthorize()) {
                         // 这里可以选择是否不读取这些接口的权限，但前端可能需要
                         continue;
@@ -200,19 +207,17 @@ public class AccessUtil {
     /**
      * <h2>获取方法权限标识</h2>
      *
-     * @param method  方法
-     * @param apiPath Api路径
+     * @param method 方法
      * @return 权限标识
      */
-    private @NotNull String getMethodPermissionIdentity(Method method, String apiPath) {
-        ReflectUtil reflectUtil = Utils.getReflectUtil();
+    private @Nullable String getMethodPermissionIdentity(Method method) {
         RequestMapping requestMapping = reflectUtil.getAnnotation(RequestMapping.class, method);
         PostMapping postMapping = reflectUtil.getAnnotation(PostMapping.class, method);
         GetMapping getMapping = reflectUtil.getAnnotation(GetMapping.class, method);
 
         if (Objects.isNull(requestMapping) && Objects.isNull(postMapping) && Objects.isNull(getMapping)) {
-            return apiPath;
+            return null;
         }
-        return apiPath + method.getName();
+        return method.getName();
     }
 }
