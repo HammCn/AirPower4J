@@ -91,7 +91,7 @@ public class ExceptionInterceptor {
      * <h2>删除时的数据关联校验异常</h2>
      */
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
-    public Json deleteUsingDataException(@NotNull java.lang.Exception exception) {
+    public Json deleteUsingDataException(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
             log.error(ServiceError.FORBIDDEN_DELETE_USED.getMessage(), exception);
@@ -224,8 +224,8 @@ public class ExceptionInterceptor {
     /**
      * <h2>其他异常</h2>
      */
-    @ExceptionHandler(value = {java.lang.Exception.class, RuntimeException.class})
-    public Object otherExceptionHandle(@NotNull java.lang.Exception exception) {
+    @ExceptionHandler(value = {Exception.class, RuntimeException.class})
+    public Object otherExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
             log.error(ServiceError.SERVICE_ERROR.getMessage(), exception);
