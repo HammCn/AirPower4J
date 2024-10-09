@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -25,7 +22,7 @@ import java.util.function.Function;
 public class DictionaryUtil {
     @Autowired
     private ReflectUtil reflectUtil;
-    
+
     /**
      * <h2>查字典</h2>
      *
@@ -54,7 +51,7 @@ public class DictionaryUtil {
             // 取出所有枚举类型
             D[] objs = enumClass.getEnumConstants();
             for (D obj : objs) {
-                if (function.apply(obj).equals(value)) {
+                if (Objects.equals(function.apply(obj), value)) {
                     return obj;
                 }
             }

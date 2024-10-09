@@ -92,7 +92,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         BiConsumer<@NotNull Field, @NotNull Class<?>> task = isExpose ? this::exposeBy : this::excludeBy;
         Consumer<@NotNull Field> desensitize = this::desensitize;
         allFields.forEach(field -> {
-            if (!Void.class.equals(filterClass)) {
+            if (!Objects.equals(Void.class, filterClass)) {
                 task.accept(field, filterClass);
                 filterField(field, filterClass, isDesensitize);
             }

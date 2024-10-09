@@ -135,8 +135,8 @@ public interface IException {
      * @param obj2    被验证的数据
      * @param message 返回信息
      */
-    default void whenEquals(@NotNull Object obj1, Object obj2, String message) {
-        when(obj1.equals(obj2), message);
+    default void whenEquals(Object obj1, Object obj2, String message) {
+        when(Objects.equals(obj1, obj2), message);
     }
 
     /**
@@ -156,8 +156,8 @@ public interface IException {
      * @param str2    被验证的数据
      * @param message 返回信息
      */
-    default void whenEquals(@NotNull String str1, String str2, String message) {
-        when(str1.equals(str2), message);
+    default void whenEquals(String str1, String str2, String message) {
+        when(Objects.equals(str1, str2), message);
     }
 
     /**
@@ -177,8 +177,11 @@ public interface IException {
      * @param str2    被验证的数据
      * @param message 返回信息
      */
-    default void whenEqualsIgnoreCase(@NotNull String str1, String str2, String message) {
-        when(str1.equalsIgnoreCase(str2), message);
+    default void whenEqualsIgnoreCase(String str1, String str2, String message) {
+        if (Objects.isNull(str1) || Objects.isNull(str2)) {
+            show(message);
+        }
+        when(Objects.equals(str1.toLowerCase(), str2.toLowerCase()), message);
     }
 
     /**
@@ -198,8 +201,8 @@ public interface IException {
      * @param obj2    被验证的数据
      * @param message 返回信息
      */
-    default void whenNotEquals(@NotNull Object obj1, Object obj2, String message) {
-        when(!obj1.equals(obj2), message);
+    default void whenNotEquals(Object obj1, Object obj2, String message) {
+        when(!Objects.equals(obj1, obj2), message);
     }
 
     /**
@@ -219,8 +222,8 @@ public interface IException {
      * @param str2    被验证的数据
      * @param message 返回信息
      */
-    default void whenNotEquals(@NotNull String str1, String str2, String message) {
-        when(!str1.equals(str2), message);
+    default void whenNotEquals(String str1, String str2, String message) {
+        when(!Objects.equals(str1, str2), message);
     }
 
     /**
@@ -240,8 +243,12 @@ public interface IException {
      * @param str2    被验证的数据
      * @param message 返回信息
      */
-    default void whenNotEqualsIgnoreCase(@NotNull String str1, String str2, String message) {
-        when(!str1.equalsIgnoreCase(str2), message);
+    default void whenNotEqualsIgnoreCase(String str1, String str2, String message) {
+        if (Objects.isNull(str1) || Objects.isNull(str2)) {
+            show(message);
+        }
+        when(!Objects.equals(str1.toLowerCase(), str2.toLowerCase()), message);
+
     }
 
     /**

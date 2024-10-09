@@ -106,9 +106,9 @@ public class ReflectUtil {
      * @return 判断结果
      */
     public final boolean isTheRootClass(@NotNull Class<?> clazz) {
-        return clazz.getName().equals(RootController.class.getName()) ||
-                clazz.getName().equals(RootEntity.class.getName()) ||
-                clazz.getName().equals(Object.class.getName());
+        return Objects.equals(clazz.getName(), RootController.class.getName()) ||
+                Objects.equals(clazz.getName(), RootEntity.class.getName()) ||
+                Objects.equals(clazz.getName(), Object.class.getName());
     }
 
     /**
@@ -348,7 +348,7 @@ public class ReflectUtil {
         }
         List<Method> superMethods = Arrays.stream(superClass.getMethods()).toList();
         Method superMethod = superMethods.stream()
-                .filter(m -> m.getName().equals(method.getName()))
+                .filter(m -> Objects.equals(m.getName(), method.getName()))
                 .findFirst()
                 .orElse(null);
         if (Objects.isNull(superMethod)) {
@@ -365,7 +365,7 @@ public class ReflectUtil {
      * @return 字段
      */
     public final @Nullable Field getField(String fieldName, Class<?> clazz) {
-        if (Objects.isNull(clazz) || Object.class.equals(clazz)) {
+        if (Objects.isNull(clazz) || Objects.equals(Object.class, clazz)) {
             return null;
         }
         try {

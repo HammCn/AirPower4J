@@ -30,11 +30,6 @@ public class RequestUtil {
     public static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
 
     /**
-     * <h2>未知IP</h2>
-     */
-    private static final String UNKNOWN = "unknown";
-
-    /**
      * <h2>常用IP反向代理Header头</h2>
      */
     private static final List<String> PROXY_IP_HEADERS = List.of(
@@ -72,7 +67,7 @@ public class RequestUtil {
         try {
             for (String ipHeader : PROXY_IP_HEADERS) {
                 ipAddress = request.getHeader(ipHeader);
-                if (UNKNOWN.equals(ipAddress)) {
+                if (Objects.equals(ipAddress, Constant.UNKNOWN)) {
                     continue;
                 }
                 if (isValidAddress(ipAddress)) {
@@ -81,7 +76,7 @@ public class RequestUtil {
             }
 
             ipAddress = request.getRemoteAddr();
-            if (Constant.LOCAL_IP_ADDRESS.equals(ipAddress)) {
+            if (Objects.equals(Constant.LOCAL_IP_ADDRESS, ipAddress)) {
                 // 根据网卡取本机配置的IP
                 InetAddress inet;
                 try {
