@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <h1>树结构处理助手</h1>
@@ -35,7 +36,7 @@ public class TreeUtil {
      */
     private <E extends ITree<E>> List<E> buildTreeList(@NotNull List<E> list, Long parentId) {
         return list.stream()
-                .filter(item -> parentId.equals(item.getParentId()))
+                .filter(item -> Objects.equals(parentId, item.getParentId()))
                 .peek(item -> item.setChildren(
                         buildTreeList(list, item.getId())
                 ))

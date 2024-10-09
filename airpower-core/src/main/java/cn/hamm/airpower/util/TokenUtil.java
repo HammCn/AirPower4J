@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * <h1>{@code TokenUtil}</h1>
@@ -147,7 +148,7 @@ public class TokenUtil {
         if (list.length != TOKEN_PART_COUNT) {
             throw new ServiceException(ServiceError.UNAUTHORIZED);
         }
-        if (!hmacSha256(secret, list[0] + Constant.DOT + list[2]).equals(list[1])) {
+        if (!Objects.equals(hmacSha256(secret, list[0] + Constant.DOT + list[2]), list[1])) {
             throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         if (Long.parseLong(list[0]) < System.currentTimeMillis() && Long.parseLong(list[0]) != 0) {

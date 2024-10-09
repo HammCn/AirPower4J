@@ -257,4 +257,9 @@ public class Constant {
      * <h2>{@code "否"}</h2>
      */
     public static final String NO = "否";
+
+    /**
+     * <h2>{@code unknown}</h2>
+     */
+    public static final String UNKNOWN = "unknown";
 }

@@ -21,7 +21,7 @@ public class CollectionUtil {
      * @return 处理后的集合
      */
     public final @NotNull <T> Collection<T> getCollectWithoutNull(Collection<T> list, Class<?> fieldClass) {
-        if (Set.class.equals(fieldClass)) {
+        if (Objects.equals(Set.class, fieldClass)) {
             return Objects.isNull(list) ? new HashSet<>() : list;
         }
         return Objects.isNull(list) ? new ArrayList<>() : list;

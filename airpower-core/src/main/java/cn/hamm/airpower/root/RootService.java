@@ -805,7 +805,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         try {
             Field field = fieldList.stream()
-                    .filter(item -> item.getName().equals(fieldName))
+                    .filter(item -> Objects.equals(item.getName(), fieldName))
                     .findFirst()
                     .orElse(null);
             if (Objects.isNull(field)) {
@@ -996,7 +996,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 值本身是空的
                 continue;
             }
-            if (desensitize.replace() && desensitize.symbol().equals(fieldValue.toString())) {
+            if (desensitize.replace() && Objects.equals(desensitize.symbol(), fieldValue.toString())) {
                 // 如果是替换 且没有修改内容
                 reflectUtil.setFieldValue(existEntity, field, null);
             }
@@ -1039,7 +1039,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 没查到 不校验
                 continue;
             }
-            if (Objects.nonNull(entity.getId()) && exist.get().getId().equals(entity.getId())) {
+            if (Objects.nonNull(entity.getId()) && Objects.equals(exist.get().getId(), entity.getId())) {
                 // 修改自己 不校验
                 continue;
             }
@@ -1119,7 +1119,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (!StringUtils.hasText(sort.getDirection())) {
             sort.setDirection(serviceConfig.getDefaultSortDirection());
         }
-        if (!serviceConfig.getDefaultSortDirection().equals(sort.getDirection())) {
+        if (!Objects.equals(sort.getDirection(), serviceConfig.getDefaultSortDirection())) {
             return org.springframework.data.domain.Sort.by(
                     org.springframework.data.domain.Sort.Order.asc(sort.getField())
             );

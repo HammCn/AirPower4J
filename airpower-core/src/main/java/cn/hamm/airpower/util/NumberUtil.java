@@ -220,7 +220,7 @@ public class NumberUtil {
      */
     private @NotNull BigDecimal div(BigDecimal first, BigDecimal second, int scale, RoundingMode roundingMode) {
         try {
-            if (BigDecimal.valueOf(0).equals(second)) {
+            if (Objects.equals(BigDecimal.valueOf(0), second)) {
                 throw new RuntimeException("除数不能为0");
             }
             return first.divide(second, scale, roundingMode);

@@ -92,7 +92,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
      */
     @Override
     public final void registerWebSocketHandlers(@NotNull WebSocketHandlerRegistry registry) {
-        if (webSocketConfig.getSupport().equals(WebSocketSupport.NO)) {
+        if (Objects.equals(webSocketConfig.getSupport(), WebSocketSupport.NO)) {
             return;
         }
         final String channelPrefix = webSocketConfig.getChannelPrefix();
