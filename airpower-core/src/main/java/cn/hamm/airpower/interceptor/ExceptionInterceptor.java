@@ -46,8 +46,10 @@ import java.util.Set;
 @ResponseBody
 @Slf4j
 public class ExceptionInterceptor {
-
-    public static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
+    /**
+     * <h2>错误信息和描述</h2>
+     */
+    private static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
 
     @Autowired
     private ServiceConfig serviceConfig;
