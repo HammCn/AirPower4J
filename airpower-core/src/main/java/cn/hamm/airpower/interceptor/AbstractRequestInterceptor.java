@@ -39,6 +39,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * <h2>缓存的 {@code REQUEST_METHOD_KEY}</h2>
      */
     protected static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
+
     @Autowired
     protected ServiceConfig serviceConfig;
 
