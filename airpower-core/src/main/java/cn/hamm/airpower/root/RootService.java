@@ -147,11 +147,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected InputStream createExportStream(List<E> exportList) {
         // 导出到csv并存储文件
-        List<String> fieldNameList = new ArrayList<>();
-        List<Field> fieldList = new ArrayList<>();
-
-        List<String> headerList = new ArrayList<>();
         Class<E> entityClass = getEntityClass();
+        List<Field> fieldList = new ArrayList<>();
+        List<String> fieldNameList = new ArrayList<>();
+        List<String> headerList = new ArrayList<>();
         for (Field field : ReflectUtil.getFieldList(entityClass)) {
             ExcelColumn excelColumn = ReflectUtil.getAnnotation(ExcelColumn.class, field);
             if (Objects.isNull(excelColumn)) {
@@ -193,10 +192,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected String saveExportFile(InputStream exportFileStream) {
         // 准备导出的相对路径
-        String exportFilePath = EXPORT_DIR_PREFIX;
         final String absolutePath = serviceConfig.getExportFilePath() + File.separator;
         ServiceError.SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
-
         try {
             long milliSecond = System.currentTimeMillis();
 
@@ -205,6 +202,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     DateTimeFormatter.FULL_DATE.getValue()
                             .replaceAll(Constant.LINE, Constant.EMPTY_STRING)
             );
+            String exportFilePath = EXPORT_DIR_PREFIX;
             exportFilePath += todayDir + File.separator;
 
             if (!Files.exists(Paths.get(absolutePath + exportFilePath))) {
@@ -998,21 +996,21 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private void checkUnique(@NotNull E entity) {
         List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
-        for (Field field : fields) {
+        fields.forEach(field -> {
             String fieldName = ReflectUtil.getDescription(field);
             Column annotation = ReflectUtil.getAnnotation(Column.class, field);
             if (Objects.isNull(annotation)) {
                 // 不是数据库列 不校验
-                continue;
+                return;
             }
             if (!annotation.unique()) {
                 // 没有标唯一 不校验
-                continue;
+                return;
             }
             Object fieldValue = ReflectUtil.getFieldValue(entity, field);
             if (Objects.isNull(fieldValue)) {
                 // 没有值 不校验
-                continue;
+                return;
             }
             E search = getNewInstance();
             ReflectUtil.setFieldValue(search, field, fieldValue);
@@ -1020,14 +1018,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             Optional<E> exist = repository.findOne(example);
             if (exist.isEmpty()) {
                 // 没查到 不校验
-                continue;
+                return;
             }
             if (Objects.nonNull(entity.getId()) && Objects.equals(exist.get().getId(), entity.getId())) {
                 // 修改自己 不校验
-                continue;
+                return;
             }
             ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！", fieldName, fieldValue));
-        }
+        });
     }
 
     /**
@@ -1120,10 +1118,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private @NotNull Pageable createPageable(@NotNull QueryPageRequest<E> queryPageData) {
         Page page = Objects.requireNonNullElse(queryPageData.getPage(), new Page());
-        page.setPageNum(Objects.requireNonNullElse(page.getPageNum(), 1));
-        page.setPageSize(
-                Objects.requireNonNullElse(page.getPageSize(), serviceConfig.getDefaultPageSize())
-        );
+        page.setPageNum(Objects.requireNonNullElse(page.getPageNum(), 1))
+                .setPageSize(
+                        Objects.requireNonNullElse(page.getPageSize(), serviceConfig.getDefaultPageSize())
+                );
         int pageNumber = Math.max(0, page.getPageNum() - 1);
         int pageSize = Math.max(1, queryPageData.getPage().getPageSize());
         return PageRequest.of(pageNumber, pageSize, createSort(queryPageData.getSort()));
@@ -1141,8 +1139,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private @NotNull List<jakarta.persistence.criteria.Predicate> getPredicateList(
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
-        List<Predicate> predicateList = new ArrayList<>();
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
+        List<Predicate> predicateList = new ArrayList<>();
         for (Field field : fields) {
             Object fieldValue = ReflectUtil.getFieldValue(search, field);
             if (Objects.isNull(fieldValue) || !StringUtils.hasText(fieldValue.toString())) {
