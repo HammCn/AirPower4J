@@ -62,8 +62,8 @@ public class WebsocketHelper {
         if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
-        final String targetChannel = channelPrefix + Constant.UNDERLINE + channel;
         final WebSocketEvent event = WebSocketEvent.create(payload);
+        final String targetChannel = channelPrefix + Constant.UNDERLINE + channel;
         log.info("发布消息到频道 {} : {}", targetChannel, Json.toString(event));
         try {
             switch (websocketConfig.getSupport()) {
