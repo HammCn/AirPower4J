@@ -40,7 +40,7 @@ public class RedisConfigurer implements CachingConfigurer {
     @Bean
     @Override
     public CacheManager cacheManager() {
-        var redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(10))
                 .disableCachingNullValues()
                 .serializeKeysWith(
