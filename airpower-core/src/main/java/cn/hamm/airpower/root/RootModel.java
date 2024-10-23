@@ -176,8 +176,8 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filterClass 过滤器
      */
     private void exposeBy(@NotNull Field field, @NotNull Class<?> filterClass) {
-        Class<?>[] exposeClasses = null;
         final String fieldGetter = Constant.GET + StringUtils.capitalize(field.getName());
+        Class<?>[] exposeClasses = null;
         try {
             Method getMethod = getClass().getMethod(fieldGetter);
             Expose methodExpose = ReflectUtil.getAnnotation(Expose.class, getMethod);
