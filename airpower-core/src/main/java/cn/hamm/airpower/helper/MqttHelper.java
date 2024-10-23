@@ -69,16 +69,16 @@ public class MqttHelper {
      * @param message 消息内容
      */
     public void publish(@NotNull String topic, @NotNull String message) throws MqttException {
-        MqttClient client = createClient();
-        client.connect(createOption());
-        MqttMessage mqttMessage = new MqttMessage();
-        mqttMessage.setPayload(message.getBytes());
-        mqttMessage.setQos(0);
-        MqttTopic mqttTopic = client.getTopic(topic);
-        MqttDeliveryToken token;
-        token = mqttTopic.publish(mqttMessage);
-        token.waitForCompletion();
-        client.disconnect();
-        client.close();
+        try (MqttClient client = createClient()) {
+            client.connect(createOption());
+            MqttMessage mqttMessage = new MqttMessage();
+            mqttMessage.setPayload(message.getBytes());
+            mqttMessage.setQos(0);
+            MqttTopic mqttTopic = client.getTopic(topic);
+            MqttDeliveryToken token;
+            token = mqttTopic.publish(mqttMessage);
+            token.waitForCompletion();
+            client.disconnect();
+        }
     }
 }
