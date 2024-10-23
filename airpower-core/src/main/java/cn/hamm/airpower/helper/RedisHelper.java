@@ -132,7 +132,7 @@ public class RedisHelper {
             if (second > 0) {
                 redisTemplate.expire(key, second, TimeUnit.SECONDS);
             }
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -149,7 +149,7 @@ public class RedisHelper {
             if (Objects.nonNull(keys)) {
                 redisTemplate.delete(keys);
             }
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -165,7 +165,7 @@ public class RedisHelper {
         try {
             //noinspection ConstantConditions
             return redisTemplate.getExpire(key, TimeUnit.SECONDS);
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -182,7 +182,7 @@ public class RedisHelper {
         try {
             //noinspection ConstantConditions
             return redisTemplate.hasKey(key);
-        } catch (java.lang.Exception ignored) {
+        } catch (Exception ignored) {
             return false;
         }
     }
@@ -195,7 +195,7 @@ public class RedisHelper {
     public final void del(String key) {
         try {
             redisTemplate.delete(key);
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -210,7 +210,7 @@ public class RedisHelper {
     public final @Nullable Object get(String key) {
         try {
             return redisTemplate.opsForValue().get(key);
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -242,7 +242,7 @@ public class RedisHelper {
             } else {
                 set(key, value);
             }
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
