@@ -152,7 +152,7 @@ public class OpenRequest {
      * <h2>验证IP白名单</h2>
      */
     private void checkIpWhiteList() {
-        String ipStr = openApp.getIpWhiteList();
+        final String ipStr = openApp.getIpWhiteList();
         if (Objects.isNull(ipStr) || !StringUtils.hasText(ipStr)) {
             // 未配置IP白名单
             return;
