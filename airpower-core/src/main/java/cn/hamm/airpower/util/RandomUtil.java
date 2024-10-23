@@ -17,17 +17,25 @@ import java.util.stream.IntStream;
  */
 public class RandomUtil {
     /**
+     * <h2>默认长度</h2>
+     */
+    public static final int DEFAULT_LENGTH = 32;
+    
+    /**
      * <h2>小写字母</h2>
      */
     private static final String BASE_CHAR = "abcdefghijklmnopqrstuvwxyz";
+
     /**
      * <h2>数字</h2>
      */
     private static final String BASE_NUMBER = "0123456789";
+
     /**
      * <h2>小写字母和数字</h2>
      */
     private static final String BASE_CHAR_NUMBER_LOWER = BASE_CHAR + BASE_NUMBER;
+
     /**
      * <h2>大写和小写字母</h2>
      */
@@ -59,7 +67,7 @@ public class RandomUtil {
      * @return 随机字节数组
      */
     public static byte @NotNull [] randomBytes() {
-        return randomBytes(32);
+        return randomBytes(DEFAULT_LENGTH);
     }
 
     /**
@@ -68,7 +76,7 @@ public class RandomUtil {
      * @return 随机字符串
      */
     public static @NotNull String randomString() {
-        return randomString(32);
+        return randomString(DEFAULT_LENGTH);
     }
 
     /**

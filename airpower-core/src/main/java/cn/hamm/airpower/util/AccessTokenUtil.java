@@ -84,9 +84,7 @@ public class AccessTokenUtil {
      */
     public AccessTokenUtil setPayloadId(Long id, long expireSecond) {
         return addPayload(Constant.ID, id)
-                .setExpireMillisecond(
-                        expireSecond * Constant.MILLISECONDS_PER_SECOND
-                );
+                .setExpireMillisecond(expireSecond * Constant.MILLISECONDS_PER_SECOND);
     }
 
     /**
@@ -98,8 +96,7 @@ public class AccessTokenUtil {
      */
     public final long getPayloadId(String accessToken, String secret) {
         ServiceError.UNAUTHORIZED.whenNull(accessToken);
-        Object userId = verify(accessToken, secret)
-                .getPayload(Constant.ID);
+        Object userId = verify(accessToken, secret).getPayload(Constant.ID);
         ServiceError.UNAUTHORIZED.whenNull(userId);
         return Long.parseLong(userId.toString());
     }
@@ -117,8 +114,7 @@ public class AccessTokenUtil {
             throw new ServiceException(PAYLOADS_IS_EMPTY);
         }
         String payloadBase = Base64.getUrlEncoder().encodeToString(
-                Json.toString(verifiedToken.getPayloads())
-                        .getBytes(StandardCharsets.UTF_8)
+                Json.toString(verifiedToken.getPayloads()).getBytes(StandardCharsets.UTF_8)
         );
         String content = verifiedToken.getExpireTimestamps() +
                 Constant.DOT +
@@ -169,7 +165,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>验证 {@code AccessToken} 并返回一个已验证的 {@code Token}</h2>
+     * <h2>验证 {@code AccessToken} 并返回 {@code VerifiedToken}</h2>
      *
      * @param accessToken {@code AccessToken}
      * @param secret      密钥

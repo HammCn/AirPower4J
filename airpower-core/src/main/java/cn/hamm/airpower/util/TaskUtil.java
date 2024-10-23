@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <h1>任务流程管理器</h1>
+ * <h1>任务流程工具类</h1>
  *
  * @author Hamm.cn
  */

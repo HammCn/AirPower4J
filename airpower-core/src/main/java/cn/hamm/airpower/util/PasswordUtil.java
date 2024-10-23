@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Hamm.cn
  */
 public class PasswordUtil {
-
     /**
      * <h2>禁止外部实例化</h2>
      */

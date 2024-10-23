@@ -233,7 +233,7 @@ public class RedisHelper {
      * @param key    缓存的 {@code Key}
      * @param value  缓存的值
      * @param second 缓存时间(秒)
-     * @apiNote time要大于0 如果time小于等于0 将设置无限期
+     * @apiNote <code>如果time小于等于0 将设置无限期</code>
      */
     public final void set(String key, Object value, long second) {
         try {

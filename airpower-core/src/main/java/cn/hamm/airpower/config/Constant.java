@@ -1,5 +1,6 @@
 package cn.hamm.airpower.config;
 
+import org.jetbrains.annotations.Contract;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -262,4 +263,11 @@ public class Constant {
      * <h2>{@code unknown}</h2>
      */
     public static final String UNKNOWN = "unknown";
+
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private Constant() {
+    }
 }

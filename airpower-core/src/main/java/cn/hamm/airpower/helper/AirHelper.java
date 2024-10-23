@@ -9,14 +9,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
- * <h1>{@code AirPower} 工具包 </h1>
+ * <h1>{@code AirPower} 助手类 </h1>
  *
  * @author Hamm.cn
  */
 @Component
 public class AirHelper {
     /**
-     * <h2>{@code Redis} 工具类</h2>
+     * <h2>{@code Redis} 助手类</h2>
      */
     @Getter
     private static RedisHelper redisHelper;
@@ -28,19 +28,19 @@ public class AirHelper {
     private static EmailHelper emailHelper;
 
     /**
-     * <h2>事务工具类</h2>
+     * <h2>事务助手类</h2>
      */
     @Getter
     private static TransactionHelper transactionHelper;
 
     /**
-     * <h2>{@code Cookie} 工具类</h2>
+     * <h2>{@code Cookie} 助手类</h2>
      */
     @Getter
     private static CookieHelper cookieHelper;
 
     /**
-     * <h2>{@code MQTT} 工具类</h2>
+     * <h2>{@code MQTT} 助手类</h2>
      */
     @Getter
     private static MqttHelper mqttHelper;
@@ -70,7 +70,7 @@ public class AirHelper {
     private static HttpServletResponse response;
 
     /**
-     * <h2>{@code WebSocket} 工具类</h2>
+     * <h2>{@code WebSocket} 助手类</h2>
      */
     @Getter
     private static WebsocketHelper websocketHelper;

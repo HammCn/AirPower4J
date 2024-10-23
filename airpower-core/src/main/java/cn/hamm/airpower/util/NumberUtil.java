@@ -16,11 +16,11 @@ import java.util.function.BiFunction;
  * @author Hamm.cn
  */
 public class NumberUtil {
-
     /**
      * <h2>计算的最大精度保留</h2>
      */
     private static final int DEFAULT_SCALE = 8;
+
     /**
      * <h2>默认除法的保留方式</h2>
      */

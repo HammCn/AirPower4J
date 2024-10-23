@@ -23,22 +23,22 @@ import java.util.Base64;
 @Slf4j
 @Accessors(chain = true)
 public class RsaUtil {
-
     /**
      * <h2>加密算法 {@code KEY} 长度</h2>
      */
     private final int CRYPT_KEY_SIZE = 2048;
+
     /**
      * <h2>加密方式</h2>
      */
     private final String CRYPT_METHOD = "RSA";
+
     /**
      * <h2>公钥</h2>
-     *
-     * @apiNote openssl genrsa -out ca.key 2048 && openssl pkcs8 -topk8 -inform PEM -in ca.key -outform PEM -nocrypt -out ca.pem && openssl rsa -in ca.pem -pubout -out ca.crt
      */
     @Setter
     private String publicKey;
+
     /**
      * <h2>私钥</h2>
      */

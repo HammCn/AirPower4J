@@ -171,8 +171,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         final String personalChannel = getRealChannel(CHANNEL_USER_PREFIX + userId);
         RedisConnection redisConnection = redisConnectionFactory.getConnection();
         redisConnectionHashMap.put(session.getId(), redisConnection);
-        redisConnection.subscribe(
-                (message, pattern) -> {
+        redisConnection.subscribe((message, pattern) -> {
                     synchronized (session) {
                         onChannelMessage(new String(message.getBody(), StandardCharsets.UTF_8), session);
                     }

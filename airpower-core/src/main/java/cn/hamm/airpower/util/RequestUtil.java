@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +25,7 @@ public class RequestUtil {
      * <h2>获取IP地址异常</h2>
      */
     public static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
+    
     /**
      * <h2>常用IP反向代理Header头</h2>
      */
@@ -80,18 +80,15 @@ public class RequestUtil {
             }
 
             ipAddress = request.getRemoteAddr();
-            if (Objects.equals(Constant.LOCAL_IP_ADDRESS, ipAddress)) {
-                // 根据网卡取本机配置的IP
-                InetAddress inet;
-                try {
-                    inet = InetAddress.getLocalHost();
-                    ipAddress = inet.getHostAddress();
-                    if (isValidAddress(ipAddress)) {
-                        return ipAddress;
-                    }
-                } catch (UnknownHostException exception) {
-                    ServiceError.FORBIDDEN.show(IP_ADDRESS_EXCEPTION);
-                }
+            if (!Objects.equals(Constant.LOCAL_IP_ADDRESS, ipAddress)) {
+                return ipAddress;
+            }
+            // 根据网卡取本机配置的IP
+            InetAddress inet;
+            inet = InetAddress.getLocalHost();
+            ipAddress = inet.getHostAddress();
+            if (isValidAddress(ipAddress)) {
+                return ipAddress;
             }
             return ipAddress;
         } catch (Exception exception) {
