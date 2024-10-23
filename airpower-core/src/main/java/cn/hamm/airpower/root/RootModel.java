@@ -5,13 +5,11 @@ import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.util.CollectionUtil;
+import cn.hamm.airpower.util.DesensitizeUtil;
 import cn.hamm.airpower.util.ReflectUtil;
-import cn.hamm.airpower.util.Utils;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
@@ -36,25 +34,13 @@ import java.util.function.Consumer;
 @EqualsAndHashCode
 @SuppressWarnings("unchecked")
 public class RootModel<M extends RootModel<M>> implements IAction {
-    @JsonIgnore
-    private final ReflectUtil reflectUtil;
-
-    @JsonIgnore
-    private final CollectionUtil collectionUtil;
-
-    @Contract(pure = true)
-    public RootModel() {
-        reflectUtil = Utils.getReflectUtil();
-        collectionUtil = Utils.getCollectionUtil();
-    }
-
     /**
      * <h2>忽略只读字段</h2>
      */
     public final void ignoreReadOnlyFields() {
-        reflectUtil.getFieldList(getClass()).stream()
-                .filter(field -> Objects.nonNull(reflectUtil.getAnnotation(ReadOnly.class, field)))
-                .forEach(field -> reflectUtil.clearFieldValue(this, field));
+        ReflectUtil.getFieldList(getClass()).stream()
+                .filter(field -> Objects.nonNull(ReflectUtil.getAnnotation(ReadOnly.class, field)))
+                .forEach(field -> ReflectUtil.clearFieldValue(this, field));
     }
 
     /**
@@ -85,7 +71,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      */
     public final M filterAndDesensitize(@NotNull Class<?> filterClass, boolean isDesensitize) {
         Class<M> clazz = (Class<M>) getClass();
-        List<Field> allFields = reflectUtil.getFieldList(clazz);
+        List<Field> allFields = ReflectUtil.getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
         // 类中没有标排除 则所有字段全暴露 走黑名单
         boolean isExpose = Objects.nonNull(exclude) && Arrays.asList(exclude.filters()).contains(filterClass);
@@ -156,7 +142,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         final String fieldGetter = Constant.GET + StringUtils.capitalize(field.getName());
         try {
             Method getMethod = getClass().getMethod(fieldGetter);
-            Exclude methodExclude = reflectUtil.getAnnotation(Exclude.class, getMethod);
+            Exclude methodExclude = ReflectUtil.getAnnotation(Exclude.class, getMethod);
             if (Objects.nonNull(methodExclude)) {
                 // 属性的Getter上标记了排除
                 excludeClasses = methodExclude.filters();
@@ -165,7 +151,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             log.error(exception.getMessage(), exception);
         }
         if (Objects.isNull(excludeClasses)) {
-            Exclude fieldExclude = reflectUtil.getAnnotation(Exclude.class, field);
+            Exclude fieldExclude = ReflectUtil.getAnnotation(Exclude.class, field);
             if (Objects.isNull(fieldExclude)) {
                 // 属性Getter没标记 也没有属性本身标记 则暴露
                 return;
@@ -179,7 +165,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             isNeedClear = Arrays.asList(excludeClasses).contains(filterClass);
         }
         if (isNeedClear) {
-            reflectUtil.clearFieldValue(this, field);
+            ReflectUtil.clearFieldValue(this, field);
         }
     }
 
@@ -194,7 +180,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         final String fieldGetter = Constant.GET + StringUtils.capitalize(field.getName());
         try {
             Method getMethod = getClass().getMethod(fieldGetter);
-            Expose methodExpose = reflectUtil.getAnnotation(Expose.class, getMethod);
+            Expose methodExpose = ReflectUtil.getAnnotation(Expose.class, getMethod);
             if (Objects.nonNull(methodExpose)) {
                 // 属性的Getter标记了暴露
                 exposeClasses = methodExpose.filters();
@@ -204,10 +190,10 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             log.error(exception.getMessage(), exception);
         }
         if (Objects.isNull(exposeClasses)) {
-            Expose fieldExpose = reflectUtil.getAnnotation(Expose.class, field);
+            Expose fieldExpose = ReflectUtil.getAnnotation(Expose.class, field);
             if (Objects.isNull(fieldExpose)) {
                 // 属性以及Getter都没有标记暴露 则排除
-                reflectUtil.clearFieldValue(this, field);
+                ReflectUtil.clearFieldValue(this, field);
                 return;
             }
             exposeClasses = fieldExpose.filters();
@@ -219,7 +205,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         boolean isExpose = Arrays.asList(exposeClasses).contains(filterClass);
         if (!isExpose) {
             // 当前场景不在标记的暴露场景中 则排除
-            reflectUtil.clearFieldValue(this, field);
+            ReflectUtil.clearFieldValue(this, field);
         }
     }
 
@@ -230,27 +216,27 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param isDesensitize 是否需要脱敏
      */
     private void filterField(@NotNull Field field, Class<?> filterClass, boolean isDesensitize) {
-        Object fieldValue = reflectUtil.getFieldValue(this, field);
+        Object fieldValue = ReflectUtil.getFieldValue(this, field);
         Collection<RootModel<?>> collection;
         if (fieldValue instanceof Collection<?>) {
             Class<?> fieldClass = field.getType();
-            if (!reflectUtil.isModel(fieldClass)) {
+            if (!ReflectUtil.isModel(fieldClass)) {
                 return;
             }
-            collection = collectionUtil.getCollectWithoutNull(
+            collection = CollectionUtil.getCollectWithoutNull(
                     (Collection<RootModel<?>>) fieldValue, fieldClass
             );
             collection.forEach(item -> item.filterAndDesensitize(filterClass, isDesensitize));
-            reflectUtil.setFieldValue(this, field, collection);
+            ReflectUtil.setFieldValue(this, field, collection);
             return;
         }
-        if (!reflectUtil.isModel(field.getType())) {
+        if (!ReflectUtil.isModel(field.getType())) {
             return;
         }
         if (Objects.isNull(fieldValue)) {
             return;
         }
-        reflectUtil.setFieldValue(this, field,
+        ReflectUtil.setFieldValue(this, field,
                 ((RootModel<?>) fieldValue).filterAndDesensitize(filterClass, isDesensitize)
         );
     }
@@ -261,11 +247,11 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param field 字段
      */
     private void desensitize(@NotNull Field field) {
-        Desensitize desensitize = reflectUtil.getAnnotation(Desensitize.class, field);
+        Desensitize desensitize = ReflectUtil.getAnnotation(Desensitize.class, field);
         if (Objects.isNull(desensitize)) {
             return;
         }
-        Object value = reflectUtil.getFieldValue(this, field);
+        Object value = ReflectUtil.getFieldValue(this, field);
         if (Objects.isNull(value)) {
             return;
         }
@@ -273,11 +259,11 @@ public class RootModel<M extends RootModel<M>> implements IAction {
             return;
         }
         if (desensitize.replace()) {
-            reflectUtil.setFieldValue(this, field, desensitize.symbol());
+            ReflectUtil.setFieldValue(this, field, desensitize.symbol());
             return;
         }
-        reflectUtil.setFieldValue(this, field,
-                Utils.getStringUtil().desensitize(
+        ReflectUtil.setFieldValue(this, field,
+                DesensitizeUtil.desensitize(
                         valueString,
                         desensitize.value(),
                         desensitize.head(),

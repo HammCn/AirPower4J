@@ -3,7 +3,6 @@ package cn.hamm.airpower.util;
 import cn.hamm.airpower.exception.ServiceException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -16,11 +15,10 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 /**
- * <h1>{@code AES} 助手</h1>
+ * <h1>{@code AES} 工具类</h1>
  *
  * @author Hamm.cn
  */
-@Component
 public class AesUtil {
     /**
      * <h2>密钥长度</h2>
@@ -51,6 +49,24 @@ public class AesUtil {
      * <h2>算法</h2>
      */
     private String algorithm = AES_CBC_PKCS5_PADDING;
+
+
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    private AesUtil() {
+
+    }
+
+    /**
+     * <h2>创建实例</h2>
+     *
+     * @return 新实例
+     */
+    @Contract(" -> new")
+    public static @NotNull AesUtil create() {
+        return new AesUtil();
+    }
 
     /**
      * <h2>获取随机密钥</h2>
@@ -94,7 +110,8 @@ public class AesUtil {
      * @param iv 偏移向量
      * @return {@code AesUtil}
      */
-    public AesUtil setIv(String iv) {
+    @Contract("_ -> this")
+    public final AesUtil setIv(String iv) {
         this.iv = Base64.getDecoder().decode(iv);
         return this;
     }
@@ -105,7 +122,8 @@ public class AesUtil {
      * @param algorithm 算法
      * @return {@code AesUtil}
      */
-    public AesUtil setAlgorithm(String algorithm) {
+    @Contract(value = "_ -> this", mutates = "this")
+    public final AesUtil setAlgorithm(String algorithm) {
         this.algorithm = algorithm;
         return this;
     }
@@ -116,7 +134,8 @@ public class AesUtil {
      * @param key 密钥
      * @return {@code AesUtil}
      */
-    public AesUtil setKey(String key) {
+    @Contract("_ -> this")
+    public final AesUtil setKey(String key) {
         this.key = Base64.getDecoder().decode(key);
         return this;
     }

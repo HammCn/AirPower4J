@@ -1,9 +1,11 @@
 package cn.hamm.airpower.open;
 
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.AesUtil;
+import cn.hamm.airpower.util.DictionaryUtil;
+import cn.hamm.airpower.util.RsaUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -27,16 +29,14 @@ public class OpenResponse {
             return null;
         }
         String response = Json.toString(data);
-        OpenArithmeticType appArithmeticType = Utils.getDictionaryUtil().getDictionary(
+        OpenArithmeticType appArithmeticType = DictionaryUtil.getDictionary(
                 OpenArithmeticType.class, openApp.getArithmetic()
         );
         try {
             switch (appArithmeticType) {
-                case AES -> response = Utils.getAesUtil()
-                        .setKey(openApp.getAppSecret())
+                case AES -> response = AesUtil.create().setKey(openApp.getAppSecret())
                         .encrypt(response);
-                case RSA -> response = Utils.getRsaUtil()
-                        .setPrivateKey(openApp.getPrivateKey())
+                case RSA -> response = RsaUtil.create().setPrivateKey(openApp.getPrivateKey())
                         .publicKeyEncrypt(response);
                 case NO -> {
                 }

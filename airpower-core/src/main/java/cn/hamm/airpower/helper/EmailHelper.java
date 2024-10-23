@@ -1,6 +1,6 @@
-package cn.hamm.airpower.util;
+package cn.hamm.airpower.helper;
 
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * @author Hamm.cn
  */
 @Component
-public class EmailUtil {
+public class EmailHelper {
     @Autowired(required = false)
     private JavaMailSender javaMailSender;
 

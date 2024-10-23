@@ -4,10 +4,10 @@ import cn.hamm.airpower.annotation.ApiController;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
-import cn.hamm.airpower.util.SecurityUtil;
+import cn.hamm.airpower.util.AccessTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Slf4j
 public class RootController implements IAction {
     @Autowired
-    protected SecurityUtil securityUtil;
-
-    @Autowired
     protected ServiceConfig serviceConfig;
 
     @Autowired
@@ -38,7 +35,7 @@ public class RootController implements IAction {
     protected final long getCurrentUserId() {
         try {
             String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
-            return securityUtil.getIdFromAccessToken(accessToken);
+            return AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
         } catch (Exception exception) {
             throw new ServiceException(ServiceError.UNAUTHORIZED);
         }

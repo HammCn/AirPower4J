@@ -1,11 +1,12 @@
-package cn.hamm.airpower.websocket;
+package cn.hamm.airpower.helper;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.WebSocketConfig;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
-import cn.hamm.airpower.util.MqttUtil;
-import cn.hamm.airpower.util.RedisUtil;
+import cn.hamm.airpower.websocket.WebSocketEvent;
+import cn.hamm.airpower.websocket.WebSocketHandler;
+import cn.hamm.airpower.websocket.WebSocketPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,21 +16,21 @@ import org.springframework.util.StringUtils;
 import java.util.Objects;
 
 /**
- * <h1>WebsocketUtil</h1>
+ * <h1>WebsocketHelper</h1>
  *
  * @author Hamm
  */
 @Slf4j
 @Component
-public class WebsocketUtil {
+public class WebsocketHelper {
     @Autowired
     private WebSocketConfig websocketConfig;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisHelper redisHelper;
 
     @Autowired
-    private MqttUtil mqttUtil;
+    private MqttHelper mqttHelper;
 
     /**
      * <h2>发布事件负载</h2>
@@ -66,8 +67,8 @@ public class WebsocketUtil {
         log.info("发布消息到频道 {} : {}", targetChannel, Json.toString(event));
         try {
             switch (websocketConfig.getSupport()) {
-                case REDIS -> redisUtil.publish(targetChannel, Json.toString(event));
-                case MQTT -> mqttUtil.publish(targetChannel, Json.toString(event));
+                case REDIS -> redisHelper.publish(targetChannel, Json.toString(event));
+                case MQTT -> mqttHelper.publish(targetChannel, Json.toString(event));
                 default -> throw new RuntimeException("WebSocket暂不支持");
             }
         } catch (MqttException e) {

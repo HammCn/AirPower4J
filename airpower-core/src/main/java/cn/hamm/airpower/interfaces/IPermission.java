@@ -1,12 +1,12 @@
 package cn.hamm.airpower.interfaces;
 
-import cn.hamm.airpower.util.AccessUtil;
+import cn.hamm.airpower.util.PermissionUtil;
 
 /**
  * <h1>权限接口</h1>
  *
  * @author Hamm
- * @see AccessUtil#scanPermission
+ * @see PermissionUtil#scanPermission
  */
 public interface IPermission<E extends IPermission<E>> extends ITree<E> {
     /**

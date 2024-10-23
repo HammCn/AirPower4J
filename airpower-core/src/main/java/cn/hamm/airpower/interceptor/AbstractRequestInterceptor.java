@@ -2,11 +2,11 @@ package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.model.Access;
-import cn.hamm.airpower.util.AccessUtil;
+import cn.hamm.airpower.util.AccessTokenUtil;
+import cn.hamm.airpower.util.PermissionUtil;
 import cn.hamm.airpower.util.RequestUtil;
-import cn.hamm.airpower.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -39,18 +39,8 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * <h2>缓存的 {@code REQUEST_METHOD_KEY}</h2>
      */
     protected static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
-
-    @Autowired
-    protected SecurityUtil securityUtil;
-
-    @Autowired
-    protected AccessUtil accessUtil;
-
     @Autowired
     protected ServiceConfig serviceConfig;
-
-    @Autowired
-    protected RequestUtil requestUtil;
 
     /**
      * <h2>拦截器</h2>
@@ -91,7 +81,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             Class<?> clazz, Method method
     ) {
         interceptRequest(request, response, clazz, method);
-        Access access = accessUtil.getWhatNeedAccess(clazz, method);
+        Access access = PermissionUtil.getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
             return;
@@ -105,11 +95,11 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             accessToken = accessTokenFromParam;
         }
         ServiceError.UNAUTHORIZED.whenEmpty(accessToken);
-        Long userId = securityUtil.getIdFromAccessToken(accessToken);
+        Long userId = AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
-            checkUserPermission(userId, accessUtil.getPermissionIdentity(clazz, method), request);
+            checkUserPermission(userId, PermissionUtil.getPermissionIdentity(clazz, method), request);
         }
     }
 
@@ -162,7 +152,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     protected final @NotNull String getRequestBody(HttpServletRequest request) {
         // 文件上传的请求 返回空
-        if (requestUtil.isUploadRequest(request)) {
+        if (RequestUtil.isUploadRequest(request)) {
             return Constant.EMPTY_STRING;
         }
         try {

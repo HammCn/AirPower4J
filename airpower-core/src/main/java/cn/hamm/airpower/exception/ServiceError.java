@@ -1,7 +1,6 @@
-package cn.hamm.airpower.enums;
+package cn.hamm.airpower.exception;
 
 import cn.hamm.airpower.interfaces.IDictionary;
-import cn.hamm.airpower.interfaces.IException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;

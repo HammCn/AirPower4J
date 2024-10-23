@@ -1,13 +1,12 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
@@ -17,24 +16,22 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 /**
- * <h1>{@code RSA} 加解密助手类</h1>
+ * <h1>{@code RSA} 加解密工具类</h1>
  *
  * @author Hamm.cn
  */
 @Slf4j
 @Accessors(chain = true)
-@Component
 public class RsaUtil {
+
     /**
      * <h2>加密算法 {@code KEY} 长度</h2>
      */
     private final int CRYPT_KEY_SIZE = 2048;
-
     /**
      * <h2>加密方式</h2>
      */
     private final String CRYPT_METHOD = "RSA";
-
     /**
      * <h2>公钥</h2>
      *
@@ -42,12 +39,28 @@ public class RsaUtil {
      */
     @Setter
     private String publicKey;
-
     /**
      * <h2>私钥</h2>
      */
     @Setter
     private String privateKey;
+
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private RsaUtil() {
+    }
+
+    /**
+     * <h2>创建实例</h2>
+     *
+     * @return 实例
+     */
+    @Contract(value = " -> new", pure = true)
+    public static @NotNull RsaUtil create() {
+        return new RsaUtil();
+    }
 
     /**
      * <h2>公钥加密</h2>

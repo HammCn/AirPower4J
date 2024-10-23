@@ -1,4 +1,4 @@
-package cn.hamm.airpower.util;
+package cn.hamm.airpower.helper;
 
 import cn.hamm.airpower.config.MqttConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 @Configuration
 @Slf4j
-public class MqttUtil {
+public class MqttHelper {
     @Autowired
     private MqttConfig mqttConfig;
 

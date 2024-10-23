@@ -1,6 +1,6 @@
 package cn.hamm.airpower.config;
 
-import cn.hamm.airpower.util.CookieUtil;
+import cn.hamm.airpower.helper.CookieHelper;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * <h1>{@code Cookie} 相关配置</h1>
  *
  * @author Hamm.cn
- * @see CookieUtil
+ * @see CookieHelper
  */
 @Component
 @Data

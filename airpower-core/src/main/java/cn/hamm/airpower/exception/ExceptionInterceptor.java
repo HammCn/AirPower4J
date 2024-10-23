@@ -1,9 +1,7 @@
-package cn.hamm.airpower.interceptor;
+package cn.hamm.airpower.exception;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.enums.ServiceError;
-import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;

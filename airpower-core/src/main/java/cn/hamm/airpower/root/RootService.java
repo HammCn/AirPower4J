@@ -6,8 +6,9 @@ import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.DateTimeFormatter;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.helper.RedisHelper;
 import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.Page;
@@ -88,25 +89,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected EntityManager entityManager;
 
     @Autowired
-    protected ReflectUtil reflectUtil;
-
-    @Autowired
-    protected TaskUtil taskUtil;
-
-    @Autowired
-    protected RedisUtil redisUtil;
-
-    @Autowired
-    protected RandomUtil randomUtil;
-
-    @Autowired
-    protected DateTimeUtil dateTimeUtil;
-
-    @Autowired
-    protected SecurityUtil securityUtil;
-
-    @Autowired
-    protected DictionaryUtil dictionaryUtil;
+    protected RedisHelper redisHelper;
 
     @Autowired
     protected ServiceConfig serviceConfig;
@@ -124,18 +107,18 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #createExportStream(List)
      */
     public final String createExportTask(QueryListRequest<E> queryListRequest) {
-        String fileCode = randomUtil.randomString().toLowerCase();
+        String fileCode = RandomUtil.randomString().toLowerCase();
         final String fileCacheKey = EXPORT_FILE_PREFIX + fileCode;
-        Object object = redisUtil.get(fileCacheKey);
+        Object object = redisHelper.get(fileCacheKey);
         if (Objects.nonNull(object)) {
             return createExportTask(queryListRequest);
         }
-        redisUtil.set(fileCacheKey, "");
-        taskUtil.runAsync(() -> {
+        redisHelper.set(fileCacheKey, "");
+        TaskUtil.runAsync(() -> {
             // 查数据 写文件
             List<E> list = exportQuery(queryListRequest);
             String url = saveExportFile(createExportStream(list));
-            redisUtil.set(fileCacheKey, url);
+            redisHelper.set(fileCacheKey, url);
         });
         return fileCode;
     }
@@ -169,14 +152,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
         List<String> headerList = new ArrayList<>();
         Class<E> entityClass = getEntityClass();
-        for (Field field : reflectUtil.getFieldList(entityClass)) {
-            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+        for (Field field : ReflectUtil.getFieldList(entityClass)) {
+            ExcelColumn excelColumn = ReflectUtil.getAnnotation(ExcelColumn.class, field);
             if (Objects.isNull(excelColumn)) {
                 continue;
             }
             fieldList.add(field);
             fieldNameList.add(field.getName());
-            headerList.add(reflectUtil.getDescription(field));
+            headerList.add(ReflectUtil.getDescription(field));
         }
 
         List<String> rowList = new ArrayList<>();
@@ -218,7 +201,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             long milliSecond = System.currentTimeMillis();
 
             // 追加今日文件夹 定时任务将按存储文件夹进行删除过时文件
-            String todayDir = dateTimeUtil.format(milliSecond,
+            String todayDir = DateTimeUtil.format(milliSecond,
                     DateTimeFormatter.FULL_DATE.getValue()
                             .replaceAll(Constant.LINE, Constant.EMPTY_STRING)
             );
@@ -229,10 +212,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
 
             // 存储的文件名
-            final String fileName = todayDir + Constant.UNDERLINE + dateTimeUtil.format(milliSecond,
+            final String fileName = todayDir + Constant.UNDERLINE + DateTimeUtil.format(milliSecond,
                     DateTimeFormatter.FULL_TIME.getValue()
                             .replaceAll(Constant.COLON, Constant.EMPTY_STRING)
-            ) + Constant.UNDERLINE + randomUtil.randomString() + EXPORT_FILE_CSV;
+            ) + Constant.UNDERLINE + RandomUtil.randomString() + EXPORT_FILE_CSV;
 
             // 拼接最终存储路径
             exportFilePath += fileName;
@@ -263,7 +246,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     protected final String queryExport(@NotNull QueryExport queryExport) {
         final String fileCacheKey = EXPORT_FILE_PREFIX + queryExport.getFileCode();
-        Object object = redisUtil.get(fileCacheKey);
+        Object object = redisHelper.get(fileCacheKey);
         ServiceError.DATA_NOT_FOUND.whenNull(object, "错误的FileCode");
         ServiceError.DATA_NOT_FOUND.whenEmpty(object, "文件暂未准备完毕");
         return object.toString();
@@ -298,7 +281,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         }
         E finalSource = source;
         long id = saveToDatabase(source);
-        taskUtil.run(() -> afterAdd(id, finalSource));
+        TaskUtil.run(() -> afterAdd(id, finalSource));
         return id;
     }
 
@@ -398,7 +381,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void disable(long id) {
         beforeDisable(id);
         disableById(id);
-        taskUtil.run(() -> afterDisable(id));
+        TaskUtil.run(() -> afterDisable(id));
     }
 
     /**
@@ -429,7 +412,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void enable(long id) {
         beforeEnable(id);
         enableById(id);
-        taskUtil.run(() -> afterEnable(id));
+        TaskUtil.run(() -> afterEnable(id));
     }
 
     /**
@@ -460,7 +443,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final void delete(long id) {
         beforeDelete(id);
         deleteById(id);
-        taskUtil.run(() -> afterDelete(id));
+        TaskUtil.run(() -> afterDelete(id));
     }
 
     /**
@@ -617,7 +600,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         E entity = get(id);
         ServiceError.FORBIDDEN_DISABLED.when(entity.getIsDisabled(), String.format(
                         ServiceError.FORBIDDEN_DISABLED.getMessage(),
-                        id, reflectUtil.getDescription(getEntityClass())
+                        id, ReflectUtil.getDescription(getEntityClass())
                 )
         );
         return entity;
@@ -726,7 +709,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
         ServiceError.PARAM_MISSING.whenNull(source.getId(), String.format(
                 "修改失败，请传入%s的ID!",
-                reflectUtil.getDescription(getEntityClass())
+                ReflectUtil.getDescription(getEntityClass())
         ));
         saveToDatabase(source, withNull);
     }
@@ -759,7 +742,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private long tryToGetCurrentUserId() {
         try {
             String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
-            return securityUtil.getIdFromAccessToken(accessToken);
+            return AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
         } catch (Exception exception) {
             return Constant.ZERO_LONG;
         }
@@ -811,20 +794,20 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             if (Objects.isNull(field)) {
                 return value;
             }
-            ExcelColumn excelColumn = reflectUtil.getAnnotation(ExcelColumn.class, field);
+            ExcelColumn excelColumn = ReflectUtil.getAnnotation(ExcelColumn.class, field);
             if (Objects.isNull(excelColumn)) {
                 return value;
             }
             return switch (excelColumn.value()) {
-                case DATETIME -> Constant.TAB + dateTimeUtil.format(Long.parseLong(value.toString()));
+                case DATETIME -> Constant.TAB + DateTimeUtil.format(Long.parseLong(value.toString()));
                 case TEXT -> Constant.TAB + value;
                 case BOOLEAN -> (boolean) value ? Constant.YES : Constant.NO;
                 case DICTIONARY -> {
-                    Dictionary dictionary = reflectUtil.getAnnotation(Dictionary.class, field);
+                    Dictionary dictionary = ReflectUtil.getAnnotation(Dictionary.class, field);
                     if (Objects.isNull(dictionary)) {
                         yield value;
                     } else {
-                        IDictionary dict = dictionaryUtil.getDictionary(
+                        IDictionary dict = DictionaryUtil.getDictionary(
                                 dictionary.value(), Integer.parseInt(value.toString())
                         );
                         yield dict.getLabel();
@@ -863,7 +846,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         source = beforeUpdate(source);
         updateToDatabase(source, withNull);
         E finalSource = source;
-        taskUtil.run(
+        TaskUtil.run(
                 () -> afterUpdate(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -878,11 +861,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private @NotNull E getById(long id) {
         ServiceError.PARAM_MISSING.whenNull(id, String.format(
                 "查询失败，请传入%s的ID！",
-                reflectUtil.getDescription(getEntityClass())
+                ReflectUtil.getDescription(getEntityClass())
         ));
         return repository.findById(id).orElseThrow(
                 () -> new ServiceException(ServiceError.DATA_NOT_FOUND, String.format(
-                        "没有查询到ID为%s的%s", id, reflectUtil.getDescription(getEntityClass()))
+                        "没有查询到ID为%s的%s", id, ReflectUtil.getDescription(getEntityClass()))
                 )
         );
     }
@@ -983,26 +966,26 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected final @NotNull E getEntityForUpdate(@NotNull E sourceEntity, @NotNull E existEntity) {
         String[] nullProperties = getNullProperties(sourceEntity);
         BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
-        List<Field> fieldList = reflectUtil.getFieldList(getEntityClass());
+        List<Field> fieldList = ReflectUtil.getFieldList(getEntityClass());
         for (Field field : fieldList) {
-            Desensitize desensitize = reflectUtil.getAnnotation(Desensitize.class, field);
+            Desensitize desensitize = ReflectUtil.getAnnotation(Desensitize.class, field);
             if (Objects.isNull(desensitize)) {
                 // 非脱敏注解标记属性
                 continue;
             }
             // 脱敏字段
-            Object fieldValue = reflectUtil.getFieldValue(existEntity, field);
+            Object fieldValue = ReflectUtil.getFieldValue(existEntity, field);
             if (Objects.isNull(fieldValue)) {
                 // 值本身是空的
                 continue;
             }
             if (desensitize.replace() && Objects.equals(desensitize.symbol(), fieldValue.toString())) {
                 // 如果是替换 且没有修改内容
-                reflectUtil.setFieldValue(existEntity, field, null);
+                ReflectUtil.setFieldValue(existEntity, field, null);
             }
             if (!desensitize.replace() && fieldValue.toString().contains(desensitize.symbol())) {
                 // 如果值包含脱敏字符
-                reflectUtil.setFieldValue(existEntity, field, null);
+                ReflectUtil.setFieldValue(existEntity, field, null);
             }
         }
         return existEntity;
@@ -1014,10 +997,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param entity 实体
      */
     private void checkUnique(@NotNull E entity) {
-        List<Field> fields = reflectUtil.getFieldList(getEntityClass());
+        List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
         for (Field field : fields) {
-            String fieldName = reflectUtil.getDescription(field);
-            Column annotation = reflectUtil.getAnnotation(Column.class, field);
+            String fieldName = ReflectUtil.getDescription(field);
+            Column annotation = ReflectUtil.getAnnotation(Column.class, field);
             if (Objects.isNull(annotation)) {
                 // 不是数据库列 不校验
                 continue;
@@ -1026,13 +1009,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 没有标唯一 不校验
                 continue;
             }
-            Object fieldValue = reflectUtil.getFieldValue(entity, field);
+            Object fieldValue = ReflectUtil.getFieldValue(entity, field);
             if (Objects.isNull(fieldValue)) {
                 // 没有值 不校验
                 continue;
             }
             E search = getNewInstance();
-            reflectUtil.setFieldValue(search, field, fieldValue);
+            ReflectUtil.setFieldValue(search, field, fieldValue);
             Example<E> example = Example.of(search);
             Optional<E> exist = repository.findOne(example);
             if (exist.isEmpty()) {
@@ -1159,14 +1142,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             @NotNull From<?, ?> root, @NotNull CriteriaBuilder builder, @NotNull Object search, boolean isEqual
     ) {
         List<Predicate> predicateList = new ArrayList<>();
-        List<Field> fields = reflectUtil.getFieldList(search.getClass());
+        List<Field> fields = ReflectUtil.getFieldList(search.getClass());
         for (Field field : fields) {
-            Object fieldValue = reflectUtil.getFieldValue(search, field);
+            Object fieldValue = ReflectUtil.getFieldValue(search, field);
             if (Objects.isNull(fieldValue) || !StringUtils.hasText(fieldValue.toString())) {
                 // 没有传入查询值 空字符串 跳过
                 continue;
             }
-            Search searchMode = reflectUtil.getAnnotation(Search.class, field);
+            Search searchMode = ReflectUtil.getAnnotation(Search.class, field);
             if (Objects.isNull(searchMode)) {
                 // 没有配置查询注解 跳过
                 continue;

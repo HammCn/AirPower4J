@@ -1,12 +1,16 @@
 package cn.hamm.airpower.open;
 
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.helper.AirHelper;
+import cn.hamm.airpower.helper.RedisHelper;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootModel;
-import cn.hamm.airpower.util.RedisUtil;
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.AesUtil;
+import cn.hamm.airpower.util.DictionaryUtil;
+import cn.hamm.airpower.util.RequestUtil;
+import cn.hamm.airpower.util.RsaUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -111,16 +115,14 @@ public class OpenRequest {
      */
     final String decodeContent() {
         String request = content;
-        OpenArithmeticType appArithmeticType = Utils.getDictionaryUtil().getDictionary(
+        OpenArithmeticType appArithmeticType = DictionaryUtil.getDictionary(
                 OpenArithmeticType.class, openApp.getArithmetic()
         );
         try {
             switch (appArithmeticType) {
-                case AES -> request = Utils.getAesUtil()
-                        .setKey(openApp.getAppSecret())
+                case AES -> request = AesUtil.create().setKey(openApp.getAppSecret())
                         .decrypt(request);
-                case RSA -> request = Utils.getRsaUtil()
-                        .setPrivateKey(openApp.getPrivateKey())
+                case RSA -> request = RsaUtil.create().setPrivateKey(openApp.getPrivateKey())
                         .privateKeyDecrypt(request);
                 case NO -> {
                 }
@@ -158,7 +160,7 @@ public class OpenRequest {
         String[] ipList = ipStr
                 .replaceAll(Constant.SPACE, Constant.EMPTY_STRING)
                 .split(Constant.LINE_BREAK);
-        final String ip = Utils.getRequestUtil().getIpAddress(Utils.getRequest());
+        final String ip = RequestUtil.getIpAddress(AirHelper.getRequest());
         if (!StringUtils.hasText(ip)) {
             ServiceError.MISSING_REQUEST_ADDRESS.show();
         }
@@ -179,10 +181,10 @@ public class OpenRequest {
      * <h2>防重放检测</h2>
      */
     private void checkNonce() {
-        RedisUtil redisUtil = Utils.getRedisUtil();
-        Object savedNonce = redisUtil.get(NONCE_CACHE_PREFIX + nonce);
+        RedisHelper redisHelper = AirHelper.getRedisHelper();
+        Object savedNonce = redisHelper.get(NONCE_CACHE_PREFIX + nonce);
         ServiceError.REPEAT_REQUEST.whenNotNull(savedNonce);
-        redisUtil.set(NONCE_CACHE_PREFIX + nonce, 1, NONCE_CACHE_SECOND);
+        redisHelper.set(NONCE_CACHE_PREFIX + nonce, 1, NONCE_CACHE_SECOND);
     }
 
     /**

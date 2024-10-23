@@ -1,8 +1,8 @@
-package cn.hamm.airpower.util;
+package cn.hamm.airpower.helper;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootEntity;
 import jakarta.annotation.Resource;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Slf4j
-public class RedisUtil {
+public class RedisHelper {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 

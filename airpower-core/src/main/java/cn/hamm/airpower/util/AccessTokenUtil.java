@@ -1,7 +1,7 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import lombok.Data;
@@ -21,13 +21,12 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * <h1>{@code TokenUtil}</h1>
+ * <h1>{@code AccessToken} 工具类</h1>
  *
  * @author Hamm.cn
  */
-@SuppressWarnings("AlibabaUndefineMagicConstant")
 @Slf4j
-public class TokenUtil {
+public class AccessTokenUtil {
     /**
      * <h2>无效的令牌</h2>
      */
@@ -56,20 +55,62 @@ public class TokenUtil {
     /**
      * <h2>验证后的 {@code Token}</h2>
      */
-    private final VerifiedToken verifiedToken;
+    private VerifiedToken verifiedToken;
 
-
-    public TokenUtil() {
-        verifiedToken = new VerifiedToken();
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private AccessTokenUtil() {
     }
 
     /**
-     * <h2>创建 {@code Token}</h2>
+     * <h2>创建实例</h2>
+     *
+     * @return {@code AccessTokenUtil}
+     */
+    public static @NotNull AccessTokenUtil create() {
+        AccessTokenUtil accessTokenUtil = new AccessTokenUtil();
+        accessTokenUtil.verifiedToken = new VerifiedToken();
+        return accessTokenUtil;
+    }
+
+    /**
+     * <h2>创建一个 {@code AccessToken}</h2>
+     *
+     * @param id           {@code TokenID}
+     * @param expireSecond 有效期（秒）
+     * @return {@code AccessTokenUtil}
+     */
+    public AccessTokenUtil setPayloadId(Long id, long expireSecond) {
+        return addPayload(Constant.ID, id)
+                .setExpireMillisecond(
+                        expireSecond * Constant.MILLISECONDS_PER_SECOND
+                );
+    }
+
+    /**
+     * <h2>从 {@code AccessToken} 中获取 {@code ID}</h2>
+     *
+     * @param accessToken {@code AccessToken}
+     * @param secret      {@code AccessToken} 密钥
+     * @return {@code ID}
+     */
+    public final long getPayloadId(String accessToken, String secret) {
+        ServiceError.UNAUTHORIZED.whenNull(accessToken);
+        Object userId = verify(accessToken, secret)
+                .getPayload(Constant.ID);
+        ServiceError.UNAUTHORIZED.whenNull(userId);
+        return Long.parseLong(userId.toString());
+    }
+
+    /**
+     * <h2>生成 {@code Token}</h2>
      *
      * @param secret 密钥
      * @return {@code AccessToken}
      */
-    public final String create(String secret) {
+    public final String build(String secret) {
         ServiceError.PARAM_INVALID.whenEquals(Constant.AIRPOWER, secret,
                 "身份令牌创建失败，请在环境变量配置 airpower.accessTokenSecret");
         if (verifiedToken.getPayloads().isEmpty()) {
@@ -92,10 +133,10 @@ public class TokenUtil {
      *
      * @param key   负载的 {@code Key}
      * @param value 负载的 {@code Value}
-     * @return {@code TokenUtil}
+     * @return {@code AccessTokenUtil}
      */
     @Contract("_, _ -> this")
-    public final TokenUtil addPayload(String key, Object value) {
+    public final AccessTokenUtil addPayload(String key, Object value) {
         verifiedToken.getPayloads().put(key, value);
         return this;
     }
@@ -104,10 +145,10 @@ public class TokenUtil {
      * <h2>移除负载</h2>
      *
      * @param key 负载 {@code Key}
-     * @return {@code TokenUtil}
+     * @return {@code AccessTokenUtil}
      */
     @Contract("_ -> this")
-    public final TokenUtil removePayload(String key) {
+    public final AccessTokenUtil removePayload(String key) {
         verifiedToken.getPayloads().remove(key);
         return this;
     }
@@ -116,10 +157,10 @@ public class TokenUtil {
      * <h2>设置过期时间 {@code 毫秒}</h2>
      *
      * @param millisecond 过期毫秒
-     * @return {@code TokenUtil}
+     * @return {@code AccessTokenUtil}
      */
     @Contract("_ -> this")
-    public final TokenUtil setExpireMillisecond(long millisecond) {
+    public final AccessTokenUtil setExpireMillisecond(long millisecond) {
         if (millisecond <= 0) {
             throw new ServiceException(ServiceError.PARAM_INVALID, "过期毫秒数必须大于0");
         }
@@ -148,6 +189,7 @@ public class TokenUtil {
         if (list.length != TOKEN_PART_COUNT) {
             throw new ServiceException(ServiceError.UNAUTHORIZED);
         }
+        //noinspection AlibabaUndefineMagicConstant
         if (!Objects.equals(hmacSha256(secret, list[0] + Constant.DOT + list[2]), list[1])) {
             throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }

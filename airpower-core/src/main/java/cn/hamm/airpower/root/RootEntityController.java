@@ -5,7 +5,7 @@ import cn.hamm.airpower.annotation.Extends;
 import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.enums.Api;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IEntityAction;
 import cn.hamm.airpower.model.Json;
@@ -41,9 +41,6 @@ public class RootEntityController<
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected S service;
-
-    @Autowired
-    protected TaskUtil taskUtil;
 
     /**
      * <h2>创建导出任务</h2>
@@ -81,7 +78,7 @@ public class RootEntityController<
         source = beforeAdd(source);
         final E finalSource = source;
         long id = service.add(source);
-        taskUtil.run(
+        TaskUtil.run(
                 () -> afterAdd(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -106,7 +103,7 @@ public class RootEntityController<
         source = beforeUpdate(source);
         final E finalSource = source;
         service.update(source);
-        taskUtil.run(
+        TaskUtil.run(
                 () -> afterUpdate(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -127,7 +124,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDelete(id);
         service.delete(id);
-        taskUtil.run(
+        TaskUtil.run(
                 () -> afterDelete(id)
         );
         return Json.entity(id, "删除成功");
@@ -161,7 +158,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDisable(id);
         service.disable(id);
-        taskUtil.run(
+        TaskUtil.run(
                 () -> afterDisable(id)
         );
         return Json.entity(source.getId(), "禁用成功");
@@ -181,7 +178,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeEnable(id);
         service.enable(id);
-        taskUtil.run(
+        TaskUtil.run(
                 () -> afterEnable(id)
         );
         return Json.entity(source.getId(), "启用成功");

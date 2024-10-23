@@ -1,9 +1,9 @@
 package cn.hamm.airpower.open;
 
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.helper.AirHelper;
 import cn.hamm.airpower.model.Json;
-import cn.hamm.airpower.util.Utils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -63,7 +63,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
             openRequest.setOpenApp(openApp);
             openRequest.check();
             Object object = proceedingJoinPoint.proceed();
-            openLogId = addOpenLog(openRequest.getOpenApp(), Utils.getRequest().getRequestURI(), openRequest.decodeContent());
+            openLogId = addOpenLog(openRequest.getOpenApp(), AirHelper.getRequest().getRequestURI(), openRequest.decodeContent());
             if (object instanceof Json json) {
                 // 日志记录原始数据
                 response = Json.toString(json);
