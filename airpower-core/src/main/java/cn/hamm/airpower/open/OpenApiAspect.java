@@ -45,6 +45,12 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     @Around("pointCut()")
     public Object openApi(@NotNull ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object[] args = proceedingJoinPoint.getArgs();
+        if (args.length != 1) {
+            throw new ServiceException("OpenApi必须接收一个参数");
+        }
+        if (!(args[0] instanceof OpenRequest openRequest)) {
+            throw new ServiceException("OpenApi必须接收一个OpenRequest参数");
+        }
         Signature signature = proceedingJoinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = methodSignature.getMethod();
@@ -52,12 +58,6 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
         ServiceError.API_SERVICE_UNSUPPORTED.whenNull(openApi);
         Long openLogId = null;
         String response = "";
-        if (args.length != 1) {
-            throw new ServiceException("OpenApi必须接收一个参数");
-        }
-        if (!(args[0] instanceof OpenRequest openRequest)) {
-            throw new ServiceException("OpenApi必须接收一个OpenRequest参数");
-        }
         try {
             IOpenApp openApp = getOpenAppFromRequest(openRequest);
             openRequest.setOpenApp(openApp);
