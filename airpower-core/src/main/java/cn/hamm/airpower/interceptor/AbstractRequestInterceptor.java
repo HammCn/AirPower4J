@@ -22,6 +22,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.io.BufferedReader;
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <h1>全局权限拦截器抽象类</h1>
@@ -157,13 +158,8 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             return Constant.EMPTY_STRING;
         }
         try {
-            StringBuilder requestBody = new StringBuilder();
             BufferedReader reader = request.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestBody.append(line);
-            }
-            return requestBody.toString();
+            return reader.lines().collect(Collectors.joining());
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
         }
