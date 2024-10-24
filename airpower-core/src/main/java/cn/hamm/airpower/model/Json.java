@@ -2,9 +2,9 @@ package cn.hamm.airpower.model;
 
 import cn.hamm.airpower.annotation.Description;
 import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.IException;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
-import cn.hamm.airpower.interfaces.IException;
 import cn.hamm.airpower.root.RootEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;

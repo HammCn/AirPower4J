@@ -4,7 +4,6 @@ import cn.hamm.airpower.util.ValidateUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -15,9 +14,6 @@ import org.springframework.util.StringUtils;
  */
 @Component
 public class PhoneAnnotationValidator implements ConstraintValidator<Phone, String> {
-    @Autowired
-    private ValidateUtil validateUtil;
-    
     /**
      * <h2>是否座机</h2>
      */
@@ -46,14 +42,14 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
         }
         if (!mobile) {
             // 只允许座机
-            return validateUtil.isTelPhone(value);
+            return ValidateUtil.isTelPhone(value);
         }
         if (!tel) {
             // 只允许手机
-            return validateUtil.isMobilePhone(value);
+            return ValidateUtil.isMobilePhone(value);
         }
         // 手机座机均可
-        return validateUtil.isMobilePhone(value) || validateUtil.isTelPhone(value);
+        return ValidateUtil.isMobilePhone(value) || ValidateUtil.isTelPhone(value);
     }
 
     /**

@@ -2,11 +2,11 @@ package cn.hamm.airpower.interceptor;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.model.Access;
-import cn.hamm.airpower.util.AccessUtil;
+import cn.hamm.airpower.util.AccessTokenUtil;
+import cn.hamm.airpower.util.PermissionUtil;
 import cn.hamm.airpower.util.RequestUtil;
-import cn.hamm.airpower.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +22,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.io.BufferedReader;
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <h1>全局权限拦截器抽象类</h1>
  *
  * @author Hamm.cn
- * @see #checkUserPermission(Long, String, HttpServletRequest)
+ * @see #checkUserPermission(long, String, HttpServletRequest)
  * @see #interceptRequest(HttpServletRequest, HttpServletResponse, Class, Method)
  * @see #getRequestBody(HttpServletRequest)
  * @see #setShareData(String, Object)
@@ -41,16 +42,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     protected static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
 
     @Autowired
-    protected SecurityUtil securityUtil;
-
-    @Autowired
-    protected AccessUtil accessUtil;
-
-    @Autowired
     protected ServiceConfig serviceConfig;
-
-    @Autowired
-    protected RequestUtil requestUtil;
 
     /**
      * <h2>拦截器</h2>
@@ -91,7 +83,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             Class<?> clazz, Method method
     ) {
         interceptRequest(request, response, clazz, method);
-        Access access = accessUtil.getWhatNeedAccess(clazz, method);
+        Access access = PermissionUtil.getWhatNeedAccess(clazz, method);
         if (!access.isLogin()) {
             // 不需要登录 直接返回有权限
             return;
@@ -105,11 +97,11 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             accessToken = accessTokenFromParam;
         }
         ServiceError.UNAUTHORIZED.whenEmpty(accessToken);
-        Long userId = securityUtil.getIdFromAccessToken(accessToken);
+        long userId = AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
-            checkUserPermission(userId, accessUtil.getPermissionIdentity(clazz, method), request);
+            checkUserPermission(userId, PermissionUtil.getPermissionIdentity(clazz, method), request);
         }
     }
 
@@ -122,7 +114,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @apiNote 抛出异常则为拦截
      */
     protected void checkUserPermission(
-            Long userId, String permissionIdentity, HttpServletRequest request
+            long userId, String permissionIdentity, HttpServletRequest request
     ) {
     }
 
@@ -162,17 +154,12 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      */
     protected final @NotNull String getRequestBody(HttpServletRequest request) {
         // 文件上传的请求 返回空
-        if (requestUtil.isUploadRequest(request)) {
+        if (RequestUtil.isUploadRequest(request)) {
             return Constant.EMPTY_STRING;
         }
         try {
-            StringBuilder requestBody = new StringBuilder();
             BufferedReader reader = request.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestBody.append(line);
-            }
-            return requestBody.toString();
+            return reader.lines().collect(Collectors.joining());
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
         }

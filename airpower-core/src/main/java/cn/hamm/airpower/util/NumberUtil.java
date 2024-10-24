@@ -1,7 +1,7 @@
 package cn.hamm.airpower.util;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -15,7 +15,6 @@ import java.util.function.BiFunction;
  *
  * @author Hamm.cn
  */
-@Component
 public class NumberUtil {
     /**
      * <h2>计算的最大精度保留</h2>
@@ -28,6 +27,13 @@ public class NumberUtil {
     private static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
 
     /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private NumberUtil() {
+    }
+
+    /**
      * <h2>多个数求和</h2>
      *
      * @param first  加数
@@ -35,7 +41,7 @@ public class NumberUtil {
      * @param values 更多被加数
      * @return 和
      */
-    public final double add(double first, double second, double... values) {
+    public static double add(double first, double second, double... values) {
         return calc(BigDecimal::add, BigDecimal.valueOf(first), BigDecimal.valueOf(second),
                 Arrays.stream(values).mapToObj(BigDecimal::valueOf).toArray(BigDecimal[]::new)
         ).doubleValue();
@@ -49,7 +55,7 @@ public class NumberUtil {
      * @param values 更多被加数
      * @return 和
      */
-    public final long add(long first, long second, long... values) {
+    public static long add(long first, long second, long... values) {
         return calc(BigInteger::add, BigInteger.valueOf(first), BigInteger.valueOf(second),
                 Arrays.stream(values).mapToObj(BigInteger::valueOf).toArray(BigInteger[]::new)
         ).longValue();
@@ -63,7 +69,7 @@ public class NumberUtil {
      * @param values 更多减数
      * @return 差
      */
-    public final double sub(double first, double second, double... values) {
+    public static double sub(double first, double second, double... values) {
         return calc(BigDecimal::subtract, BigDecimal.valueOf(first), BigDecimal.valueOf(second),
                 Arrays.stream(values).mapToObj(BigDecimal::valueOf).toArray(BigDecimal[]::new)
         ).doubleValue();
@@ -77,7 +83,7 @@ public class NumberUtil {
      * @param values 更多减数
      * @return 差
      */
-    public final long sub(long first, long second, long... values) {
+    public static long sub(long first, long second, long... values) {
         return calc(BigInteger::subtract, BigInteger.valueOf(first), BigInteger.valueOf(second),
                 Arrays.stream(values).mapToObj(BigInteger::valueOf).toArray(BigInteger[]::new)
         ).longValue();
@@ -91,7 +97,7 @@ public class NumberUtil {
      * @param values 更多被乘数
      * @return 乘积
      */
-    public final double mul(double first, double second, double... values) {
+    public static double mul(double first, double second, double... values) {
         return calc(BigDecimal::multiply, BigDecimal.valueOf(first), BigDecimal.valueOf(second),
                 Arrays.stream(values).mapToObj(BigDecimal::valueOf).toArray(BigDecimal[]::new)
         ).doubleValue();
@@ -105,7 +111,7 @@ public class NumberUtil {
      * @param values 更多被乘数
      * @return 乘积
      */
-    public final long mul(long first, long second, long... values) {
+    public static long mul(long first, long second, long... values) {
         return calc(BigInteger::multiply, BigInteger.valueOf(first), BigInteger.valueOf(second),
                 Arrays.stream(values).mapToObj(BigInteger::valueOf).toArray(BigInteger[]::new)
         ).longValue();
@@ -118,7 +124,7 @@ public class NumberUtil {
      * @param second 除数
      * @return 商
      */
-    public final double div(double first, double second) {
+    public static double div(double first, double second) {
         return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
                 .doubleValue();
     }
@@ -131,7 +137,7 @@ public class NumberUtil {
      * @param scale  保留位数
      * @return 商
      */
-    public final double div(double first, double second, int scale) {
+    public static double div(double first, double second, int scale) {
         return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, DEFAULT_ROUNDING_MODE)
                 .doubleValue();
     }
@@ -145,7 +151,7 @@ public class NumberUtil {
      * @param roundingMode 舍弃方式
      * @return 商
      */
-    public final double div(double first, double second, int scale, RoundingMode roundingMode) {
+    public static double div(double first, double second, int scale, RoundingMode roundingMode) {
         return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, roundingMode)
                 .doubleValue();
     }
@@ -157,7 +163,7 @@ public class NumberUtil {
      * @param second 除数
      * @return 商
      */
-    public final double div(long first, long second) {
+    public static double div(long first, long second) {
         return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
                 .doubleValue();
     }
@@ -170,7 +176,7 @@ public class NumberUtil {
      * @param scale  保留位数
      * @return 商
      */
-    public final double div(long first, long second, int scale) {
+    public static double div(long first, long second, int scale) {
         return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, DEFAULT_ROUNDING_MODE)
                 .doubleValue();
     }
@@ -184,7 +190,7 @@ public class NumberUtil {
      * @param roundingMode 舍弃方式
      * @return 商
      */
-    public final double div(long first, long second, int scale, RoundingMode roundingMode) {
+    public static double div(long first, long second, int scale, RoundingMode roundingMode) {
         return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), scale, roundingMode)
                 .doubleValue();
     }
@@ -199,7 +205,7 @@ public class NumberUtil {
      * @param <T>      数据类型
      * @return 计算的结果
      */
-    private <T extends Number> T calc(@NotNull BiFunction<T, T, T> function, T first, T second, T[] values) {
+    private static <T extends Number> T calc(@NotNull BiFunction<T, T, T> function, T first, T second, T[] values) {
         T result = function.apply(first, second);
         if (Objects.nonNull(values)) {
             for (T value : values) {
@@ -218,7 +224,7 @@ public class NumberUtil {
      * @param roundingMode 舍弃方式
      * @return 商
      */
-    private @NotNull BigDecimal div(BigDecimal first, BigDecimal second, int scale, RoundingMode roundingMode) {
+    private static @NotNull BigDecimal div(BigDecimal first, BigDecimal second, int scale, RoundingMode roundingMode) {
         try {
             if (Objects.equals(BigDecimal.valueOf(0), second)) {
                 throw new RuntimeException("除数不能为0");
@@ -236,7 +242,7 @@ public class NumberUtil {
      * @param scale 位数
      * @return 省略后的数字
      */
-    public final @NotNull BigDecimal floor(double value, int scale) {
+    public static @NotNull BigDecimal floor(double value, int scale) {
         return round(value, scale, RoundingMode.DOWN);
     }
 
@@ -247,7 +253,7 @@ public class NumberUtil {
      * @param scale 位数
      * @return 省略后的数字
      */
-    public final @NotNull BigDecimal ceil(double value, int scale) {
+    public static @NotNull BigDecimal ceil(double value, int scale) {
         return round(value, scale, RoundingMode.UP);
     }
 
@@ -259,7 +265,7 @@ public class NumberUtil {
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
      */
-    public final @NotNull BigDecimal round(double number, int scale, @NotNull RoundingMode roundingMode) {
+    public static @NotNull BigDecimal round(double number, int scale, @NotNull RoundingMode roundingMode) {
         if (scale < 0) {
             scale = 0;
         }

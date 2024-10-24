@@ -7,6 +7,7 @@ import cn.hamm.airpower.exception.ServiceException;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -57,6 +58,23 @@ public class HttpUtil {
      * <h2>连接超时时间</h2>
      */
     private int connectTimeout = 5;
+
+
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    private HttpUtil() {
+    }
+
+    /**
+     * <h2>创建一个 {@code HttpUtil} 对象</h2>
+     *
+     * @return {@code HttpUtil}
+     */
+    @Contract(" -> new")
+    public static @NotNull HttpUtil create() {
+        return new HttpUtil();
+    }
 
     /**
      * <h2>添加 {@code Cookie}</h2>

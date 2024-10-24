@@ -1,4 +1,4 @@
-package cn.hamm.airpower.util;
+package cn.hamm.airpower.helper;
 
 import cn.hamm.airpower.config.CookieConfig;
 import jakarta.servlet.http.Cookie;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author Hamm.cn
  */
 @Component
-public class CookieUtil {
+public class CookieHelper {
     @Autowired
     private CookieConfig cookieConfig;
 

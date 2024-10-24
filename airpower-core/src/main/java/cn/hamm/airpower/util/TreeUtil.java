@@ -2,19 +2,25 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.interfaces.ITree;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- * <h1>树结构处理助手</h1>
+ * <h1>树结构处理工具类</h1>
  *
  * @author Hamm.cn
  */
-@Component
 public class TreeUtil {
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private TreeUtil() {
+    }
+
     /**
      * <h2>生成树结构</h2>
      *
@@ -22,7 +28,7 @@ public class TreeUtil {
      * @param <E>  泛型
      * @return 树结构数组
      */
-    public final <E extends ITree<E>> List<E> buildTreeList(List<E> list) {
+    public static <E extends ITree<E>> List<E> buildTreeList(List<E> list) {
         return buildTreeList(list, Constant.ZERO_LONG);
     }
 
@@ -34,7 +40,7 @@ public class TreeUtil {
      * @param <E>      泛型
      * @return 数结构数组
      */
-    private <E extends ITree<E>> List<E> buildTreeList(@NotNull List<E> list, Long parentId) {
+    private static <E extends ITree<E>> List<E> buildTreeList(@NotNull List<E> list, Long parentId) {
         return list.stream()
                 .filter(item -> Objects.equals(parentId, item.getParentId()))
                 .peek(item -> item.setChildren(

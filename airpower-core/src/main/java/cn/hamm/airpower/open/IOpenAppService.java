@@ -4,7 +4,7 @@ package cn.hamm.airpower.open;
  * <h1>开放应用的 {@code Service} 接口</h1>
  *
  * @author Hamm.cn
- * @apiNote 请确保你的开放应用的Service实现了此接口
+ * @apiNote 请确保你的开放应用的 {@code Service} 实现了此接口
  */
 public interface IOpenAppService {
     /**

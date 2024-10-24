@@ -1,7 +1,5 @@
 package cn.hamm.airpower.exception;
 
-import cn.hamm.airpower.enums.ServiceError;
-import cn.hamm.airpower.interfaces.IException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;

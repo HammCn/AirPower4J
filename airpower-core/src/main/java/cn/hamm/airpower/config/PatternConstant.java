@@ -1,5 +1,7 @@
 package cn.hamm.airpower.config;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.regex.Pattern;
 
 /**
@@ -71,4 +73,12 @@ public class PatternConstant {
      * <h2>自然整数</h2>
      */
     public static final Pattern NATURAL_INTEGER = Pattern.compile("^[0-9]+$");
+
+
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private PatternConstant() {
+    }
 }

@@ -2,15 +2,15 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.PatternConstant;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.root.RootModel;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Set;
@@ -21,15 +21,23 @@ import java.util.regex.Pattern;
  *
  * @author Hamm.cn
  */
-@Component
 public class ValidateUtil {
     /**
      * <h2>验证器实例</h2>
      */
-    private final Validator validator;
+    private static Validator validator;
 
-    public ValidateUtil() {
-        // 初始化验证器工厂
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private ValidateUtil() {
+    }
+
+    /**
+     * <h2>初始化验证器</h2>
+     */
+    private static void initValidator() {
         try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
             // 创建验证器实例
             validator = validatorFactory.getValidator();
@@ -42,7 +50,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isNumber(String value) {
+    public static boolean isNumber(String value) {
         return validRegex(value, PatternConstant.NUMBER);
     }
 
@@ -52,7 +60,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isInteger(String value) {
+    public static boolean isInteger(String value) {
         return validRegex(value, PatternConstant.INTEGER);
     }
 
@@ -62,7 +70,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isEmail(String value) {
+    public static boolean isEmail(String value) {
         return validRegex(value, PatternConstant.EMAIL);
     }
 
@@ -72,7 +80,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isLetter(String value) {
+    public static boolean isLetter(String value) {
         return validRegex(value, PatternConstant.LETTER);
     }
 
@@ -82,7 +90,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isLetterOrNumber(String value) {
+    public static boolean isLetterOrNumber(String value) {
         return validRegex(value, PatternConstant.LETTER_OR_NUMBER);
     }
 
@@ -92,7 +100,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isChinese(String value) {
+    public static boolean isChinese(String value) {
         return validRegex(value, PatternConstant.CHINESE);
     }
 
@@ -102,7 +110,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isMobilePhone(String value) {
+    public static boolean isMobilePhone(String value) {
         return validRegex(value, PatternConstant.MOBILE_PHONE);
     }
 
@@ -112,7 +120,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isTelPhone(String value) {
+    public static boolean isTelPhone(String value) {
         return validRegex(value, PatternConstant.TEL_PHONE);
     }
 
@@ -126,7 +134,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isNormalCode(String value) {
+    public static boolean isNormalCode(String value) {
         return validRegex(value, PatternConstant.NORMAL_CODE);
     }
 
@@ -136,7 +144,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isOnlyNumberAndLetter(String value) {
+    public static boolean isOnlyNumberAndLetter(String value) {
         return validRegex(value, PatternConstant.NUMBER_OR_LETTER);
     }
 
@@ -146,7 +154,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isNaturalNumber(String value) {
+    public static boolean isNaturalNumber(String value) {
         return validRegex(value, PatternConstant.NATURAL_NUMBER);
     }
 
@@ -156,7 +164,7 @@ public class ValidateUtil {
      * @param value 参数
      * @return 验证结果
      */
-    public final boolean isNaturalInteger(String value) {
+    public static boolean isNaturalInteger(String value) {
         return validRegex(value, PatternConstant.NATURAL_INTEGER);
     }
 
@@ -166,7 +174,7 @@ public class ValidateUtil {
      * @param idCard 身份证号
      * @return 验证结果
      */
-    public final boolean isChina2Identity(String idCard) {
+    public static boolean isChina2Identity(String idCard) {
         // 一代身份证长度
         final int idLength = 15;
         // 二代身份证长度
@@ -204,7 +212,7 @@ public class ValidateUtil {
      * @param pattern 正则
      * @return 验证结果
      */
-    public final boolean validRegex(String value, @NotNull Pattern pattern) {
+    public static boolean validRegex(String value, @NotNull Pattern pattern) {
         return pattern.matcher(value).matches();
     }
 
@@ -215,10 +223,11 @@ public class ValidateUtil {
      * @param actions {@code 可选} 校验分组
      * @param <M>     模型类型
      */
-    public final <M extends RootModel<M>> void valid(M model, Class<?>... actions) {
+    public static <M extends RootModel<M>> void valid(M model, Class<?>... actions) {
         if (Objects.isNull(model)) {
             return;
         }
+        initValidator();
         if (actions.length == Constant.ZERO_INT) {
             Set<ConstraintViolation<M>> violations = validator.validate(model);
             if (violations.isEmpty()) {

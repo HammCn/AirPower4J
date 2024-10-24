@@ -2,7 +2,6 @@ package cn.hamm.airpower;
 
 import cn.hamm.airpower.config.WebSocketConfig;
 import cn.hamm.airpower.exception.ServiceException;
-import cn.hamm.airpower.interceptor.AbstractRequestInterceptor;
 import cn.hamm.airpower.interceptor.cache.RequestCacheFilter;
 import cn.hamm.airpower.websocket.WebSocketHandler;
 import cn.hamm.airpower.websocket.WebSocketSupport;
@@ -12,7 +11,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
@@ -33,14 +31,6 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     protected WebSocketHandler webSocketHandler;
 
     /**
-     * <h2>获取一个拦截器实例</h2>
-     *
-     * @return 拦截器实例
-     */
-    @Bean
-    public abstract AbstractRequestInterceptor getAccessInterceptor();
-
-    /**
      * <h2>获取一个 {@code WebSocketHandler}</h2>
      *
      * @return {@code WebSocketHandler}
@@ -48,28 +38,6 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     @Bean
     public WebSocketHandler getWebsocketHandler() {
         return webSocketHandler;
-    }
-
-    /**
-     * <h2>添加拦截器</h2>
-     *
-     * @param registry 拦截器管理器
-     */
-    @Override
-    public final void addInterceptors(@NotNull InterceptorRegistry registry) {
-        //添加身份校验拦截器
-        registry.addInterceptor(getAccessInterceptor())
-                .addPathPatterns("/**");
-        addCustomInterceptors(registry);
-    }
-
-    /**
-     * <h2>添加自定义拦截器</h2>
-     *
-     * @param registry 拦截器管理器
-     */
-    @SuppressWarnings({"EmptyMethod", "unused"})
-    public void addCustomInterceptors(InterceptorRegistry registry) {
     }
 
     /**

@@ -1,6 +1,6 @@
 package cn.hamm.airpower.interceptor.cache;
 
-import cn.hamm.airpower.util.Utils;
+import cn.hamm.airpower.util.RequestUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
@@ -65,6 +65,6 @@ public class RequestCacheFilter implements Filter {
             return false;
         }
         // 上传请求不缓存
-        return !Utils.getRequestUtil().isUploadRequest(request);
+        return !RequestUtil.isUploadRequest(request);
     }
 }

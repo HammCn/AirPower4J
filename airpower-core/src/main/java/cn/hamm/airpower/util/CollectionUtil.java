@@ -1,7 +1,7 @@
 package cn.hamm.airpower.util;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -10,8 +10,14 @@ import java.util.*;
  *
  * @author Hamm.cn
  */
-@Component
 public class CollectionUtil {
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private CollectionUtil() {
+    }
+
     /**
      * <h2>获取集合中的 {@code 非null} 元素</h2>
      *
@@ -20,7 +26,7 @@ public class CollectionUtil {
      * @param <T>        数据类型
      * @return 处理后的集合
      */
-    public final @NotNull <T> Collection<T> getCollectWithoutNull(Collection<T> list, Class<?> fieldClass) {
+    public static @NotNull <T> Collection<T> getCollectWithoutNull(Collection<T> list, Class<?> fieldClass) {
         if (Objects.equals(Set.class, fieldClass)) {
             return Objects.isNull(list) ? new HashSet<>() : list;
         }

@@ -1,5 +1,6 @@
-package cn.hamm.airpower.util;
+package cn.hamm.airpower.helper;
 
+import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.MqttConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
  */
 @Configuration
 @Slf4j
-public class MqttUtil {
+public class MqttHelper {
     @Autowired
     private MqttConfig mqttConfig;
 
@@ -40,7 +41,7 @@ public class MqttUtil {
      */
     public @NotNull MqttClient createClient(String id) throws MqttException {
         return new MqttClient(
-                "tcp://" + mqttConfig.getHost() + ":" + mqttConfig.getPort(),
+                "tcp://" + mqttConfig.getHost() + Constant.COLON + mqttConfig.getPort(),
                 id,
                 new MemoryPersistence()
         );
@@ -68,16 +69,16 @@ public class MqttUtil {
      * @param message 消息内容
      */
     public void publish(@NotNull String topic, @NotNull String message) throws MqttException {
-        MqttClient client = createClient();
-        client.connect(createOption());
-        MqttMessage mqttMessage = new MqttMessage();
-        mqttMessage.setPayload(message.getBytes());
-        mqttMessage.setQos(0);
-        MqttTopic mqttTopic = client.getTopic(topic);
-        MqttDeliveryToken token;
-        token = mqttTopic.publish(mqttMessage);
-        token.waitForCompletion();
-        client.disconnect();
-        client.close();
+        try (MqttClient client = createClient()) {
+            client.connect(createOption());
+            MqttMessage mqttMessage = new MqttMessage();
+            mqttMessage.setPayload(message.getBytes());
+            mqttMessage.setQos(0);
+            MqttTopic mqttTopic = client.getTopic(topic);
+            MqttDeliveryToken token;
+            token = mqttTopic.publish(mqttMessage);
+            token.waitForCompletion();
+            client.disconnect();
+        }
     }
 }

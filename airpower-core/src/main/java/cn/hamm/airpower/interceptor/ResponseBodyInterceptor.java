@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -34,12 +33,6 @@ import java.util.Objects;
 @ControllerAdvice
 @Slf4j
 public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
-    @Autowired
-    private ReflectUtil reflectUtil;
-
-    @Autowired
-    private CollectionUtil collectionUtil;
-
     /**
      * <h2>是否支持</h2>
      *
@@ -102,8 +95,8 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             return result;
         }
 
-        Filter filter = reflectUtil.getAnnotation(Filter.class, method);
-        DesensitizeExclude desensitizeExclude = reflectUtil.getAnnotation(DesensitizeExclude.class, method);
+        Filter filter = ReflectUtil.getAnnotation(Filter.class, method);
+        DesensitizeExclude desensitizeExclude = ReflectUtil.getAnnotation(DesensitizeExclude.class, method);
         if (json.getData() instanceof QueryPageResponse) {
             QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) json.getData();
             // 如果 data 分页对象
@@ -115,19 +108,19 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
 
         Class<?> dataCls = json.getData().getClass();
         if (json.getData() instanceof Collection) {
-            Collection<?> collection = collectionUtil.getCollectWithoutNull(
+            Collection<?> collection = CollectionUtil.getCollectWithoutNull(
                     (Collection<?>) json.getData(), dataCls
             );
             collection.stream()
                     .toList()
                     .forEach(item -> {
-                        if (reflectUtil.isModel(item.getClass())) {
+                        if (ReflectUtil.isModel(item.getClass())) {
                             ((M) item).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude));
                         }
                     });
             return json.setData(collection);
         }
-        if (reflectUtil.isModel(dataCls)) {
+        if (ReflectUtil.isModel(dataCls)) {
             // 如果 data 是 Model
             //noinspection unchecked
             return json.setData(

@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.SerializedLambda;
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
  * @see IDictionary
  */
 @Slf4j
-@Component
 public class ReflectUtil {
     /**
      * <h2>反射操作属性失败</h2>
@@ -59,7 +57,7 @@ public class ReflectUtil {
      * @param field  属性
      * @return 值
      */
-    public final @Nullable Object getFieldValue(Object object, @NotNull Field field) {
+    public static @Nullable Object getFieldValue(Object object, @NotNull Field field) {
         try {
             field.setAccessible(true);
             return field.get(object);
@@ -78,7 +76,7 @@ public class ReflectUtil {
      * @param field  属性
      * @param value  值
      */
-    public final void setFieldValue(Object object, @NotNull Field field, Object value) {
+    public static void setFieldValue(Object object, @NotNull Field field, Object value) {
         try {
             field.setAccessible(true);
             field.set(object, value);
@@ -95,7 +93,7 @@ public class ReflectUtil {
      * @param object 对象
      * @param field  属性
      */
-    public final void clearFieldValue(Object object, Field field) {
+    public static void clearFieldValue(Object object, Field field) {
         setFieldValue(object, field, null);
     }
 
@@ -105,7 +103,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 判断结果
      */
-    public final boolean isTheRootClass(@NotNull Class<?> clazz) {
+    public static boolean isTheRootClass(@NotNull Class<?> clazz) {
         return Objects.equals(clazz.getName(), RootController.class.getName()) ||
                 Objects.equals(clazz.getName(), RootEntity.class.getName()) ||
                 Objects.equals(clazz.getName(), Object.class.getName());
@@ -119,7 +117,7 @@ public class ReflectUtil {
      * @param <A>             泛型
      * @return 注解
      */
-    public final <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, Method method) {
+    public static <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, Method method) {
         return getAnnotation(annotationClass, method, method.getDeclaringClass());
     }
 
@@ -131,7 +129,7 @@ public class ReflectUtil {
      * @param <A>             泛型
      * @return 注解
      */
-    public final <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Class<?> clazz) {
+    public static <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Class<?> clazz) {
         A annotation = clazz.getAnnotation(annotationClass);
         if (Objects.nonNull(annotation)) {
             return annotation;
@@ -152,7 +150,7 @@ public class ReflectUtil {
      * @return 注解
      */
     @Contract(pure = true)
-    public final <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Field field) {
+    public static <A extends Annotation> @Nullable A getAnnotation(Class<A> annotationClass, @NotNull Field field) {
         return field.getAnnotation(annotationClass);
     }
 
@@ -163,7 +161,7 @@ public class ReflectUtil {
      * @return 描述
      * @see Description
      */
-    public final String getDescription(Class<?> clazz) {
+    public static String getDescription(Class<?> clazz) {
         Description description = getAnnotation(Description.class, clazz);
         return Objects.isNull(description) ? clazz.getSimpleName() : description.value();
     }
@@ -175,7 +173,7 @@ public class ReflectUtil {
      * @return 描述
      * @see Description
      */
-    public final String getDescription(Method method) {
+    public static String getDescription(Method method) {
         Description description = getAnnotation(Description.class, method, method.getDeclaringClass());
         return Objects.isNull(description) ? method.getName() : description.value();
     }
@@ -187,7 +185,7 @@ public class ReflectUtil {
      * @return 描述
      * @see Description
      */
-    public final String getDescription(Field field) {
+    public static String getDescription(Field field) {
         Description description = getAnnotation(Description.class, field);
         return Objects.isNull(description) ? field.getName() : description.value();
     }
@@ -198,7 +196,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 布尔
      */
-    public final boolean isEntity(Class<?> clazz) {
+    public static boolean isEntity(Class<?> clazz) {
         if (Objects.isNull(clazz)) {
             return false;
         }
@@ -214,7 +212,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 布尔
      */
-    public final boolean isModel(Class<?> clazz) {
+    public static boolean isModel(Class<?> clazz) {
         if (Objects.isNull(clazz)) {
             return false;
         }
@@ -230,8 +228,8 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 字段数组
      */
-    public final @NotNull List<Field> getFieldList(Class<?> clazz) {
-        return FIELD_LIST_MAP.computeIfAbsent(clazz, this::getCacheFieldList);
+    public static @NotNull List<Field> getFieldList(Class<?> clazz) {
+        return FIELD_LIST_MAP.computeIfAbsent(clazz, ReflectUtil::getCacheFieldList);
     }
 
     /**
@@ -240,7 +238,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 字段数组
      */
-    private @NotNull List<Field> getCacheFieldList(Class<?> clazz) {
+    private static @NotNull List<Field> getCacheFieldList(Class<?> clazz) {
         List<Field> fieldList = new LinkedList<>();
         if (Objects.isNull(clazz)) {
             return fieldList;
@@ -266,7 +264,7 @@ public class ReflectUtil {
      * @return 属性数组
      */
     @Contract(pure = true)
-    public final Field @NotNull [] getDeclaredFields(@NotNull Class<?> clazz) {
+    public static Field @NotNull [] getDeclaredFields(@NotNull Class<?> clazz) {
         return DECLARED_FIELD_LIST_MAP.computeIfAbsent(clazz.getName(), key -> clazz.getDeclaredFields());
     }
 
@@ -276,7 +274,7 @@ public class ReflectUtil {
      * @param clazz 类
      * @return 属性名数组
      */
-    public final @NotNull List<String> getFieldNameList(@NotNull Class<?> clazz) {
+    public static @NotNull List<String> getFieldNameList(@NotNull Class<?> clazz) {
         Field[] fields = getDeclaredFields(clazz);
         return Arrays.stream(fields)
                 .map(Field::getName)
@@ -289,7 +287,7 @@ public class ReflectUtil {
      * @param lambda 表达式
      * @return 函数名
      */
-    public final @NotNull String getLambdaFunctionName(@NotNull IFunction<?, ?> lambda) {
+    public static @NotNull String getLambdaFunctionName(@NotNull IFunction<?, ?> lambda) {
         return getSerializedLambda(lambda)
                 .getImplMethodName()
                 .replace(Constant.GET, Constant.EMPTY_STRING);
@@ -301,7 +299,7 @@ public class ReflectUtil {
      * @param lambda 表达式
      * @return 类名
      */
-    public final @NotNull String getLambdaClassName(@NotNull IFunction<?, ?> lambda) {
+    public static @NotNull String getLambdaClassName(@NotNull IFunction<?, ?> lambda) {
         return getSerializedLambda(lambda)
                 .getImplClass()
                 .replaceAll(Constant.SLASH, Constant.DOT);
@@ -313,7 +311,7 @@ public class ReflectUtil {
      * @param lambda 表达式
      * @return {@code SerializedLambda}
      */
-    private SerializedLambda getSerializedLambda(@NotNull IFunction<?, ?> lambda) {
+    private static SerializedLambda getSerializedLambda(@NotNull IFunction<?, ?> lambda) {
         try {
             Method replaceMethod = lambda.getClass().getDeclaredMethod("writeReplace");
             replaceMethod.setAccessible(true);
@@ -332,7 +330,7 @@ public class ReflectUtil {
      * @param currentClass    所在类
      * @return 装配的注解
      */
-    private <A extends Annotation> @Nullable A getAnnotation(
+    private static <A extends Annotation> @Nullable A getAnnotation(
             Class<A> annotationClass, @NotNull Method method, Class<?> currentClass
     ) {
         A annotation = method.getAnnotation(annotationClass);
@@ -364,7 +362,7 @@ public class ReflectUtil {
      * @param clazz     当前类
      * @return 字段
      */
-    public final @Nullable Field getField(String fieldName, Class<?> clazz) {
+    public static @Nullable Field getField(String fieldName, Class<?> clazz) {
         if (Objects.isNull(clazz) || Objects.equals(Object.class, clazz)) {
             return null;
         }

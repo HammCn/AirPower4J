@@ -1,8 +1,8 @@
-package cn.hamm.airpower.util;
+package cn.hamm.airpower.helper;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootEntity;
 import jakarta.annotation.Resource;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Slf4j
-public class RedisUtil {
+public class RedisHelper {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -132,7 +132,7 @@ public class RedisUtil {
             if (second > 0) {
                 redisTemplate.expire(key, second, TimeUnit.SECONDS);
             }
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -149,7 +149,7 @@ public class RedisUtil {
             if (Objects.nonNull(keys)) {
                 redisTemplate.delete(keys);
             }
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -165,7 +165,7 @@ public class RedisUtil {
         try {
             //noinspection ConstantConditions
             return redisTemplate.getExpire(key, TimeUnit.SECONDS);
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -182,7 +182,7 @@ public class RedisUtil {
         try {
             //noinspection ConstantConditions
             return redisTemplate.hasKey(key);
-        } catch (java.lang.Exception ignored) {
+        } catch (Exception ignored) {
             return false;
         }
     }
@@ -195,7 +195,7 @@ public class RedisUtil {
     public final void del(String key) {
         try {
             redisTemplate.delete(key);
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -210,7 +210,7 @@ public class RedisUtil {
     public final @Nullable Object get(String key) {
         try {
             return redisTemplate.opsForValue().get(key);
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }
@@ -233,7 +233,7 @@ public class RedisUtil {
      * @param key    缓存的 {@code Key}
      * @param value  缓存的值
      * @param second 缓存时间(秒)
-     * @apiNote time要大于0 如果time小于等于0 将设置无限期
+     * @apiNote <code>如果time小于等于0 将设置无限期</code>
      */
     public final void set(String key, Object value, long second) {
         try {
@@ -242,7 +242,7 @@ public class RedisUtil {
             } else {
                 set(key, value);
             }
-        } catch (java.lang.Exception exception) {
+        } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
         }

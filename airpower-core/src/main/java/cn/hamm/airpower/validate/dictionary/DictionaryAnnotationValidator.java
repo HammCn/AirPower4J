@@ -6,7 +6,6 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,9 +15,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DictionaryAnnotationValidator implements ConstraintValidator<Dictionary, Integer> {
-    @Autowired
-    private DictionaryUtil dictionaryUtil;
-
     /**
      * <h2>标记的枚举类</h2>
      */
@@ -38,7 +34,7 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
             return true;
         }
         try {
-            dictionaryUtil.getDictionary(enumClazz, value);
+            DictionaryUtil.getDictionary(enumClazz, value);
         } catch (Exception e) {
             return false;
         }
