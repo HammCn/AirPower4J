@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * <h1>全局权限拦截器抽象类</h1>
  *
  * @author Hamm.cn
- * @see #checkUserPermission(Long, String, HttpServletRequest)
+ * @see #checkUserPermission(long, String, HttpServletRequest)
  * @see #interceptRequest(HttpServletRequest, HttpServletResponse, Class, Method)
  * @see #getRequestBody(HttpServletRequest)
  * @see #setShareData(String, Object)
