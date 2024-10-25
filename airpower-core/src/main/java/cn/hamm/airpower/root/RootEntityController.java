@@ -124,9 +124,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDelete(id);
         service.delete(id);
-        TaskUtil.run(
-                () -> afterDelete(id)
-        );
+        TaskUtil.run(() -> afterDelete(id));
         return Json.entity(id, "删除成功");
     }
 
@@ -158,9 +156,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDisable(id);
         service.disable(id);
-        TaskUtil.run(
-                () -> afterDisable(id)
-        );
+        TaskUtil.run(() -> afterDisable(id));
         return Json.entity(source.getId(), "禁用成功");
     }
 
@@ -178,9 +174,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeEnable(id);
         service.enable(id);
-        TaskUtil.run(
-                () -> afterEnable(id)
-        );
+        TaskUtil.run(() -> afterEnable(id));
         return Json.entity(source.getId(), "启用成功");
     }
 
