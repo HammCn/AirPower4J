@@ -103,7 +103,8 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * @param session          会话
      * @param webSocketPayload 事件负载
      */
-    protected final void sendWebSocketPayload(@NotNull WebSocketSession session, @NotNull WebSocketPayload webSocketPayload) {
+    protected final void sendWebSocketPayload(@NotNull WebSocketSession session,
+                                              @NotNull WebSocketPayload webSocketPayload) {
         try {
             session.sendMessage(new TextMessage(Json.toString(WebSocketEvent.create(webSocketPayload))));
         } catch (IOException e) {
@@ -136,7 +137,8 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             closeConnection(session);
             return;
         }
-        long userId = AccessTokenUtil.create().getPayloadId(accessToken, Configs.getServiceConfig().getAccessTokenSecret());
+        long userId = AccessTokenUtil.create()
+                .getPayloadId(accessToken, Configs.getServiceConfig().getAccessTokenSecret());
         switch (webSocketConfig.getSupport()) {
             case REDIS -> startRedisListener(session, userId);
             case MQTT -> startMqttListener(session, userId);
