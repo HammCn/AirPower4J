@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -400,8 +399,8 @@ public class RootEntityController<
             // 没配置
             return;
         }
-        List<Api> whiteList = extendsApi.value().length > 0 ? Arrays.asList(extendsApi.value()) : Collections.emptyList();
-        List<Api> blackList = extendsApi.exclude().length > 0 ? Arrays.asList(extendsApi.exclude()) : Collections.emptyList();
+        List<Api> whiteList = Arrays.asList(extendsApi.value());
+        List<Api> blackList = Arrays.asList(extendsApi.exclude());
         if (whiteList.isEmpty() && blackList.isEmpty()) {
             // 配了个寂寞
             return;
