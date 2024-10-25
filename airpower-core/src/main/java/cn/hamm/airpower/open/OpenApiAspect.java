@@ -63,7 +63,11 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
             openRequest.setOpenApp(openApp);
             openRequest.check();
             Object object = proceedingJoinPoint.proceed();
-            openLogId = addOpenLog(openRequest.getOpenApp(), AirHelper.getRequest().getRequestURI(), openRequest.decodeContent());
+            openLogId = addOpenLog(
+                    openRequest.getOpenApp(),
+                    AirHelper.getRequest().getRequestURI(),
+                    openRequest.decodeContent()
+            );
             if (object instanceof Json json) {
                 // 日志记录原始数据
                 response = Json.toString(json);
@@ -73,7 +77,10 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
             updateLogResponse(openLogId, response);
             return object;
         } catch (ServiceException serviceException) {
-            response = Json.toString(Json.create().setCode(serviceException.getCode()).setMessage(serviceException.getMessage()));
+            response = Json.toString(Json.create()
+                    .setCode(serviceException.getCode())
+                    .setMessage(serviceException.getMessage())
+            );
             updateLogResponse(openLogId, response);
             throw serviceException;
         } catch (Exception exception) {
