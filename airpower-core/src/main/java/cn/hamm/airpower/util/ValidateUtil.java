@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * <h1>验证器工具类</h1>
@@ -194,11 +195,7 @@ public class ValidateUtil {
         }
         if (idCard.length() == id2Length) {
             // 校验二代身份证
-            int sum = 0;
-            for (int i = 0; i < idCard.length() - 1; i++) {
-                sum += Integer.parseInt(String.valueOf(idCard.charAt(i))) * factor[i];
-            }
-
+            int sum = IntStream.range(0, idCard.length() - 1).map(i -> Integer.parseInt(String.valueOf(idCard.charAt(i))) * factor[i]).sum();
             // 求和后取余数11，得到的余数与校验码进行匹配，匹配成功，说明通过验证。
             return flags[sum % id2Mod] == idCard.charAt(idCard.length() - 1);
         }
