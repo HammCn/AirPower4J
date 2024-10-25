@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -399,15 +400,18 @@ public class RootEntityController<
             // 没配置
             return;
         }
-        if (extendsApi.value().length == 0 && extendsApi.exclude().length == 0) {
+        List<Api> emptyList = Collections.emptyList();
+        List<Api> whiteList = extendsApi.value().length > 0 ? Arrays.asList(extendsApi.value()) : emptyList;
+        List<Api> blackList = extendsApi.exclude().length > 0 ? Arrays.asList(extendsApi.exclude()) : emptyList;
+        if (whiteList.isEmpty() && blackList.isEmpty()) {
             // 配了个寂寞
             return;
         }
-        if (extendsApi.value().length > 0 && Arrays.asList(extendsApi.value()).contains(api)) {
+        if (whiteList.contains(api)) {
             // 在白名单里
             return;
         }
-        if (extendsApi.exclude().length > 0 && !Arrays.asList(extendsApi.exclude()).contains(api)) {
+        if (blackList.isEmpty() || !blackList.contains(api)) {
             // 不在黑名单里
             return;
         }
