@@ -4,6 +4,7 @@ import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.interfaces.IFunction;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
@@ -20,6 +21,7 @@ public class DictionaryUtil {
     /**
      * <h2>禁止外部实例化</h2>
      */
+    @Contract(pure = true)
     private DictionaryUtil() {
     }
 
