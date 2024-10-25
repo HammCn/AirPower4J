@@ -151,15 +151,15 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         List<Field> fieldList = new ArrayList<>();
         List<String> fieldNameList = new ArrayList<>();
         List<String> headerList = new ArrayList<>();
-        for (Field field : ReflectUtil.getFieldList(entityClass)) {
+        ReflectUtil.getFieldList(entityClass).forEach(field -> {
             ExcelColumn excelColumn = ReflectUtil.getAnnotation(ExcelColumn.class, field);
             if (Objects.isNull(excelColumn)) {
-                continue;
+                return;
             }
             fieldList.add(field);
             fieldNameList.add(field.getName());
             headerList.add(ReflectUtil.getDescription(field));
-        }
+        });
 
         List<String> rowList = new ArrayList<>();
         // 添加表头
