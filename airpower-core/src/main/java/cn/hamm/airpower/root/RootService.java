@@ -167,18 +167,18 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
         String json = Json.toString(exportList);
         List<Map<String, Object>> mapList = Json.parse2MapList(json);
-        for (Map<String, Object> map : mapList) {
+        mapList.forEach(map -> {
             List<String> columnList = new ArrayList<>();
-            for (String fieldName : fieldNameList) {
+            fieldNameList.forEach(fieldName -> {
                 Object value = map.get(fieldName);
                 value = prepareExcelColumn(fieldName, value, fieldList);
                 value = value.toString()
                         .replaceAll(Constant.COMMA, Constant.SPACE)
                         .replaceAll(Constant.LINE_BREAK, Constant.SPACE);
                 columnList.add(value.toString());
-            }
+            });
             rowList.add(String.join(Constant.COMMA, columnList));
-        }
+        });
         String content = String.join(Constant.LINE_BREAK, rowList);
         return new ByteArrayInputStream(content.getBytes());
     }
@@ -861,9 +861,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 "查询失败，请传入%s的ID！",
                 ReflectUtil.getDescription(getEntityClass())
         ));
-        return repository.findById(id).orElseThrow(
-                () -> new ServiceException(ServiceError.DATA_NOT_FOUND, String.format(
-                        "没有查询到ID为%s的%s", id, ReflectUtil.getDescription(getEntityClass()))
+        return repository.findById(id).orElseThrow(() ->
+                new ServiceException(
+                        ServiceError.DATA_NOT_FOUND,
+                        String.format("没有查询到ID为%s的%s", id, ReflectUtil.getDescription(getEntityClass()))
                 )
         );
     }
@@ -965,17 +966,17 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         String[] nullProperties = getNullProperties(sourceEntity);
         BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
         List<Field> fieldList = ReflectUtil.getFieldList(getEntityClass());
-        for (Field field : fieldList) {
+        fieldList.forEach(field -> {
             Desensitize desensitize = ReflectUtil.getAnnotation(Desensitize.class, field);
             if (Objects.isNull(desensitize)) {
                 // 非脱敏注解标记属性
-                continue;
+                return;
             }
             // 脱敏字段
             Object fieldValue = ReflectUtil.getFieldValue(existEntity, field);
             if (Objects.isNull(fieldValue)) {
                 // 值本身是空的
-                continue;
+                return;
             }
             if (desensitize.replace() && Objects.equals(desensitize.symbol(), fieldValue.toString())) {
                 // 如果是替换 且没有修改内容
@@ -985,7 +986,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 如果值包含脱敏字符
                 ReflectUtil.setFieldValue(existEntity, field, null);
             }
-        }
+        });
         return existEntity;
     }
 
@@ -1141,16 +1142,16 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     ) {
         List<Field> fields = ReflectUtil.getFieldList(search.getClass());
         List<Predicate> predicateList = new ArrayList<>();
-        for (Field field : fields) {
+        fields.forEach(field -> {
             Object fieldValue = ReflectUtil.getFieldValue(search, field);
             if (Objects.isNull(fieldValue) || !StringUtils.hasText(fieldValue.toString())) {
                 // 没有传入查询值 空字符串 跳过
-                continue;
+                return;
             }
             Search searchMode = ReflectUtil.getAnnotation(Search.class, field);
             if (Objects.isNull(searchMode)) {
                 // 没有配置查询注解 跳过
-                continue;
+                return;
             }
             Predicate predicate;
             switch (searchMode.value()) {
@@ -1172,7 +1173,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     predicate = builder.equal(root.get(field.getName()), fieldValue);
                     predicateList.add(predicate);
             }
-        }
+        });
         return predicateList;
     }
 
