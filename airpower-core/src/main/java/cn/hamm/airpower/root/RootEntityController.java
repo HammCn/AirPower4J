@@ -400,9 +400,8 @@ public class RootEntityController<
             // 没配置
             return;
         }
-        List<Api> emptyList = Collections.emptyList();
-        List<Api> whiteList = extendsApi.value().length > 0 ? Arrays.asList(extendsApi.value()) : emptyList;
-        List<Api> blackList = extendsApi.exclude().length > 0 ? Arrays.asList(extendsApi.exclude()) : emptyList;
+        List<Api> whiteList = extendsApi.value().length > 0 ? Arrays.asList(extendsApi.value()) : Collections.emptyList();
+        List<Api> blackList = extendsApi.exclude().length > 0 ? Arrays.asList(extendsApi.exclude()) : Collections.emptyList();
         if (whiteList.isEmpty() && blackList.isEmpty()) {
             // 配了个寂寞
             return;
