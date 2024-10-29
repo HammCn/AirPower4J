@@ -8,6 +8,7 @@
   <img src="https://svg.hamm.cn?key=Base&value=SpringBoot3"/>
   <img src="https://svg.hamm.cn?key=ORM&value=JPA"/>
   <img src="https://svg.hamm.cn?key=DB&value=MySQL"/>
+  <img src="https://img.shields.io/maven-metadata/v.svg?label=Maven%20Central&metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcn%2Fhamm%2Fairpower%2Fmaven-metadata.xml"/>
 </p>
 
 <p align="center">
