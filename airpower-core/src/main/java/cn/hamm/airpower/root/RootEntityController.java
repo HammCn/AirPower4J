@@ -5,7 +5,7 @@ import cn.hamm.airpower.annotation.Extends;
 import cn.hamm.airpower.annotation.Filter;
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.enums.Api;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IEntityAction;
 import cn.hamm.airpower.model.Json;
@@ -41,9 +41,6 @@ public class RootEntityController<
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected S service;
-
-    @Autowired
-    protected TaskUtil taskUtil;
 
     /**
      * <h2>创建导出任务</h2>
@@ -81,7 +78,7 @@ public class RootEntityController<
         source = beforeAdd(source);
         final E finalSource = source;
         long id = service.add(source);
-        taskUtil.run(
+        TaskUtil.run(
                 () -> afterAdd(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -106,7 +103,7 @@ public class RootEntityController<
         source = beforeUpdate(source);
         final E finalSource = source;
         service.update(source);
-        taskUtil.run(
+        TaskUtil.run(
                 () -> afterUpdate(id, finalSource),
                 () -> afterSaved(id, finalSource)
         );
@@ -127,9 +124,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDelete(id);
         service.delete(id);
-        taskUtil.run(
-                () -> afterDelete(id)
-        );
+        TaskUtil.run(() -> afterDelete(id));
         return Json.entity(id, "删除成功");
     }
 
@@ -161,9 +156,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeDisable(id);
         service.disable(id);
-        taskUtil.run(
-                () -> afterDisable(id)
-        );
+        TaskUtil.run(() -> afterDisable(id));
         return Json.entity(source.getId(), "禁用成功");
     }
 
@@ -181,9 +174,7 @@ public class RootEntityController<
         long id = source.getId();
         beforeEnable(id);
         service.enable(id);
-        taskUtil.run(
-                () -> afterEnable(id)
-        );
+        TaskUtil.run(() -> afterEnable(id));
         return Json.entity(source.getId(), "启用成功");
     }
 
@@ -402,15 +393,17 @@ public class RootEntityController<
             // 没配置
             return;
         }
-        if (extendsApi.value().length == 0 && extendsApi.exclude().length == 0) {
+        List<Api> whiteList = Arrays.asList(extendsApi.value());
+        List<Api> blackList = Arrays.asList(extendsApi.exclude());
+        if (whiteList.isEmpty() && blackList.isEmpty()) {
             // 配了个寂寞
             return;
         }
-        if (extendsApi.value().length > 0 && Arrays.asList(extendsApi.value()).contains(api)) {
+        if (whiteList.contains(api)) {
             // 在白名单里
             return;
         }
-        if (extendsApi.exclude().length > 0 && !Arrays.asList(extendsApi.exclude()).contains(api)) {
+        if (blackList.isEmpty() || !blackList.contains(api)) {
             // 不在黑名单里
             return;
         }

@@ -1,9 +1,9 @@
 package cn.hamm.airpower.open;
 
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.helper.AirHelper;
 import cn.hamm.airpower.model.Json;
-import cn.hamm.airpower.util.Utils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -45,6 +45,12 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     @Around("pointCut()")
     public Object openApi(@NotNull ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object[] args = proceedingJoinPoint.getArgs();
+        if (args.length != 1) {
+            throw new ServiceException("OpenApi必须接收一个参数");
+        }
+        if (!(args[0] instanceof OpenRequest openRequest)) {
+            throw new ServiceException("OpenApi必须接收一个OpenRequest参数");
+        }
         Signature signature = proceedingJoinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = methodSignature.getMethod();
@@ -52,18 +58,16 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
         ServiceError.API_SERVICE_UNSUPPORTED.whenNull(openApi);
         Long openLogId = null;
         String response = "";
-        if (args.length != 1) {
-            throw new ServiceException("OpenApi必须接收一个参数");
-        }
-        if (!(args[0] instanceof OpenRequest openRequest)) {
-            throw new ServiceException("OpenApi必须接收一个OpenRequest参数");
-        }
         try {
             IOpenApp openApp = getOpenAppFromRequest(openRequest);
             openRequest.setOpenApp(openApp);
             openRequest.check();
             Object object = proceedingJoinPoint.proceed();
-            openLogId = addOpenLog(openRequest.getOpenApp(), Utils.getRequest().getRequestURI(), openRequest.decodeContent());
+            openLogId = addOpenLog(
+                    openRequest.getOpenApp(),
+                    AirHelper.getRequest().getRequestURI(),
+                    openRequest.decodeContent()
+            );
             if (object instanceof Json json) {
                 // 日志记录原始数据
                 response = Json.toString(json);
@@ -73,7 +77,10 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
             updateLogResponse(openLogId, response);
             return object;
         } catch (ServiceException serviceException) {
-            response = Json.toString(Json.create().setCode(serviceException.getCode()).setMessage(serviceException.getMessage()));
+            response = Json.toString(Json.create()
+                    .setCode(serviceException.getCode())
+                    .setMessage(serviceException.getMessage())
+            );
             updateLogResponse(openLogId, response);
             throw serviceException;
         } catch (Exception exception) {

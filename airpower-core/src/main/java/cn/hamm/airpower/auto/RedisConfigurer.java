@@ -17,6 +17,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -62,12 +63,10 @@ public class RedisConfigurer implements CachingConfigurer {
     @Override
     public KeyGenerator keyGenerator() {
         return (target, method, params) -> {
-            StringBuilder builder = new StringBuilder();
-            builder.append(target.getClass().getName());
-            builder.append(method.getName());
-            for (Object obj : params) {
-                builder.append(obj.toString());
-            }
+            StringBuilder builder = new StringBuilder()
+                    .append(target.getClass().getName())
+                    .append(method.getName());
+            Arrays.stream(params).map(Object::toString).forEach(builder::append);
             return builder.toString();
         };
     }

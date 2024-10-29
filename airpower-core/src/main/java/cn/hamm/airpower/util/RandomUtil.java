@@ -1,8 +1,8 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.config.Constant;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.Random;
@@ -11,12 +11,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * <h1>随机助手类</h1>
+ * <h1>随机生成工具类</h1>
  *
  * @author Hamm.cn
  */
-@Component
 public class RandomUtil {
+    /**
+     * <h2>默认长度</h2>
+     */
+    public static final int DEFAULT_LENGTH = 32;
+    
     /**
      * <h2>小写字母</h2>
      */
@@ -38,12 +42,20 @@ public class RandomUtil {
     private static final String BASE_CHAR_NUMBER = BASE_CHAR.toUpperCase() + BASE_CHAR_NUMBER_LOWER;
 
     /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private RandomUtil() {
+
+    }
+
+    /**
      * <h2>获取随机字节数组</h2>
      *
      * @param length 长度
      * @return 随机字节数组
      */
-    public final byte @NotNull [] randomBytes(int length) {
+    public static byte @NotNull [] randomBytes(int length) {
         byte[] bytes = new byte[length];
         IntStream.range(0, length).forEach(i -> bytes[i] = (byte) (Math.random() * 256 - 128));
         return bytes;
@@ -54,8 +66,8 @@ public class RandomUtil {
      *
      * @return 随机字节数组
      */
-    public final byte @NotNull [] randomBytes() {
-        return randomBytes(32);
+    public static byte @NotNull [] randomBytes() {
+        return randomBytes(DEFAULT_LENGTH);
     }
 
     /**
@@ -63,8 +75,8 @@ public class RandomUtil {
      *
      * @return 随机字符串
      */
-    public final @NotNull String randomString() {
-        return randomString(32);
+    public static @NotNull String randomString() {
+        return randomString(DEFAULT_LENGTH);
     }
 
     /**
@@ -73,7 +85,7 @@ public class RandomUtil {
      * @param length 字符串的长度
      * @return 随机字符串
      */
-    public final @NotNull String randomString(final int length) {
+    public static @NotNull String randomString(final int length) {
         return randomString(BASE_CHAR_NUMBER, length);
     }
 
@@ -83,7 +95,7 @@ public class RandomUtil {
      * @param length 字符串的长度
      * @return 随机字符串
      */
-    public final @NotNull String randomNumbers(final int length) {
+    public static @NotNull String randomNumbers(final int length) {
         return randomString(BASE_NUMBER, length);
     }
 
@@ -94,7 +106,7 @@ public class RandomUtil {
      * @param length     字符串的长度
      * @return 随机字符串
      */
-    public final @NotNull String randomString(final String baseString, int length) {
+    public static @NotNull String randomString(final String baseString, int length) {
         if (!StringUtils.hasText(baseString)) {
             return Constant.EMPTY_STRING;
         }
@@ -112,7 +124,7 @@ public class RandomUtil {
      * @return 随机数
      * @see Random#nextInt()
      */
-    public final int randomInt() {
+    public static int randomInt() {
         return getRandom().nextInt();
     }
 
@@ -122,7 +134,7 @@ public class RandomUtil {
      * @param exclude 排除的数字
      * @return 随机数
      */
-    public final int randomInt(final int exclude) {
+    public static int randomInt(final int exclude) {
         return getRandom().nextInt(exclude);
     }
 
@@ -133,7 +145,7 @@ public class RandomUtil {
      * @param maxExclude 最大数（不包含）
      * @return 随机数
      */
-    public final int randomInt(final int minInclude, final int maxExclude) {
+    public static int randomInt(final int minInclude, final int maxExclude) {
         return randomInt(minInclude, maxExclude, true, false);
     }
 
@@ -146,7 +158,7 @@ public class RandomUtil {
      * @param includeMax 是否包含最大值
      * @return 随机数
      */
-    public final int randomInt(int min, int max, final boolean includeMin, final boolean includeMax) {
+    public static int randomInt(int min, int max, final boolean includeMin, final boolean includeMax) {
         if (!includeMin) {
             min++;
         }
@@ -161,7 +173,7 @@ public class RandomUtil {
      *
      * @return 随机种子
      */
-    private ThreadLocalRandom getRandom() {
+    private static ThreadLocalRandom getRandom() {
         return ThreadLocalRandom.current();
     }
 }

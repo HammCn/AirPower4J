@@ -1,9 +1,7 @@
-package cn.hamm.airpower.interceptor;
+package cn.hamm.airpower.exception;
 
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.enums.ServiceError;
-import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
@@ -46,8 +44,10 @@ import java.util.Set;
 @ResponseBody
 @Slf4j
 public class ExceptionInterceptor {
-
-    public static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
+    /**
+     * <h2>错误信息和描述</h2>
+     */
+    private static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
 
     @Autowired
     private ServiceConfig serviceConfig;

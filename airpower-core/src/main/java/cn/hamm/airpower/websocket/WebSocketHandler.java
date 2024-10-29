@@ -1,12 +1,13 @@
 package cn.hamm.airpower.websocket;
 
+import cn.hamm.airpower.config.Configs;
 import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.WebSocketConfig;
-import cn.hamm.airpower.enums.ServiceError;
+import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.helper.MqttHelper;
 import cn.hamm.airpower.model.Json;
-import cn.hamm.airpower.util.MqttUtil;
-import cn.hamm.airpower.util.SecurityUtil;
+import cn.hamm.airpower.util.AccessTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.jetbrains.annotations.Contract;
@@ -69,10 +70,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     protected RedisConnectionFactory redisConnectionFactory;
 
     @Autowired
-    protected SecurityUtil securityUtil;
-
-    @Autowired
-    protected MqttUtil mqttUtil;
+    protected MqttHelper mqttHelper;
 
     /**
      * <h2>收到 {@code Websocket} 消息时</h2>
@@ -105,7 +103,8 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * @param session          会话
      * @param webSocketPayload 事件负载
      */
-    protected final void sendWebSocketPayload(@NotNull WebSocketSession session, @NotNull WebSocketPayload webSocketPayload) {
+    protected final void sendWebSocketPayload(@NotNull WebSocketSession session,
+                                              @NotNull WebSocketPayload webSocketPayload) {
         try {
             session.sendMessage(new TextMessage(Json.toString(WebSocketEvent.create(webSocketPayload))));
         } catch (IOException e) {
@@ -138,7 +137,8 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             closeConnection(session);
             return;
         }
-        long userId = securityUtil.getIdFromAccessToken(accessToken);
+        long userId = AccessTokenUtil.create()
+                .getPayloadId(accessToken, Configs.getServiceConfig().getAccessTokenSecret());
         switch (webSocketConfig.getSupport()) {
             case REDIS -> startRedisListener(session, userId);
             case MQTT -> startMqttListener(session, userId);
@@ -173,8 +173,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         final String personalChannel = getRealChannel(CHANNEL_USER_PREFIX + userId);
         RedisConnection redisConnection = redisConnectionFactory.getConnection();
         redisConnectionHashMap.put(session.getId(), redisConnection);
-        redisConnection.subscribe(
-                (message, pattern) -> {
+        redisConnection.subscribe((message, pattern) -> {
                     synchronized (session) {
                         onChannelMessage(new String(message.getBody(), StandardCharsets.UTF_8), session);
                     }
@@ -191,7 +190,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * @param userId  用户 {@code ID}
      */
     private void startMqttListener(@NotNull WebSocketSession session, long userId) {
-        try (MqttClient mqttClient = mqttUtil.createClient()) {
+        try (MqttClient mqttClient = mqttHelper.createClient()) {
             mqttClient.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable throwable) {
@@ -209,7 +208,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
 
                 }
             });
-            mqttClient.connect(mqttUtil.createOption());
+            mqttClient.connect(mqttHelper.createOption());
             final String personalChannel = CHANNEL_USER_PREFIX + userId;
             String[] topics = {CHANNEL_ALL, personalChannel};
             mqttClient.subscribe(topics);

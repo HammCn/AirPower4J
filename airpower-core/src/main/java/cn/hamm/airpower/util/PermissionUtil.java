@@ -8,16 +8,15 @@ import cn.hamm.airpower.enums.Api;
 import cn.hamm.airpower.interfaces.IPermission;
 import cn.hamm.airpower.model.Access;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,23 +30,24 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * <h1>权限处理助手</h1>
+ * <h1>权限处理工具类</h1>
  *
  * @author Hamm.cn
  */
-@Component
 @Slf4j
-public class AccessUtil {
+public class PermissionUtil {
     /**
      * <h2>控制器字节码文件路径</h2>
      */
     private static final String CONTROLLER_CLASS_PATH = "/**/*" + Constant.CONTROLLER_SUFFIX + ".class";
-    
-    @Autowired
-    private ReflectUtil reflectUtil;
 
-    @Autowired
-    private DictionaryUtil dictionaryUtil;
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private PermissionUtil() {
+
+    }
 
     /**
      * <h2>获取需要被授权的类型</h2>
@@ -56,7 +56,7 @@ public class AccessUtil {
      * @param method 方法
      * @return 需要授权的选项
      */
-    public final @NotNull Access getWhatNeedAccess(@NotNull Class<?> clazz, @NotNull Method method) {
+    public static @NotNull Access getWhatNeedAccess(@NotNull Class<?> clazz, @NotNull Method method) {
         //默认无标记时，不需要登录和授权
         Access access = new Access();
 
@@ -86,7 +86,7 @@ public class AccessUtil {
      * @param method 方法
      * @return 权限标识
      */
-    public final @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
+    public static @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
         return StringUtils.uncapitalize(clazz.getSimpleName()
                 .replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING)) +
                 Constant.UNDERLINE + method.getName();
@@ -100,7 +100,7 @@ public class AccessUtil {
      * @param <P>             权限类型
      * @return 权限列表
      */
-    public final <P extends IPermission<P>> @NotNull List<P> scanPermission(
+    public static <P extends IPermission<P>> @NotNull List<P> scanPermission(
             @NotNull Class<?> clazz, Class<P> permissionClass
     ) {
         return scanPermission(clazz.getPackageName(), permissionClass);
@@ -114,7 +114,7 @@ public class AccessUtil {
      * @param <P>             权限类型
      * @return 权限列表
      */
-    public final <P extends IPermission<P>> @NotNull List<P> scanPermission(
+    public static <P extends IPermission<P>> @NotNull List<P> scanPermission(
             String packageName, Class<P> permissionClass
     ) {
         List<P> permissions = new ArrayList<>();
@@ -132,13 +132,13 @@ public class AccessUtil {
                 String className = metadataReader.getClassMetadata().getClassName();
                 Class<?> clazz = Class.forName(className);
 
-                ApiController apiController = reflectUtil.getAnnotation(ApiController.class, clazz);
+                ApiController apiController = ReflectUtil.getAnnotation(ApiController.class, clazz);
                 if (Objects.isNull(apiController)) {
                     // 不是rest控制器或者是指定的几个白名单控制器
                     continue;
                 }
 
-                String customClassName = reflectUtil.getDescription(clazz);
+                String customClassName = ReflectUtil.getDescription(clazz);
                 String identity = clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING);
                 P permission = permissionClass.getConstructor().newInstance();
 
@@ -151,11 +151,11 @@ public class AccessUtil {
                 Method[] methods = clazz.getMethods();
 
                 // 取出控制器类上的Extends注解 如自己没标 则使用父类的
-                Extends extendsApi = reflectUtil.getAnnotation(Extends.class, clazz);
+                Extends extendsApi = ReflectUtil.getAnnotation(Extends.class, clazz);
                 for (Method method : methods) {
                     if (Objects.nonNull(extendsApi)) {
                         try {
-                            Api current = dictionaryUtil.getDictionary(Api.class, Api::getMethodName, method.getName());
+                            Api current = DictionaryUtil.getDictionary(Api.class, Api::getMethodName, method.getName());
                             if (checkApiExcluded(current, extendsApi)) {
                                 continue;
                             }
@@ -167,7 +167,7 @@ public class AccessUtil {
                         continue;
                     }
                     subIdentity = apiPath + subIdentity;
-                    String customMethodName = reflectUtil.getDescription(method);
+                    String customMethodName = ReflectUtil.getDescription(method);
                     Access accessConfig = getWhatNeedAccess(clazz, method);
                     if (!accessConfig.isLogin() || !accessConfig.isAuthorize()) {
                         // 这里可以选择是否不读取这些接口的权限，但前端可能需要
@@ -192,7 +192,7 @@ public class AccessUtil {
      * @param extend 注解
      * @return 检查结果
      */
-    private boolean checkApiExcluded(Api api, @NotNull Extends extend) {
+    private static boolean checkApiExcluded(Api api, @NotNull Extends extend) {
         List<Api> excludeList = Arrays.asList(extend.exclude());
         if (excludeList.contains(api)) {
             return true;
@@ -210,10 +210,10 @@ public class AccessUtil {
      * @param method 方法
      * @return 权限标识
      */
-    private @Nullable String getMethodPermissionIdentity(Method method) {
-        RequestMapping requestMapping = reflectUtil.getAnnotation(RequestMapping.class, method);
-        PostMapping postMapping = reflectUtil.getAnnotation(PostMapping.class, method);
-        GetMapping getMapping = reflectUtil.getAnnotation(GetMapping.class, method);
+    private static @Nullable String getMethodPermissionIdentity(Method method) {
+        RequestMapping requestMapping = ReflectUtil.getAnnotation(RequestMapping.class, method);
+        PostMapping postMapping = ReflectUtil.getAnnotation(PostMapping.class, method);
+        GetMapping getMapping = ReflectUtil.getAnnotation(GetMapping.class, method);
 
         if (Objects.isNull(requestMapping) && Objects.isNull(postMapping) && Objects.isNull(getMapping)) {
             return null;

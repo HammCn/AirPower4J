@@ -127,7 +127,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
                     "CREATE DATABASE IF NOT EXISTS " +
                             serviceConfig.getDatabasePrefix() +
                             dataSource.getDatabase() +
-                            " DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci"
+                            " DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci"
             );
         } catch (Exception exception) {
             log.error("SQL语句执行失败", exception);

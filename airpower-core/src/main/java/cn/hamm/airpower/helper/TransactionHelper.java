@@ -1,5 +1,6 @@
-package cn.hamm.airpower.util;
+package cn.hamm.airpower.helper;
 
+import cn.hamm.airpower.util.TaskUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Hamm.cn
  */
 @Service
-public class TransactionUtil {
+public class TransactionHelper {
     /**
      * <h2>开始执行一个包含若干方法的事务</h2>
      *

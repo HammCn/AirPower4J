@@ -4,24 +4,26 @@ import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.interfaces.IFunction;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
 
 /**
- * <h1>枚举字典助手</h1>
+ * <h1>枚举字典工具类</h1>
  *
  * @author Hamm.cn
  */
 @Slf4j
-@Component
 public class DictionaryUtil {
-    @Autowired
-    private ReflectUtil reflectUtil;
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private DictionaryUtil() {
+    }
 
     /**
      * <h2>查字典</h2>
@@ -31,7 +33,7 @@ public class DictionaryUtil {
      * @param <D>       [泛型] 字典类型
      * @return 查到的字典
      */
-    public final <D extends IDictionary> @NotNull D getDictionary(@NotNull Class<D> enumClass, int key) {
+    public static <D extends IDictionary> @NotNull D getDictionary(@NotNull Class<D> enumClass, int key) {
         return getDictionary(enumClass, IDictionary::getKey, key);
     }
 
@@ -44,7 +46,7 @@ public class DictionaryUtil {
      * @param <D>       [泛型] 字典类型
      * @return 查到的字典
      */
-    public final <D extends IDictionary> @NotNull D getDictionary(
+    public static <D extends IDictionary> @NotNull D getDictionary(
             @NotNull Class<D> enumClass, Function<D, Object> function, Object value
     ) {
         try {
@@ -67,7 +69,7 @@ public class DictionaryUtil {
      * @param clazz 枚举类
      * @return 枚举选项列表
      */
-    public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(
+    public static <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(
             @NotNull Class<D> clazz
     ) {
         return getDictionaryList(clazz, IDictionary::getKey, IDictionary::getLabel);
@@ -82,7 +84,7 @@ public class DictionaryUtil {
      * @return 枚举选项列表
      */
     @SafeVarargs
-    public final <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(
+    public static <D extends IDictionary> @NotNull List<Map<String, Object>> getDictionaryList(
             @NotNull Class<D> clazz, IFunction<D, Object>... lambdas
     ) {
         List<Map<String, Object>> mapList = new ArrayList<>();
@@ -92,7 +94,7 @@ public class DictionaryUtil {
             for (IFunction<D, Object> lambda : lambdas) {
                 // 依次取出参数的值
                 try {
-                    item.put(StringUtils.uncapitalize(reflectUtil.getLambdaFunctionName(lambda)), lambda.apply(obj));
+                    item.put(StringUtils.uncapitalize(ReflectUtil.getLambdaFunctionName(lambda)), lambda.apply(obj));
                 } catch (Exception exception) {
                     log.error(exception.getMessage(), exception);
                 }

@@ -4,22 +4,27 @@ import cn.hamm.airpower.annotation.Desensitize;
 import cn.hamm.airpower.config.Constant;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.stream.IntStream;
 
 /**
- * <h1>字符串处理类</h1>
+ * <h1>字符串脱敏处理工具类</h1>
  *
  * @author Hamm.cn
  */
-@Component
-public class StringUtil {
+public class DesensitizeUtil {
     /**
      * <h2>{@code IPV4} 的块长度</h2>
      */
     private static final int IPV4_PART_COUNT = 4;
+
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private DesensitizeUtil() {
+    }
 
     /**
      * <h2>字符串替换</h2>
@@ -30,7 +35,7 @@ public class StringUtil {
      * @param symbol 中间替换的单个符号
      * @return 替换后的字符串
      */
-    public final @NotNull String replace(String text, int head, int tail, String symbol) {
+    public static @NotNull String replace(String text, int head, int tail, String symbol) {
         if (head < 0 || tail < 0 || head + tail >= text.length()) {
             return text;
         }
@@ -52,7 +57,7 @@ public class StringUtil {
      * @param symbol 符号
      * @return 脱敏后的 {@code IPv4} 地址
      */
-    public final @NotNull String desensitizeIpv4Address(@NotNull String ipv4, String symbol) {
+    public static @NotNull String desensitizeIpv4Address(@NotNull String ipv4, String symbol) {
         if (!StringUtils.hasText(symbol)) {
             symbol = Constant.ASTERISK;
         }
@@ -71,7 +76,7 @@ public class StringUtil {
      * @param ipv4 {@code IPv4} 地址
      * @return 脱敏后的 {@code IPv4} 地址
      */
-    public final @NotNull String desensitizeIpv4Address(@NotNull String ipv4) {
+    public static @NotNull String desensitizeIpv4Address(@NotNull String ipv4) {
         return desensitizeIpv4Address(ipv4, Constant.ASTERISK);
     }
 
@@ -85,7 +90,7 @@ public class StringUtil {
      * @return 脱敏后的文本
      */
     @Contract(pure = true)
-    public final @NotNull String desensitize(@NotNull String text, Desensitize.Type type, int head, int tail) {
+    public static @NotNull String desensitize(@NotNull String text, Desensitize.Type type, int head, int tail) {
         return desensitize(text, type, head, tail, Constant.ASTERISK);
     }
 
@@ -100,7 +105,7 @@ public class StringUtil {
      * @return 脱敏后的文本
      */
     @Contract(pure = true)
-    public final @NotNull String desensitize(
+    public static @NotNull String desensitize(
             @NotNull String valueString, Desensitize.@NotNull Type type, int head, int tail, String symbol
     ) {
         switch (type) {
