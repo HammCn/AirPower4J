@@ -31,7 +31,7 @@ public class RsaUtil {
     /**
      * <h2>加密方式</h2>
      */
-    private final String CRYPT_METHOD = "RSA";
+    private static final String CRYPT_METHOD = "RSA";
 
     /**
      * <h2>公钥</h2>
@@ -217,7 +217,7 @@ public class RsaUtil {
      *
      * @return {@code KeyPair}
      */
-    public final KeyPair generateKeyPair() throws NoSuchAlgorithmException {
+    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(CRYPT_METHOD);
         keyPairGenerator.initialize(2048);
         return keyPairGenerator.generateKeyPair();
@@ -229,7 +229,7 @@ public class RsaUtil {
      * @param publicKey 公钥
      * @return {@code PEM}
      */
-    public final @NotNull String convertPublicKeyToPem(@NotNull PublicKey publicKey) {
+    public static @NotNull String convertPublicKeyToPem(@NotNull PublicKey publicKey) {
         String base64Encoded = Base64.getEncoder().encodeToString(publicKey.getEncoded());
         return "-----BEGIN PUBLIC KEY-----\n" +
                 wrapBase64Text(base64Encoded) +
@@ -242,7 +242,7 @@ public class RsaUtil {
      * @param privateKey 私钥
      * @return {@code PEM}
      */
-    public final @NotNull String convertPrivateKeyToPem(@NotNull PrivateKey privateKey) {
+    public static @NotNull String convertPrivateKeyToPem(@NotNull PrivateKey privateKey) {
         String base64Encoded = Base64.getEncoder().encodeToString(privateKey.getEncoded());
         return "-----BEGIN RSA PRIVATE KEY-----\n" +
                 wrapBase64Text(base64Encoded) +
@@ -255,7 +255,7 @@ public class RsaUtil {
      * @param base64Text 原始 {@code Base64}
      * @return 换行后的
      */
-    private @NotNull String wrapBase64Text(@NotNull String base64Text) {
+    private static @NotNull String wrapBase64Text(@NotNull String base64Text) {
         final int wrapLength = 64;
         StringBuilder wrappedText = new StringBuilder();
         int start = 0;
