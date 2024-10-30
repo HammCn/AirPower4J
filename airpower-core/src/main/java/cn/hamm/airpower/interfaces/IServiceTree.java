@@ -10,7 +10,6 @@ import java.util.List;
  * @author Hamm.cn
  */
 public interface IServiceTree<E extends ITree<E>> extends IService<E> {
-
     /**
      * <h2>获取所有子节点</h2>
      *
@@ -23,5 +22,15 @@ public interface IServiceTree<E extends ITree<E>> extends IService<E> {
             item.setChildren(getAllChildren(children));
         });
         return list;
+    }
+
+    /**
+     * <h2>根据父级ID获取所有子节点</h2>
+     *
+     * @param parentId 父级ID
+     * @return 子节点列表
+     */
+    default List<E> getByParentId(Long parentId) {
+        return filter(getEntityInstance().setParentId(parentId));
     }
 }
