@@ -1,5 +1,6 @@
 package cn.hamm.airpower.interfaces;
 
+import cn.hamm.airpower.exception.ServiceError;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,5 +33,15 @@ public interface IServiceTree<E extends ITree<E>> extends IService<E> {
      */
     default List<E> getByParentId(Long parentId) {
         return filter(getEntityInstance().setParentId(parentId));
+    }
+
+    /**
+     * <h2>删除前确认是否包含子节点数据</h2>
+     *
+     * @param id 待删除的ID
+     */
+    default void ensureNoChildrenBeforeDelete(long id) {
+        List<E> children = filter(getEntityInstance().setParentId(id));
+        ServiceError.FORBIDDEN_DELETE.when(!children.isEmpty(), "无法删除含有下级的数据，请先删除所有下级！");
     }
 }
