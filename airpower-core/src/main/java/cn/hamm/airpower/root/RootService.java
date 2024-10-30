@@ -1030,6 +1030,29 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
+     * <h2>获取一个空实体对象</h2>
+     *
+     * @return 实体
+     */
+    private @NotNull E getEntityInstance() {
+        try {
+            return getEntityClass().getConstructor().newInstance();
+        } catch (Exception exception) {
+            throw new ServiceException(exception.getMessage());
+        }
+    }
+
+    /**
+     * <h2>获取实体类</h2>
+     *
+     * @return 类
+     */
+    private @NotNull Class<E> getEntityClass() {
+        //noinspection unchecked
+        return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    /**
      * <h2>获取值为{@code null}的属性</h2>
      *
      * @param sourceEntity 来源对象
@@ -1216,28 +1239,5 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
-    }
-
-    /**
-     * <h2>获取实体类</h2>
-     *
-     * @return 实体类
-     */
-    private Class<E> getEntityClass() {
-        //noinspection unchecked
-        return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
-
-    /**
-     * <h2>获取实体类实例</h2>
-     *
-     * @return 实体类实例
-     */
-    public final @NotNull E getEntityInstance() {
-        try {
-            return getEntityClass().getConstructor().newInstance();
-        } catch (Exception exception) {
-            throw new ServiceException(exception.getMessage());
-        }
     }
 }
