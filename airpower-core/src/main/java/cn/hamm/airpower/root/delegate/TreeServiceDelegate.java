@@ -7,7 +7,6 @@ import cn.hamm.airpower.root.RootRepository;
 import cn.hamm.airpower.root.RootService;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -16,8 +15,14 @@ import java.util.List;
  *
  * @author Hamm.cn
  */
-@Component
 public class TreeServiceDelegate {
+    /**
+     * <h2>禁止外部实例化</h2>
+     */
+    @Contract(pure = true)
+    private TreeServiceDelegate() {
+    }
+
     /**
      * <h2>获取所有子节点</h2>
      *

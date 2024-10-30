@@ -1034,7 +1034,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      *
      * @return 实体
      */
-    private @NotNull E getEntityInstance() {
+    @NotNull
+    public E getEntityInstance() {
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (Exception exception) {
