@@ -10,6 +10,7 @@ import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.RedisHelper;
 import cn.hamm.airpower.interfaces.IDictionary;
+import cn.hamm.airpower.interfaces.IService;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.model.Page;
 import cn.hamm.airpower.model.Sort;
@@ -42,7 +43,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,9 +56,9 @@ import java.util.function.BiFunction;
  * @param <R> 数据源
  * @author Hamm.cn
  */
-@SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @Slf4j
-public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
+public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> implements IService<E> {
     /**
      * <h2>提交的数据不允许为空</h2>
      */
@@ -499,6 +499,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param filter 全匹配过滤器
      * @return List数据
      */
+    @Override
     public final @NotNull List<E> filter(E filter) {
         return filter(filter, null);
     }
@@ -510,9 +511,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param sort   排序
      * @return List数据
      */
+    @Override
     public final @NotNull List<E> filter(E filter, Sort sort) {
         QueryListRequest<E> queryListRequest = new QueryListRequest<>();
-        filter = Objects.requireNonNullElse(filter, getNewInstance());
+        filter = Objects.requireNonNullElse(filter, getEntityInstance());
         queryListRequest.setFilter(filter);
         return repository.findAll(createSpecification(filter, true), createSort(sort));
     }
@@ -829,7 +831,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private <Q extends QueryListRequest<E>> @NotNull Q requireWithFilterNonNullElse(
             Q queryListRequest, Q newInstance) {
         queryListRequest = Objects.requireNonNullElse(queryListRequest, newInstance);
-        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
+        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getEntityInstance()));
         return queryListRequest;
     }
 
@@ -945,7 +947,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @apiNote 仅供 {@link #saveToDatabase(E, boolean)} 调用
      */
     private long saveAndFlush(@NotNull E entity) {
-        E target = getNewInstance();
+        E target = getEntityInstance();
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
@@ -1013,7 +1015,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 没有值 不校验
                 return;
             }
-            E search = getNewInstance();
+            E search = getEntityInstance();
             ReflectUtil.setFieldValue(search, field, fieldValue);
             Example<E> example = Example.of(search);
             Optional<E> exist = repository.findOne(example);
@@ -1027,28 +1029,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
             ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！", fieldName, fieldValue));
         });
-    }
-
-    /**
-     * <h2>获取一个空实体</h2>
-     *
-     * @return 实体
-     */
-    private @NotNull E getNewInstance() {
-        try {
-            return getEntityClass().getConstructor().newInstance();
-        } catch (Exception exception) {
-            throw new ServiceException(exception.getMessage());
-        }
-    }
-
-    /**
-     * <h2>获取实体类</h2>
-     *
-     * @return 类
-     */
-    private @NotNull Class<E> getEntityClass() {
-        return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     /**
