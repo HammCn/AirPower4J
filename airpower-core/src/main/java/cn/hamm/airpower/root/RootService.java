@@ -56,7 +56,7 @@ import java.util.function.BiFunction;
  * @param <R> 数据源
  * @author Hamm.cn
  */
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
