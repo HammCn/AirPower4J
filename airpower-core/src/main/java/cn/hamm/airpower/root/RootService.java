@@ -56,7 +56,7 @@ import java.util.function.BiFunction;
  * @param <R> 数据源
  * @author Hamm.cn
  */
-@SuppressWarnings({"unchecked", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection"})
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
@@ -512,7 +512,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final @NotNull List<E> filter(E filter, Sort sort) {
         QueryListRequest<E> queryListRequest = new QueryListRequest<>();
-        filter = Objects.requireNonNullElse(filter, getNewInstance());
+        filter = Objects.requireNonNullElse(filter, getEntityInstance());
         queryListRequest.setFilter(filter);
         return repository.findAll(createSpecification(filter, true), createSort(sort));
     }
@@ -829,7 +829,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private <Q extends QueryListRequest<E>> @NotNull Q requireWithFilterNonNullElse(
             Q queryListRequest, Q newInstance) {
         queryListRequest = Objects.requireNonNullElse(queryListRequest, newInstance);
-        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getNewInstance()));
+        queryListRequest.setFilter(Objects.requireNonNullElse(queryListRequest.getFilter(), getEntityInstance()));
         return queryListRequest;
     }
 
@@ -945,7 +945,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @apiNote 仅供 {@link #saveToDatabase(E, boolean)} 调用
      */
     private long saveAndFlush(@NotNull E entity) {
-        E target = getNewInstance();
+        E target = getEntityInstance();
         BeanUtils.copyProperties(entity, target);
         target = beforeSaveToDatabase(target);
         target = repository.saveAndFlush(target);
@@ -1013,7 +1013,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 没有值 不校验
                 return;
             }
-            E search = getNewInstance();
+            E search = getEntityInstance();
             ReflectUtil.setFieldValue(search, field, fieldValue);
             Example<E> example = Example.of(search);
             Optional<E> exist = repository.findOne(example);
@@ -1030,11 +1030,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>获取一个空实体</h2>
+     * <h2>获取一个空实体对象</h2>
      *
      * @return 实体
      */
-    private @NotNull E getNewInstance() {
+    @NotNull
+    public E getEntityInstance() {
         try {
             return getEntityClass().getConstructor().newInstance();
         } catch (Exception exception) {
@@ -1048,6 +1049,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 类
      */
     private @NotNull Class<E> getEntityClass() {
+        //noinspection unchecked
         return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 

@@ -24,15 +24,15 @@ import java.util.Base64;
 @Accessors(chain = true)
 public class RsaUtil {
     /**
+     * <h2>加密方式</h2>
+     */
+    private static final String CRYPT_METHOD = "RSA";
+
+    /**
      * <h2>加密算法 {@code KEY} 长度</h2>
      */
     private final int CRYPT_KEY_SIZE = 2048;
-
-    /**
-     * <h2>加密方式</h2>
-     */
-    private final String CRYPT_METHOD = "RSA";
-
+    
     /**
      * <h2>公钥</h2>
      */
@@ -60,6 +60,88 @@ public class RsaUtil {
     @Contract(value = " -> new", pure = true)
     public static @NotNull RsaUtil create() {
         return new RsaUtil();
+    }
+
+    /**
+     * <h2>获取一个公钥</h2>
+     *
+     * @param publicKeyString 公钥字符串
+     * @return 公钥
+     * @throws Exception 异常
+     */
+    public static PublicKey getPublicKey(String publicKeyString) throws Exception {
+        KeyFactory keyFactory = KeyFactory.getInstance(CRYPT_METHOD);
+        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString));
+        return keyFactory.generatePublic(x509EncodedKeySpec);
+    }
+
+    /**
+     * <h2>生成 {@code RSA} 密钥对</h2>
+     *
+     * @return {@code KeyPair}
+     */
+    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(CRYPT_METHOD);
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
+    }
+
+    /**
+     * <h2>将公钥转换为 {@code PEM} 格式</h2>
+     *
+     * @param publicKey 公钥
+     * @return {@code PEM}
+     */
+    public static @NotNull String convertPublicKeyToPem(@NotNull PublicKey publicKey) {
+        String base64Encoded = Base64.getEncoder().encodeToString(publicKey.getEncoded());
+        return "-----BEGIN PUBLIC KEY-----\n" +
+                wrapBase64Text(base64Encoded) +
+                "-----END PUBLIC KEY-----";
+    }
+
+    /**
+     * <h2>将私钥转换为 {@code PEM} 格式</h2>
+     *
+     * @param privateKey 私钥
+     * @return {@code PEM}
+     */
+    public static @NotNull String convertPrivateKeyToPem(@NotNull PrivateKey privateKey) {
+        String base64Encoded = Base64.getEncoder().encodeToString(privateKey.getEncoded());
+        return "-----BEGIN RSA PRIVATE KEY-----\n" +
+                wrapBase64Text(base64Encoded) +
+                "-----END RSA PRIVATE KEY-----";
+    }
+
+    /**
+     * <h2>将 {@code Base64} 编码的文本换行</h2>
+     *
+     * @param base64Text 原始 {@code Base64}
+     * @return 换行后的
+     */
+    public static @NotNull String wrapBase64Text(@NotNull String base64Text) {
+        final int wrapLength = 64;
+        StringBuilder wrappedText = new StringBuilder();
+        int start = 0;
+        while (start < base64Text.length()) {
+            int end = Math.min(start + wrapLength, base64Text.length());
+            wrappedText.append(base64Text, start, end).append("\n");
+            start = end;
+        }
+        return wrappedText.toString();
+    }
+
+    /**
+     * <h2>获取一个私钥</h2>
+     *
+     * @param privateKeyString 私钥字符串
+     * @return 私钥
+     * @throws Exception 异常
+     */
+    public static PrivateKey getPrivateKey(String privateKeyString) throws Exception {
+        KeyFactory keyFactory = KeyFactory.getInstance(CRYPT_METHOD);
+        PKCS8EncodedKeySpec private8KeySpec =
+                new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString));
+        return keyFactory.generatePrivate(private8KeySpec);
     }
 
     /**
@@ -158,33 +240,6 @@ public class RsaUtil {
     }
 
     /**
-     * <h2>获取一个公钥</h2>
-     *
-     * @param publicKeyString 公钥字符串
-     * @return 公钥
-     * @throws Exception 异常
-     */
-    private PublicKey getPublicKey(String publicKeyString) throws Exception {
-        KeyFactory keyFactory = KeyFactory.getInstance(CRYPT_METHOD);
-        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString));
-        return keyFactory.generatePublic(x509EncodedKeySpec);
-    }
-
-    /**
-     * <h2>获取一个私钥</h2>
-     *
-     * @param privateKeyString 私钥字符串
-     * @return 私钥
-     * @throws Exception 异常
-     */
-    private PrivateKey getPrivateKey(String privateKeyString) throws Exception {
-        KeyFactory keyFactory = KeyFactory.getInstance(CRYPT_METHOD);
-        PKCS8EncodedKeySpec private8KeySpec =
-                new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString));
-        return keyFactory.generatePrivate(private8KeySpec);
-    }
-
-    /**
      * <h2>{@code RSA} 处理方法</h2>
      *
      * @param cipher      {@code RSA} 实例
@@ -210,60 +265,5 @@ public class RsaUtil {
         byte[] data = byteArrayOutputStream.toByteArray();
         byteArrayOutputStream.close();
         return data;
-    }
-
-    /**
-     * <h2>生成 {@code RSA} 密钥对</h2>
-     *
-     * @return {@code KeyPair}
-     */
-    public final KeyPair generateKeyPair() throws NoSuchAlgorithmException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(CRYPT_METHOD);
-        keyPairGenerator.initialize(2048);
-        return keyPairGenerator.generateKeyPair();
-    }
-
-    /**
-     * <h2>将公钥转换为 {@code PEM} 格式</h2>
-     *
-     * @param publicKey 公钥
-     * @return {@code PEM}
-     */
-    public final @NotNull String convertPublicKeyToPem(@NotNull PublicKey publicKey) {
-        String base64Encoded = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-        return "-----BEGIN PUBLIC KEY-----\n" +
-                wrapBase64Text(base64Encoded) +
-                "-----END PUBLIC KEY-----";
-    }
-
-    /**
-     * <h2>将私钥转换为 {@code PEM} 格式</h2>
-     *
-     * @param privateKey 私钥
-     * @return {@code PEM}
-     */
-    public final @NotNull String convertPrivateKeyToPem(@NotNull PrivateKey privateKey) {
-        String base64Encoded = Base64.getEncoder().encodeToString(privateKey.getEncoded());
-        return "-----BEGIN RSA PRIVATE KEY-----\n" +
-                wrapBase64Text(base64Encoded) +
-                "-----END RSA PRIVATE KEY-----";
-    }
-
-    /**
-     * <h2>将 {@code Base64} 编码的文本换行</h2>
-     *
-     * @param base64Text 原始 {@code Base64}
-     * @return 换行后的
-     */
-    private @NotNull String wrapBase64Text(@NotNull String base64Text) {
-        final int wrapLength = 64;
-        StringBuilder wrappedText = new StringBuilder();
-        int start = 0;
-        while (start < base64Text.length()) {
-            int end = Math.min(start + wrapLength, base64Text.length());
-            wrappedText.append(base64Text, start, end).append("\n");
-            start = end;
-        }
-        return wrappedText.toString();
     }
 }
