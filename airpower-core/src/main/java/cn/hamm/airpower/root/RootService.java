@@ -1151,7 +1151,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 没有配置查询注解 跳过
                 return;
             }
-            Predicate predicate;
             switch (searchMode.value()) {
                 case JOIN:
                     Join<?, ?> payload = root.join(field.getName(), JoinType.INNER);
@@ -1168,7 +1167,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     // 如果不是模糊匹配，走到default分支
                 default:
                     // 强匹配
-                    predicate = builder.equal(root.get(field.getName()), fieldValue);
+                    Predicate predicate = builder.equal(root.get(field.getName()), fieldValue);
                     predicateList.add(predicate);
             }
         });
