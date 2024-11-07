@@ -217,13 +217,12 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      */
     private void filterField(@NotNull Field field, Class<?> filterClass, boolean isDesensitize) {
         Object fieldValue = ReflectUtil.getFieldValue(this, field);
-        Collection<RootModel<?>> collection;
         if (fieldValue instanceof Collection<?>) {
             Class<?> fieldClass = field.getType();
             if (!ReflectUtil.isModel(fieldClass)) {
                 return;
             }
-            collection = CollectionUtil.getCollectWithoutNull(
+            Collection<RootModel<?>> collection = CollectionUtil.getCollectWithoutNull(
                     (Collection<RootModel<?>>) fieldValue, fieldClass
             );
             collection.forEach(item -> item.filterAndDesensitize(filterClass, isDesensitize));
