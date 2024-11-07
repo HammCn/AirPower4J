@@ -993,7 +993,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private void checkUnique(@NotNull E entity) {
         List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
         fields.forEach(field -> {
-            String fieldName = ReflectUtil.getDescription(field);
             Column annotation = ReflectUtil.getAnnotation(Column.class, field);
             if (Objects.isNull(annotation)) {
                 // 不是数据库列 不校验
@@ -1020,7 +1019,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 修改自己 不校验
                 return;
             }
-            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！", fieldName, fieldValue));
+            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！",
+                    ReflectUtil.getDescription(field), fieldValue)
+            );
         });
     }
 
