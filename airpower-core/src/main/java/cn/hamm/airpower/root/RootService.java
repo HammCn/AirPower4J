@@ -149,38 +149,33 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         // 导出到csv并存储文件
         Class<E> entityClass = getEntityClass();
         List<Field> fieldList = new ArrayList<>();
-        List<String> fieldNameList = new ArrayList<>();
-        List<String> headerList = new ArrayList<>();
         ReflectUtil.getFieldList(entityClass).forEach(field -> {
             ExcelColumn excelColumn = ReflectUtil.getAnnotation(ExcelColumn.class, field);
             if (Objects.isNull(excelColumn)) {
                 return;
             }
             fieldList.add(field);
-            fieldNameList.add(field.getName());
-            headerList.add(ReflectUtil.getDescription(field));
         });
 
         List<String> rowList = new ArrayList<>();
         // 添加表头
-        rowList.add(String.join(Constant.COMMA, headerList));
+        rowList.add(String.join(Constant.COMMA, fieldList.stream().map(ReflectUtil::getDescription).toList()));
 
         String json = Json.toString(exportList);
         List<Map<String, Object>> mapList = Json.parse2MapList(json);
         mapList.forEach(map -> {
             List<String> columnList = new ArrayList<>();
-            fieldNameList.forEach(fieldName -> {
+            fieldList.forEach(field -> {
+                final String fieldName = field.getName();
                 Object value = map.get(fieldName);
                 value = prepareExcelColumn(fieldName, value, fieldList);
-                value = value.toString()
+                columnList.add(value.toString()
                         .replaceAll(Constant.COMMA, Constant.SPACE)
-                        .replaceAll(Constant.LINE_BREAK, Constant.SPACE);
-                columnList.add(value.toString());
+                        .replaceAll(Constant.LINE_BREAK, Constant.SPACE));
             });
             rowList.add(String.join(Constant.COMMA, columnList));
         });
-        String content = String.join(Constant.LINE_BREAK, rowList);
-        return new ByteArrayInputStream(content.getBytes());
+        return new ByteArrayInputStream(String.join(Constant.LINE_BREAK, rowList).getBytes());
     }
 
     /**
