@@ -149,8 +149,7 @@ public class HttpUtil {
             case POST -> requestBuilder.POST(bodyPublisher);
             case PUT -> requestBuilder.PUT(bodyPublisher);
             case DELETE -> requestBuilder.DELETE();
-            default -> {
-            }
+            default -> throw new ServiceException("不支持的请求方法");
         }
         if (Objects.nonNull(cookies)) {
             List<String> cookieList = new ArrayList<>();

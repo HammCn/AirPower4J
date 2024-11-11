@@ -149,38 +149,33 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         // 导出到csv并存储文件
         Class<E> entityClass = getEntityClass();
         List<Field> fieldList = new ArrayList<>();
-        List<String> fieldNameList = new ArrayList<>();
-        List<String> headerList = new ArrayList<>();
         ReflectUtil.getFieldList(entityClass).forEach(field -> {
             ExcelColumn excelColumn = ReflectUtil.getAnnotation(ExcelColumn.class, field);
             if (Objects.isNull(excelColumn)) {
                 return;
             }
             fieldList.add(field);
-            fieldNameList.add(field.getName());
-            headerList.add(ReflectUtil.getDescription(field));
         });
 
         List<String> rowList = new ArrayList<>();
         // 添加表头
-        rowList.add(String.join(Constant.COMMA, headerList));
+        rowList.add(String.join(Constant.COMMA, fieldList.stream().map(ReflectUtil::getDescription).toList()));
 
         String json = Json.toString(exportList);
         List<Map<String, Object>> mapList = Json.parse2MapList(json);
         mapList.forEach(map -> {
             List<String> columnList = new ArrayList<>();
-            fieldNameList.forEach(fieldName -> {
+            fieldList.forEach(field -> {
+                final String fieldName = field.getName();
                 Object value = map.get(fieldName);
                 value = prepareExcelColumn(fieldName, value, fieldList);
-                value = value.toString()
+                columnList.add(value.toString()
                         .replaceAll(Constant.COMMA, Constant.SPACE)
-                        .replaceAll(Constant.LINE_BREAK, Constant.SPACE);
-                columnList.add(value.toString());
+                        .replaceAll(Constant.LINE_BREAK, Constant.SPACE));
             });
             rowList.add(String.join(Constant.COMMA, columnList));
         });
-        String content = String.join(Constant.LINE_BREAK, rowList);
-        return new ByteArrayInputStream(content.getBytes());
+        return new ByteArrayInputStream(String.join(Constant.LINE_BREAK, rowList).getBytes());
     }
 
     /**
@@ -998,7 +993,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private void checkUnique(@NotNull E entity) {
         List<Field> fields = ReflectUtil.getFieldList(getEntityClass());
         fields.forEach(field -> {
-            String fieldName = ReflectUtil.getDescription(field);
             Column annotation = ReflectUtil.getAnnotation(Column.class, field);
             if (Objects.isNull(annotation)) {
                 // 不是数据库列 不校验
@@ -1025,7 +1019,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 修改自己 不校验
                 return;
             }
-            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！", fieldName, fieldValue));
+            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！",
+                    ReflectUtil.getDescription(field), fieldValue)
+            );
         });
     }
 
@@ -1155,7 +1151,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 没有配置查询注解 跳过
                 return;
             }
-            Predicate predicate;
             switch (searchMode.value()) {
                 case JOIN:
                     Join<?, ?> payload = root.join(field.getName(), JoinType.INNER);
@@ -1172,7 +1167,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     // 如果不是模糊匹配，走到default分支
                 default:
                     // 强匹配
-                    predicate = builder.equal(root.get(field.getName()), fieldValue);
+                    Predicate predicate = builder.equal(root.get(field.getName()), fieldValue);
                     predicateList.add(predicate);
             }
         });
