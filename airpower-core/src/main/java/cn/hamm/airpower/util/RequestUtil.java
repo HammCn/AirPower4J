@@ -25,7 +25,7 @@ public class RequestUtil {
      * <h2>获取IP地址异常</h2>
      */
     public static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
-    
+
     /**
      * <h2>常用IP反向代理Header头</h2>
      */

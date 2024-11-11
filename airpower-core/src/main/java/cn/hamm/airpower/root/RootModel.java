@@ -71,12 +71,12 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      */
     public final M filterAndDesensitize(@NotNull Class<?> filterClass, boolean isDesensitize) {
         Class<M> clazz = (Class<M>) getClass();
-        List<Field> allFields = ReflectUtil.getFieldList(clazz);
         Exclude exclude = clazz.getAnnotation(Exclude.class);
         // 类中没有标排除 则所有字段全暴露 走黑名单
         boolean isExpose = Objects.nonNull(exclude) && Arrays.asList(exclude.filters()).contains(filterClass);
         BiConsumer<@NotNull Field, @NotNull Class<?>> task = isExpose ? this::exposeBy : this::excludeBy;
         Consumer<@NotNull Field> desensitize = this::desensitize;
+        List<Field> allFields = ReflectUtil.getFieldList(clazz);
         allFields.forEach(field -> {
             if (!Objects.equals(Void.class, filterClass)) {
                 task.accept(field, filterClass);
@@ -217,13 +217,12 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      */
     private void filterField(@NotNull Field field, Class<?> filterClass, boolean isDesensitize) {
         Object fieldValue = ReflectUtil.getFieldValue(this, field);
-        Collection<RootModel<?>> collection;
         if (fieldValue instanceof Collection<?>) {
             Class<?> fieldClass = field.getType();
             if (!ReflectUtil.isModel(fieldClass)) {
                 return;
             }
-            collection = CollectionUtil.getCollectWithoutNull(
+            Collection<RootModel<?>> collection = CollectionUtil.getCollectWithoutNull(
                     (Collection<RootModel<?>>) fieldValue, fieldClass
             );
             collection.forEach(item -> item.filterAndDesensitize(filterClass, isDesensitize));

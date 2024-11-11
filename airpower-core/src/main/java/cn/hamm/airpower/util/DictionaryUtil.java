@@ -88,19 +88,19 @@ public class DictionaryUtil {
             @NotNull Class<D> clazz, IFunction<D, Object>... lambdas
     ) {
         List<Map<String, Object>> mapList = new ArrayList<>();
-        for (D obj : clazz.getEnumConstants()) {
-            //取出所有枚举类型
+        //取出所有枚举类型
+        Arrays.stream(clazz.getEnumConstants()).forEach(obj -> {
             Map<String, Object> item = new HashMap<>(lambdas.length);
-            for (IFunction<D, Object> lambda : lambdas) {
-                // 依次取出参数的值
+            // 依次取出参数的值
+            Arrays.stream(lambdas).forEach(lambda -> {
                 try {
                     item.put(StringUtils.uncapitalize(ReflectUtil.getLambdaFunctionName(lambda)), lambda.apply(obj));
                 } catch (Exception exception) {
                     log.error(exception.getMessage(), exception);
                 }
-            }
+            });
             mapList.add(item);
-        }
+        });
         return mapList;
     }
 }
