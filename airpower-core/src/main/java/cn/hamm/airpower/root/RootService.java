@@ -330,7 +330,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>修改后置方法</h2>
      *
      * <p>
-     * {@code 请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以避免循环调用}
+     * 请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以 {@code 避免循环} 调用
      * </p>
      * <p>
      * 如需再次保存，请调用 {@link #updateToDatabase(E)}
