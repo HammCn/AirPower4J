@@ -132,7 +132,7 @@ public class PermissionUtil {
                 String className = metadataReader.getClassMetadata().getClassName();
                 Class<?> clazz = Class.forName(className);
 
-                ApiController apiController = ReflectUtil.getAnnotation(ApiController.class, clazz);
+                ApiController apiController = clazz.getAnnotation(ApiController.class);
                 if (Objects.isNull(apiController)) {
                     // 不是rest控制器或者是指定的几个白名单控制器
                     continue;
