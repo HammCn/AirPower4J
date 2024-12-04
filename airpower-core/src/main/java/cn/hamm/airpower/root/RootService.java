@@ -725,20 +725,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>尝试获取当前登录用户 {@code ID}</h2>
-     *
-     * @return 用户 {@code ID}
-     */
-    private long tryToGetCurrentUserId() {
-        try {
-            String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
-            return AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
-        } catch (Exception exception) {
-            return Constant.ZERO_LONG;
-        }
-    }
-
-    /**
      * <h2>导出查询</h2>
      *
      * @param queryListRequest 查询请求
