@@ -269,9 +269,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         source = beforeAdd(source);
         ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
-        if (Objects.isNull(source.getRemark())) {
-            source.setRemark(Constant.EMPTY_STRING);
-        }
         E finalSource = source;
         long id = saveToDatabase(source);
         TaskUtil.run(() -> afterAdd(id, finalSource));
@@ -904,10 +901,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             entityManager.clear();
             // 有ID 走修改 且不允许修改下列字段
             E existEntity = getById(entity.getId());
-            if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
-                // 如果数据库是null 且 传入的也是null 签名给空字符串
-                entity.setRemark(Constant.EMPTY_STRING);
-            }
             entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
         }
         if (Objects.isNull(entity.getCreateUserId())) {
@@ -921,10 +914,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         entityManager.clear();
         // 有ID 走修改 且不允许修改下列字段
         E existEntity = getById(entity.getId());
-        if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
-            // 如果数据库是null 且 传入的也是null 签名给空字符串
-            entity.setRemark(Constant.EMPTY_STRING);
-        }
         if (Objects.isNull(entity.getUpdateUserId())) {
             entity.setUpdateUserId(tryToGetCurrentUserId());
         }

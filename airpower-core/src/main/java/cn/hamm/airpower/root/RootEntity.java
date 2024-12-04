@@ -51,13 +51,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @NotNull(groups = {WhenUpdate.class, WhenIdRequired.class}, message = "ID不能为空")
     private Long id;
 
-    @Description("备注")
-    @Search(Search.Mode.LIKE)
-    @Column(columnDefinition = "text comment '备注'")
-    @Length(max = 1000, message = "备注最多允许{max}个字符")
-    @ExcelColumn
-    private String remark;
-
     @Description("是否禁用")
     @ReadOnly
     @Search(Search.Mode.EQUALS)
@@ -114,17 +107,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @Override
     public E setId(Long id) {
         this.id = id;
-        return (E) this;
-    }
-
-    /**
-     * <h2>设置备注</h2>
-     *
-     * @param remark 备注
-     * @return 备注
-     */
-    public E setRemark(String remark) {
-        this.remark = remark;
         return (E) this;
     }
 
@@ -193,7 +175,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
                 .setUpdateTime(null)
                 .setCreateUserId(null)
                 .setUpdateUserId(null)
-                .setRemark(null)
                 .setIsDisabled(null);
     }
 
