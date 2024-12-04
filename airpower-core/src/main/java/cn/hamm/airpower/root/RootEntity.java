@@ -64,18 +64,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @ExcelColumn(ExcelColumn.Type.DATETIME)
     private Long createTime;
 
-    @Description("创建人ID")
-    @ReadOnly
-    @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建人ID'")
-    @ExcelColumn(ExcelColumn.Type.NUMBER)
-    private Long createUserId;
-
-    @Description("修改人ID")
-    @ReadOnly
-    @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改人ID'")
-    @ExcelColumn(ExcelColumn.Type.NUMBER)
-    private Long updateUserId;
-
     @Description("修改时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改时间'")
@@ -133,28 +121,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置创建人 {@code ID}</h2>
-     *
-     * @param createUserId 创建人 {@code ID}
-     * @return 实体
-     */
-    public E setCreateUserId(Long createUserId) {
-        this.createUserId = createUserId;
-        return (E) this;
-    }
-
-    /**
-     * <h2>设置修改人 {@code ID}</h2>
-     *
-     * @param updateUserId 修改人 {@code ID}
-     * @return 实体
-     */
-    public E setUpdateUserId(Long updateUserId) {
-        this.updateUserId = updateUserId;
-        return (E) this;
-    }
-
-    /**
      * <h2>设置更新时间</h2>
      *
      * @param updateTime 更新时间
@@ -173,8 +139,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     public void excludeBaseData() {
         setCreateTime(null)
                 .setUpdateTime(null)
-                .setCreateUserId(null)
-                .setUpdateUserId(null)
                 .setIsDisabled(null);
     }
 

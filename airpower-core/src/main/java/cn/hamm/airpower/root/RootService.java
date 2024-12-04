@@ -903,9 +903,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             E existEntity = getById(entity.getId());
             entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
         }
-        if (Objects.isNull(entity.getCreateUserId())) {
-            entity.setCreateUserId(tryToGetCurrentUserId());
-        }
         if (Objects.isNull(entity.getId())) {
             // 新增
             return saveAndFlush(entity);
@@ -914,9 +911,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         entityManager.clear();
         // 有ID 走修改 且不允许修改下列字段
         E existEntity = getById(entity.getId());
-        if (Objects.isNull(entity.getUpdateUserId())) {
-            entity.setUpdateUserId(tryToGetCurrentUserId());
-        }
         entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
         return saveAndFlush(entity);
     }
