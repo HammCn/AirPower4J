@@ -146,9 +146,7 @@ public class RedisHelper {
     public final void clearAll(String pattern) {
         try {
             Set<String> keys = redisTemplate.keys(pattern);
-            if (Objects.nonNull(keys)) {
-                redisTemplate.delete(keys);
-            }
+            redisTemplate.delete(keys);
         } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
             ServiceError.REDIS_ERROR.show();
@@ -163,7 +161,6 @@ public class RedisHelper {
      */
     public final long getExpireSecond(String key) {
         try {
-            //noinspection ConstantConditions
             return redisTemplate.getExpire(key, TimeUnit.SECONDS);
         } catch (Exception exception) {
             log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
@@ -180,7 +177,6 @@ public class RedisHelper {
      */
     public final boolean hasKey(String key) {
         try {
-            //noinspection ConstantConditions
             return redisTemplate.hasKey(key);
         } catch (Exception ignored) {
             return false;
