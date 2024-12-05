@@ -22,6 +22,6 @@ public class Sort {
     /**
      * <h2>排序方法</h2>
      */
-    @Description("排序方法")
+    @Description("排序方向")
     private String direction;
 }

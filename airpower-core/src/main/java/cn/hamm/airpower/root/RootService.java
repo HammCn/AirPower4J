@@ -1049,16 +1049,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             sort.setField(serviceConfig.getDefaultSortField());
         }
 
-        if (!StringUtils.hasText(sort.getDirection())) {
-            sort.setDirection(serviceConfig.getDefaultSortDirection());
-        }
-        if (!Objects.equals(sort.getDirection(), serviceConfig.getDefaultSortDirection())) {
+        if (Objects.isNull(sort.getDirection()) || !Constant.ASC.equalsIgnoreCase(sort.getDirection())) {
+            // 未传入 或者传入不是明确的 ASC，那就DESC
             return org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Order.asc(sort.getField())
+                    org.springframework.data.domain.Sort.Order.desc(sort.getField())
             );
         }
         return org.springframework.data.domain.Sort.by(
-                org.springframework.data.domain.Sort.Order.desc(sort.getField())
+                org.springframework.data.domain.Sort.Order.asc(sort.getField())
         );
     }
 

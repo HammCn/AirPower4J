@@ -59,11 +59,6 @@ public class ServiceConfig {
     private String defaultSortField = Constant.CREATE_TIME_FIELD;
 
     /**
-     * <h2>默认排序方向</h2>
-     */
-    private String defaultSortDirection = "desc";
-
-    /**
      * <h2>身份令牌 {@code header} 的 {@code key}</h2>
      */
     private String authorizeHeader = HttpHeaders.AUTHORIZATION;
