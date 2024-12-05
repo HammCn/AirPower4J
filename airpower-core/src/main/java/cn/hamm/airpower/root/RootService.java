@@ -491,7 +491,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param filter 全匹配过滤器
      * @return List数据
      */
-    public final @NotNull List<E> filter(E filter) {
+    public final @NotNull List<E> filter(@Nullable E filter) {
         return filter(filter, null);
     }
 
@@ -502,7 +502,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param sort   排序
      * @return List数据
      */
-    public final @NotNull List<E> filter(E filter, Sort sort) {
+    public final @NotNull List<E> filter(@Nullable E filter, @Nullable Sort sort) {
         QueryListRequest<E> queryListRequest = new QueryListRequest<>();
         filter = Objects.requireNonNullElse(filter, getEntityInstance());
         queryListRequest.setFilter(filter);
@@ -1058,9 +1058,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param sort 排序对象
      * @return Sort {@code Spring} 的排序对象
      */
-    private @NotNull org.springframework.data.domain.Sort createSort(Sort sort) {
+    private @NotNull org.springframework.data.domain.Sort createSort(@Nullable Sort sort) {
         sort = Objects.requireNonNullElse(sort, new Sort());
-
         if (!StringUtils.hasText(sort.getField())) {
             sort.setField(serviceConfig.getDefaultSortField());
         }
