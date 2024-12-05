@@ -490,9 +490,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final @NotNull List<E> filter(@Nullable E filter, @Nullable Sort sort) {
         filter = Objects.requireNonNullElse(filter, getEntityInstance());
-        return repository.findAll(
-                createSpecification(filter, true), createSort(sort)
-        );
+        return repository.findAll(createSpecification(filter, true), createSort(sort));
     }
 
     /**
