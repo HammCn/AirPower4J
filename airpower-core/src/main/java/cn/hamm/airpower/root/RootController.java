@@ -1,8 +1,6 @@
 package cn.hamm.airpower.root;
 
-import cn.hamm.airpower.annotation.ApiController;
 import cn.hamm.airpower.annotation.Permission;
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Hamm.cn
  */
 @Permission(login = false)
-@ApiController(Constant.EMPTY_STRING)
 @Slf4j
 public class RootController implements IAction {
     @Autowired
