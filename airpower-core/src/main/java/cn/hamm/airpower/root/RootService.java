@@ -467,7 +467,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final @NotNull List<E> getList(QueryListRequest<E> queryListRequest) {
         queryListRequest = requireWithFilterNonNullElse(queryListRequest, new QueryListRequest<>());
         queryListRequest = beforeGetList(queryListRequest);
-        List<E> list = queryList(queryListRequest);
+        List<E> list = query(queryListRequest);
         return afterGetList(list);
     }
 
@@ -717,7 +717,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private @NotNull List<E> exportQuery(QueryListRequest<E> queryListRequest) {
         queryListRequest = requireWithFilterNonNullElse(queryListRequest, new QueryListRequest<>());
         queryListRequest = beforeExportQuery(queryListRequest);
-        List<E> list = queryList(queryListRequest);
+        List<E> list = query(queryListRequest);
         return afterExportQuery(list);
     }
 
@@ -727,7 +727,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param queryListRequest 查询请求
      * @return 查询结果数据列表
      */
-    private @NotNull List<E> queryList(@NotNull QueryListRequest<E> queryListRequest) {
+    private @NotNull List<E> query(@NotNull QueryListRequest<E> queryListRequest) {
         return repository.findAll(
                 createSpecification(queryListRequest.getFilter(), false), createSort(queryListRequest.getSort())
         );
