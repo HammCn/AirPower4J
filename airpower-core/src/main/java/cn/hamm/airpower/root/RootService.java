@@ -269,9 +269,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         source = beforeAdd(source);
         ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
-        if (Objects.isNull(source.getRemark())) {
-            source.setRemark(Constant.EMPTY_STRING);
-        }
         E finalSource = source;
         long id = saveToDatabase(source);
         TaskUtil.run(() -> afterAdd(id, finalSource));
@@ -330,7 +327,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h2>修改后置方法</h2>
      *
      * <p>
-     * {@code 请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以避免循环调用}
+     * 请不要在重写此方法后再次调用 {@link #update(E)  } 与 {@link #updateWithNull(E)} 以 {@code 避免循环} 调用
      * </p>
      * <p>
      * 如需再次保存，请调用 {@link #updateToDatabase(E)}
@@ -475,26 +472,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>查询前置方法</h2>
-     *
-     * @param queryListRequest 查询请求
-     * @return 处理后的查询请求
-     * <ul>
-     *     <li>{@link #getList(QueryListRequest)} {@link #getPage(QueryPageRequest)} {@link #createExportTask(QueryListRequest)}均会触发此前置方法</li>
-     *     <li>{@link #beforeGetList(QueryListRequest)} {@link #beforeGetPage(QueryPageRequest)} {@link #beforeExportQuery(QueryListRequest)} 先触发</li>
-     * </ul>
-     */
-    protected QueryListRequest<E> beforeQuery(@NotNull QueryListRequest<E> queryListRequest) {
-        return queryListRequest;
-    }
-
-    /**
      * <h2>过滤数据</h2>
      *
      * @param filter 全匹配过滤器
      * @return List数据
      */
-    public final @NotNull List<E> filter(E filter) {
+    public final @NotNull List<E> filter(@Nullable E filter) {
         return filter(filter, null);
     }
 
@@ -505,10 +488,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param sort   排序
      * @return List数据
      */
-    public final @NotNull List<E> filter(E filter, Sort sort) {
-        QueryListRequest<E> queryListRequest = new QueryListRequest<>();
+    public final @NotNull List<E> filter(@Nullable E filter, @Nullable Sort sort) {
         filter = Objects.requireNonNullElse(filter, getEntityInstance());
-        queryListRequest.setFilter(filter);
         return repository.findAll(createSpecification(filter, true), createSort(sort));
     }
 
@@ -629,7 +610,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #beforeGetPage(QueryPageRequest)
      * @see #afterGetPage(QueryPageResponse)
      */
-    public final @NotNull QueryPageResponse<E> getPage(QueryPageRequest<E> queryPageRequest) {
+    public final @NotNull QueryPageResponse<E> getPage(@Nullable QueryPageRequest<E> queryPageRequest) {
         queryPageRequest = requireWithFilterNonNullElse(queryPageRequest, new QueryPageRequest<>());
         queryPageRequest = beforeGetPage(queryPageRequest);
         org.springframework.data.domain.Page<E> pageData = repository.findAll(
@@ -728,20 +709,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h2>尝试获取当前登录用户 {@code ID}</h2>
-     *
-     * @return 用户 {@code ID}
-     */
-    private long tryToGetCurrentUserId() {
-        try {
-            String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
-            return AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
-        } catch (Exception exception) {
-            return Constant.ZERO_LONG;
-        }
-    }
-
-    /**
      * <h2>导出查询</h2>
      *
      * @param queryListRequest 查询请求
@@ -761,7 +728,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 查询结果数据列表
      */
     private @NotNull List<E> query(@NotNull QueryListRequest<E> queryListRequest) {
-        queryListRequest = beforeQuery(queryListRequest);
         return repository.findAll(
                 createSpecification(queryListRequest.getFilter(), false), createSort(queryListRequest.getSort())
         );
@@ -904,14 +870,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             entityManager.clear();
             // 有ID 走修改 且不允许修改下列字段
             E existEntity = getById(entity.getId());
-            if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
-                // 如果数据库是null 且 传入的也是null 签名给空字符串
-                entity.setRemark(Constant.EMPTY_STRING);
-            }
             entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
-        }
-        if (Objects.isNull(entity.getCreateUserId())) {
-            entity.setCreateUserId(tryToGetCurrentUserId());
         }
         if (Objects.isNull(entity.getId())) {
             // 新增
@@ -921,13 +880,6 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         entityManager.clear();
         // 有ID 走修改 且不允许修改下列字段
         E existEntity = getById(entity.getId());
-        if (Objects.isNull(existEntity.getRemark()) && Objects.isNull(entity.getRemark())) {
-            // 如果数据库是null 且 传入的也是null 签名给空字符串
-            entity.setRemark(Constant.EMPTY_STRING);
-        }
-        if (Objects.isNull(entity.getUpdateUserId())) {
-            entity.setUpdateUserId(tryToGetCurrentUserId());
-        }
         entity = withNull ? entity : getEntityForUpdate(entity, existEntity);
         return saveAndFlush(entity);
     }
@@ -1019,7 +971,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 修改自己 不校验
                 return;
             }
-            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (ID:%s) 已经存在，请修改后重新提交！",
+            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (%s) 已经存在，请修改后重新提交！",
                     ReflectUtil.getDescription(field), fieldValue)
             );
         });
@@ -1089,23 +1041,20 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param sort 排序对象
      * @return Sort {@code Spring} 的排序对象
      */
-    private @NotNull org.springframework.data.domain.Sort createSort(Sort sort) {
+    private @NotNull org.springframework.data.domain.Sort createSort(@Nullable Sort sort) {
         sort = Objects.requireNonNullElse(sort, new Sort());
-
         if (!StringUtils.hasText(sort.getField())) {
             sort.setField(serviceConfig.getDefaultSortField());
         }
 
-        if (!StringUtils.hasText(sort.getDirection())) {
-            sort.setDirection(serviceConfig.getDefaultSortDirection());
-        }
-        if (!Objects.equals(sort.getDirection(), serviceConfig.getDefaultSortDirection())) {
+        if (Objects.isNull(sort.getDirection()) || !Constant.ASC.equalsIgnoreCase(sort.getDirection())) {
+            // 未传入 或者传入不是明确的 ASC，那就DESC
             return org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Order.asc(sort.getField())
+                    org.springframework.data.domain.Sort.Order.desc(sort.getField())
             );
         }
         return org.springframework.data.domain.Sort.by(
-                org.springframework.data.domain.Sort.Order.desc(sort.getField())
+                org.springframework.data.domain.Sort.Order.asc(sort.getField())
         );
     }
 

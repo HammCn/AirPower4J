@@ -19,7 +19,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 
@@ -51,13 +50,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @NotNull(groups = {WhenUpdate.class, WhenIdRequired.class}, message = "ID不能为空")
     private Long id;
 
-    @Description("备注")
-    @Search(Search.Mode.LIKE)
-    @Column(columnDefinition = "text comment '备注'")
-    @Length(max = 1000, message = "备注最多允许{max}个字符")
-    @ExcelColumn
-    private String remark;
-
     @Description("是否禁用")
     @ReadOnly
     @Search(Search.Mode.EQUALS)
@@ -70,18 +62,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建时间'")
     @ExcelColumn(ExcelColumn.Type.DATETIME)
     private Long createTime;
-
-    @Description("创建人ID")
-    @ReadOnly
-    @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建人ID'")
-    @ExcelColumn(ExcelColumn.Type.NUMBER)
-    private Long createUserId;
-
-    @Description("修改人ID")
-    @ReadOnly
-    @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改人ID'")
-    @ExcelColumn(ExcelColumn.Type.NUMBER)
-    private Long updateUserId;
 
     @Description("修改时间")
     @ReadOnly
@@ -118,17 +98,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置备注</h2>
-     *
-     * @param remark 备注
-     * @return 备注
-     */
-    public E setRemark(String remark) {
-        this.remark = remark;
-        return (E) this;
-    }
-
-    /**
      * <h2>设置是否禁用</h2>
      *
      * @param isDisabled 禁用
@@ -151,28 +120,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置创建人 {@code ID}</h2>
-     *
-     * @param createUserId 创建人 {@code ID}
-     * @return 实体
-     */
-    public E setCreateUserId(Long createUserId) {
-        this.createUserId = createUserId;
-        return (E) this;
-    }
-
-    /**
-     * <h2>设置修改人 {@code ID}</h2>
-     *
-     * @param updateUserId 修改人 {@code ID}
-     * @return 实体
-     */
-    public E setUpdateUserId(Long updateUserId) {
-        this.updateUserId = updateUserId;
-        return (E) this;
-    }
-
-    /**
      * <h2>设置更新时间</h2>
      *
      * @param updateTime 更新时间
@@ -191,9 +138,6 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     public void excludeBaseData() {
         setCreateTime(null)
                 .setUpdateTime(null)
-                .setCreateUserId(null)
-                .setUpdateUserId(null)
-                .setRemark(null)
                 .setIsDisabled(null);
     }
 
