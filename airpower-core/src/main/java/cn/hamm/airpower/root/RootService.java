@@ -467,7 +467,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     public final @NotNull List<E> getList(QueryListRequest<E> queryListRequest) {
         queryListRequest = requireWithFilterNonNullElse(queryListRequest, new QueryListRequest<>());
         queryListRequest = beforeGetList(queryListRequest);
-        List<E> list = query(queryListRequest, false);
+        List<E> list = queryList(queryListRequest);
         return afterGetList(list);
     }
 
@@ -478,7 +478,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return List数据
      */
     public final @NotNull List<E> filter(@Nullable E filter) {
-        return filter(filter, null, null);
+        return filter(filter, null);
     }
 
     /**
@@ -489,35 +489,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return List数据
      */
     public final @NotNull List<E> filter(@Nullable E filter, @Nullable Sort sort) {
-        return filter(filter, sort, null);
-    }
-
-    /**
-     * <h2>过滤数据</h2>
-     *
-     * @param filter 全匹配过滤器
-     * @param page   分页
-     * @return List数据
-     */
-    public final @NotNull List<E> filter(@Nullable E filter, @Nullable Page page) {
-        return filter(filter, null, page);
-    }
-
-    /**
-     * <h2>过滤数据</h2>
-     *
-     * @param filter 全匹配过滤器
-     * @param sort   排序
-     * @param page   分页
-     * @return List数据
-     */
-    public final @NotNull List<E> filter(@Nullable E filter, @Nullable Sort sort, @Nullable Page page) {
-        QueryPageRequest<E> queryPageRequest = new QueryPageRequest<>();
-        queryPageRequest.setSort(sort);
         filter = Objects.requireNonNullElse(filter, getEntityInstance());
-        queryPageRequest.setFilter(filter);
-        queryPageRequest.setPage(page);
-        return query(queryPageRequest, true);
+        return repository.findAll(
+                createSpecification(filter, true), createSort(sort)
+        );
     }
 
     /**
@@ -744,36 +719,20 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     private @NotNull List<E> exportQuery(QueryListRequest<E> queryListRequest) {
         queryListRequest = requireWithFilterNonNullElse(queryListRequest, new QueryListRequest<>());
         queryListRequest = beforeExportQuery(queryListRequest);
-        List<E> list = query(queryListRequest, false);
+        List<E> list = queryList(queryListRequest);
         return afterExportQuery(list);
     }
 
     /**
      * <h2>查询数据</h2>
      *
-     * @param queryPageRequest 查询请求
-     * @param isEqual          是否为精确查询
-     * @return 查询结果数据列表
-     */
-    private @NotNull List<E> query(@NotNull QueryPageRequest<E> queryPageRequest, boolean isEqual) {
-        return repository.findAll(
-                createSpecification(queryPageRequest.getFilter(), isEqual), createPageable(queryPageRequest)
-        ).getContent();
-    }
-
-    /**
-     * <h2>查询数据</h2>
-     *
      * @param queryListRequest 查询请求
-     * @param isEqual          是否为精确查询
      * @return 查询结果数据列表
      */
-    private @NotNull List<E> query(@NotNull QueryListRequest<E> queryListRequest, boolean isEqual) {
-        QueryPageRequest<E> queryPageRequest = new QueryPageRequest<>();
-        queryPageRequest.setFilter(queryListRequest.getFilter());
-        queryPageRequest.setSort(queryListRequest.getSort());
-        queryPageRequest.setPage(null);
-        return query(queryPageRequest, isEqual);
+    private @NotNull List<E> queryList(@NotNull QueryListRequest<E> queryListRequest) {
+        return repository.findAll(
+                createSpecification(queryListRequest.getFilter(), false), createSort(queryListRequest.getSort())
+        );
     }
 
     /**
