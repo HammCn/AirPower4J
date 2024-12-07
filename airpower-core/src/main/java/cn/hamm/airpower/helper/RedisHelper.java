@@ -234,7 +234,7 @@ public class RedisHelper {
     public final void set(String key, Object value, long second) {
         try {
             if (second > 0) {
-                redisTemplate.opsForValue().set(key, value, second, TimeUnit.SECONDS);
+                redisTemplate.opsForValue().set(key, value.toString(), second, TimeUnit.SECONDS);
             } else {
                 set(key, value);
             }

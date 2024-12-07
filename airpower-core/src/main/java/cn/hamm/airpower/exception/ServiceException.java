@@ -41,20 +41,20 @@ public class ServiceException extends RuntimeException implements IException {
     /**
      * <h2>直接抛出一个异常</h2>
      *
-     * @param errorCode 异常
+     * @param serviceError 异常
      */
-    public ServiceException(@NotNull ServiceError errorCode) {
-        setCode(errorCode.getCode()).setMessage(errorCode.getMessage());
+    public ServiceException(@NotNull ServiceError serviceError) {
+        setCode(serviceError.getCode()).setMessage(serviceError.getMessage());
     }
 
     /**
      * <h2>直接抛出一个异常</h2>
      *
-     * @param errorCode 异常
+     * @param serviceError 异常
      * @param message   错误信息
      */
-    public ServiceException(@NotNull ServiceError errorCode, String message) {
-        setCode(errorCode.getCode()).setMessage(message);
+    public ServiceException(@NotNull ServiceError serviceError, String message) {
+        setCode(serviceError.getCode()).setMessage(message);
     }
 
     /**

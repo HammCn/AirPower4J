@@ -8,6 +8,7 @@ import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.MqttHelper;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.AccessTokenUtil;
+import cn.hamm.airpower.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.jetbrains.annotations.Contract;
@@ -84,7 +85,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         if (webSocketConfig.getPing().equalsIgnoreCase(message)) {
             try {
                 session.sendMessage(new TextMessage(webSocketConfig.getPong()));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("发送Websocket消息失败: {}", e.getMessage());
             }
             return;
@@ -147,6 +148,16 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             default -> throw new RuntimeException("WebSocket暂不支持");
         }
         userIdHashMap.put(session.getId(), userId);
+        TaskUtil.run(() -> afterConnectSuccess(session));
+    }
+
+    /**
+     * <h2>连接成功后置方法</h2>
+     *
+     * @param session 会话
+     */
+    protected void afterConnectSuccess(@NonNull WebSocketSession session) {
+
     }
 
     /**
@@ -245,9 +256,21 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             if (Objects.nonNull(userIdHashMap.get(sessionId))) {
                 userIdHashMap.remove(sessionId);
             }
+            TaskUtil.run(() -> {
+                afterDisconnect(session);
+            });
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
+    }
+
+    /**
+     * <h2>断开连接后置方法</h2>
+     *
+     * @param session 会话
+     */
+    protected void afterDisconnect(@NonNull WebSocketSession session) {
+
     }
 
     @Contract(pure = true)
