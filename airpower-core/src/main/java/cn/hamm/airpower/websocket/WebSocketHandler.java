@@ -85,7 +85,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         if (webSocketConfig.getPing().equalsIgnoreCase(message)) {
             try {
                 session.sendMessage(new TextMessage(webSocketConfig.getPong()));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("发送Websocket消息失败: {}", e.getMessage());
             }
             return;
