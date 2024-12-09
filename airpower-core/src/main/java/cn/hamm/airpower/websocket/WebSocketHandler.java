@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.*;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -243,6 +244,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     public final void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         try {
             String sessionId = session.getId();
+            Long userId = userIdHashMap.get(session.getId());
             if (Objects.nonNull(redisConnectionHashMap.get(sessionId))) {
                 redisConnectionHashMap.remove(sessionId).close();
             }
@@ -252,9 +254,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             if (Objects.nonNull(userIdHashMap.get(sessionId))) {
                 userIdHashMap.remove(sessionId);
             }
-            TaskUtil.run(() -> {
-                afterDisconnect(session);
-            });
+            TaskUtil.run(() -> afterDisconnect(session, userId));
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
@@ -264,8 +264,9 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      * <h2>断开连接后置方法</h2>
      *
      * @param session 会话
+     * @param userId  用户 {@code ID}
      */
-    protected void afterDisconnect(@NonNull WebSocketSession session) {
+    protected void afterDisconnect(@NonNull WebSocketSession session, @Nullable Long userId) {
 
     }
 
@@ -361,5 +362,43 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         Subscription subscription = redisConnection.getSubscription();
         ServiceError.WEBSOCKET_ERROR.whenNull(subscription, "subscription is null");
         return subscription;
+    }
+
+    /**
+     * <h1>订阅</h1>
+     *
+     * @param channel 频道
+     * @param session WebSocket会话
+     */
+    protected final void subscribe(String channel, WebSocketSession session) {
+        switch (webSocketConfig.getSupport()) {
+            case REDIS:
+                redisSubscribe(channel, session);
+                break;
+            case MQTT:
+                mqttSubscribe(channel, session);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * <h1>取消订阅</h1>
+     *
+     * @param channel 频道
+     * @param session WebSocket会话
+     */
+    protected final void unsubscribe(String channel, WebSocketSession session) {
+        switch (webSocketConfig.getSupport()) {
+            case REDIS:
+                redisUnSubscribe(channel, session);
+                break;
+            case MQTT:
+                mqttUnSubscribe(channel, session);
+                break;
+            default:
+                break;
+        }
     }
 }
