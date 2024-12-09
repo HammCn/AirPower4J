@@ -90,12 +90,8 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             }
             return;
         }
-        try {
-            WebSocketPayload webSocketPayload = Json.parse(message, WebSocketPayload.class);
-            onWebSocketPayload(webSocketPayload, session);
-        } catch (Exception exception) {
-            log.error("解析Websocket事件负载失败: {}", exception.getMessage());
-        }
+        WebSocketPayload webSocketPayload = Json.parse(message, WebSocketPayload.class);
+        onWebSocketPayload(webSocketPayload, session);
     }
 
     /**
