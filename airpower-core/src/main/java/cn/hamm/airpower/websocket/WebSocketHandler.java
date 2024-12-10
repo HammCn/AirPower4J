@@ -8,6 +8,7 @@ import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.MqttHelper;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.util.AccessTokenUtil;
+import cn.hamm.airpower.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.jetbrains.annotations.Contract;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.*;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -84,17 +86,13 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         if (webSocketConfig.getPing().equalsIgnoreCase(message)) {
             try {
                 session.sendMessage(new TextMessage(webSocketConfig.getPong()));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("发送Websocket消息失败: {}", e.getMessage());
             }
             return;
         }
-        try {
-            WebSocketPayload webSocketPayload = Json.parse(message, WebSocketPayload.class);
-            onWebSocketPayload(webSocketPayload, session);
-        } catch (Exception exception) {
-            log.error("解析Websocket事件负载失败: {}", exception.getMessage());
-        }
+        WebSocketPayload webSocketPayload = Json.parse(message, WebSocketPayload.class);
+        onWebSocketPayload(webSocketPayload, session);
     }
 
     /**
@@ -117,7 +115,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      *
      * @param webSocketPayload 负载对象
      */
-    public void onWebSocketPayload(@NotNull WebSocketPayload webSocketPayload, @NotNull WebSocketSession session) {
+    protected void onWebSocketPayload(@NotNull WebSocketPayload webSocketPayload, @NotNull WebSocketSession session) {
         log.info("负载类型: {}, 负载内容: {}", webSocketPayload.getType(), webSocketPayload.getData());
     }
 
@@ -147,6 +145,16 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             default -> throw new RuntimeException("WebSocket暂不支持");
         }
         userIdHashMap.put(session.getId(), userId);
+        TaskUtil.run(() -> afterConnectSuccess(session));
+    }
+
+    /**
+     * <h2>连接成功后置方法</h2>
+     *
+     * @param session 会话
+     */
+    protected void afterConnectSuccess(@NonNull WebSocketSession session) {
+
     }
 
     /**
@@ -236,6 +244,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     public final void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         try {
             String sessionId = session.getId();
+            Long userId = userIdHashMap.get(session.getId());
             if (Objects.nonNull(redisConnectionHashMap.get(sessionId))) {
                 redisConnectionHashMap.remove(sessionId).close();
             }
@@ -245,9 +254,20 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             if (Objects.nonNull(userIdHashMap.get(sessionId))) {
                 userIdHashMap.remove(sessionId);
             }
+            TaskUtil.run(() -> afterDisconnect(session, userId));
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
+    }
+
+    /**
+     * <h2>断开连接后置方法</h2>
+     *
+     * @param session 会话
+     * @param userId  用户 {@code ID}
+     */
+    protected void afterDisconnect(@NonNull WebSocketSession session, @Nullable Long userId) {
+
     }
 
     @Contract(pure = true)
@@ -342,5 +362,43 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         Subscription subscription = redisConnection.getSubscription();
         ServiceError.WEBSOCKET_ERROR.whenNull(subscription, "subscription is null");
         return subscription;
+    }
+
+    /**
+     * <h1>订阅</h1>
+     *
+     * @param channel 频道
+     * @param session WebSocket会话
+     */
+    protected final void subscribe(String channel, WebSocketSession session) {
+        switch (webSocketConfig.getSupport()) {
+            case REDIS:
+                redisSubscribe(channel, session);
+                break;
+            case MQTT:
+                mqttSubscribe(channel, session);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * <h1>取消订阅</h1>
+     *
+     * @param channel 频道
+     * @param session WebSocket会话
+     */
+    protected final void unsubscribe(String channel, WebSocketSession session) {
+        switch (webSocketConfig.getSupport()) {
+            case REDIS:
+                redisUnSubscribe(channel, session);
+                break;
+            case MQTT:
+                mqttUnSubscribe(channel, session);
+                break;
+            default:
+                break;
+        }
     }
 }
