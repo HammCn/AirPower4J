@@ -115,7 +115,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      *
      * @param webSocketPayload 负载对象
      */
-    public void onWebSocketPayload(@NotNull WebSocketPayload webSocketPayload, @NotNull WebSocketSession session) {
+    protected void onWebSocketPayload(@NotNull WebSocketPayload webSocketPayload, @NotNull WebSocketSession session) {
         log.info("负载类型: {}, 负载内容: {}", webSocketPayload.getType(), webSocketPayload.getData());
     }
 
