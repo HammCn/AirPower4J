@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * <h1>响应结果</h1>
+ * <h1>异常接口</h1>
  *
  * @author Hamm.cn
  */
