@@ -36,7 +36,7 @@ public class ReflectUtil {
     /**
      * <h2>反射操作属性失败</h2>
      */
-    public static final String REFLECT_EXCEPTION = "反射操作属性失败";
+    private static final String REFLECT_EXCEPTION = "反射操作属性失败";
 
     /**
      * <h2>缓存字段列表</h2>
