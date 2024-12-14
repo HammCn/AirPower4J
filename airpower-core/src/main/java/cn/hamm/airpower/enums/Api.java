@@ -52,7 +52,17 @@ public enum Api implements IDictionary {
     /**
      * <h2>修改</h2>
      */
-    Update(8, "修改", "update");
+    Update(8, "修改", "update"),
+
+    /**
+     * <h2>创建导出任务</h2>
+     */
+    Export(9, "创建导出任务", "export"),
+
+    /**
+     * <h2>查询异步导出结果</h2>
+     */
+    QueryExport(10, "查询异步导出结果", "queryExport");
 
     private final int key;
     private final String label;

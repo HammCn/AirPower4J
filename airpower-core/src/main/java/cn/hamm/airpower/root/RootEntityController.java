@@ -48,6 +48,7 @@ public class RootEntityController<
     @Description("创建导出任务")
     @PostMapping("export")
     public Json export(@RequestBody QueryListRequest<E> queryListRequest) {
+        checkApiAvailableStatus(Api.Export);
         return Json.data(service.createExportTask(queryListRequest), "导出任务创建成功");
     }
 
@@ -58,6 +59,7 @@ public class RootEntityController<
     @PostMapping("queryExport")
     @Permission(authorize = false)
     public Json queryExport(@RequestBody @Validated QueryExport queryExport) {
+        checkApiAvailableStatus(Api.QueryExport);
         return Json.data(service.queryExport(queryExport), "请下载导出的文件");
     }
 
