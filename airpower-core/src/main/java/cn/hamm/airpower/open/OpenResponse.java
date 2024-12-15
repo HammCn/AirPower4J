@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public class OpenResponse {
     /**
-     * <h2>加密响应数据</h2>
+     * <h3>加密响应数据</h3>
      *
      * @param openApp 应用
      * @param data    数据

@@ -45,7 +45,7 @@ import java.util.Set;
 @Slf4j
 public class ExceptionInterceptor {
     /**
-     * <h2>错误信息和描述</h2>
+     * <h3>错误信息和描述</h3>
      */
     private static final String MESSAGE_AND_DESCRIPTION = "%s (%s)";
 
@@ -53,7 +53,7 @@ public class ExceptionInterceptor {
     private ServiceConfig serviceConfig;
 
     /**
-     * <h2>参数验证失败</h2>
+     * <h3>参数验证失败</h3>
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Json badRequestHandle(@NotNull MethodArgumentNotValidException exception) {
@@ -74,7 +74,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>参数校验失败</h2>
+     * <h3>参数校验失败</h3>
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Json badRequestHandle(@NotNull ConstraintViolationException exception) {
@@ -88,7 +88,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>删除时的数据关联校验异常</h2>
+     * <h3>删除时的数据关联校验异常</h3>
      */
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
     public Json deleteUsingDataException(@NotNull Exception exception) {
@@ -100,7 +100,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>访问的接口没有实现</h2>
+     * <h3>访问的接口没有实现</h3>
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public Json notFoundHandle(@NotNull NoHandlerFoundException exception, HttpServletResponse response) {
@@ -109,7 +109,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>请求的数据不是标准 {@code JSON}</h2>
+     * <h3>请求的数据不是标准 {@code JSON}</h3>
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Json dataExceptionHandle(@NotNull HttpMessageNotReadableException exception) {
@@ -119,7 +119,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>不支持的请求方法</h2>
+     * <h3>不支持的请求方法</h3>
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
@@ -131,7 +131,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>不支持的数据类型</h2>
+     * <h3>不支持的数据类型</h3>
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
@@ -146,7 +146,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>数据库连接发生错误</h2>
+     * <h3>数据库连接发生错误</h3>
      */
     @ExceptionHandler(CannotCreateTransactionException.class)
     public Json databaseExceptionHandle(@NotNull CannotCreateTransactionException exception) {
@@ -158,7 +158,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>{@code Redis} 连接发生错误</h2>
+     * <h3>{@code Redis} 连接发生错误</h3>
      */
     @ExceptionHandler(RedisConnectionFailureException.class)
     public Json redisExceptionHandle(@NotNull RedisConnectionFailureException exception) {
@@ -170,7 +170,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>系统自定义异常</h2>
+     * <h3>系统自定义异常</h3>
      */
     @ExceptionHandler(ServiceException.class)
     public Json systemExceptionHandle(@NotNull ServiceException exception) {
@@ -182,7 +182,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>数据字段不存在</h2>
+     * <h3>数据字段不存在</h3>
      */
     @ExceptionHandler(value = PropertyReferenceException.class)
     public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
@@ -196,7 +196,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>数据表或字段异常</h2>
+     * <h3>数据表或字段异常</h3>
      */
     @ExceptionHandler(value = InvalidDataAccessResourceUsageException.class)
     public Json invalidDataAccessResourceUsageExceptionHandle(
@@ -210,7 +210,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>数据表或字段异常</h2>
+     * <h3>数据表或字段异常</h3>
      */
     @ExceptionHandler(value = MaxUploadSizeExceededException.class)
     public Json maxUploadSizeExceededExceptionHandle(@NotNull MaxUploadSizeExceededException exception) {
@@ -222,7 +222,7 @@ public class ExceptionInterceptor {
     }
 
     /**
-     * <h2>其他异常</h2>
+     * <h3>其他异常</h3>
      */
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public Object otherExceptionHandle(@NotNull Exception exception) {

@@ -43,7 +43,7 @@ public class RootEntityController<
     protected S service;
 
     /**
-     * <h2>创建导出任务</h2>
+     * <h3>创建导出任务</h3>
      */
     @Description("创建导出任务")
     @PostMapping("export")
@@ -53,7 +53,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>查询异步导出结果</h2>
+     * <h3>查询异步导出结果</h3>
      */
     @Description("查询异步导出结果")
     @PostMapping("queryExport")
@@ -64,7 +64,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>添加一条新数据接口</h2>
+     * <h3>添加一条新数据接口</h3>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeAdd(E)
@@ -88,7 +88,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>修改一条已存在的数据接口</h2>
+     * <h3>修改一条已存在的数据接口</h3>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeUpdate(E)
@@ -113,7 +113,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>删除一条已存在的数据接口</h2>
+     * <h3>删除一条已存在的数据接口</h3>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeDelete(long)
@@ -131,7 +131,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>查询一条详情数据</h2>
+     * <h3>查询一条详情数据</h3>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #afterGetDetail(E)
@@ -145,7 +145,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>禁用一条已存在的数据</h2>
+     * <h3>禁用一条已存在的数据</h3>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeDisable(long)
@@ -163,7 +163,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>启用一条已存在的数据</h2>
+     * <h3>启用一条已存在的数据</h3>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeEnable(long)
@@ -181,7 +181,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>不分页查询</h2>
+     * <h3>不分页查询</h3>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeGetList(QueryListRequest)
@@ -198,7 +198,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>分页查询</h2>
+     * <h3>分页查询</h3>
      *
      * @apiNote 可被子控制器类注解 {@link Extends} 继承或忽略，不建议重写，可使用前后置方法来处理业务逻辑。
      * @see #beforeGetPage(QueryPageRequest)
@@ -215,7 +215,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>查询分页后置方法</h2>
+     * <h3>查询分页后置方法</h3>
      *
      * @see #getPage(QueryPageRequest)
      */
@@ -224,7 +224,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>查询分页前置方法</h2>
+     * <h3>查询分页前置方法</h3>
      *
      * @apiNote 可重写后重新设置查询条件
      * @see #getPage(QueryPageRequest)
@@ -234,7 +234,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>查询不分页前置方法</h2>
+     * <h3>查询不分页前置方法</h3>
      *
      * @apiNote 可重写后重新设置查询条件
      */
@@ -243,7 +243,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>查询不分页后置方法</h2>
+     * <h3>查询不分页后置方法</h3>
      *
      * @apiNote 可重写后执行装载更多数据的业务
      */
@@ -252,7 +252,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>查询详情后置方法</h2>
+     * <h3>查询详情后置方法</h3>
      *
      * @apiNote 可重写后执行装载更多数据的业务
      */
@@ -261,7 +261,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>新增前置方法</h2>
+     * <h3>新增前置方法</h3>
      *
      * @apiNote 可重写后执行新增前的数据处理
      */
@@ -270,7 +270,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>新增后置方法</h2>
+     * <h3>新增后置方法</h3>
      *
      * @param id     主键 {@code ID}
      * @param source 原始实体
@@ -281,7 +281,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>修改前置方法</h2>
+     * <h3>修改前置方法</h3>
      *
      * @param entity Api请求提交的实体数据，可能会缺失很多数据
      * @return 实体
@@ -292,7 +292,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>修改后置方法</h2>
+     * <h3>修改后置方法</h3>
      *
      * @param id     主键 {@code ID}
      * @param source 原始实体
@@ -303,7 +303,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>保存后置方法</h2>
+     * <h3>保存后置方法</h3>
      *
      * @param id     主键 {@code ID}
      * @param source 原始实体
@@ -314,7 +314,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>删除前置方法</h2>
+     * <h3>删除前置方法</h3>
      *
      * @param id 主键 {@code ID}
      * @apiNote 可重写后执行删除之前的业务处理或拦截
@@ -334,7 +334,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>禁用前置方法</h2>
+     * <h3>禁用前置方法</h3>
      *
      * @param id 主键 {@code ID}
      * @apiNote 可重写后执行禁用之前的业务处理或拦截
@@ -344,7 +344,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>禁用后置方法</h2>
+     * <h3>禁用后置方法</h3>
      *
      * @param id 主键 {@code ID}
      * @apiNote 可重写后执行禁用之后的其他业务
@@ -354,7 +354,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>启用前置方法</h2>
+     * <h3>启用前置方法</h3>
      *
      * @param id 主键 {@code ID}
      */
@@ -363,7 +363,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>启用后置方法</h2>
+     * <h3>启用后置方法</h3>
      *
      * @param id 主键 {@code ID}
      */
@@ -372,7 +372,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>验证非空查询请求且非空过滤器请求</h2>
+     * <h3>验证非空查询请求且非空过滤器请求</h3>
      *
      * @param queryListRequest 传入的查询请求
      * @param newInstance      新实例
@@ -387,7 +387,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>检查Api可用状态</h2>
+     * <h3>检查Api可用状态</h3>
      */
     private void checkApiAvailableStatus(Api api) {
         Extends extendsApi = getClass().getAnnotation(Extends.class);
@@ -413,7 +413,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>获取一个空实体</h2>
+     * <h3>获取一个空实体</h3>
      *
      * @return 实体
      */
@@ -426,7 +426,7 @@ public class RootEntityController<
     }
 
     /**
-     * <h2>获取实体类</h2>
+     * <h3>获取实体类</h3>
      *
      * @return 类
      */

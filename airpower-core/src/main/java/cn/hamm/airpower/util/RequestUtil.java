@@ -22,26 +22,26 @@ import java.util.Objects;
 @Slf4j
 public class RequestUtil {
     /**
-     * <h2>获取IP地址异常</h2>
+     * <h3>获取IP地址异常</h3>
      */
     public static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
 
     /**
-     * <h2>常用IP反向代理Header头</h2>
+     * <h3>常用IP反向代理Header头</h3>
      */
     private static final List<String> PROXY_IP_HEADERS = List.of(
             "x-forwarded-for", "Proxy-Client-IP", "WL-Proxy-Client-IP"
     );
 
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private RequestUtil() {
     }
 
     /**
-     * <h2>判断是否是上传请求</h2>
+     * <h3>判断是否是上传请求</h3>
      *
      * @param request 请求
      * @return 是否是上传请求
@@ -51,7 +51,7 @@ public class RequestUtil {
     }
 
     /**
-     * <h2>判断是否是上传请求</h2>
+     * <h3>判断是否是上传请求</h3>
      *
      * @param request 请求
      * @return 是否是上传请求
@@ -61,7 +61,7 @@ public class RequestUtil {
     }
 
     /**
-     * <h2>获取请求的 {@code 真实IP} 地址</h2>
+     * <h3>获取请求的 {@code 真实IP} 地址</h3>
      *
      * @param request 请求
      * @return IP地址
@@ -98,7 +98,7 @@ public class RequestUtil {
     }
 
     /**
-     * <h2>判断是否上传文件的请求类型头</h2>
+     * <h3>判断是否上传文件的请求类型头</h3>
      *
      * @param contentType 请求类型头
      * @return 判断结果
@@ -109,7 +109,7 @@ public class RequestUtil {
     }
 
     /**
-     * <h2>是否是有效的IP地址</h2>
+     * <h3>是否是有效的IP地址</h3>
      *
      * @param ipAddress IP地址
      * @return 判定结果
@@ -121,7 +121,7 @@ public class RequestUtil {
     }
 
     /**
-     * <h2>多IP获取真实IP地址</h2>
+     * <h3>多IP获取真实IP地址</h3>
      *
      * @param ipAddress 原始IP地址
      * @return 处理之后的真实IP

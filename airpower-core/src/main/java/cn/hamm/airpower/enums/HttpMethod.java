@@ -7,22 +7,22 @@ package cn.hamm.airpower.enums;
  */
 public enum HttpMethod {
     /**
-     * <h2>{@code GET}</h2>
+     * <h3>{@code GET}</h3>
      */
     GET,
 
     /**
-     * <h2>{@code POST}</h2>
+     * <h3>{@code POST}</h3>
      */
     POST,
 
     /**
-     * <h2>{@code PUT}</h2>
+     * <h3>{@code PUT}</h3>
      */
     PUT,
 
     /**
-     * <h2>{@code DELETE}</h2>
+     * <h3>{@code DELETE}</h3>
      */
     DELETE,
 }

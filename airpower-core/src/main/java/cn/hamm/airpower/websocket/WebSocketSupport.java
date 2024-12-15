@@ -7,17 +7,17 @@ package cn.hamm.airpower.websocket;
  */
 public enum WebSocketSupport {
     /**
-     * <h2>{@code Redis}</h2>
+     * <h3>{@code Redis}</h3>
      */
     REDIS,
 
     /**
-     * <h2>{@code MQTT}</h2>
+     * <h3>{@code MQTT}</h3>
      */
     MQTT,
 
     /**
-     * <h2>不支持</h2>
+     * <h3>不支持</h3>
      */
     NO,
 }

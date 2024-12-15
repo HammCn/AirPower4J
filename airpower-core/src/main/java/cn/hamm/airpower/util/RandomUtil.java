@@ -17,32 +17,32 @@ import java.util.stream.IntStream;
  */
 public class RandomUtil {
     /**
-     * <h2>默认长度</h2>
+     * <h3>默认长度</h3>
      */
     public static final int DEFAULT_LENGTH = 32;
 
     /**
-     * <h2>小写字母</h2>
+     * <h3>小写字母</h3>
      */
     private static final String BASE_CHAR = "abcdefghijklmnopqrstuvwxyz";
 
     /**
-     * <h2>数字</h2>
+     * <h3>数字</h3>
      */
     private static final String BASE_NUMBER = "0123456789";
 
     /**
-     * <h2>小写字母和数字</h2>
+     * <h3>小写字母和数字</h3>
      */
     private static final String BASE_CHAR_NUMBER_LOWER = BASE_CHAR + BASE_NUMBER;
 
     /**
-     * <h2>大写和小写字母</h2>
+     * <h3>大写和小写字母</h3>
      */
     private static final String BASE_CHAR_NUMBER = BASE_CHAR.toUpperCase() + BASE_CHAR_NUMBER_LOWER;
 
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private RandomUtil() {
@@ -50,7 +50,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取随机字节数组</h2>
+     * <h3>获取随机字节数组</h3>
      *
      * @param length 长度
      * @return 随机字节数组
@@ -62,7 +62,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取 {@code 32} 位随机字节数组</h2>
+     * <h3>获取 {@code 32} 位随机字节数组</h3>
      *
      * @return 随机字节数组
      */
@@ -71,7 +71,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取 {@code 32} 位随机字符串</h2>
+     * <h3>获取 {@code 32} 位随机字符串</h3>
      *
      * @return 随机字符串
      */
@@ -80,7 +80,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取指定位数的随机字符串</h2>
+     * <h3>获取指定位数的随机字符串</h3>
      *
      * @param length 字符串的长度
      * @return 随机字符串
@@ -90,7 +90,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取随机数字的字符串</h2>
+     * <h3>获取随机数字的字符串</h3>
      *
      * @param length 字符串的长度
      * @return 随机字符串
@@ -100,7 +100,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取指定样本的随机字符串</h2>
+     * <h3>获取指定样本的随机字符串</h3>
      *
      * @param baseString 随机字符选取的样本
      * @param length     字符串的长度
@@ -119,7 +119,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获取一个随机整数</h2>
+     * <h3>获取一个随机整数</h3>
      *
      * @return 随机数
      * @see Random#nextInt()
@@ -129,7 +129,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获得指定范围内的随机数</h2>
+     * <h3>获得指定范围内的随机数</h3>
      *
      * @param exclude 排除的数字
      * @return 随机数
@@ -139,7 +139,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获得指定范围内的随机数</h2>
+     * <h3>获得指定范围内的随机数</h3>
      *
      * @param minInclude 最小数（包含）
      * @param maxExclude 最大数（不包含）
@@ -150,7 +150,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获得指定范围内的随机数</h2>
+     * <h3>获得指定范围内的随机数</h3>
      *
      * @param min        最小数
      * @param max        最大数
@@ -169,7 +169,7 @@ public class RandomUtil {
     }
 
     /**
-     * <h2>获得随机数种子</h2>
+     * <h3>获得随机数种子</h3>
      *
      * @return 随机种子
      */

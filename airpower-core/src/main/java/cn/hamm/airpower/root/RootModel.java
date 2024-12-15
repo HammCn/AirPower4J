@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("unchecked")
 public class RootModel<M extends RootModel<M>> implements IAction {
     /**
-     * <h2>忽略只读字段</h2>
+     * <h3>忽略只读字段</h3>
      */
     public final void ignoreReadOnlyFields() {
         ReflectUtil.getFieldList(getClass()).stream()
@@ -44,7 +44,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>复制一个新对象</h2>
+     * <h3>复制一个新对象</h3>
      *
      * @return 返回实例
      */
@@ -60,7 +60,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>过滤和脱敏</h2>
+     * <h3>过滤和脱敏</h3>
      *
      * @param filterClass   过滤器类
      * @param isDesensitize 是否需要脱敏
@@ -90,7 +90,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>脱敏字段</h2>
+     * <h3>脱敏字段</h3>
      *
      * @return 实体
      * @see #filterAndDesensitize(Class, boolean)
@@ -102,7 +102,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>过滤字段</h2>
+     * <h3>过滤字段</h3>
      *
      * @param filterClass 过滤器
      * @return 实体
@@ -115,7 +115,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>过滤和脱敏</h2>
+     * <h3>过滤和脱敏</h3>
      *
      * @param filter        过滤器注解
      * @param isDesensitize 是否需要脱敏
@@ -132,7 +132,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>通过指定的过滤器排除字段</h2>
+     * <h3>通过指定的过滤器排除字段</h3>
      *
      * @param field       字段
      * @param filterClass 过滤器
@@ -170,7 +170,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>通过指定的过滤器暴露字段</h2>
+     * <h3>通过指定的过滤器暴露字段</h3>
      *
      * @param field       字段
      * @param filterClass 过滤器
@@ -210,7 +210,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>递归过滤和脱敏</h2>
+     * <h3>递归过滤和脱敏</h3>
      *
      * @param field         字段
      * @param isDesensitize 是否需要脱敏
@@ -241,7 +241,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
     }
 
     /**
-     * <h2>字段脱敏</h2>
+     * <h3>字段脱敏</h3>
      *
      * @param field 字段
      */

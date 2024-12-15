@@ -31,7 +31,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     protected WebSocketHandler webSocketHandler;
 
     /**
-     * <h2>获取一个 {@code WebSocketHandler}</h2>
+     * <h3>获取一个 {@code WebSocketHandler}</h3>
      *
      * @return {@code WebSocketHandler}
      */
@@ -41,7 +41,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     }
 
     /**
-     * <h2>添加缓存过滤器</h2>
+     * <h3>添加缓存过滤器</h3>
      *
      * @return 过滤器对象
      */
@@ -54,7 +54,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
     }
 
     /**
-     * <h2>添加 {@code WebSocket} 服务监听</h2>
+     * <h3>添加 {@code WebSocket} 服务监听</h3>
      *
      * @param registry {@code WebSocketHandlerRegistry}
      */

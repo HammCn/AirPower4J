@@ -19,14 +19,14 @@ import java.util.function.Function;
 @Slf4j
 public class DictionaryUtil {
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private DictionaryUtil() {
     }
 
     /**
-     * <h2>查字典</h2>
+     * <h3>查字典</h3>
      *
      * @param enumClass 枚举字典类
      * @param key       枚举字典值
@@ -38,7 +38,7 @@ public class DictionaryUtil {
     }
 
     /**
-     * <h2>查字典</h2>
+     * <h3>查字典</h3>
      *
      * @param enumClass 枚举字典类
      * @param function  获取指定值的方法
@@ -64,7 +64,7 @@ public class DictionaryUtil {
     }
 
     /**
-     * <h2>获取指定枚举类的 {@code ListMap} 数据</h2>
+     * <h3>获取指定枚举类的 {@code ListMap} 数据</h3>
      *
      * @param clazz 枚举类
      * @return 枚举选项列表
@@ -76,7 +76,7 @@ public class DictionaryUtil {
     }
 
     /**
-     * <h2>获取指定枚举类的 {@code ListMap} 数据</h2>
+     * <h3>获取指定枚举类的 {@code ListMap} 数据</h3>
      *
      * @param clazz   枚举字典类
      * @param lambdas 需要获取的方法表达式

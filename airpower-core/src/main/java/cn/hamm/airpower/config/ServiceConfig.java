@@ -19,81 +19,81 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower")
 public class ServiceConfig {
     /**
-     * <h2>多数据源数据库前缀</h2>
+     * <h3>多数据源数据库前缀</h3>
      */
     private String databasePrefix = "tenant_";
 
     /**
-     * <h2>默认服务 {@code ID}</h2>
+     * <h3>默认服务 {@code ID}</h3>
      */
     private int serviceId = Constant.ZERO_INT;
 
     /**
-     * <h2>{@code AccessToken} 的密钥</h2>
+     * <h3>{@code AccessToken} 的密钥</h3>
      */
     private String accessTokenSecret = Constant.AIRPOWER;
 
     /**
-     * <h2>默认分页条数</h2>
+     * <h3>默认分页条数</h3>
      */
     private int defaultPageSize = 20;
 
     /**
-     * <h2>服务全局拦截</h2>
+     * <h3>服务全局拦截</h3>
      */
     private boolean isServiceRunning = true;
 
     /**
-     * <h2>是否开启缓存</h2>
+     * <h3>是否开启缓存</h3>
      */
     private boolean cache = false;
 
     /**
-     * <h2>缓存过期时间</h2>
+     * <h3>缓存过期时间</h3>
      */
     private int cacheExpireSecond = Constant.SECOND_PER_MINUTE;
 
     /**
-     * <h2>默认排序字段</h2>
+     * <h3>默认排序字段</h3>
      */
     private String defaultSortField = Constant.CREATE_TIME_FIELD;
 
     /**
-     * <h2>身份令牌 {@code header} 的 {@code key}</h2>
+     * <h3>身份令牌 {@code header} 的 {@code key}</h3>
      */
     private String authorizeHeader = HttpHeaders.AUTHORIZATION;
 
     /**
-     * <h2>身份令牌有效期</h2>
+     * <h3>身份令牌有效期</h3>
      */
     private long authorizeExpireSecond = Constant.SECOND_PER_DAY;
 
     /**
-     * <h2>多租户的 {@code header} 的 {@code key}</h2>
+     * <h3>多租户的 {@code header} 的 {@code key}</h3>
      */
     private String tenantHeader = "tenant-code";
 
     /**
-     * <h2>导出文件的目录</h2>
+     * <h3>导出文件的目录</h3>
      *
      * @apiNote 请 {@code 不要} 使用 {@code /} 结尾
      */
     private String exportFilePath = "";
 
     /**
-     * <h2>是否开启调试模式</h2>
+     * <h3>是否开启调试模式</h3>
      *
      * @apiNote 调试模式打开，控制台将输出部分错误堆栈信息等
      */
     private boolean debug = true;
 
     /**
-     * <h2>{@code MQTT} 配置</h2>
+     * <h3>{@code MQTT} 配置</h3>
      */
     private MqttConfig mqtt = new MqttConfig();
 
     /**
-     * <h2>{@code Cookie} 配置</h2>
+     * <h3>{@code Cookie} 配置</h3>
      */
     private CookieConfig cookie = new CookieConfig();
 }

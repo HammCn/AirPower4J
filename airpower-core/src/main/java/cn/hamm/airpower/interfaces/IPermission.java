@@ -10,14 +10,14 @@ import cn.hamm.airpower.util.PermissionUtil;
  */
 public interface IPermission<E extends IPermission<E>> extends ITree<E> {
     /**
-     * <h2>获取权限标识</h2>
+     * <h3>获取权限标识</h3>
      *
      * @return 权限标识
      */
     String getIdentity();
 
     /**
-     * <h2>设置权限标识</h2>
+     * <h3>设置权限标识</h3>
      *
      * @param identity 权限标识
      * @return 权限实体

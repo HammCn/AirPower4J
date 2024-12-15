@@ -12,14 +12,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PasswordUtil {
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private PasswordUtil() {
     }
 
     /**
-     * <h2>密码和盐获取密码的散列摘要</h2>
+     * <h3>密码和盐获取密码的散列摘要</h3>
      *
      * @param password 明文密码
      * @param salt     盐

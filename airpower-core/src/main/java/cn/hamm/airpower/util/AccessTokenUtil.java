@@ -28,44 +28,44 @@ import java.util.Objects;
 @Slf4j
 public class AccessTokenUtil {
     /**
-     * <h2>无效的令牌</h2>
+     * <h3>无效的令牌</h3>
      */
     public static final String ACCESS_TOKEN_INVALID = "身份令牌无效，请重新获取身份令牌";
 
     /**
-     * <h2>算法</h2>
+     * <h3>算法</h3>
      */
     private static final String HMAC_SHA_256 = "HmacSHA256";
 
     /**
-     * <h2>缺少负载</h2>
+     * <h3>缺少负载</h3>
      */
     private static final String PAYLOADS_IS_EMPTY = "没有任何负载数据";
 
     /**
-     * <h2>{@code HMAC-SHA-256}错误</h2>
+     * <h3>{@code HMAC-SHA-256}错误</h3>
      */
     private static final String HMAC_SHA_256_ERROR = "HMAC-SHA-256发生错误";
 
     /**
-     * <h2>{@code Token} 由 {@code 3} 部分组成</h2>
+     * <h3>{@code Token} 由 {@code 3} 部分组成</h3>
      */
     private static final int TOKEN_PART_COUNT = 3;
 
     /**
-     * <h2>验证后的 {@code Token}</h2>
+     * <h3>验证后的 {@code Token}</h3>
      */
     private VerifiedToken verifiedToken;
 
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private AccessTokenUtil() {
     }
 
     /**
-     * <h2>创建实例</h2>
+     * <h3>创建实例</h3>
      *
      * @return {@code AccessTokenUtil}
      */
@@ -76,7 +76,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>创建一个 {@code AccessToken}</h2>
+     * <h3>创建一个 {@code AccessToken}</h3>
      *
      * @param id           {@code TokenID}
      * @param expireSecond 有效期（秒）
@@ -88,7 +88,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>从 {@code AccessToken} 中获取 {@code ID}</h2>
+     * <h3>从 {@code AccessToken} 中获取 {@code ID}</h3>
      *
      * @param accessToken {@code AccessToken}
      * @param secret      {@code AccessToken} 密钥
@@ -102,7 +102,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>生成 {@code Token}</h2>
+     * <h3>生成 {@code Token}</h3>
      *
      * @param secret 密钥
      * @return {@code AccessToken}
@@ -125,7 +125,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>添加负载</h2>
+     * <h3>添加负载</h3>
      *
      * @param key   负载的 {@code Key}
      * @param value 负载的 {@code Value}
@@ -138,7 +138,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>移除负载</h2>
+     * <h3>移除负载</h3>
      *
      * @param key 负载 {@code Key}
      * @return {@code AccessTokenUtil}
@@ -150,7 +150,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>设置过期时间 {@code 毫秒}</h2>
+     * <h3>设置过期时间 {@code 毫秒}</h3>
      *
      * @param millisecond 过期毫秒
      * @return {@code AccessTokenUtil}
@@ -165,7 +165,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>验证 {@code AccessToken} 并返回 {@code VerifiedToken}</h2>
+     * <h3>验证 {@code AccessToken} 并返回 {@code VerifiedToken}</h3>
      *
      * @param accessToken {@code AccessToken}
      * @param secret      密钥
@@ -199,7 +199,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>{@code HMacSha256}</h2>
+     * <h3>{@code HMacSha256}</h3>
      *
      * @param secret  密钥
      * @param content 数据
@@ -222,7 +222,7 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h2>已验证的身份令牌</h2>
+     * <h3>已验证的身份令牌</h3>
      *
      * @author Hamm.cn
      */
@@ -230,17 +230,17 @@ public class AccessTokenUtil {
     @Accessors(chain = true)
     public static class VerifiedToken {
         /**
-         * <h2>负载数据</h2>
+         * <h3>负载数据</h3>
          */
         private Map<String, Object> payloads = new HashMap<>();
 
         /**
-         * <h2>过期时间 {@code 毫秒}</h2>
+         * <h3>过期时间 {@code 毫秒}</h3>
          */
         private long expireTimestamps = 0;
 
         /**
-         * <h2>获取负载</h2>
+         * <h3>获取负载</h3>
          *
          * @param key 负载的 {@code Key}
          * @return 负载的 {@code Value}

@@ -15,52 +15,52 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Api implements IDictionary {
     /**
-     * <h2>添加</h2>
+     * <h3>添加</h3>
      */
     Add(1, "添加", "add"),
 
     /**
-     * <h2>删除</h2>
+     * <h3>删除</h3>
      */
     Delete(2, "删除", "delete"),
 
     /**
-     * <h2>禁用</h2>
+     * <h3>禁用</h3>
      */
     Disable(3, "禁用", "disable"),
 
     /**
-     * <h2>启用</h2>
+     * <h3>启用</h3>
      */
     Enable(4, "启用", "enable"),
 
     /**
-     * <h2>查询详情</h2>
+     * <h3>查询详情</h3>
      */
     GetDetail(5, "查询详情", "getDetail"),
 
     /**
-     * <h2>列表查询</h2>
+     * <h3>列表查询</h3>
      */
     GetList(6, "列表查询", "getList"),
 
     /**
-     * <h2>分页查询</h2>
+     * <h3>分页查询</h3>
      */
     GetPage(7, "分页查询", "getPage"),
 
     /**
-     * <h2>修改</h2>
+     * <h3>修改</h3>
      */
     Update(8, "修改", "update"),
 
     /**
-     * <h2>创建导出任务</h2>
+     * <h3>创建导出任务</h3>
      */
     Export(9, "创建导出任务", "export"),
 
     /**
-     * <h2>查询异步导出结果</h2>
+     * <h3>查询异步导出结果</h3>
      */
     QueryExport(10, "查询异步导出结果", "queryExport");
 
@@ -68,7 +68,7 @@ public enum Api implements IDictionary {
     private final String label;
 
     /**
-     * <h2>绑定方法的名称</h2>
+     * <h3>绑定方法的名称</h3>
      */
     private final String methodName;
 }

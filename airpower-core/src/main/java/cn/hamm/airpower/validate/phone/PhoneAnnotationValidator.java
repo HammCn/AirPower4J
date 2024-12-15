@@ -15,17 +15,17 @@ import org.springframework.util.StringUtils;
 @Component
 public class PhoneAnnotationValidator implements ConstraintValidator<Phone, String> {
     /**
-     * <h2>是否座机</h2>
+     * <h3>是否座机</h3>
      */
     private boolean tel = true;
 
     /**
-     * <h2>是否手机号</h2>
+     * <h3>是否手机号</h3>
      */
     private boolean mobile = true;
 
     /**
-     * <h2>验证</h2>
+     * <h3>验证</h3>
      *
      * @param value   验证的值
      * @param context 验证会话
@@ -53,7 +53,7 @@ public class PhoneAnnotationValidator implements ConstraintValidator<Phone, Stri
     }
 
     /**
-     * <h2>初始化</h2>
+     * <h3>初始化</h3>
      *
      * @param phone 电话验证注解
      */

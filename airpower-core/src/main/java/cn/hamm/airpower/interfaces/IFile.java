@@ -7,14 +7,14 @@ package cn.hamm.airpower.interfaces;
  */
 public interface IFile<E extends IFile<E>> extends IEntity<E> {
     /**
-     * <h2>获取文件的 {@code URL}</h2>
+     * <h3>获取文件的 {@code URL}</h3>
      *
      * @return {@code URL}
      */
     String getUrl();
 
     /**
-     * <h2>设置文件的 {@code URL}</h2>
+     * <h3>设置文件的 {@code URL}</h3>
      *
      * @param url {@code URL}
      * @return 实体

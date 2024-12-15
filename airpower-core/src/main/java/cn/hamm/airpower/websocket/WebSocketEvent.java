@@ -20,37 +20,37 @@ import java.util.concurrent.atomic.AtomicLong;
 @Accessors(chain = true)
 public class WebSocketEvent {
     /**
-     * <h2>当前事件 {@code ID}</h2>
+     * <h3>当前事件 {@code ID}</h3>
      */
     private static final AtomicLong CURRENT_EVENT_ID = new AtomicLong(Constant.ZERO_LONG);
 
     /**
-     * <h2>事件 {@code ID}</h2>
+     * <h3>事件 {@code ID}</h3>
      */
     private String id;
 
     /**
-     * <h2>发送方 {@code ID}</h2>
+     * <h3>发送方 {@code ID}</h3>
      */
     private long from = Constant.ZERO_LONG;
 
     /**
-     * <h2>接收方 {@code ID}</h2>
+     * <h3>接收方 {@code ID}</h3>
      */
     private long to = Constant.ZERO_LONG;
 
     /**
-     * <h2>事件时间戳</h2>
+     * <h3>事件时间戳</h3>
      */
     private Long time;
 
     /**
-     * <h2>事件负载</h2>
+     * <h3>事件负载</h3>
      */
     private WebSocketPayload payload;
 
     /**
-     * <h2>创建 {@code WebSocket} 事件</h2>
+     * <h3>创建 {@code WebSocket} 事件</h3>
      *
      * @param payload 负载
      * @return 事件
@@ -60,7 +60,7 @@ public class WebSocketEvent {
     }
 
     /**
-     * <h2>创建 {@code WebSocket} 事件</h2>
+     * <h3>创建 {@code WebSocket} 事件</h3>
      *
      * @return 事件
      */
@@ -70,7 +70,7 @@ public class WebSocketEvent {
     }
 
     /**
-     * <h2>重置事件的 {@code ID} 和事件</h2>
+     * <h3>重置事件的 {@code ID} 和事件</h3>
      */
     @Contract(" -> this")
     protected final WebSocketEvent resetEvent() {

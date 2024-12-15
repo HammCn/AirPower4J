@@ -12,12 +12,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class WebSocketPayload {
     /**
-     * <h2>负载类型</h2>
+     * <h3>负载类型</h3>
      */
     private String type = "system";
 
     /**
-     * <h2>负载数据</h2>
+     * <h3>负载数据</h3>
      */
     private String data;
 }

@@ -19,32 +19,32 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower.websocket")
 public class WebSocketConfig {
     /**
-     * <h2>{@code PING}</h2>
+     * <h3>{@code PING}</h3>
      */
     private String ping = "PING";
 
     /**
-     * <h2>{@code PONG}</h2>
+     * <h3>{@code PONG}</h3>
      */
     private String pong = "PONG";
 
     /**
-     * <h2>{@code WebSocket} 路径</h2>
+     * <h3>{@code WebSocket} 路径</h3>
      */
     private String path = "/websocket";
 
     /**
-     * <h2>{@code WebSocket} 支持方式</h2>
+     * <h3>{@code WebSocket} 支持方式</h3>
      */
     private WebSocketSupport support = WebSocketSupport.NO;
 
     /**
-     * <h2>发布订阅的频道前缀</h2>
+     * <h3>发布订阅的频道前缀</h3>
      */
     private String channelPrefix;
 
     /**
-     * <h2>{@code WebSocket} 允许的跨域</h2>
+     * <h3>{@code WebSocket} 允许的跨域</h3>
      */
     private String allowedOrigins = "*";
 }
