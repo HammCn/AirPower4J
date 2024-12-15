@@ -21,13 +21,13 @@ public class EmailHelper {
     private JavaMailSender javaMailSender;
 
     /**
-     * <h2>发件人/用户名</h2>
+     * <h3>发件人/用户名</h3>
      */
     @Value("${spring.mail.username: ''}")
     private String mailFrom;
 
     /**
-     * <h2>发送邮件验证码</h2>
+     * <h3>发送邮件验证码</h3>
      *
      * @param email 邮箱
      * @param title 标题
@@ -55,7 +55,7 @@ public class EmailHelper {
     }
 
     /**
-     * <h2>发送邮件</h2>
+     * <h3>发送邮件</h3>
      *
      * @param email   邮箱
      * @param title   标题

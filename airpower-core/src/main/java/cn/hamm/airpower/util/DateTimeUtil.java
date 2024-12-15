@@ -15,19 +15,19 @@ import java.time.ZonedDateTime;
  */
 public class DateTimeUtil {
     /**
-     * <h2>默认时区</h2>
+     * <h3>默认时区</h3>
      */
     private static final String ASIA_CHONGQING = "Asia/Chongqing";
 
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private DateTimeUtil() {
     }
 
     /**
-     * <h2>格式化时间</h2>
+     * <h3>格式化时间</h3>
      *
      * @param milliSecond 毫秒
      * @return 格式化后的时间
@@ -37,7 +37,7 @@ public class DateTimeUtil {
     }
 
     /**
-     * <h2>格式化时间</h2>
+     * <h3>格式化时间</h3>
      *
      * @param milliSecond 毫秒
      * @param formatter   格式化模板
@@ -48,7 +48,7 @@ public class DateTimeUtil {
     }
 
     /**
-     * <h2>格式化时间</h2>
+     * <h3>格式化时间</h3>
      *
      * @param milliSecond 毫秒
      * @param formatter   格式化模板
@@ -59,7 +59,7 @@ public class DateTimeUtil {
     }
 
     /**
-     * <h2>格式化时间</h2>
+     * <h3>格式化时间</h3>
      *
      * @param milliSecond 毫秒
      * @param formatter   格式化模板

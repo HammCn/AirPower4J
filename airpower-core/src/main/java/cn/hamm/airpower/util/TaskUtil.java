@@ -17,14 +17,14 @@ import java.util.List;
 @Slf4j
 public class TaskUtil {
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private TaskUtil() {
     }
 
     /**
-     * <h2>执行任务{@code 不会抛出异常}</h2>
+     * <h3>执行任务{@code 不会抛出异常}</h3>
      *
      * @param runnable     任务
      * @param moreRunnable 更多任务
@@ -41,7 +41,7 @@ public class TaskUtil {
     }
 
     /**
-     * <h2>异步执行任务{@code 不会抛出异常}</h2>
+     * <h3>异步执行任务{@code 不会抛出异常}</h3>
      *
      * @param runnable     任务
      * @param moreRunnable 更多任务
@@ -52,7 +52,7 @@ public class TaskUtil {
     }
 
     /**
-     * <h2>获取任务列表</h2>
+     * <h3>获取任务列表</h3>
      *
      * @param runnable     任务
      * @param moreRunnable 更多任务

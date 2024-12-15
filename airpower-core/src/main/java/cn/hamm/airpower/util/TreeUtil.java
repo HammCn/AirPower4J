@@ -15,14 +15,14 @@ import java.util.Objects;
  */
 public class TreeUtil {
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private TreeUtil() {
     }
 
     /**
-     * <h2>生成树结构</h2>
+     * <h3>生成树结构</h3>
      *
      * @param list 原始数据列表
      * @param <E>  泛型
@@ -33,7 +33,7 @@ public class TreeUtil {
     }
 
     /**
-     * <h2>生成树结构</h2>
+     * <h3>生成树结构</h3>
      *
      * @param list     原始数据列表
      * @param parentId 父级 {@code ID}

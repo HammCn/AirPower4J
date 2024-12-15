@@ -17,14 +17,14 @@ import java.util.List;
  */
 public class TreeServiceDelegate {
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private TreeServiceDelegate() {
     }
 
     /**
-     * <h2>获取所有子节点</h2>
+     * <h3>获取所有子节点</h3>
      *
      * @param service 服务
      * @param list    树结构列表
@@ -41,7 +41,7 @@ public class TreeServiceDelegate {
     }
 
     /**
-     * <h2>根据父级ID获取所有子节点</h2>
+     * <h3>根据父级ID获取所有子节点</h3>
      *
      * @param service  服务
      * @param parentId 父级ID
@@ -56,7 +56,7 @@ public class TreeServiceDelegate {
     }
 
     /**
-     * <h2>删除前确认是否包含子节点数据</h2>
+     * <h3>删除前确认是否包含子节点数据</h3>
      *
      * @param service 服务
      * @param id      待删除的ID

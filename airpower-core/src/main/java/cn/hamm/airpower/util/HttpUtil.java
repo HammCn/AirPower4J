@@ -25,49 +25,49 @@ import java.util.*;
 @Accessors(chain = true, makeFinal = true)
 public class HttpUtil {
     /**
-     * <h2>请求头</h2>
+     * <h3>请求头</h3>
      */
     private Map<String, Object> headers = new HashMap<>();
 
     /**
-     * <h2>{@code Cookie}</h2>
+     * <h3>{@code Cookie}</h3>
      */
     private Map<String, Object> cookies = new HashMap<>();
 
     /**
-     * <h2>请求地址</h2>
+     * <h3>请求地址</h3>
      */
     private String url;
 
     /**
-     * <h2>请求体</h2>
+     * <h3>请求体</h3>
      */
     private String body = Constant.EMPTY_STRING;
 
     /**
-     * <h2>请求方法</h2>
+     * <h3>请求方法</h3>
      */
     private HttpMethod method = HttpMethod.GET;
 
     /**
-     * <h2>请求体类型</h2>
+     * <h3>请求体类型</h3>
      */
     private ContentType contentType = ContentType.JSON;
 
     /**
-     * <h2>连接超时时间</h2>
+     * <h3>连接超时时间</h3>
      */
     private int connectTimeout = 5;
 
 
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     private HttpUtil() {
     }
 
     /**
-     * <h2>创建一个 {@code HttpUtil} 对象</h2>
+     * <h3>创建一个 {@code HttpUtil} 对象</h3>
      *
      * @return {@code HttpUtil}
      */
@@ -77,7 +77,7 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>添加 {@code Cookie}</h2>
+     * <h3>添加 {@code Cookie}</h3>
      *
      * @param key   {@code Cookie} 键
      * @param value {@code Cookie} 值
@@ -90,7 +90,7 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>发送 {@code POST} 请求</h2>
+     * <h3>发送 {@code POST} 请求</h3>
      *
      * @return {@code HttpResponse}
      */
@@ -100,7 +100,7 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>发送 {@code POST} 请求</h2>
+     * <h3>发送 {@code POST} 请求</h3>
      *
      * @param body 请求体
      * @return {@code HttpResponse}
@@ -112,7 +112,7 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>发送GET请求</h2>
+     * <h3>发送GET请求</h3>
      *
      * @return {@code HttpResponse}
      */
@@ -122,7 +122,7 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>发送请求</h2>
+     * <h3>发送请求</h3>
      *
      * @return {@code HttpResponse}
      */
@@ -135,7 +135,7 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>获取 {@code HttpRequest} 对象</h2>
+     * <h3>获取 {@code HttpRequest} 对象</h3>
      *
      * @return {@code HttpRequest}
      */
@@ -165,7 +165,7 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>获取 {@code HttpClient}</h2>
+     * <h3>获取 {@code HttpClient}</h3>
      *
      * @return {@code HttpClient}
      */
@@ -178,7 +178,7 @@ public class HttpUtil {
     }
 
     /**
-     * <h2>添加 {@code Header}</h2>
+     * <h3>添加 {@code Header}</h3>
      *
      * @param key   {@code Header} 键
      * @param value {@code Header} 值

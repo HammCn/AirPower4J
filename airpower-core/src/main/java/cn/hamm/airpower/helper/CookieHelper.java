@@ -17,7 +17,7 @@ public class CookieHelper {
     private CookieConfig cookieConfig;
 
     /**
-     * <h2>获取一个 {@code Cookie}</h2>
+     * <h3>获取一个 {@code Cookie}</h3>
      *
      * @param key   {@code Cookie} 键
      * @param value {@code Cookie} 值
@@ -34,7 +34,7 @@ public class CookieHelper {
     }
 
     /**
-     * <h2>获取一个身份验证的 {@code Cookie}</h2>
+     * <h3>获取一个身份验证的 {@code Cookie}</h3>
      *
      * @param value 身份串的值
      * @return {@code Cookie}

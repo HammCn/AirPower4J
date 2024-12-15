@@ -17,19 +17,19 @@ import lombok.experimental.Accessors;
 @Description("负载模型")
 public class Payload<T> extends RootModel<Payload<T>> {
     /**
-     * <h2>键名</h2>
+     * <h3>键名</h3>
      */
     @Description("键名")
     private String key;
 
     /**
-     * <h2>负载的值</h2>
+     * <h3>负载的值</h3>
      */
     @Description("负载的值")
     private T value;
 
     /**
-     * <h2>创建一个负载实例</h2>
+     * <h3>创建一个负载实例</h3>
      *
      * @param key   键名
      * @param value 负载的值
@@ -40,7 +40,7 @@ public class Payload<T> extends RootModel<Payload<T>> {
     }
 
     /**
-     * <h2>设置键名</h2>
+     * <h3>设置键名</h3>
      *
      * @param key 键名
      * @return 负载实例
@@ -51,7 +51,7 @@ public class Payload<T> extends RootModel<Payload<T>> {
     }
 
     /**
-     * <h2>设置负载的值</h2>
+     * <h3>设置负载的值</h3>
      *
      * @param value 负载的值
      * @return 负载实例

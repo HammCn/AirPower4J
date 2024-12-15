@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.Objects;
-
 /**
  * <h1>WebsocketHelper</h1>
  *
@@ -33,7 +31,7 @@ public class WebsocketHelper {
     private MqttHelper mqttHelper;
 
     /**
-     * <h2>发布事件负载</h2>
+     * <h3>发布事件负载</h3>
      *
      * @param payload 事件负载
      */
@@ -42,7 +40,7 @@ public class WebsocketHelper {
     }
 
     /**
-     * <h2>发布事件负载到指定的用户</h2>
+     * <h3>发布事件负载到指定的用户</h3>
      *
      * @param userId  目标用户 {@code ID}
      * @param payload 事件负载
@@ -52,14 +50,14 @@ public class WebsocketHelper {
     }
 
     /**
-     * <h2>发布事件负载到指定的频道</h2>
+     * <h3>发布事件负载到指定的频道</h3>
      *
      * @param channel 频道
      * @param payload 负载
      */
     public final void publishToChannel(String channel, WebSocketPayload payload) {
         final String channelPrefix = websocketConfig.getChannelPrefix();
-        if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
+        if (!StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
         final WebSocketEvent event = WebSocketEvent.create(payload);

@@ -34,7 +34,7 @@ import java.util.Objects;
 @Slf4j
 public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     /**
-     * <h2>是否支持</h2>
+     * <h3>是否支持</h3>
      *
      * @param returnType    请求方法
      * @param converterType 转换器
@@ -49,7 +49,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     }
 
     /**
-     * <h2>响应结果处理前置</h2>
+     * <h3>响应结果处理前置</h3>
      *
      * @param body                  输出数据
      * @param returnType            请求方法
@@ -76,7 +76,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     }
 
     /**
-     * <h2>获取响应结果</h2>
+     * <h3>获取响应结果</h3>
      *
      * @param result 响应结果
      * @param method 请求的方法
@@ -133,7 +133,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     }
 
     /**
-     * <h2>响应结束前置方法</h2>
+     * <h3>响应结束前置方法</h3>
      *
      * @param body 响应体
      * @return 响应体
@@ -145,7 +145,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
     }
 
     /**
-     * <h2>获取共享数据</h2>
+     * <h3>获取共享数据</h3>
      *
      * @param key KEY
      * @return VALUE

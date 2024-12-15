@@ -15,22 +15,22 @@ import org.jetbrains.annotations.NotNull;
 @Accessors(chain = true)
 public class ServiceException extends RuntimeException implements IException {
     /**
-     * <h2>错误代码</h2>
+     * <h3>错误代码</h3>
      */
     private int code = ServiceError.SERVICE_ERROR.getCode();
 
     /**
-     * <h2>错误信息</h2>
+     * <h3>错误信息</h3>
      */
     private String message = ServiceError.SERVICE_ERROR.getMessage();
 
     /**
-     * <h2>错误数据</h2>
+     * <h3>错误数据</h3>
      */
     private Object data = null;
 
     /**
-     * <h2>抛出一个自定义错误信息的默认异常</h2>
+     * <h3>抛出一个自定义错误信息的默认异常</h3>
      *
      * @param message 错误信息
      */
@@ -39,7 +39,7 @@ public class ServiceException extends RuntimeException implements IException {
     }
 
     /**
-     * <h2>直接抛出一个异常</h2>
+     * <h3>直接抛出一个异常</h3>
      *
      * @param serviceError 异常
      */
@@ -48,17 +48,17 @@ public class ServiceException extends RuntimeException implements IException {
     }
 
     /**
-     * <h2>直接抛出一个异常</h2>
+     * <h3>直接抛出一个异常</h3>
      *
      * @param serviceError 异常
-     * @param message   错误信息
+     * @param message      错误信息
      */
     public ServiceException(@NotNull ServiceError serviceError, String message) {
         setCode(serviceError.getCode()).setMessage(message);
     }
 
     /**
-     * <h2>直接抛出一个异常</h2>
+     * <h3>直接抛出一个异常</h3>
      *
      * @param code    错误代码
      * @param message 错误信息
@@ -68,7 +68,7 @@ public class ServiceException extends RuntimeException implements IException {
     }
 
     /**
-     * <h2>直接抛出一个异常</h2>
+     * <h3>直接抛出一个异常</h3>
      *
      * @param exception 异常
      */

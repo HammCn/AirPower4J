@@ -86,7 +86,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     private Long updateTimeTo;
 
     /**
-     * <h2>设置 {@code ID}</h2>
+     * <h3>设置 {@code ID}</h3>
      *
      * @param id {@code ID}
      * @return 实体
@@ -98,7 +98,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置是否禁用</h2>
+     * <h3>设置是否禁用</h3>
      *
      * @param isDisabled 禁用
      * @return 实体
@@ -109,7 +109,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置创建时间</h2>
+     * <h3>设置创建时间</h3>
      *
      * @param createTime 创建时间
      * @return 实体
@@ -120,7 +120,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>设置更新时间</h2>
+     * <h3>设置更新时间</h3>
      *
      * @param updateTime 更新时间
      * @return 实体
@@ -131,7 +131,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>获取简单实体对象</h2>
+     * <h3>获取简单实体对象</h3>
      *
      * @apiNote 舍弃一些基础数据
      */
@@ -142,7 +142,7 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
     }
 
     /**
-     * <h2>复制一个只包含 {@code ID} 的实体</h2>
+     * <h3>复制一个只包含 {@code ID} 的实体</h3>
      *
      * @return 只复制 {@code ID} 的实体
      */

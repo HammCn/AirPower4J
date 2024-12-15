@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     /**
-     * <h2>缓存的 {@code REQUEST_METHOD_KEY}</h2>
+     * <h3>缓存的 {@code REQUEST_METHOD_KEY}</h3>
      */
     protected static final String REQUEST_METHOD_KEY = "REQUEST_METHOD_KEY";
 
@@ -45,7 +45,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     protected ServiceConfig serviceConfig;
 
     /**
-     * <h2>拦截器</h2>
+     * <h3>拦截器</h3>
      *
      * @param request  请求
      * @param response 响应
@@ -70,7 +70,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * <h2>请求拦截器</h2>
+     * <h3>请求拦截器</h3>
      *
      * @param request  请求
      * @param response 响应
@@ -106,7 +106,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * <h2>验证指定的用户是否有指定权限标识的权限</h2>
+     * <h3>验证指定的用户是否有指定权限标识的权限</h3>
      *
      * @param userId             用户 {@code ID}
      * @param permissionIdentity 权限标识
@@ -119,7 +119,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * <h2>拦截请求</h2>
+     * <h3>拦截请求</h3>
      *
      * @param request  请求对象
      * @param response 响应对象
@@ -134,7 +134,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * <h2>设置共享数据</h2>
+     * <h3>设置共享数据</h3>
      *
      * @param key   KEY
      * @param value VALUE
@@ -147,7 +147,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * <h2>从请求中获取请求的包体</h2>
+     * <h3>从请求中获取请求的包体</h3>
      *
      * @param request 请求
      * @return 包体字符串

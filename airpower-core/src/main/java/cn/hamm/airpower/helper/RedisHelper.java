@@ -34,7 +34,7 @@ public class RedisHelper {
     private ServiceConfig serviceConfig;
 
     /**
-     * <h2>从缓存中获取实体</h2>
+     * <h3>从缓存中获取实体</h3>
      *
      * @param entity 实体
      * @return 缓存实体
@@ -53,7 +53,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>从缓存中获取实体</h2>
+     * <h3>从缓存中获取实体</h3>
      *
      * @param key    缓存的 {@code Key}
      * @param entity 实体
@@ -73,7 +73,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>删除指定的实体缓存</h2>
+     * <h3>删除指定的实体缓存</h3>
      *
      * @param entity 实体
      */
@@ -82,7 +82,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>缓存实体</h2>
+     * <h3>缓存实体</h3>
      *
      * @param entity 实体
      */
@@ -91,7 +91,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>缓存实体</h2>
+     * <h3>缓存实体</h3>
      *
      * @param entity 实体
      * @param second 缓存时间(秒)
@@ -101,7 +101,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>缓存实体</h2>
+     * <h3>缓存实体</h3>
      *
      * @param key    缓存的 {@code Key}
      * @param entity 实体
@@ -111,7 +111,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>缓存实体</h2>
+     * <h3>缓存实体</h3>
      *
      * @param key    缓存的 {@code Key}
      * @param entity 实体
@@ -122,7 +122,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>指定缓存失效时间</h2>
+     * <h3>指定缓存失效时间</h3>
      *
      * @param key    缓存的 {@code Key}
      * @param second 缓存时间(秒)
@@ -139,7 +139,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>删除所有满足条件的数据</h2>
+     * <h3>删除所有满足条件的数据</h3>
      *
      * @param pattern 正则
      */
@@ -154,7 +154,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>获取过期时间</h2>
+     * <h3>获取过期时间</h3>
      *
      * @param key 缓存的 {@code Key}
      * @return 过期时间
@@ -170,7 +170,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>判断key是否存在</h2>
+     * <h3>判断key是否存在</h3>
      *
      * @param key 缓存的 {@code Key}
      * @return {@code true} 存在; {@code false} 不存在
@@ -184,7 +184,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>删除缓存</h2>
+     * <h3>删除缓存</h3>
      *
      * @param key 缓存的 {@code Key}
      */
@@ -198,7 +198,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>普通缓存获取</h2>
+     * <h3>普通缓存获取</h3>
      *
      * @param key 缓存的 {@code Key}
      * @return 值
@@ -214,7 +214,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>普通缓存放入</h2>
+     * <h3>普通缓存放入</h3>
      *
      * @param key   缓存的 {@code Key}
      * @param value 值
@@ -224,7 +224,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>普通缓存放入并设置时间</h2>
+     * <h3>普通缓存放入并设置时间</h3>
      *
      * @param key    缓存的 {@code Key}
      * @param value  缓存的值
@@ -245,7 +245,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>发布到 {@code channel} 的消息</h2>
+     * <h3>发布到 {@code channel} 的消息</h3>
      *
      * @param channel 频道
      * @param message 消息
@@ -257,7 +257,7 @@ public class RedisHelper {
     }
 
     /**
-     * <h2>获取缓存 {@code Entity} 的 {@code cacheKey}</h2>
+     * <h3>获取缓存 {@code Entity} 的 {@code cacheKey}</h3>
      *
      * @param entity 实体
      * @return key

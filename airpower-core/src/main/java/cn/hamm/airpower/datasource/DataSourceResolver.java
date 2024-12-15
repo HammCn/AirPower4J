@@ -26,28 +26,28 @@ import java.util.Map;
 @Slf4j
 public class DataSourceResolver extends AbstractRoutingDataSource {
     /**
-     * <h2>数据源列表</h2>
+     * <h3>数据源列表</h3>
      */
     public static final Map<Object, Object> DATA_SOURCE_LIST = new HashMap<>();
 
     /**
-     * <h2>数据库驱动协议</h2>
+     * <h3>数据库驱动协议</h3>
      */
     private static final String DATASOURCE_SCHEME = "jdbc:mysql://";
 
     /**
-     * <h2>驱动类名称</h2>
+     * <h3>驱动类名称</h3>
      */
     private static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
 
     /**
-     * <h2>其他信息配置</h2>
+     * <h3>其他信息配置</h3>
      */
     private static final String DATASOURCE_CONFIG =
             "?allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false";
 
     /**
-     * <h2>线程</h2>
+     * <h3>线程</h3>
      */
     private static final ThreadLocal<String> THREAD_LOCAL = new ThreadLocal<>();
 
@@ -55,14 +55,14 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     private ServiceConfig serviceConfig;
 
     /**
-     * <h2>初始化空列表</h2>
+     * <h3>初始化空列表</h3>
      */
     public DataSourceResolver() {
         super.setTargetDataSources(DATA_SOURCE_LIST);
     }
 
     /**
-     * <h2>获取数据源参数</h2>
+     * <h3>获取数据源参数</h3>
      *
      * @return 数据源参数
      */
@@ -71,7 +71,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h2>设置数据源参数</h2>
+     * <h3>设置数据源参数</h3>
      *
      * @param param 参数
      */
@@ -80,14 +80,14 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h2>清空数据源参数</h2>
+     * <h3>清空数据源参数</h3>
      */
     public static void clearDataSourceParam() {
         THREAD_LOCAL.remove();
     }
 
     /**
-     * <h2>获取数据源包含数据库的地址</h2>
+     * <h3>获取数据源包含数据库的地址</h3>
      *
      * @param dataSource 数据源
      * @return 数据源地址
@@ -99,7 +99,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h2>获取数据源不包含数据库的地址</h2>
+     * <h3>获取数据源不包含数据库的地址</h3>
      *
      * @param dataSource 数据源
      * @return 数据源地址
@@ -109,7 +109,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h2>创建数据库</h2>
+     * <h3>创建数据库</h3>
      *
      * @param dataSource 数据源信息
      */
@@ -146,7 +146,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
     }
 
     /**
-     * <h2>创建数据源</h2>
+     * <h3>创建数据源</h3>
      *
      * @param dataSourceInfo 数据源
      */

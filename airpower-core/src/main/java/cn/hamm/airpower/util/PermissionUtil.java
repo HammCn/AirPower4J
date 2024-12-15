@@ -37,12 +37,12 @@ import java.util.Objects;
 @Slf4j
 public class PermissionUtil {
     /**
-     * <h2>控制器字节码文件路径</h2>
+     * <h3>控制器字节码文件路径</h3>
      */
     private static final String CONTROLLER_CLASS_PATH = "/**/*" + Constant.CONTROLLER_SUFFIX + ".class";
 
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private PermissionUtil() {
@@ -50,7 +50,7 @@ public class PermissionUtil {
     }
 
     /**
-     * <h2>获取需要被授权的类型</h2>
+     * <h3>获取需要被授权的类型</h3>
      *
      * @param clazz  类
      * @param method 方法
@@ -80,7 +80,7 @@ public class PermissionUtil {
     }
 
     /**
-     * <h2>获取权限标识</h2>
+     * <h3>获取权限标识</h3>
      *
      * @param clazz  类
      * @param method 方法
@@ -93,7 +93,7 @@ public class PermissionUtil {
     }
 
     /**
-     * <h2>扫描并返回权限列表</h2>
+     * <h3>扫描并返回权限列表</h3>
      *
      * @param clazz           入口类
      * @param permissionClass 权限类
@@ -107,7 +107,7 @@ public class PermissionUtil {
     }
 
     /**
-     * <h2>扫描并返回权限列表</h2>
+     * <h3>扫描并返回权限列表</h3>
      *
      * @param packageName     包名
      * @param permissionClass 权限类
@@ -186,7 +186,7 @@ public class PermissionUtil {
     }
 
     /**
-     * <h2>检查Api是否在子控制器中被排除</h2>
+     * <h3>检查Api是否在子控制器中被排除</h3>
      *
      * @param api    Api
      * @param extend 注解
@@ -205,7 +205,7 @@ public class PermissionUtil {
     }
 
     /**
-     * <h2>获取方法权限标识</h2>
+     * <h3>获取方法权限标识</h3>
      *
      * @param method 方法
      * @return 权限标识

@@ -21,12 +21,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Extends {
     /**
-     * <h2>排除父类接口但需要继承这些接口</h2>
+     * <h3>排除父类接口但需要继承这些接口</h3>
      */
     Api[] value() default {};
 
     /**
-     * <h2>继承父类接口但排除这些接口</h2>
+     * <h3>继承父类接口但排除这些接口</h3>
      */
     Api[] exclude() default {};
 }

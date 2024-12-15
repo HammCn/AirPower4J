@@ -15,19 +15,19 @@ import java.util.stream.IntStream;
  */
 public class DesensitizeUtil {
     /**
-     * <h2>{@code IPV4} 的块长度</h2>
+     * <h3>{@code IPV4} 的块长度</h3>
      */
     private static final int IPV4_PART_COUNT = 4;
 
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private DesensitizeUtil() {
     }
 
     /**
-     * <h2>字符串替换</h2>
+     * <h3>字符串替换</h3>
      *
      * @param text   原始字符串
      * @param head   头部保留长度
@@ -51,7 +51,7 @@ public class DesensitizeUtil {
     }
 
     /**
-     * <h2>{@code IPv4} 地址脱敏</h2>
+     * <h3>{@code IPv4} 地址脱敏</h3>
      *
      * @param ipv4   {@code IPv4} 地址
      * @param symbol 符号
@@ -71,7 +71,7 @@ public class DesensitizeUtil {
     }
 
     /**
-     * <h2>{@code IPv4} 地址脱敏</h2>
+     * <h3>{@code IPv4} 地址脱敏</h3>
      *
      * @param ipv4 {@code IPv4} 地址
      * @return 脱敏后的 {@code IPv4} 地址
@@ -81,7 +81,7 @@ public class DesensitizeUtil {
     }
 
     /**
-     * <h2>文本脱敏</h2>
+     * <h3>文本脱敏</h3>
      *
      * @param text 原始文本
      * @param type 脱敏类型
@@ -95,7 +95,7 @@ public class DesensitizeUtil {
     }
 
     /**
-     * <h2>文本脱敏</h2>
+     * <h3>文本脱敏</h3>
      *
      * @param valueString 原始文本
      * @param type        脱敏类型
