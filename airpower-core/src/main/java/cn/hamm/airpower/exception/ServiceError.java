@@ -42,6 +42,7 @@ public enum ServiceError implements IException, IDictionary {
     FORBIDDEN_UPLOAD_MAX_SIZE(4035, "上传的文件大小超过最大限制"),
     FORBIDDEN_DISABLED(4036, "ID %s 的 %s 已被禁用"),
     FORBIDDEN_OPEN_APP_DISABLED(4037, "当前应用已被禁用"),
+    FORBIDDEN_DISABLED_NOT_ALLOWED(4038, "不允许禁用"),
 
     // 404 没有查到数据代码
     DATA_NOT_FOUND(404, "没有查到相关的数据"),
