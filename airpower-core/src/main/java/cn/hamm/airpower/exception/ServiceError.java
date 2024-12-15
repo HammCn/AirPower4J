@@ -29,7 +29,6 @@ public enum ServiceError implements IException, IDictionary {
     TIMESTAMP_INVALID(4006, "请求时间不在允许范围内(±5分钟)"),
     MISSING_REQUEST_ADDRESS(4007, "请求来源地址异常"),
     INVALID_REQUEST_ADDRESS(4008, "请求来源不在应用配置的白名单内"),
-    APP_DISABLED(4009, "当前应用已被禁用"),
 
     // 401 需要登录代码
     UNAUTHORIZED(401, "获取你的身份信息失败，请重新登录后再试"),
@@ -42,7 +41,7 @@ public enum ServiceError implements IException, IDictionary {
     FORBIDDEN_DELETE_USED(4034, "删除失败，数据正在使用中"),
     FORBIDDEN_UPLOAD_MAX_SIZE(4035, "上传的文件大小超过最大限制"),
     FORBIDDEN_DISABLED(4036, "ID %s 的 %s 已被禁用"),
-    OPEN_APP_DISABLED(4037, "当前应用已被禁用"),
+    FORBIDDEN_OPEN_APP_DISABLED(4037, "当前应用已被禁用"),
 
     // 404 没有查到数据代码
     DATA_NOT_FOUND(404, "没有查到相关的数据"),
