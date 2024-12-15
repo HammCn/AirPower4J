@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.Objects;
-
 /**
  * <h1>WebsocketHelper</h1>
  *
@@ -59,7 +57,7 @@ public class WebsocketHelper {
      */
     public final void publishToChannel(String channel, WebSocketPayload payload) {
         final String channelPrefix = websocketConfig.getChannelPrefix();
-        if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
+        if (!StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
         final WebSocketEvent event = WebSocketEvent.create(payload);

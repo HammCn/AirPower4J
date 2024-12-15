@@ -64,7 +64,7 @@ public abstract class AbstractWebConfig implements WebMvcConfigurer, WebSocketCo
             return;
         }
         final String channelPrefix = webSocketConfig.getChannelPrefix();
-        if (Objects.isNull(channelPrefix) || !StringUtils.hasText(channelPrefix)) {
+        if (!StringUtils.hasText(channelPrefix)) {
             throw new ServiceException("没有配置 airpower.websocket.channelPrefix, 无法启动WebSocket服务");
         }
         registry.addHandler(getWebsocketHandler(), webSocketConfig.getPath())

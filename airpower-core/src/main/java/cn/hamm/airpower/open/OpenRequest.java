@@ -20,7 +20,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * <h1>{@code OpenApi} 请求体</h1>
@@ -153,7 +152,7 @@ public class OpenRequest {
      */
     private void checkIpWhiteList() {
         final String ipStr = openApp.getIpWhiteList();
-        if (Objects.isNull(ipStr) || !StringUtils.hasText(ipStr)) {
+        if (!StringUtils.hasText(ipStr)) {
             // 未配置IP白名单
             return;
         }
