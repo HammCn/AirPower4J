@@ -100,6 +100,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
         ServiceError.SERVICE_ERROR.whenNull(openAppService, "注入OpenAppService失败");
         IOpenApp openApp = openAppService.getByAppKey(openRequest.getAppKey());
         ServiceError.INVALID_APP_KEY.whenNull(openApp);
+        ServiceError.APP_DISABLED.when(openApp.getIsDisabled());
         return openApp;
     }
 

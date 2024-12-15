@@ -29,6 +29,7 @@ public enum ServiceError implements IException, IDictionary {
     TIMESTAMP_INVALID(4006, "请求时间不在允许范围内(±5分钟)"),
     MISSING_REQUEST_ADDRESS(4007, "请求来源地址异常"),
     INVALID_REQUEST_ADDRESS(4008, "请求来源不在应用配置的白名单内"),
+    APP_DISABLED(4009, "当前应用已被禁用"),
 
     // 401 需要登录代码
     UNAUTHORIZED(401, "获取你的身份信息失败，请重新登录后再试"),

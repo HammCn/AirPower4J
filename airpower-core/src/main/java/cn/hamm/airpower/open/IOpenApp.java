@@ -48,4 +48,11 @@ public interface IOpenApp {
      * @return IP白名单
      */
     String getIpWhiteList();
+
+    /**
+     * <h2>是否禁用</h2>
+     *
+     * @return 是否禁用
+     */
+    Boolean getIsDisabled();
 }
