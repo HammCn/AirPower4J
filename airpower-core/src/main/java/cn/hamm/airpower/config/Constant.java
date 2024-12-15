@@ -125,6 +125,21 @@ public class Constant {
     public final static String ASTERISK = "*";
 
     /**
+     * <h3>问号 {@code ?}</h3>
+     */
+    public final static String QUESTION = "?";
+
+    /**
+     * <h3>井号 {@code #}</h3>
+     */
+    public final static String SHARP = "#";
+
+    /**
+     * <h3>{@code And &}</h3>
+     */
+    public static final String AND = "&";
+
+    /**
      * <h3>百分号 {@code %}</h3>
      */
     public static final String PERCENT = "%";
