@@ -19,7 +19,7 @@ import java.lang.annotation.*;
 @RequestMapping
 public @interface ApiController {
     /**
-     * <h2><code>Api</code> 的路径</h2>
+     * <h3><code>Api</code> 的路径</h3>
      */
     @AliasFor(annotation = RequestMapping.class, attribute = "path")
     String value();

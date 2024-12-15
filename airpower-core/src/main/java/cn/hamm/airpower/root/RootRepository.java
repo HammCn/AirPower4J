@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @NoRepositoryBean
 public interface RootRepository<E extends RootEntity<E>> extends JpaRepository<E, Long>, JpaSpecificationExecutor<E> {
     /**
-     * <h2>加写锁查询</h2>
+     * <h3>加写锁查询</h3>
      *
      * @param id ID
      * @return 实体

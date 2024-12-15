@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 @Description("查询列表请求")
 public class QueryListRequest<M extends RootModel<M>> extends QueryRequest<M> {
     /**
-     * <h2>排序对象</h2>
+     * <h3>排序对象</h3>
      */
     @Description("排序对象")
     private Sort sort = null;

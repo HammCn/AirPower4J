@@ -15,38 +15,38 @@ import java.lang.annotation.*;
 @Documented
 public @interface ExcelColumn {
     /**
-     * <h2>列数据类型</h2>
+     * <h3>列数据类型</h3>
      */
     Type value() default Type.TEXT;
 
     /**
-     * <h2>列数据类型</h2>
+     * <h3>列数据类型</h3>
      */
     enum Type {
         /**
-         * <h2>普通文本</h2>
+         * <h3>普通文本</h3>
          */
         TEXT,
 
         /**
-         * <h2>时间日期</h2>
+         * <h3>时间日期</h3>
          */
         DATETIME,
 
         /**
-         * <h2>数字</h2>
+         * <h3>数字</h3>
          */
         NUMBER,
 
         /**
-         * <h2>字典</h2>
+         * <h3>字典</h3>
          *
          * @apiNote 请确保同时标记了 @{@link Dictionary}
          */
         DICTIONARY,
 
         /**
-         * <h2>布尔值</h2>
+         * <h3>布尔值</h3>
          */
         BOOLEAN
     }

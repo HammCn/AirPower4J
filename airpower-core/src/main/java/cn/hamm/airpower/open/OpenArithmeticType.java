@@ -15,19 +15,19 @@ import lombok.Getter;
 @Description("开放应用加密方式")
 public enum OpenArithmeticType implements IDictionary {
     /**
-     * <h2>{@code AES} 算法</h2>
+     * <h3>不加密</h3>
+     */
+    NO(0, "NO"),
+
+    /**
+     * <h3>{@code AES} 算法</h3>
      */
     AES(1, "AES"),
 
     /**
-     * <h2>{@code RSA} 算法</h2>
+     * <h3>{@code RSA} 算法</h3>
      */
-    RSA(2, "RSA"),
-
-    /**
-     * <h2>不加密</h2>
-     */
-    NO(3, "NO");
+    RSA(2, "RSA");
 
     private final int key;
     private final String label;

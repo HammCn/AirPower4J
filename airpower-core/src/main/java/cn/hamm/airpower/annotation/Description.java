@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 @Documented
 public @interface Description {
     /**
-     * <h2>描述文案</h2>
+     * <h3>描述文案</h3>
      *
      * @apiNote 将显示在错误信息、验证信息、文档等处
      */

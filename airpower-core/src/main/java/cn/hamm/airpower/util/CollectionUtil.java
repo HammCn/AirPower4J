@@ -12,14 +12,14 @@ import java.util.*;
  */
 public class CollectionUtil {
     /**
-     * <h2>禁止外部实例化</h2>
+     * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
     private CollectionUtil() {
     }
 
     /**
-     * <h2>获取集合中的 {@code 非null} 元素</h2>
+     * <h3>获取集合中的 {@code 非null} 元素</h3>
      *
      * @param list       原始集合
      * @param fieldClass 数据类型

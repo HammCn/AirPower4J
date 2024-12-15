@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TransactionHelper {
     /**
-     * <h2>开始执行一个包含若干方法的事务</h2>
+     * <h3>开始执行一个包含若干方法的事务</h3>
      *
      * @param function 事务包含的方法集合体
      * @apiNote 如需无视异常执行多项任务，可使用 {@link TaskUtil#run(Runnable, Runnable...)} 或 {@link TaskUtil#runAsync(Runnable, Runnable...)}
@@ -26,7 +26,7 @@ public class TransactionHelper {
     @FunctionalInterface
     public interface Function {
         /**
-         * <h2>开始执行一个包含若干方法的事务</h2>
+         * <h3>开始执行一个包含若干方法的事务</h3>
          */
         void run();
     }

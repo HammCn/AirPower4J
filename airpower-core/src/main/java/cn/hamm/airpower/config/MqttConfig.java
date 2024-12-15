@@ -18,22 +18,22 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("airpower.mqtt")
 public class MqttConfig {
     /**
-     * <h2>用户</h2>
+     * <h3>用户</h3>
      */
     private String user = Constant.EMPTY_STRING;
 
     /**
-     * <h2>密码</h2>
+     * <h3>密码</h3>
      */
     private String pass = Constant.EMPTY_STRING;
 
     /**
-     * <h2>地址</h2>
+     * <h3>地址</h3>
      */
     private String host = Constant.LOCAL_IP_ADDRESS;
 
     /**
-     * <h2>端口</h2>
+     * <h3>端口</h3>
      */
     private String port = "1883";
 }

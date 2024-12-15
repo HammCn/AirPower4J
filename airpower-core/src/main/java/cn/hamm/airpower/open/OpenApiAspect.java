@@ -40,7 +40,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     }
 
     /**
-     * <h2>{@code OpenApi}</h2>
+     * <h3>{@code OpenApi}</h3>
      */
     @Around("pointCut()")
     public Object openApi(@NotNull ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -90,7 +90,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     }
 
     /**
-     * <h2>从请求对象中获取 {@code OpenApp}</h2>
+     * <h3>从请求对象中获取 {@code OpenApp}</h3>
      *
      * @param openRequest {@code OpenRequest}
      * @return {@code OpenApp}
@@ -100,11 +100,12 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
         ServiceError.SERVICE_ERROR.whenNull(openAppService, "注入OpenAppService失败");
         IOpenApp openApp = openAppService.getByAppKey(openRequest.getAppKey());
         ServiceError.INVALID_APP_KEY.whenNull(openApp);
+        ServiceError.FORBIDDEN_OPEN_APP_DISABLED.when(openApp.getIsDisabled());
         return openApp;
     }
 
     /**
-     * <h2>添加日志</h2>
+     * <h3>添加日志</h3>
      *
      * @param openApp     {@code OpenApp}
      * @param url         请求 {@code URL}
@@ -119,7 +120,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     }
 
     /**
-     * <h2>更新日志返回数据</h2>
+     * <h3>更新日志返回数据</h3>
      *
      * @param openLogId    日志 {@code ID}
      * @param responseBody 返回值
@@ -132,7 +133,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
     }
 
     /**
-     * <h2>更新日志异常</h2>
+     * <h3>更新日志异常</h3>
      *
      * @param openLogId 日志 {@code ID}
      * @param exception 异常

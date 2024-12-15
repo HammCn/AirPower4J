@@ -8,7 +8,7 @@ package cn.hamm.airpower.open;
  */
 public interface IOpenAppService {
     /**
-     * <h2>通过应用的 {@code AppKey} 查一个应用</h2>
+     * <h3>通过应用的 {@code AppKey} 查一个应用</h3>
      *
      * @param appKey {@code AppKey}
      * @return 应用

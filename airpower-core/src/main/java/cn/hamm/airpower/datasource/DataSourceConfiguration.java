@@ -16,13 +16,13 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class DataSourceConfiguration {
     /**
-     * <h2>数据源配置对象</h2>
+     * <h3>数据源配置对象</h3>
      */
     @Autowired
     private DataSourceProperties dataSourceProperties;
 
     /**
-     * <h2>设置主要的数据源</h2>
+     * <h3>设置主要的数据源</h3>
      *
      * @return 数据源对应操作对象
      */

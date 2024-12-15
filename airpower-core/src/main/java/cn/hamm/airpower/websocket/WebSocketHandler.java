@@ -37,36 +37,36 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class WebSocketHandler extends TextWebSocketHandler implements MessageListener {
     /**
-     * <h2>订阅全频道</h2>
+     * <h3>订阅全频道</h3>
      */
     public static final String CHANNEL_ALL = "WEBSOCKET_ALL";
 
     /**
-     * <h2>订阅用户频道前缀</h2>
+     * <h3>订阅用户频道前缀</h3>
      */
     public static final String CHANNEL_USER_PREFIX = "WEBSOCKET_USER_";
 
     /**
-     * <h2>{@code Redis} 连接列表</h2>
+     * <h3>{@code Redis} 连接列表</h3>
      */
     protected final ConcurrentHashMap<String, RedisConnection> redisConnectionHashMap = new ConcurrentHashMap<>();
 
     /**
-     * <h2>{@code MQTT} 客户端列表</h2>
+     * <h3>{@code MQTT} 客户端列表</h3>
      */
     protected final ConcurrentHashMap<String, MqttClient> mqttClientHashMap = new ConcurrentHashMap<>();
 
     /**
-     * <h2>用户 {@code ID} 列表</h2>
+     * <h3>用户 {@code ID} 列表</h3>
      */
     protected final ConcurrentHashMap<String, Long> userIdHashMap = new ConcurrentHashMap<>();
     /**
-     * <h2>{@code WebSocket}配置</h2>
+     * <h3>{@code WebSocket}配置</h3>
      */
     @Autowired
     protected WebSocketConfig webSocketConfig;
     /**
-     * <h2>{@code Redis} 连接工厂</h2>
+     * <h3>{@code Redis} 连接工厂</h3>
      */
     @Autowired
     protected RedisConnectionFactory redisConnectionFactory;
@@ -75,7 +75,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     protected MqttHelper mqttHelper;
 
     /**
-     * <h2>收到 {@code Websocket} 消息时</h2>
+     * <h3>收到 {@code Websocket} 消息时</h3>
      *
      * @param session     会话
      * @param textMessage 文本消息
@@ -96,7 +96,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>发送 {@code Websocket} 事件负载</h2>
+     * <h3>发送 {@code Websocket} 事件负载</h3>
      *
      * @param session          会话
      * @param webSocketPayload 事件负载
@@ -111,7 +111,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>当 {@code WebSocket} 负载到达时</h2>
+     * <h3>当 {@code WebSocket} 负载到达时</h3>
      *
      * @param webSocketPayload 负载对象
      */
@@ -120,7 +120,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>连接就绪后监听队列</h2>
+     * <h3>连接就绪后监听队列</h3>
      *
      * @param session 会话
      */
@@ -149,7 +149,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>连接成功后置方法</h2>
+     * <h3>连接成功后置方法</h3>
      *
      * @param session 会话
      */
@@ -158,7 +158,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>处理监听到的频道消息</h2>
+     * <h3>处理监听到的频道消息</h3>
      *
      * @param message 消息
      * @param session 连接
@@ -172,7 +172,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>开始监听 {@code Redis} 消息</h2>
+     * <h3>开始监听 {@code Redis} 消息</h3>
      *
      * @param session {@code WebSocket} 会话
      * @param userId  用户 {@code ID}
@@ -192,7 +192,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>开始监听 {@code MQTT} 消息</h2>
+     * <h3>开始监听 {@code MQTT} 消息</h3>
      *
      * @param session {@code WebSocket} 会话
      * @param userId  用户 {@code ID}
@@ -227,7 +227,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>关闭连接</h2>
+     * <h3>关闭连接</h3>
      *
      * @param session 会话
      */
@@ -261,7 +261,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>断开连接后置方法</h2>
+     * <h3>断开连接后置方法</h3>
      *
      * @param session 会话
      * @param userId  用户 {@code ID}
@@ -276,7 +276,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>{@code REDIS} 订阅</h2>
+     * <h3>{@code REDIS} 订阅</h3>
      *
      * @param channel 传入的频道
      * @param session {@code WebSocket} 会话
@@ -287,7 +287,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>{@code MQTT} 订阅</h2>
+     * <h3>{@code MQTT} 订阅</h3>
      *
      * @param channel 传入的频道
      * @param session {@code WebSocket} 会话
@@ -302,7 +302,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>获取真实的频道</h2>
+     * <h3>获取真实的频道</h3>
      *
      * @param channel 传入的频道
      * @return 带前缀的真实频道
@@ -313,7 +313,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>{@code Redis} 取消订阅</h2>
+     * <h3>{@code Redis} 取消订阅</h3>
      *
      * @param channel 传入的频道
      * @param session {@code WebSocket} 会话
@@ -324,7 +324,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>{@code MQTT} 取消订阅</h2>
+     * <h3>{@code MQTT} 取消订阅</h3>
      *
      * @param channel 传入的频道
      * @param session {@code WebSocket} 会话
@@ -339,7 +339,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>获取 {@code MQTT} 客户端</h2>
+     * <h3>获取 {@code MQTT} 客户端</h3>
      *
      * @param session {@code WebSocket} 会话
      * @return {@code MQTT} 客户端
@@ -351,7 +351,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
     }
 
     /**
-     * <h2>获取 {@code Redis} 订阅</h2>
+     * <h3>获取 {@code Redis} 订阅</h3>
      *
      * @param session {@code WebSocket} 会话
      * @return {@code Redis} 订阅

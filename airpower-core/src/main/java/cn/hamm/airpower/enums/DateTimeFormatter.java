@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * <h2>格式化模板</h2>
+ * <h3>格式化模板</h3>
  *
  * @author Hamm.cn
  */
@@ -12,52 +12,52 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DateTimeFormatter {
     /**
-     * <h2>年</h2>
+     * <h3>年</h3>
      */
     YEAR("yyyy"),
 
     /**
-     * <h2>月</h2>
+     * <h3>月</h3>
      */
     MONTH("MM"),
 
     /**
-     * <h2>日</h2>
+     * <h3>日</h3>
      */
     DAY("dd"),
 
     /**
-     * <h2>时</h2>
+     * <h3>时</h3>
      */
     HOUR("HH"),
 
     /**
-     * <h2>分</h2>
+     * <h3>分</h3>
      */
     MINUTE("mm"),
 
     /**
-     * <h2>秒</h2>
+     * <h3>秒</h3>
      */
     SECOND("ss"),
 
     /**
-     * <h2>年月日</h2>
+     * <h3>年月日</h3>
      */
     FULL_DATE("yyyy-MM-dd"),
 
     /**
-     * <h2>时分秒</h2>
+     * <h3>时分秒</h3>
      */
     FULL_TIME("HH:mm:ss"),
 
     /**
-     * <h2>年月日时分秒</h2>
+     * <h3>年月日时分秒</h3>
      */
     FULL_DATETIME("yyyy-MM-dd HH:mm:ss"),
 
     /**
-     * <h2>月日时分</h2>
+     * <h3>月日时分</h3>
      */
     SHORT_DATETIME("MM-dd HH:mm"),
     ;

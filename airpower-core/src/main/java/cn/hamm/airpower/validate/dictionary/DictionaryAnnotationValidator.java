@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class DictionaryAnnotationValidator implements ConstraintValidator<Dictionary, Integer> {
     /**
-     * <h2>标记的枚举类</h2>
+     * <h3>标记的枚举类</h3>
      */
     private Class<? extends IDictionary> enumClazz = null;
 
     /**
-     * <h2>验证</h2>
+     * <h3>验证</h3>
      *
      * @param value   验证的值
      * @param context 验证器会话
@@ -42,7 +42,7 @@ public class DictionaryAnnotationValidator implements ConstraintValidator<Dictio
     }
 
     /**
-     * <h2>初始化</h2>
+     * <h3>初始化</h3>
      *
      * @param dictionary 字典类
      */

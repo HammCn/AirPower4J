@@ -16,61 +16,61 @@ import org.springframework.stereotype.Component;
 @Component
 public class AirHelper {
     /**
-     * <h2>{@code Redis} 助手类</h2>
+     * <h3>{@code Redis} 助手类</h3>
      */
     @Getter
     private static RedisHelper redisHelper;
 
     /**
-     * <h2>邮件相关服务</h2>
+     * <h3>邮件相关服务</h3>
      */
     @Getter
     private static EmailHelper emailHelper;
 
     /**
-     * <h2>事务助手类</h2>
+     * <h3>事务助手类</h3>
      */
     @Getter
     private static TransactionHelper transactionHelper;
 
     /**
-     * <h2>{@code Cookie} 助手类</h2>
+     * <h3>{@code Cookie} 助手类</h3>
      */
     @Getter
     private static CookieHelper cookieHelper;
 
     /**
-     * <h2>{@code MQTT} 助手类</h2>
+     * <h3>{@code MQTT} 助手类</h3>
      */
     @Getter
     private static MqttHelper mqttHelper;
 
     /**
-     * <h2>环境变量</h2>
+     * <h3>环境变量</h3>
      */
     @Getter
     private static Environment environment;
 
     /**
-     * <h2>{@code JPA} 实体管理器</h2>
+     * <h3>{@code JPA} 实体管理器</h3>
      */
     @Getter
     private static EntityManager entityManager;
 
     /**
-     * <h2>当前的请求对象</h2>
+     * <h3>当前的请求对象</h3>
      */
     @Getter
     private static HttpServletRequest request;
 
     /**
-     * <h2>当前的响应对象</h2>
+     * <h3>当前的响应对象</h3>
      */
     @Getter
     private static HttpServletResponse response;
 
     /**
-     * <h2>{@code WebSocket} 助手类</h2>
+     * <h3>{@code WebSocket} 助手类</h3>
      */
     @Getter
     private static WebsocketHelper websocketHelper;
@@ -101,7 +101,7 @@ public class AirHelper {
     }
 
     /**
-     * <h2>获取当前的环境变量</h2>
+     * <h3>获取当前的环境变量</h3>
      *
      * @return 当前环境变量
      */

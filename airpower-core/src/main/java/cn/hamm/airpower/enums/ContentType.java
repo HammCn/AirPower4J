@@ -13,32 +13,32 @@ import org.springframework.http.MediaType;
 @AllArgsConstructor
 public enum ContentType {
     /**
-     * <h2>{@code JSON}</h2>
+     * <h3>{@code JSON}</h3>
      */
     JSON(MediaType.APPLICATION_JSON_VALUE),
 
     /**
-     * <h2>{@code HTML}</h2>
+     * <h3>{@code HTML}</h3>
      */
     HTML(MediaType.TEXT_HTML_VALUE),
 
     /**
-     * <h2>{@code PLAIN}</h2>
+     * <h3>{@code PLAIN}</h3>
      */
     PLAIN(MediaType.TEXT_PLAIN_VALUE),
 
     /**
-     * <h2>{@code XML}</h2>
+     * <h3>{@code XML}</h3>
      */
     XML(MediaType.TEXT_XML_VALUE),
 
     /**
-     * <h2>{@code FORM_URLENCODED}</h2>
+     * <h3>{@code FORM_URLENCODED}</h3>
      */
     FORM_URLENCODED(MediaType.APPLICATION_FORM_URLENCODED_VALUE),
 
     /**
-     * <h2>{@code MULTIPART_FORM_DATA}</h2>
+     * <h3>{@code MULTIPART_FORM_DATA}</h3>
      */
     MULTIPART_FORM_DATA(MediaType.MULTIPART_FORM_DATA_VALUE);
 

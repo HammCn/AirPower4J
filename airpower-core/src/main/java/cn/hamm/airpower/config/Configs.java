@@ -12,25 +12,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class Configs {
     /**
-     * <h2>全局 {@code Cookie} 配置</h2>
+     * <h3>全局 {@code Cookie} 配置</h3>
      */
     @Getter
     private static CookieConfig cookieConfig;
 
     /**
-     * <h2>全局配置</h2>
+     * <h3>全局配置</h3>
      */
     @Getter
     private static ServiceConfig serviceConfig;
 
     /**
-     * <h2>{@code MQTT} 配置</h2>
+     * <h3>{@code MQTT} 配置</h3>
      */
     @Getter
     private static MqttConfig mqttConfig;
 
     /**
-     * <h2>{@code WebSocket} 配置</h2>
+     * <h3>{@code WebSocket} 配置</h3>
      */
     @Getter
     private static WebSocketConfig websocketConfig;

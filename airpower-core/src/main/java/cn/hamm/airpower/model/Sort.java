@@ -14,13 +14,13 @@ import lombok.experimental.Accessors;
 @Description("查询排序对象")
 public class Sort {
     /**
-     * <h2>排序字段</h2>
+     * <h3>排序字段</h3>
      */
     @Description("排序字段")
     private String field;
 
     /**
-     * <h2>排序方法</h2>
+     * <h3>排序方法</h3>
      */
     @Description("排序方向")
     private String direction;

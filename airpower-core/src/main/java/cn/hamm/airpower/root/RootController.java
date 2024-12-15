@@ -25,7 +25,7 @@ public class RootController implements IAction {
     protected HttpServletRequest request;
 
     /**
-     * <h2>获取当前登录用户的信息</h2>
+     * <h3>获取当前登录用户的信息</h3>
      *
      * @return 用户 {@code ID}
      */
