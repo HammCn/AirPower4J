@@ -2,12 +2,15 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.helper.TransactionHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>任务流程工具类</h1>
@@ -16,6 +19,17 @@ import java.util.List;
  */
 @Slf4j
 public class TaskUtil {
+    /**
+     * <h3>线程池</h3>
+     */
+    private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
+            5,
+            20,
+            3600L,
+            TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>()
+    );
+
     /**
      * <h3>禁止外部实例化</h3>
      */
@@ -48,7 +62,7 @@ public class TaskUtil {
      * @apiNote 如需异步事务处理，可在此参数传入的方法中自行调用 {@link TransactionHelper#run(TransactionHelper.Function)}
      */
     public static void runAsync(Runnable runnable, Runnable... moreRunnable) {
-        getRunnableList(runnable, moreRunnable).forEach(run -> new Thread(run).start());
+        getRunnableList(runnable, moreRunnable).forEach(EXECUTOR::submit);
     }
 
     /**
