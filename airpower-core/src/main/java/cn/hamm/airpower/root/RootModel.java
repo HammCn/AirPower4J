@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * <h1>数据根模型</h1>
@@ -75,7 +74,6 @@ public class RootModel<M extends RootModel<M>> implements IAction {
         // 类中没有标排除 则所有字段全暴露 走黑名单
         boolean isExpose = Objects.nonNull(exclude) && Arrays.asList(exclude.filters()).contains(filterClass);
         BiConsumer<@NotNull Field, @NotNull Class<?>> task = isExpose ? this::exposeBy : this::excludeBy;
-        Consumer<@NotNull Field> desensitize = this::desensitize;
         List<Field> allFields = ReflectUtil.getFieldList(clazz);
         allFields.forEach(field -> {
             if (!Objects.equals(Void.class, filterClass)) {
@@ -83,7 +81,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
                 filterField(field, filterClass, isDesensitize);
             }
             if (isDesensitize) {
-                desensitize.accept(field);
+                desensitize(field);
             }
         });
         return (M) this;
