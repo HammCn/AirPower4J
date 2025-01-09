@@ -1178,11 +1178,23 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
         if (Objects.isNull(criteriaQuery)) {
             return null;
         }
-        List<Predicate> predicateList = getPredicateList(root, builder, filter, isEqual);
+        E lastFilter = beforeCreatePredicate(filter.copy());
+        List<Predicate> predicateList = getPredicateList(root, builder, lastFilter, isEqual);
         predicateList.addAll(addSearchPredicate(root, builder, filter));
         addCreateAndUpdateTimePredicate(root, builder, filter, predicateList);
         Predicate[] predicates = new Predicate[predicateList.size()];
         criteriaQuery.where(builder.and(predicateList.toArray(predicates)));
         return criteriaQuery.getRestriction();
+    }
+
+    /**
+     * <h3>在创建查询条件前调用</h3>
+     *
+     * @param filter 过滤器
+     * @return 处理后的过滤器
+     * @apiNote 此处理不影响 {@link #addSearchPredicate(Root, CriteriaBuilder, RootEntity)} 的 {@code search} 参数
+     */
+    protected E beforeCreatePredicate(@NotNull E filter) {
+        return filter;
     }
 }
