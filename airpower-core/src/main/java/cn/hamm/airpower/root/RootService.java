@@ -540,6 +540,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @param builder 参数构造器
      * @param search  原始查询对象
      * @return 查询条件列表
+     * @apiNote 如需要删除自动添加的查询条件，请调用 {@link #beforeCreatePredicate(RootEntity)}
      */
     @SuppressWarnings("unused")
     protected @NotNull List<Predicate> addSearchPredicate(
