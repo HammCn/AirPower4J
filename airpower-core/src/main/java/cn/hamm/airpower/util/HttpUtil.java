@@ -59,7 +59,6 @@ public class HttpUtil {
      */
     private int connectTimeout = 5;
 
-
     /**
      * <h3>禁止外部实例化</h3>
      */
