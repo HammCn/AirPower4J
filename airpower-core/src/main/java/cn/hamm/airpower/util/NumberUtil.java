@@ -125,8 +125,7 @@ public class NumberUtil {
      * @return 商
      */
     public static double div(double first, double second) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
-                .doubleValue();
+        return div(first, second, DEFAULT_SCALE);
     }
 
     /**
@@ -164,8 +163,7 @@ public class NumberUtil {
      * @return 商
      */
     public static double div(long first, long second) {
-        return div(BigDecimal.valueOf(first), BigDecimal.valueOf(second), DEFAULT_SCALE, DEFAULT_ROUNDING_MODE)
-                .doubleValue();
+        return div(first, second, DEFAULT_SCALE);
     }
 
     /**

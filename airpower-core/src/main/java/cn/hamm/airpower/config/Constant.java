@@ -135,6 +135,11 @@ public class Constant {
     public final static String SHARP = "#";
 
     /**
+     * <h3>@ {@code @}</h3>
+     */
+    public final static String AT = "@";
+
+    /**
      * <h3>{@code And &}</h3>
      */
     public static final String AND = "&";
