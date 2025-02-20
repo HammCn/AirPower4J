@@ -74,7 +74,6 @@ public class PatternConstant {
      */
     public static final Pattern NATURAL_INTEGER = Pattern.compile("^[0-9]+$");
 
-
     /**
      * <h3>禁止外部实例化</h3>
      */

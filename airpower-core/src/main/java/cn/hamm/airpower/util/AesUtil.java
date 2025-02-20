@@ -50,7 +50,6 @@ public class AesUtil {
      */
     private String algorithm = AES_CBC_PKCS5_PADDING;
 
-
     /**
      * <h3>禁止外部实例化</h3>
      */
