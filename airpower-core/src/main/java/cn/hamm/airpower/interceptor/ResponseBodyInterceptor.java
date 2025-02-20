@@ -90,14 +90,14 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             // 返回不是JsonData 原样返回
             return result;
         }
-
-        if (Objects.isNull(json.getData())) {
+        Object data = json.getData();
+        if (Objects.isNull(data)) {
             return result;
         }
 
         Filter filter = ReflectUtil.getAnnotation(Filter.class, method);
         DesensitizeExclude desensitizeExclude = ReflectUtil.getAnnotation(DesensitizeExclude.class, method);
-        if (json.getData() instanceof QueryPageResponse) {
+        if (data instanceof QueryPageResponse) {
             QueryPageResponse<M> queryPageResponse = (QueryPageResponse<M>) json.getData();
             // 如果 data 分页对象
             queryPageResponse.getList().forEach(item ->
@@ -106,26 +106,23 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             return json.setData(queryPageResponse);
         }
 
-        Class<?> dataCls = json.getData().getClass();
-        if (json.getData() instanceof Collection) {
-            Collection<?> collection = CollectionUtil.getCollectWithoutNull(
-                    (Collection<?>) json.getData(), dataCls
+        Class<?> dataCls = data.getClass();
+        if (data instanceof Collection) {
+            Collection<M> collection = CollectionUtil.getCollectWithoutNull(
+                    (Collection<M>) data, dataCls
             );
             collection.stream()
                     .toList()
                     .forEach(item -> {
                         if (ReflectUtil.isModel(item.getClass())) {
-                            ((M) item).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude));
+                            item.filterAndDesensitize(filter, Objects.isNull(desensitizeExclude));
                         }
                     });
             return json.setData(collection);
         }
         if (ReflectUtil.isModel(dataCls)) {
             // 如果 data 是 Model
-            //noinspection unchecked
-            return json.setData(
-                    ((M) json.getData()).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude))
-            );
+            return json.setData(((M) data).filterAndDesensitize(filter, Objects.isNull(desensitizeExclude)));
         }
 
         // 其他数据 原样返回
