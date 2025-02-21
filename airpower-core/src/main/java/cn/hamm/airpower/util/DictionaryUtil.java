@@ -89,12 +89,12 @@ public class DictionaryUtil {
     ) {
         List<Map<String, Object>> mapList = new ArrayList<>();
         //取出所有枚举类型
-        Arrays.stream(clazz.getEnumConstants()).forEach(obj -> {
+        Arrays.stream(clazz.getEnumConstants()).forEach(enumItem -> {
             Map<String, Object> item = new HashMap<>(lambdas.length);
             // 依次取出参数的值
             Arrays.stream(lambdas).forEach(lambda -> {
                 try {
-                    item.put(StringUtils.uncapitalize(ReflectUtil.getLambdaFunctionName(lambda)), lambda.apply(obj));
+                    item.put(StringUtils.uncapitalize(ReflectUtil.getLambdaFunctionName(lambda)), lambda.apply(enumItem));
                 } catch (Exception exception) {
                     log.error(exception.getMessage(), exception);
                 }
