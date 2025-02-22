@@ -21,6 +21,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -147,9 +148,23 @@ public class ExceptionInterceptor {
     @ExceptionHandler(MissingServletRequestPartException.class)
     public Json missingServletRequestPartExceptionHandle(@NotNull MissingServletRequestPartException exception) {
         log.error(exception.getMessage());
-        return Json.error(ServiceError.PARAM_MISSING, "请选择需要上传的文件");
+        return Json.error(ServiceError.PARAM_MISSING, String.format(
+                "缺少文件 %s",
+                Objects.requireNonNull(exception.getRequestPartName())
+        ));
     }
 
+    /**
+     * <h3>未提交必要参数</h3>
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public Json missingServletRequestParameterExceptionHandle(@NotNull MissingServletRequestParameterException exception) {
+        log.error(exception.getMessage());
+        return Json.error(ServiceError.PARAM_MISSING, String.format(
+                "缺少参数 %s",
+                Objects.requireNonNull(exception.getParameterName())
+        ));
+    }
 
     /**
      * <h3>不支持的数据类型</h3>
