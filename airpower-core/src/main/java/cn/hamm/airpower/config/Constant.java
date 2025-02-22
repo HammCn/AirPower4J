@@ -295,6 +295,11 @@ public class Constant {
     public static final String DESC = "desc";
 
     /**
+     * <h3>文件大小进制</h3>
+     */
+    public static final long FILE_SCALE = 1024L;
+
+    /**
      * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
