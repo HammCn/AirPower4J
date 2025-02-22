@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -129,6 +131,25 @@ public class ExceptionInterceptor {
                 "%s 不被支持，请使用 %s 方法请求", exception.getMethod(), supportedMethod
         ));
     }
+
+    /**
+     * <h3>不支持的文件上传</h3>
+     */
+    @ExceptionHandler(MultipartException.class)
+    public Json multipartExceptionHandle(@NotNull MultipartException exception) {
+        log.error(exception.getMessage());
+        return Json.error(ServiceError.REQUEST_METHOD_UNSUPPORTED, "请使用 multipart 方式上传文件");
+    }
+
+    /**
+     * <h3>未选择上传文件</h3>
+     */
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public Json missingServletRequestPartExceptionHandle(@NotNull MissingServletRequestPartException exception) {
+        log.error(exception.getMessage());
+        return Json.error(ServiceError.PARAM_MISSING, "请选择需要上传的文件");
+    }
+
 
     /**
      * <h3>不支持的数据类型</h3>
