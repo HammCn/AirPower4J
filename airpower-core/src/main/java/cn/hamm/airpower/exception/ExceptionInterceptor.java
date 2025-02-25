@@ -73,7 +73,9 @@ public class ExceptionInterceptor {
         errors.stream().findFirst().ifPresent(error -> stringBuilder.append(String.format(
                 MESSAGE_AND_DESCRIPTION, error.getDefaultMessage(), error.getField()
         )));
-        return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString());
+        return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString(), errors.stream().map(item -> String.format(
+                MESSAGE_AND_DESCRIPTION, item.getDefaultMessage(), item.getField()
+        )));
     }
 
     /**
