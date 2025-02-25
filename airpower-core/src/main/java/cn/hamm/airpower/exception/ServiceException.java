@@ -39,6 +39,16 @@ public class ServiceException extends RuntimeException implements IException {
     }
 
     /**
+     * <h3>抛出一个自定义错误信息的默认异常</h3>
+     *
+     * @param message 错误信息
+     * @param data    错误数据
+     */
+    public ServiceException(String message, Object data) {
+        setMessage(message).setData(data);
+    }
+
+    /**
      * <h3>直接抛出一个异常</h3>
      *
      * @param serviceError 异常
