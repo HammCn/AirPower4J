@@ -14,6 +14,11 @@ import java.text.DecimalFormat;
 @Slf4j
 public class FileUtil {
     /**
+     * <h3>文件单位</h3>
+     */
+    private static final String[] UNITS = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+
+    /**
      * <h3>获取文件名后缀</h3>
      *
      * @param fileName 文件名
@@ -30,14 +35,13 @@ public class FileUtil {
      * @return 格式化后的文件大小
      */
     public static String formatSize(long size) {
-        double fileSize = size;
-        if (fileSize <= 0) {
+        if (size <= 0) {
             log.error("错误的文件大小: {}", size);
             return Constant.LINE;
         }
-        String[] units = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+        double fileSize = size;
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        for (String unit : units) {
+        for (String unit : UNITS) {
             if (fileSize < Constant.FILE_SCALE) {
                 return decimalFormat.format(fileSize) + unit;
             }
