@@ -86,7 +86,7 @@ public class AccessTokenUtil {
      */
     public AccessTokenUtil setPayloadId(Long id, long expireSecond) {
         return addPayload(ID, id)
-                .setExpireMillisecond(expireSecond * MILLISECONDS_PER_SECOND);
+                .setExpireMillisecond(expireSecond * DateTimeUtil.MILLISECONDS_PER_SECOND);
     }
 
     /**

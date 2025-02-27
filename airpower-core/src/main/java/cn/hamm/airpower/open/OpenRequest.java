@@ -5,10 +5,7 @@ import cn.hamm.airpower.helper.AirHelper;
 import cn.hamm.airpower.helper.RedisHelper;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootModel;
-import cn.hamm.airpower.util.AesUtil;
-import cn.hamm.airpower.util.DictionaryUtil;
-import cn.hamm.airpower.util.RequestUtil;
-import cn.hamm.airpower.util.RsaUtil;
+import cn.hamm.airpower.util.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -141,7 +138,7 @@ public class OpenRequest {
      */
     private void checkTimestamp() {
         long currentTimeMillis = System.currentTimeMillis();
-        int nonceExpireMillisecond = NONCE_CACHE_SECOND * MILLISECONDS_PER_SECOND;
+        int nonceExpireMillisecond = NONCE_CACHE_SECOND * DateTimeUtil.MILLISECONDS_PER_SECOND;
         TIMESTAMP_INVALID.when(
                 timestamp > currentTimeMillis + nonceExpireMillisecond ||
                         timestamp < currentTimeMillis - nonceExpireMillisecond

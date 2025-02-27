@@ -1,5 +1,6 @@
 package cn.hamm.airpower.config;
 
+import cn.hamm.airpower.util.DateTimeUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -53,7 +54,7 @@ public class ServiceConfig {
     /**
      * <h3>缓存过期时间</h3>
      */
-    private int cacheExpireSecond = SECOND_PER_MINUTE;
+    private int cacheExpireSecond = DateTimeUtil.SECOND_PER_MINUTE;
 
     /**
      * <h3>默认排序字段</h3>
@@ -68,7 +69,7 @@ public class ServiceConfig {
     /**
      * <h3>身份令牌有效期</h3>
      */
-    private long authorizeExpireSecond = SECOND_PER_DAY;
+    private long authorizeExpireSecond = DateTimeUtil.SECOND_PER_DAY;
 
     /**
      * <h3>多租户的 {@code header} 的 {@code key}</h3>
