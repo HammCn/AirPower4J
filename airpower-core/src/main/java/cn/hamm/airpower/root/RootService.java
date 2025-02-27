@@ -4,7 +4,6 @@ import cn.hamm.airpower.annotation.Desensitize;
 import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.enums.DateTimeFormatter;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.RedisHelper;
 import cn.hamm.airpower.interfaces.IDictionary;
@@ -48,6 +47,8 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.enums.DateTimeFormatter.FULL_DATE;
+import static cn.hamm.airpower.enums.DateTimeFormatter.FULL_TIME;
 import static cn.hamm.airpower.exception.ServiceError.*;
 
 /**
@@ -195,7 +196,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
             // 追加今日文件夹 定时任务将按存储文件夹进行删除过时文件
             String todayDir = DateTimeUtil.format(milliSecond,
-                    DateTimeFormatter.FULL_DATE.getValue()
+                    FULL_DATE.getValue()
                             .replaceAll(LINE, EMPTY_STRING)
             );
             String exportFilePath = EXPORT_DIR_PREFIX;
@@ -207,7 +208,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
             // 存储的文件名
             final String fileName = todayDir + UNDERLINE + DateTimeUtil.format(milliSecond,
-                    DateTimeFormatter.FULL_TIME.getValue()
+                    FULL_TIME.getValue()
                             .replaceAll(COLON, EMPTY_STRING)
             ) + UNDERLINE + RandomUtil.randomString() + EXPORT_FILE_CSV;
 
