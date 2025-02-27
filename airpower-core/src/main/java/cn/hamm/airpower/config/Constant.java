@@ -175,21 +175,6 @@ public class Constant {
     public static final String VALUE = "value";
 
     /**
-     * <h3>Double {@code 0D}</h3>
-     */
-    public static final double ZERO_DOUBLE = 0D;
-
-    /**
-     * <h3>Long {@code 0L}</h3>
-     */
-    public static final long ZERO_LONG = 0L;
-
-    /**
-     * <h3>Int {@code 0}</h3>
-     */
-    public static final int ZERO_INT = 0;
-
-    /**
      * <h3>String {@code "0"}</h3>
      */
     public static final String ZERO_STRING = "0";

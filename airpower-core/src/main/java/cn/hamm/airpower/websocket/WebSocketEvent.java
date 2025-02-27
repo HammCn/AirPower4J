@@ -10,8 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static cn.hamm.airpower.config.Constant.ZERO_LONG;
-
 /**
  * <h1>{@code WebSocket} 事件</h1>
  *
@@ -23,7 +21,7 @@ public class WebSocketEvent {
     /**
      * <h3>当前事件 {@code ID}</h3>
      */
-    private static final AtomicLong CURRENT_EVENT_ID = new AtomicLong(ZERO_LONG);
+    private static final AtomicLong CURRENT_EVENT_ID = new AtomicLong(0L);
 
     /**
      * <h3>事件 {@code ID}</h3>
@@ -33,12 +31,12 @@ public class WebSocketEvent {
     /**
      * <h3>发送方 {@code ID}</h3>
      */
-    private long from = ZERO_LONG;
+    private Long from;
 
     /**
      * <h3>接收方 {@code ID}</h3>
      */
-    private long to = ZERO_LONG;
+    private Long to;
 
     /**
      * <h3>事件时间戳</h3>

@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import static cn.hamm.airpower.config.Constant.ZERO_INT;
 import static cn.hamm.airpower.config.PatternConstant.*;
 import static cn.hamm.airpower.exception.ServiceError.PARAM_INVALID;
 
@@ -226,7 +225,7 @@ public class ValidateUtil {
             return;
         }
         initValidator();
-        if (actions.length == ZERO_INT) {
+        if (actions.length == 0) {
             Set<ConstraintViolation<M>> violations = validator.validate(model);
             if (violations.isEmpty()) {
                 return;

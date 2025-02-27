@@ -7,14 +7,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-import static cn.hamm.airpower.config.Constant.ZERO_LONG;
-
 /**
  * <h1>树结构处理工具类</h1>
  *
  * @author Hamm.cn
  */
 public class TreeUtil {
+    /**
+     * <h3>根节点ID</h3>
+     */
+    public static final long ROOT_ID = 0L;
+
     /**
      * <h3>禁止外部实例化</h3>
      */
@@ -30,7 +33,7 @@ public class TreeUtil {
      * @return 树结构数组
      */
     public static <E extends ITree<E>> List<E> buildTreeList(List<E> list) {
-        return buildTreeList(list, ZERO_LONG);
+        return buildTreeList(list, ROOT_ID);
     }
 
     /**

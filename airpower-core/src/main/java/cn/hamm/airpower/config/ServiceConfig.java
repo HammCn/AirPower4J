@@ -8,7 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.config.Constant.AIRPOWER;
+import static cn.hamm.airpower.config.Constant.CREATE_TIME_FIELD;
 
 /**
  * <h1>全局默认配置文件</h1>
@@ -29,7 +30,7 @@ public class ServiceConfig {
     /**
      * <h3>默认服务 {@code ID}</h3>
      */
-    private int serviceId = ZERO_INT;
+    private int serviceId = 0;
 
     /**
      * <h3>{@code AccessToken} 的密钥</h3>
