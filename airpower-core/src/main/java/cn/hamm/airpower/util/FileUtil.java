@@ -5,7 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 
-import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.config.Constant.DOT;
+import static cn.hamm.airpower.config.Constant.LINE;
 
 /**
  * <h1>文件工具类</h1>
@@ -14,6 +15,11 @@ import static cn.hamm.airpower.config.Constant.*;
  */
 @Slf4j
 public class FileUtil {
+    /**
+     * <h3>文件大小进制</h3>
+     */
+    public static final long FILE_SCALE = 1024L;
+
     /**
      * <h3>文件单位</h3>
      */
