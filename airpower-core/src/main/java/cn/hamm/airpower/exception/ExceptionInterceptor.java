@@ -21,11 +21,14 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -70,7 +73,9 @@ public class ExceptionInterceptor {
         errors.stream().findFirst().ifPresent(error -> stringBuilder.append(String.format(
                 MESSAGE_AND_DESCRIPTION, error.getDefaultMessage(), error.getField()
         )));
-        return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString());
+        return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString(), errors.stream().map(item -> String.format(
+                MESSAGE_AND_DESCRIPTION, item.getDefaultMessage(), item.getField()
+        )));
     }
 
     /**
@@ -127,6 +132,39 @@ public class ExceptionInterceptor {
         String supportedMethod = String.join(Constant.SLASH, Objects.requireNonNull(exception.getSupportedMethods()));
         return Json.error(ServiceError.REQUEST_METHOD_UNSUPPORTED, String.format(
                 "%s 不被支持，请使用 %s 方法请求", exception.getMethod(), supportedMethod
+        ));
+    }
+
+    /**
+     * <h3>不支持的文件上传</h3>
+     */
+    @ExceptionHandler(MultipartException.class)
+    public Json multipartExceptionHandle(@NotNull MultipartException exception) {
+        log.error(exception.getMessage());
+        return Json.error(ServiceError.REQUEST_METHOD_UNSUPPORTED, "请使用 multipart 方式上传文件");
+    }
+
+    /**
+     * <h3>未选择上传文件</h3>
+     */
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public Json missingServletRequestPartExceptionHandle(@NotNull MissingServletRequestPartException exception) {
+        log.error(exception.getMessage());
+        return Json.error(ServiceError.PARAM_MISSING, String.format(
+                "缺少文件 %s",
+                Objects.requireNonNull(exception.getRequestPartName())
+        ));
+    }
+
+    /**
+     * <h3>未提交必要参数</h3>
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public Json missingServletRequestParameterExceptionHandle(@NotNull MissingServletRequestParameterException exception) {
+        log.error(exception.getMessage());
+        return Json.error(ServiceError.PARAM_MISSING, String.format(
+                "缺少参数 %s",
+                Objects.requireNonNull(exception.getParameterName())
         ));
     }
 

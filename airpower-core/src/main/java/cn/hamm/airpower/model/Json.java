@@ -129,7 +129,19 @@ public class Json {
      * @return {@code Json}
      */
     public static Json error(@NotNull IException error, String message) {
-        return show(error.getCode(), message, null);
+        return error(error, message, null);
+    }
+
+    /**
+     * <h3>输出错误</h3>
+     *
+     * @param error   错误枚举
+     * @param message 错误信息
+     * @param data    错误数据
+     * @return {@code Json}
+     */
+    public static Json error(@NotNull IException error, String message, Object data) {
+        return show(error.getCode(), message, data);
     }
 
     /**

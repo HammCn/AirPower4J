@@ -49,9 +49,9 @@ public class DictionaryUtil {
     public static <D extends IDictionary> @NotNull D getDictionary(
             @NotNull Class<D> enumClass, Function<D, Object> function, Object value
     ) {
+        // 取出所有枚举类型
+        D[] objs = enumClass.getEnumConstants();
         try {
-            // 取出所有枚举类型
-            D[] objs = enumClass.getEnumConstants();
             for (D obj : objs) {
                 if (Objects.equals(function.apply(obj), value)) {
                     return obj;
@@ -60,7 +60,7 @@ public class DictionaryUtil {
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
         }
-        throw new ServiceException("传入的值不在字典可选范围内");
+        throw new ServiceException("传入的值(" + enumClass.getSimpleName() + "=" + value + ")不在字典可选范围内", getDictionaryList(enumClass));
     }
 
     /**
