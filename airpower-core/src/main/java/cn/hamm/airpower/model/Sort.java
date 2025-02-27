@@ -14,6 +14,16 @@ import lombok.experimental.Accessors;
 @Description("查询排序对象")
 public class Sort {
     /**
+     * <h3>{@code asc}</h3>
+     */
+    public static final String ASC = "asc";
+
+    /**
+     * <h3>{@code desc}</h3>
+     */
+    public static final String DESC = "desc";
+
+    /**
      * <h3>排序字段</h3>
      */
     @Description("排序字段")

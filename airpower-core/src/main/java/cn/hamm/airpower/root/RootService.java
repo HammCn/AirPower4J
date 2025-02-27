@@ -1050,7 +1050,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             sort.setField(serviceConfig.getDefaultSortField());
         }
 
-        if (Objects.isNull(sort.getDirection()) || !ASC.equalsIgnoreCase(sort.getDirection())) {
+        if (Objects.isNull(sort.getDirection()) || !Sort.ASC.equalsIgnoreCase(sort.getDirection())) {
             // 未传入 或者传入不是明确的 ASC，那就DESC
             return org.springframework.data.domain.Sort.by(
                     org.springframework.data.domain.Sort.Order.desc(sort.getField())

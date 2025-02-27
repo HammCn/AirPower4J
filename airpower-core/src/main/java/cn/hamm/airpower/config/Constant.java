@@ -295,16 +295,6 @@ public class Constant {
     public static final String UNKNOWN = "unknown";
 
     /**
-     * <h3>{@code asc}</h3>
-     */
-    public static final String ASC = "asc";
-
-    /**
-     * <h3>{@code desc}</h3>
-     */
-    public static final String DESC = "desc";
-
-    /**
      * <h3>禁止外部实例化</h3>
      */
     @Contract(pure = true)
