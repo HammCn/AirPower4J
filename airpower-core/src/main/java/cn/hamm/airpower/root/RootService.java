@@ -3,10 +3,8 @@ package cn.hamm.airpower.root;
 import cn.hamm.airpower.annotation.Desensitize;
 import cn.hamm.airpower.annotation.ExcelColumn;
 import cn.hamm.airpower.annotation.Search;
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.enums.DateTimeFormatter;
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.RedisHelper;
 import cn.hamm.airpower.interfaces.IDictionary;
@@ -48,6 +46,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiFunction;
+
+import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.exception.ServiceError.*;
 
 /**
  * <h1>服务根类</h1>
@@ -159,7 +160,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
         List<String> rowList = new ArrayList<>();
         // 添加表头
-        rowList.add(String.join(Constant.COMMA, fieldList.stream().map(ReflectUtil::getDescription).toList()));
+        rowList.add(String.join(COMMA, fieldList.stream().map(ReflectUtil::getDescription).toList()));
 
         String json = Json.toString(exportList);
         List<Map<String, Object>> mapList = Json.parse2MapList(json);
@@ -170,12 +171,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 Object value = map.get(fieldName);
                 value = prepareExcelColumn(fieldName, value, fieldList);
                 columnList.add(value.toString()
-                        .replaceAll(Constant.COMMA, Constant.SPACE)
-                        .replaceAll(Constant.LINE_BREAK, Constant.SPACE));
+                        .replaceAll(COMMA, SPACE)
+                        .replaceAll(LINE_BREAK, SPACE));
             });
-            rowList.add(String.join(Constant.COMMA, columnList));
+            rowList.add(String.join(COMMA, columnList));
         });
-        return new ByteArrayInputStream(String.join(Constant.LINE_BREAK, rowList).getBytes());
+        return new ByteArrayInputStream(String.join(LINE_BREAK, rowList).getBytes());
     }
 
     /**
@@ -188,14 +189,14 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected String saveExportFile(InputStream exportFileStream) {
         // 准备导出的相对路径
         final String absolutePath = serviceConfig.getExportFilePath() + File.separator;
-        ServiceError.SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
+        SERVICE_ERROR.when(!StringUtils.hasText(absolutePath), "导出失败，未配置导出文件目录");
         try {
             long milliSecond = System.currentTimeMillis();
 
             // 追加今日文件夹 定时任务将按存储文件夹进行删除过时文件
             String todayDir = DateTimeUtil.format(milliSecond,
                     DateTimeFormatter.FULL_DATE.getValue()
-                            .replaceAll(Constant.LINE, Constant.EMPTY_STRING)
+                            .replaceAll(LINE, EMPTY_STRING)
             );
             String exportFilePath = EXPORT_DIR_PREFIX;
             exportFilePath += todayDir + File.separator;
@@ -205,10 +206,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
 
             // 存储的文件名
-            final String fileName = todayDir + Constant.UNDERLINE + DateTimeUtil.format(milliSecond,
+            final String fileName = todayDir + UNDERLINE + DateTimeUtil.format(milliSecond,
                     DateTimeFormatter.FULL_TIME.getValue()
-                            .replaceAll(Constant.COLON, Constant.EMPTY_STRING)
-            ) + Constant.UNDERLINE + RandomUtil.randomString() + EXPORT_FILE_CSV;
+                            .replaceAll(COLON, EMPTY_STRING)
+            ) + UNDERLINE + RandomUtil.randomString() + EXPORT_FILE_CSV;
 
             // 拼接最终存储路径
             exportFilePath += fileName;
@@ -240,8 +241,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     protected final String queryExport(@NotNull QueryExport queryExport) {
         final String fileCacheKey = EXPORT_FILE_PREFIX + queryExport.getFileCode();
         Object object = redisHelper.get(fileCacheKey);
-        ServiceError.DATA_NOT_FOUND.whenNull(object, "错误的FileCode");
-        ServiceError.DATA_NOT_FOUND.whenEmpty(object, "文件暂未准备完毕");
+        DATA_NOT_FOUND.whenNull(object, "错误的FileCode");
+        DATA_NOT_FOUND.whenEmpty(object, "文件暂未准备完毕");
         return object.toString();
     }
 
@@ -267,7 +268,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final long add(@NotNull E source) {
         source = beforeAdd(source);
-        ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
+        SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
         source.setId(null).setIsDisabled(false).setCreateTime(System.currentTimeMillis());
         E finalSource = source;
         long id = saveToDatabase(source);
@@ -573,8 +574,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final @NotNull E getWithEnable(long id) {
         E entity = get(id);
-        ServiceError.FORBIDDEN_DISABLED.when(entity.getIsDisabled(), String.format(
-                        ServiceError.FORBIDDEN_DISABLED.getMessage(),
+        FORBIDDEN_DISABLED.when(entity.getIsDisabled(), String.format(
+                FORBIDDEN_DISABLED.getMessage(),
                         id, ReflectUtil.getDescription(getEntityClass())
                 )
         );
@@ -681,8 +682,8 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @see #updateWithNull(E)
      */
     protected final void updateToDatabase(@NotNull E source, boolean withNull) {
-        ServiceError.SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
-        ServiceError.PARAM_MISSING.whenNull(source.getId(), String.format(
+        SERVICE_ERROR.whenNull(source, DATA_REQUIRED);
+        PARAM_MISSING.whenNull(source.getId(), String.format(
                 "修改失败，请传入%s的ID!",
                 ReflectUtil.getDescription(getEntityClass())
         ));
@@ -744,7 +745,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private @NotNull Object prepareExcelColumn(String fieldName, Object value, List<Field> fieldList) {
         if (Objects.isNull(value) || !StringUtils.hasText(value.toString())) {
-            value = Constant.LINE;
+            value = LINE;
         }
         try {
             Field field = fieldList.stream()
@@ -759,9 +760,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 return value;
             }
             return switch (excelColumn.value()) {
-                case DATETIME -> Constant.TAB + DateTimeUtil.format(Long.parseLong(value.toString()));
-                case TEXT -> Constant.TAB + value;
-                case BOOLEAN -> (boolean) value ? Constant.YES : Constant.NO;
+                case DATETIME -> TAB + DateTimeUtil.format(Long.parseLong(value.toString()));
+                case TEXT -> TAB + value;
+                case BOOLEAN -> (boolean) value ? YES : NO;
                 case DICTIONARY -> {
                     Dictionary dictionary = ReflectUtil.getAnnotation(Dictionary.class, field);
                     if (Objects.isNull(dictionary)) {
@@ -819,13 +820,13 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * @return 实体
      */
     private @NotNull E getById(long id) {
-        ServiceError.PARAM_MISSING.whenNull(id, String.format(
+        PARAM_MISSING.whenNull(id, String.format(
                 "查询失败，请传入%s的ID！",
                 ReflectUtil.getDescription(getEntityClass())
         ));
         return repository.findById(id).orElseThrow(() ->
                 new ServiceException(
-                        ServiceError.DATA_NOT_FOUND,
+                        DATA_NOT_FOUND,
                         String.format("没有查询到ID为%s的%s", id, ReflectUtil.getDescription(getEntityClass()))
                 )
         );
@@ -972,7 +973,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 // 修改自己 不校验
                 return;
             }
-            ServiceError.FORBIDDEN_EXIST.show(String.format("%s (%s) 已经存在，请修改后重新提交！",
+            FORBIDDEN_EXIST.show(String.format("%s (%s) 已经存在，请修改后重新提交！",
                     ReflectUtil.getDescription(field), fieldValue)
             );
         });
@@ -1048,7 +1049,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             sort.setField(serviceConfig.getDefaultSortField());
         }
 
-        if (Objects.isNull(sort.getDirection()) || !Constant.ASC.equalsIgnoreCase(sort.getDirection())) {
+        if (Objects.isNull(sort.getDirection()) || !ASC.equalsIgnoreCase(sort.getDirection())) {
             // 未传入 或者传入不是明确的 ASC，那就DESC
             return org.springframework.data.domain.Sort.by(
                     org.springframework.data.domain.Sort.Order.desc(sort.getField())
@@ -1110,7 +1111,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     if (!isEqual) {
                         // 如果是模糊匹配
                         predicateList.add(
-                                builder.like(root.get(field.getName()), fieldValue + Constant.PERCENT)
+                                builder.like(root.get(field.getName()), fieldValue + PERCENT)
                         );
                         break;
                     }
@@ -1137,16 +1138,16 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             @NotNull E search, @NotNull List<Predicate> predicateList
     ) {
         addPredicateNonNull(root, predicateList,
-                Constant.CREATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getCreateTimeFrom()
+                CREATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getCreateTimeFrom()
         );
         addPredicateNonNull(root, predicateList,
-                Constant.CREATE_TIME_FIELD, builder::lessThan, search.getCreateTimeTo()
+                CREATE_TIME_FIELD, builder::lessThan, search.getCreateTimeTo()
         );
         addPredicateNonNull(root, predicateList,
-                Constant.UPDATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getUpdateTimeFrom()
+                UPDATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getUpdateTimeFrom()
         );
         addPredicateNonNull(root, predicateList,
-                Constant.UPDATE_TIME_FIELD, builder::lessThan, search.getUpdateTimeTo()
+                UPDATE_TIME_FIELD, builder::lessThan, search.getUpdateTimeTo()
         );
     }
 

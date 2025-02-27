@@ -1,10 +1,11 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+
+import static cn.hamm.airpower.config.Constant.*;
 
 /**
  * <h1>文件工具类</h1>
@@ -25,7 +26,7 @@ public class FileUtil {
      * @return 后缀
      */
     public static @NotNull String getExtension(@NotNull String fileName) {
-        return fileName.substring(fileName.lastIndexOf(Constant.DOT) + 1).toLowerCase();
+        return fileName.substring(fileName.lastIndexOf(DOT) + 1).toLowerCase();
     }
 
     /**
@@ -37,16 +38,16 @@ public class FileUtil {
     public static String formatSize(long size) {
         if (size <= 0) {
             log.error("错误的文件大小: {}", size);
-            return Constant.LINE;
+            return LINE;
         }
         double fileSize = size;
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         for (String unit : UNITS) {
-            if (fileSize < Constant.FILE_SCALE) {
+            if (fileSize < FILE_SCALE) {
                 return decimalFormat.format(fileSize) + unit;
             }
-            fileSize /= Constant.FILE_SCALE;
+            fileSize /= FILE_SCALE;
         }
-        return Constant.LINE;
+        return LINE;
     }
 }

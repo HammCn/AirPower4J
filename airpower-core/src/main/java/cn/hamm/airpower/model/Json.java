@@ -1,17 +1,13 @@
 package cn.hamm.airpower.model;
 
 import cn.hamm.airpower.annotation.Description;
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.IException;
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.root.RootEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +17,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.exception.ServiceError.SERVICE_ERROR;
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 
 /**
  * <h1>简单 {@code JSON} 对象</h1>
@@ -40,13 +41,13 @@ public class Json {
      * <h3>错误代码</h3>
      */
     @Description("错误代码")
-    private int code = Constant.JSON_SUCCESS_CODE;
+    private int code = JSON_SUCCESS_CODE;
 
     /**
      * <h3>错误信息</h3>
      */
     @Description("错误信息")
-    private String message = Constant.JSON_SUCCESS_MESSAGE;
+    private String message = JSON_SUCCESS_MESSAGE;
 
     /**
      * <h3>返回数据</h3>
@@ -151,7 +152,7 @@ public class Json {
      * @return {@code Json}
      */
     public static Json error(String message) {
-        return error(ServiceError.SERVICE_ERROR, message);
+        return error(SERVICE_ERROR, message);
     }
 
     /**
@@ -240,7 +241,7 @@ public class Json {
         try {
             return getObjectMapper().writeValueAsString(object);
         } catch (JsonProcessingException exception) {
-            return Constant.EMPTY_STRING;
+            return EMPTY_STRING;
         }
     }
 
@@ -253,11 +254,11 @@ public class Json {
         if (Objects.isNull(objectMapper)) {
             objectMapper = new ObjectMapper();
             // 忽略未声明的属性
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
             // 忽略值为null的属性
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             // 忽略没有属性的类
-            objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            objectMapper.configure(FAIL_ON_EMPTY_BEANS, false);
         }
         return objectMapper;
     }

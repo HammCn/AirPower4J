@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.enums.DateTimeFormatter.FULL_DATETIME;
 
 /**
  * <h1>时间日期格式化工具类</h1>
@@ -64,7 +65,7 @@ public class DateTimeUtil {
      * @return 格式化后的时间
      */
     public static @NotNull String format(long milliSecond) {
-        return format(milliSecond, DateTimeFormatter.FULL_DATETIME.getValue());
+        return format(milliSecond, FULL_DATETIME.getValue());
     }
 
     /**
@@ -110,7 +111,7 @@ public class DateTimeUtil {
      * @return 友好格式化后的时间
      */
     public static @NotNull String friendlyFormatMillisecond(long milliSecond) {
-        long second = milliSecond / Constant.MILLISECONDS_PER_SECOND;
+        long second = milliSecond / MILLISECONDS_PER_SECOND;
         return friendlyFormatSecond(second);
     }
 
@@ -121,7 +122,7 @@ public class DateTimeUtil {
      * @return 友好格式化后的时间
      */
     public static @NotNull String friendlyFormatSecond(long second) {
-        long currentSecond = System.currentTimeMillis() / Constant.MILLISECONDS_PER_SECOND;
+        long currentSecond = System.currentTimeMillis() / MILLISECONDS_PER_SECOND;
         long diff = Math.abs(currentSecond - second);
         if (second < 0) {
             log.error("时间戳错误：{}", second);

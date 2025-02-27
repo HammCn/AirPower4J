@@ -1,7 +1,6 @@
 package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.*;
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.util.CollectionUtil;
@@ -22,6 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+
+import static cn.hamm.airpower.config.Constant.GET;
 
 /**
  * <h1>数据根模型</h1>
@@ -137,7 +138,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      */
     private void excludeBy(@NotNull Field field, @NotNull Class<?> filterClass) {
         Class<?>[] excludeClasses = null;
-        final String fieldGetter = Constant.GET + StringUtils.capitalize(field.getName());
+        final String fieldGetter = GET + StringUtils.capitalize(field.getName());
         try {
             Method getMethod = getClass().getMethod(fieldGetter);
             Exclude methodExclude = ReflectUtil.getAnnotation(Exclude.class, getMethod);
@@ -174,7 +175,7 @@ public class RootModel<M extends RootModel<M>> implements IAction {
      * @param filterClass 过滤器
      */
     private void exposeBy(@NotNull Field field, @NotNull Class<?> filterClass) {
-        final String fieldGetter = Constant.GET + StringUtils.capitalize(field.getName());
+        final String fieldGetter = GET + StringUtils.capitalize(field.getName());
         Class<?>[] exposeClasses = null;
         try {
             Method getMethod = getClass().getMethod(fieldGetter);

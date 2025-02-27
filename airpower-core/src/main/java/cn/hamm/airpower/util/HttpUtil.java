@@ -1,6 +1,5 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.enums.ContentType;
 import cn.hamm.airpower.enums.HttpMethod;
 import cn.hamm.airpower.exception.ServiceException;
@@ -15,6 +14,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.*;
+
+import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.enums.ContentType.JSON;
+import static cn.hamm.airpower.enums.HttpMethod.GET;
 
 /**
  * <h1>{@code HTTP} 请求工具类</h1>
@@ -42,17 +45,17 @@ public class HttpUtil {
     /**
      * <h3>请求体</h3>
      */
-    private String body = Constant.EMPTY_STRING;
+    private String body = EMPTY_STRING;
 
     /**
      * <h3>请求方法</h3>
      */
-    private HttpMethod method = HttpMethod.GET;
+    private HttpMethod method = GET;
 
     /**
      * <h3>请求体类型</h3>
      */
-    private ContentType contentType = ContentType.JSON;
+    private ContentType contentType = JSON;
 
     /**
      * <h3>连接超时时间</h3>
@@ -116,7 +119,7 @@ public class HttpUtil {
      * @return {@code HttpResponse}
      */
     public final HttpResponse<String> get() {
-        method = HttpMethod.GET;
+        method = GET;
         return send();
     }
 
@@ -152,13 +155,13 @@ public class HttpUtil {
         }
         if (Objects.nonNull(cookies)) {
             List<String> cookieList = new ArrayList<>();
-            cookies.forEach((key, value) -> cookieList.add(key + Constant.EQUAL + value));
+            cookies.forEach((key, value) -> cookieList.add(key + EQUAL + value));
             requestBuilder.setHeader(
-                    Constant.COOKIE, String.join(Constant.SEMICOLON + Constant.SPACE, cookieList)
+                    COOKIE, String.join(SEMICOLON + SPACE, cookieList)
             );
         }
         if (Objects.nonNull(contentType)) {
-            requestBuilder.header(Constant.CONTENT_TYPE, contentType.getValue());
+            requestBuilder.header(CONTENT_TYPE, contentType.getValue());
         }
         return requestBuilder.build();
     }

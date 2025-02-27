@@ -1,7 +1,6 @@
 package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.annotation.Description;
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IDictionary;
 import cn.hamm.airpower.interfaces.IFunction;
@@ -24,6 +23,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import static cn.hamm.airpower.config.Constant.*;
 
 /**
  * <h1>反射工具类</h1>
@@ -290,7 +291,7 @@ public class ReflectUtil {
     public static @NotNull String getLambdaFunctionName(@NotNull IFunction<?, ?> lambda) {
         return getSerializedLambda(lambda)
                 .getImplMethodName()
-                .replace(Constant.GET, Constant.EMPTY_STRING);
+                .replace(GET, EMPTY_STRING);
     }
 
     /**
@@ -302,7 +303,7 @@ public class ReflectUtil {
     public static @NotNull String getLambdaClassName(@NotNull IFunction<?, ?> lambda) {
         return getSerializedLambda(lambda)
                 .getImplClass()
-                .replaceAll(Constant.SLASH, Constant.DOT);
+                .replaceAll(SLASH, DOT);
     }
 
     /**

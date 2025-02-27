@@ -22,6 +22,10 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 
+import static cn.hamm.airpower.annotation.ExcelColumn.Type.*;
+import static cn.hamm.airpower.annotation.Search.Mode.EQUALS;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 /**
  * <h1>实体根类</h1>
  *
@@ -42,31 +46,31 @@ public class RootEntity<E extends RootEntity<E>> extends RootModel<E>
         implements Serializable, IEntity<E>, IEntityAction {
     @Description("主键ID")
     @Id
-    @Search(Search.Mode.EQUALS)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Search(EQUALS)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint UNSIGNED comment 'ID'")
     @Min(value = 0, message = "ID必须大于{value}")
-    @ExcelColumn(ExcelColumn.Type.NUMBER)
+    @ExcelColumn(NUMBER)
     @NotNull(groups = {WhenUpdate.class, WhenIdRequired.class}, message = "ID不能为空")
     private Long id;
 
     @Description("是否禁用")
     @ReadOnly
-    @Search(Search.Mode.EQUALS)
+    @Search(EQUALS)
     @Column(columnDefinition = "tinyint UNSIGNED default 0 comment '是否禁用'")
-    @ExcelColumn(ExcelColumn.Type.BOOLEAN)
+    @ExcelColumn(BOOLEAN)
     private Boolean isDisabled;
 
     @Description("创建时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '创建时间'")
-    @ExcelColumn(ExcelColumn.Type.DATETIME)
+    @ExcelColumn(DATETIME)
     private Long createTime;
 
     @Description("修改时间")
     @ReadOnly
     @Column(columnDefinition = "bigint UNSIGNED default 0 comment '修改时间'")
-    @ExcelColumn(ExcelColumn.Type.DATETIME)
+    @ExcelColumn(DATETIME)
     private Long updateTime;
 
     @Transient

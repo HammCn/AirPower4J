@@ -1,12 +1,13 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.interfaces.ITree;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+
+import static cn.hamm.airpower.config.Constant.ZERO_LONG;
 
 /**
  * <h1>树结构处理工具类</h1>
@@ -29,7 +30,7 @@ public class TreeUtil {
      * @return 树结构数组
      */
     public static <E extends ITree<E>> List<E> buildTreeList(List<E> list) {
-        return buildTreeList(list, Constant.ZERO_LONG);
+        return buildTreeList(list, ZERO_LONG);
     }
 
     /**

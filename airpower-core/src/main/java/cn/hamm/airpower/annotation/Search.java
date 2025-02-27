@@ -1,6 +1,12 @@
 package cn.hamm.airpower.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * <h1>标记为搜索字段</h1>
@@ -8,8 +14,8 @@ import java.lang.annotation.*;
  * @author Hamm.cn
  * @apiNote 默认为 {@code LIKE}，支持 {@code LIKE}, {@code JOIN}, {@code EQUALS}
  */
-@Target({ElementType.METHOD, ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
+@Target({METHOD, FIELD})
+@Retention(RUNTIME)
 @Documented
 public @interface Search {
     /**

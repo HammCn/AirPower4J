@@ -5,13 +5,15 @@ import cn.hamm.airpower.config.WebSocketConfig;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.websocket.WebSocketEvent;
-import cn.hamm.airpower.websocket.WebSocketHandler;
 import cn.hamm.airpower.websocket.WebSocketPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import static cn.hamm.airpower.websocket.WebSocketHandler.CHANNEL_ALL;
+import static cn.hamm.airpower.websocket.WebSocketHandler.CHANNEL_USER_PREFIX;
 
 /**
  * <h1>WebsocketHelper</h1>
@@ -36,7 +38,7 @@ public class WebsocketHelper {
      * @param payload 事件负载
      */
     public final void publish(WebSocketPayload payload) {
-        publishToChannel(WebSocketHandler.CHANNEL_ALL, payload);
+        publishToChannel(CHANNEL_ALL, payload);
     }
 
     /**
@@ -46,7 +48,7 @@ public class WebsocketHelper {
      * @param payload 事件负载
      */
     public final void publishToUser(long userId, WebSocketPayload payload) {
-        publishToChannel(WebSocketHandler.CHANNEL_USER_PREFIX + userId, payload);
+        publishToChannel(CHANNEL_USER_PREFIX + userId, payload);
     }
 
     /**

@@ -1,6 +1,5 @@
 package cn.hamm.airpower.open;
 
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.AirHelper;
 import cn.hamm.airpower.model.Json;
@@ -18,6 +17,8 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
+
+import static cn.hamm.airpower.exception.ServiceError.*;
 
 /**
  * <h1>{@code OpenApi} 切面</h1>
@@ -43,7 +44,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = methodSignature.getMethod();
         OpenApi openApi = method.getAnnotation(OpenApi.class);
-        ServiceError.API_SERVICE_UNSUPPORTED.whenNull(openApi);
+        API_SERVICE_UNSUPPORTED.whenNull(openApi);
     }
 
     /**
@@ -54,9 +55,7 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
      */
     private static @NotNull OpenRequest getOpenRequest(@NotNull ProceedingJoinPoint proceedingJoinPoint) {
         Object[] args = proceedingJoinPoint.getArgs();
-        if (args.length != 1) {
-            throw new ServiceException("OpenApi必须接收一个参数");
-        }
+        SERVICE_ERROR.when(args.length != 1, "OpenApi必须接收一个参数");
         if (!(args[0] instanceof OpenRequest openRequest)) {
             throw new ServiceException("OpenApi必须接收一个OpenRequest参数");
         }
@@ -109,11 +108,11 @@ public class OpenApiAspect<S extends IOpenAppService, LS extends IOpenLogService
      * @param openRequest {@code OpenRequest}
      */
     private void validOpenRequest(@NotNull OpenRequest openRequest) {
-        ServiceError.INVALID_APP_KEY.when(!StringUtils.hasText(openRequest.getAppKey()));
-        ServiceError.SERVICE_ERROR.whenNull(openAppService, "注入OpenAppService失败");
+        INVALID_APP_KEY.when(!StringUtils.hasText(openRequest.getAppKey()));
+        SERVICE_ERROR.whenNull(openAppService, "注入OpenAppService失败");
         IOpenApp openApp = openAppService.getByAppKey(openRequest.getAppKey());
-        ServiceError.INVALID_APP_KEY.whenNull(openApp);
-        ServiceError.FORBIDDEN_OPEN_APP_DISABLED.when(openApp.getIsDisabled());
+        INVALID_APP_KEY.whenNull(openApp);
+        FORBIDDEN_OPEN_APP_DISABLED.when(openApp.getIsDisabled());
         openRequest.setOpenApp(openApp);
         openRequest.check();
     }

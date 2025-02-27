@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static cn.hamm.airpower.exception.ServiceError.*;
+
 /**
  * <h1>全局异常处理拦截器</h1>
  *
@@ -64,16 +66,16 @@ public class ExceptionInterceptor {
         BindingResult result = exception.getBindingResult();
         StringBuilder stringBuilder = new StringBuilder();
         if (!result.hasErrors()) {
-            return Json.error(ServiceError.PARAM_INVALID);
+            return Json.error(PARAM_INVALID);
         }
         if (!result.hasFieldErrors()) {
-            return Json.error(ServiceError.PARAM_INVALID);
+            return Json.error(PARAM_INVALID);
         }
         List<FieldError> errors = result.getFieldErrors();
         errors.stream().findFirst().ifPresent(error -> stringBuilder.append(String.format(
                 MESSAGE_AND_DESCRIPTION, error.getDefaultMessage(), error.getField()
         )));
-        return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString(), errors.stream().map(item -> String.format(
+        return Json.error(PARAM_INVALID, stringBuilder.toString(), errors.stream().map(item -> String.format(
                 MESSAGE_AND_DESCRIPTION, item.getDefaultMessage(), item.getField()
         )));
     }
@@ -89,7 +91,7 @@ public class ExceptionInterceptor {
         errors.stream().findFirst().ifPresent(error -> stringBuilder.append(String.format(
                 MESSAGE_AND_DESCRIPTION, error.getMessage(), error.getInvalidValue().toString()
         )));
-        return Json.error(ServiceError.PARAM_INVALID, stringBuilder.toString());
+        return Json.error(PARAM_INVALID, stringBuilder.toString());
     }
 
     /**
@@ -99,9 +101,9 @@ public class ExceptionInterceptor {
     public Json deleteUsingDataException(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.FORBIDDEN_DELETE_USED.getMessage(), exception);
+            log.error(FORBIDDEN_DELETE_USED.getMessage(), exception);
         }
-        return Json.error(ServiceError.FORBIDDEN_DELETE_USED);
+        return Json.error(FORBIDDEN_DELETE_USED);
     }
 
     /**
@@ -110,7 +112,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(NoHandlerFoundException.class)
     public Json notFoundHandle(@NotNull NoHandlerFoundException exception, HttpServletResponse response) {
         log.error(exception.getMessage());
-        return Json.error(ServiceError.API_SERVICE_UNSUPPORTED);
+        return Json.error(API_SERVICE_UNSUPPORTED);
     }
 
     /**
@@ -119,7 +121,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Json dataExceptionHandle(@NotNull HttpMessageNotReadableException exception) {
         log.error(exception.getMessage());
-        return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED,
+        return Json.error(REQUEST_CONTENT_TYPE_UNSUPPORTED,
                 "请求参数格式不正确,请检查是否接口支持的JSON");
     }
 
@@ -130,7 +132,7 @@ public class ExceptionInterceptor {
     public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
         log.error(exception.getMessage());
         String supportedMethod = String.join(Constant.SLASH, Objects.requireNonNull(exception.getSupportedMethods()));
-        return Json.error(ServiceError.REQUEST_METHOD_UNSUPPORTED, String.format(
+        return Json.error(REQUEST_METHOD_UNSUPPORTED, String.format(
                 "%s 不被支持，请使用 %s 方法请求", exception.getMethod(), supportedMethod
         ));
     }
@@ -141,7 +143,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(MultipartException.class)
     public Json multipartExceptionHandle(@NotNull MultipartException exception) {
         log.error(exception.getMessage());
-        return Json.error(ServiceError.REQUEST_METHOD_UNSUPPORTED, "请使用 multipart 方式上传文件");
+        return Json.error(REQUEST_METHOD_UNSUPPORTED, "请使用 multipart 方式上传文件");
     }
 
     /**
@@ -150,7 +152,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(MissingServletRequestPartException.class)
     public Json missingServletRequestPartExceptionHandle(@NotNull MissingServletRequestPartException exception) {
         log.error(exception.getMessage());
-        return Json.error(ServiceError.PARAM_MISSING, String.format(
+        return Json.error(PARAM_MISSING, String.format(
                 "缺少文件 %s",
                 Objects.requireNonNull(exception.getRequestPartName())
         ));
@@ -162,7 +164,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Json missingServletRequestParameterExceptionHandle(@NotNull MissingServletRequestParameterException exception) {
         log.error(exception.getMessage());
-        return Json.error(ServiceError.PARAM_MISSING, String.format(
+        return Json.error(PARAM_MISSING, String.format(
                 "缺少参数 %s",
                 Objects.requireNonNull(exception.getParameterName())
         ));
@@ -175,9 +177,9 @@ public class ExceptionInterceptor {
     public Json httpMediaTypeNotSupportedExceptionHandle(@NotNull HttpMediaTypeNotSupportedException exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED.getMessage(), exception);
+            log.error(REQUEST_CONTENT_TYPE_UNSUPPORTED.getMessage(), exception);
         }
-        return Json.error(ServiceError.REQUEST_CONTENT_TYPE_UNSUPPORTED, String.format(
+        return Json.error(REQUEST_CONTENT_TYPE_UNSUPPORTED, String.format(
                 "%s 不被支持，请使用JSON请求",
                 Objects.requireNonNull(exception.getContentType()).getType()
         ));
@@ -190,9 +192,9 @@ public class ExceptionInterceptor {
     public Json databaseExceptionHandle(@NotNull CannotCreateTransactionException exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.DATABASE_ERROR.getMessage(), exception);
+            log.error(DATABASE_ERROR.getMessage(), exception);
         }
-        return Json.error(ServiceError.DATABASE_ERROR);
+        return Json.error(DATABASE_ERROR);
     }
 
     /**
@@ -202,9 +204,9 @@ public class ExceptionInterceptor {
     public Json redisExceptionHandle(@NotNull RedisConnectionFailureException exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.REDIS_ERROR.getMessage(), exception);
+            log.error(REDIS_ERROR.getMessage(), exception);
         }
-        return Json.error(ServiceError.REDIS_ERROR);
+        return Json.error(REDIS_ERROR);
     }
 
     /**
@@ -214,7 +216,7 @@ public class ExceptionInterceptor {
     public Json systemExceptionHandle(@NotNull ServiceException exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.SERVICE_ERROR.getMessage(), exception);
+            log.error(SERVICE_ERROR.getMessage(), exception);
         }
         return Json.error(exception).setData(exception.getData());
     }
@@ -226,9 +228,9 @@ public class ExceptionInterceptor {
     public Json propertyReferenceExceptionHandle(@NotNull PropertyReferenceException exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.DATABASE_UNKNOWN_FIELD.getMessage(), exception);
+            log.error(DATABASE_UNKNOWN_FIELD.getMessage(), exception);
         }
-        return Json.error(ServiceError.DATABASE_UNKNOWN_FIELD, String.format(
+        return Json.error(DATABASE_UNKNOWN_FIELD, String.format(
                 "数据库缺少字段 %s", exception.getPropertyName()
         ));
     }
@@ -242,9 +244,9 @@ public class ExceptionInterceptor {
     ) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.DATABASE_TABLE_OR_FIELD_ERROR.getMessage(), exception);
+            log.error(DATABASE_TABLE_OR_FIELD_ERROR.getMessage(), exception);
         }
-        return Json.error(ServiceError.DATABASE_TABLE_OR_FIELD_ERROR);
+        return Json.error(DATABASE_TABLE_OR_FIELD_ERROR);
     }
 
     /**
@@ -254,9 +256,9 @@ public class ExceptionInterceptor {
     public Json maxUploadSizeExceededExceptionHandle(@NotNull MaxUploadSizeExceededException exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.FORBIDDEN_UPLOAD_MAX_SIZE.getMessage(), exception);
+            log.error(FORBIDDEN_UPLOAD_MAX_SIZE.getMessage(), exception);
         }
-        return Json.error(ServiceError.FORBIDDEN_UPLOAD_MAX_SIZE);
+        return Json.error(FORBIDDEN_UPLOAD_MAX_SIZE);
     }
 
     /**
@@ -266,8 +268,8 @@ public class ExceptionInterceptor {
     public Object otherExceptionHandle(@NotNull Exception exception) {
         log.error(exception.getMessage());
         if (serviceConfig.isDebug()) {
-            log.error(ServiceError.SERVICE_ERROR.getMessage(), exception);
+            log.error(SERVICE_ERROR.getMessage(), exception);
         }
-        return Json.error(ServiceError.SERVICE_ERROR);
+        return Json.error(SERVICE_ERROR);
     }
 }

@@ -1,8 +1,6 @@
 package cn.hamm.airpower.interceptor;
 
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.model.Access;
 import cn.hamm.airpower.util.AccessTokenUtil;
 import cn.hamm.airpower.util.PermissionUtil;
@@ -23,6 +21,10 @@ import java.io.BufferedReader;
 import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static cn.hamm.airpower.config.Constant.EMPTY_STRING;
+import static cn.hamm.airpower.exception.ServiceError.SERVICE_ERROR;
+import static cn.hamm.airpower.exception.ServiceError.UNAUTHORIZED;
 
 /**
  * <h1>全局权限拦截器抽象类</h1>
@@ -58,7 +60,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             @NotNull HttpServletResponse response,
             @NotNull Object object
     ) {
-        ServiceError.SERVICE_ERROR.when(!serviceConfig.isServiceRunning(), "服务短暂维护中,请稍后再试：）");
+        SERVICE_ERROR.when(!serviceConfig.isServiceRunning(), "服务短暂维护中,请稍后再试：）");
         HandlerMethod handlerMethod = (HandlerMethod) object;
         //取出控制器和方法
         Class<?> clazz = handlerMethod.getBeanType();
@@ -96,7 +98,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         if (StringUtils.hasText(accessTokenFromParam)) {
             accessToken = accessTokenFromParam;
         }
-        ServiceError.UNAUTHORIZED.whenEmpty(accessToken);
+        UNAUTHORIZED.whenEmpty(accessToken);
         long userId = AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
         //需要RBAC
         if (access.isAuthorize()) {
@@ -155,7 +157,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
     protected final @NotNull String getRequestBody(HttpServletRequest request) {
         // 文件上传的请求 返回空
         if (RequestUtil.isUploadRequest(request)) {
-            return Constant.EMPTY_STRING;
+            return EMPTY_STRING;
         }
         try {
             BufferedReader reader = request.getReader();
@@ -163,6 +165,6 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
         }
-        return Constant.EMPTY_STRING;
+        return EMPTY_STRING;
     }
 }

@@ -8,7 +8,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * <h1>请求体缓存处理类</h1>
@@ -46,7 +47,7 @@ public class RequestBodyCacheWrapper extends HttpServletRequestWrapper {
     @Contract(" -> new")
     @Override
     public final @NotNull BufferedReader getReader() {
-        return new BufferedReader(new InputStreamReader(getInputStream(), StandardCharsets.UTF_8));
+        return new BufferedReader(new InputStreamReader(getInputStream(), UTF_8));
     }
 
     /**

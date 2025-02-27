@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import static cn.hamm.airpower.config.Constant.*;
+
 /**
  * <h1>全局默认配置文件</h1>
  *
@@ -26,12 +28,12 @@ public class ServiceConfig {
     /**
      * <h3>默认服务 {@code ID}</h3>
      */
-    private int serviceId = Constant.ZERO_INT;
+    private int serviceId = ZERO_INT;
 
     /**
      * <h3>{@code AccessToken} 的密钥</h3>
      */
-    private String accessTokenSecret = Constant.AIRPOWER;
+    private String accessTokenSecret = AIRPOWER;
 
     /**
      * <h3>默认分页条数</h3>
@@ -51,12 +53,12 @@ public class ServiceConfig {
     /**
      * <h3>缓存过期时间</h3>
      */
-    private int cacheExpireSecond = Constant.SECOND_PER_MINUTE;
+    private int cacheExpireSecond = SECOND_PER_MINUTE;
 
     /**
      * <h3>默认排序字段</h3>
      */
-    private String defaultSortField = Constant.CREATE_TIME_FIELD;
+    private String defaultSortField = CREATE_TIME_FIELD;
 
     /**
      * <h3>身份令牌 {@code header} 的 {@code key}</h3>
@@ -66,7 +68,7 @@ public class ServiceConfig {
     /**
      * <h3>身份令牌有效期</h3>
      */
-    private long authorizeExpireSecond = Constant.SECOND_PER_DAY;
+    private long authorizeExpireSecond = SECOND_PER_DAY;
 
     /**
      * <h3>多租户的 {@code header} 的 {@code key}</h3>
