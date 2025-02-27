@@ -45,6 +45,16 @@ public class Constant {
     public static final int DAY_PER_WEEK = 7;
 
     /**
+     * <h3>一个月 {@code 30} 天</h3>
+     */
+    public static final int DAY_PER_MONTH = 30;
+
+    /**
+     * <h3>一年 {@code 365} 天</h3>
+     */
+    public static final int DAY_PER_YEAR = 365;
+
+    /**
      * <h3>一小时的秒数</h3>
      */
     public static final int SECOND_PER_HOUR = SECOND_PER_MINUTE * SECOND_PER_MINUTE;
@@ -293,6 +303,11 @@ public class Constant {
      * <h3>{@code desc}</h3>
      */
     public static final String DESC = "desc";
+
+    /**
+     * <h3>文件大小进制</h3>
+     */
+    public static final long FILE_SCALE = 1024L;
 
     /**
      * <h3>禁止外部实例化</h3>
