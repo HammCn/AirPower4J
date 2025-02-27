@@ -1,6 +1,5 @@
 package cn.hamm.airpower.open;
 
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.AirHelper;
 import cn.hamm.airpower.helper.RedisHelper;
@@ -132,7 +131,7 @@ public class OpenRequest {
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {
-            ServiceError.DECRYPT_DATA_FAIL.show();
+            DECRYPT_DATA_FAIL.show();
         }
         return request;
     }
