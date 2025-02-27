@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 
-import static cn.hamm.airpower.config.Constant.DOT;
-import static cn.hamm.airpower.config.Constant.LINE;
+import static cn.hamm.airpower.config.Constant.STRING_DOT;
+import static cn.hamm.airpower.config.Constant.STRING_LINE;
 
 /**
  * <h1>文件工具类</h1>
@@ -32,7 +32,7 @@ public class FileUtil {
      * @return 后缀
      */
     public static @NotNull String getExtension(@NotNull String fileName) {
-        return fileName.substring(fileName.lastIndexOf(DOT) + 1).toLowerCase();
+        return fileName.substring(fileName.lastIndexOf(STRING_DOT) + 1).toLowerCase();
     }
 
     /**
@@ -44,7 +44,7 @@ public class FileUtil {
     public static String formatSize(long size) {
         if (size <= 0) {
             log.error("错误的文件大小: {}", size);
-            return LINE;
+            return STRING_LINE;
         }
         double fileSize = size;
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
@@ -54,6 +54,6 @@ public class FileUtil {
             }
             fileSize /= FILE_SCALE;
         }
-        return LINE;
+        return STRING_LINE;
     }
 }

@@ -13,12 +13,14 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.config.Constant.STRING_EMPTY;
+import static cn.hamm.airpower.config.Constant.STRING_SUCCESS;
 import static cn.hamm.airpower.exception.ServiceError.SERVICE_ERROR;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -41,13 +43,13 @@ public class Json {
      * <h3>错误代码</h3>
      */
     @Description("错误代码")
-    private int code = JSON_SUCCESS_CODE;
+    private int code = HttpStatus.OK.value();
 
     /**
      * <h3>错误信息</h3>
      */
     @Description("错误信息")
-    private String message = JSON_SUCCESS_MESSAGE;
+    private String message = STRING_SUCCESS;
 
     /**
      * <h3>返回数据</h3>
@@ -241,7 +243,7 @@ public class Json {
         try {
             return getObjectMapper().writeValueAsString(object);
         } catch (JsonProcessingException exception) {
-            return EMPTY_STRING;
+            return STRING_EMPTY;
         }
     }
 

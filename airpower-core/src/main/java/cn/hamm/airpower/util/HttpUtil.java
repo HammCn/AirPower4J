@@ -3,6 +3,7 @@ package cn.hamm.airpower.util;
 import cn.hamm.airpower.enums.ContentType;
 import cn.hamm.airpower.enums.HttpMethod;
 import cn.hamm.airpower.exception.ServiceException;
+import cn.hamm.airpower.helper.CookieHelper;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
@@ -28,6 +29,10 @@ import static cn.hamm.airpower.enums.HttpMethod.GET;
 @Accessors(chain = true, makeFinal = true)
 public class HttpUtil {
     /**
+     * <h3>{@code ContentType}</h3>
+     */
+    public static final String CONTENT_TYPE = "Content-Type";
+    /**
      * <h3>请求头</h3>
      */
     private Map<String, Object> headers = new HashMap<>();
@@ -45,7 +50,7 @@ public class HttpUtil {
     /**
      * <h3>请求体</h3>
      */
-    private String body = EMPTY_STRING;
+    private String body = STRING_EMPTY;
 
     /**
      * <h3>请求方法</h3>
@@ -155,9 +160,9 @@ public class HttpUtil {
         }
         if (Objects.nonNull(cookies)) {
             List<String> cookieList = new ArrayList<>();
-            cookies.forEach((key, value) -> cookieList.add(key + EQUAL + value));
+            cookies.forEach((key, value) -> cookieList.add(key + STRING_EQUAL + value));
             requestBuilder.setHeader(
-                    COOKIE, String.join(SEMICOLON + SPACE, cookieList)
+                    CookieHelper.COOKIE, String.join(STRING_SEMICOLON + STRING_BLANK, cookieList)
             );
         }
         if (Objects.nonNull(contentType)) {

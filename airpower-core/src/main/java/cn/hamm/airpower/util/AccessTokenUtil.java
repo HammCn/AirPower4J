@@ -2,6 +2,7 @@ package cn.hamm.airpower.util;
 
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
+import cn.hamm.airpower.root.RootService;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -85,7 +86,7 @@ public class AccessTokenUtil {
      * @return {@code AccessTokenUtil}
      */
     public AccessTokenUtil setPayloadId(Long id, long expireSecond) {
-        return addPayload(ID, id)
+        return addPayload(RootService.STRING_ID, id)
                 .setExpireMillisecond(expireSecond * DateTimeUtil.MILLISECONDS_PER_SECOND);
     }
 
@@ -98,7 +99,7 @@ public class AccessTokenUtil {
      */
     public final long getPayloadId(String accessToken, String secret) {
         UNAUTHORIZED.whenNull(accessToken);
-        Object userId = verify(accessToken, secret).getPayload(ID);
+        Object userId = verify(accessToken, secret).getPayload(RootService.STRING_ID);
         UNAUTHORIZED.whenNull(userId);
         return Long.parseLong(userId.toString());
     }
@@ -119,9 +120,9 @@ public class AccessTokenUtil {
                 Json.toString(verifiedToken.getPayloads()).getBytes(UTF_8)
         );
         String content = verifiedToken.getExpireTimestamps() +
-                DOT +
-                hmacSha256(secret, verifiedToken.getExpireTimestamps() + DOT + payloadBase) +
-                DOT +
+                STRING_DOT +
+                hmacSha256(secret, verifiedToken.getExpireTimestamps() + STRING_DOT + payloadBase) +
+                STRING_DOT +
                 payloadBase;
         return Base64.getUrlEncoder().encodeToString(content.getBytes(UTF_8));
     }
@@ -179,12 +180,12 @@ public class AccessTokenUtil {
             throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         UNAUTHORIZED.when(!StringUtils.hasText(source), ACCESS_TOKEN_INVALID);
-        String[] list = source.split(DOT_REGEX);
+        String[] list = source.split(REGEX_DOT);
         if (list.length != TOKEN_PART_COUNT) {
             throw new ServiceException(UNAUTHORIZED);
         }
         //noinspection AlibabaUndefineMagicConstant
-        if (!Objects.equals(hmacSha256(secret, list[0] + DOT + list[2]), list[1])) {
+        if (!Objects.equals(hmacSha256(secret, list[0] + STRING_DOT + list[2]), list[1])) {
             throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         if (Long.parseLong(list[0]) < System.currentTimeMillis() && Long.parseLong(list[0]) != 0) {

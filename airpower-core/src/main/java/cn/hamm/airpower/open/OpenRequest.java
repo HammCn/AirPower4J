@@ -155,8 +155,8 @@ public class OpenRequest {
             return;
         }
         String[] ipList = ipStr
-                .replaceAll(SPACE, EMPTY_STRING)
-                .split(LINE_BREAK);
+                .replaceAll(STRING_BLANK, STRING_EMPTY)
+                .split(REGEX_LINE_BREAK);
         final String ip = RequestUtil.getIpAddress(AirHelper.getRequest());
         if (!StringUtils.hasText(ip)) {
             MISSING_REQUEST_ADDRESS.show();

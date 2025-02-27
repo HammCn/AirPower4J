@@ -3,7 +3,7 @@ package cn.hamm.airpower.datasource;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import static cn.hamm.airpower.config.Constant.LOCAL_IP_ADDRESS;
+import static cn.hamm.airpower.util.RequestUtil.LOCAL_IP_ADDRESS;
 
 /**
  * <h1>数据源信息</h1>

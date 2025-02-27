@@ -291,7 +291,7 @@ public class ReflectUtil {
     public static @NotNull String getLambdaFunctionName(@NotNull IFunction<?, ?> lambda) {
         return getSerializedLambda(lambda)
                 .getImplMethodName()
-                .replace(GET, EMPTY_STRING);
+                .replace(STRING_GET, STRING_EMPTY);
     }
 
     /**
@@ -303,7 +303,7 @@ public class ReflectUtil {
     public static @NotNull String getLambdaClassName(@NotNull IFunction<?, ?> lambda) {
         return getSerializedLambda(lambda)
                 .getImplClass()
-                .replaceAll(SLASH, DOT);
+                .replaceAll(STRING_SLASH, STRING_DOT);
     }
 
     /**

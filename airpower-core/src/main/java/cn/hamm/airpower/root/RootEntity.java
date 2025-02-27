@@ -39,7 +39,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @DynamicInsert
 @DynamicUpdate
-@Description(Constant.EMPTY_STRING)
+@Description(Constant.STRING_EMPTY)
 @Slf4j
 @SuppressWarnings("unchecked")
 public class RootEntity<E extends RootEntity<E>> extends RootModel<E>

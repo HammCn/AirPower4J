@@ -157,7 +157,7 @@ public class DateTimeUtil {
         long diff = Math.abs(currentSecond - second);
         if (second < 0) {
             log.error("时间戳错误：{}", second);
-            return Constant.LINE;
+            return Constant.STRING_LINE;
         }
         if (second < currentSecond && diff < SECOND_PER_MINUTE) {
             // 过去时间，且小于60s

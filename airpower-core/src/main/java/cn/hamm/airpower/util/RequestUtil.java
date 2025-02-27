@@ -11,7 +11,8 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.Objects;
 
-import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.config.Constant.STRING_COMMA;
+import static cn.hamm.airpower.config.Constant.STRING_UNKNOWN;
 import static cn.hamm.airpower.exception.ServiceError.FORBIDDEN;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
@@ -26,6 +27,10 @@ public class RequestUtil {
      * <h3>获取IP地址异常</h3>
      */
     public static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
+    /**
+     * <h3>本机 {@code IP} 地址</h3>
+     */
+    public static final String LOCAL_IP_ADDRESS = "127.0.0.1";
 
     /**
      * <h3>常用IP反向代理Header头</h3>
@@ -72,7 +77,7 @@ public class RequestUtil {
         try {
             for (String ipHeader : PROXY_IP_HEADERS) {
                 ipAddress = request.getHeader(ipHeader);
-                if (Objects.equals(ipAddress, UNKNOWN)) {
+                if (Objects.equals(ipAddress, STRING_UNKNOWN)) {
                     continue;
                 }
                 if (isValidAddress(ipAddress)) {
@@ -128,8 +133,8 @@ public class RequestUtil {
      * @return 处理之后的真实IP
      */
     private static @NotNull String getIpAddressFromMultiIp(@NotNull String ipAddress) {
-        if (ipAddress.indexOf(COMMA) > 0) {
-            ipAddress = ipAddress.substring(0, ipAddress.indexOf(COMMA));
+        if (ipAddress.indexOf(STRING_COMMA) > 0) {
+            ipAddress = ipAddress.substring(0, ipAddress.indexOf(STRING_COMMA));
         }
         return ipAddress;
     }

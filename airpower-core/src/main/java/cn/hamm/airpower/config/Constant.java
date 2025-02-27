@@ -1,7 +1,6 @@
 package cn.hamm.airpower.config;
 
 import org.jetbrains.annotations.Contract;
-import org.springframework.http.HttpStatus;
 
 /**
  * <h1>内置常量</h1>
@@ -15,229 +14,159 @@ public class Constant {
     public static final String AIRPOWER = "airpower";
 
     /**
-     * <h3>创建时间字段名 {@code createTime}</h3>
-     */
-    public static final String CREATE_TIME_FIELD = "createTime";
-
-    /**
-     * <h3>修改时间字段名 {@code updateTime}</h3>
-     */
-    public static final String UPDATE_TIME_FIELD = "updateTime";
-
-    /**
-     * <h3>主键 {@code ID} 字段名</h3>
-     */
-    public static final String ID = "id";
-
-    /**
-     * <h3>本机 {@code IP} 地址</h3>
-     */
-    public static final String LOCAL_IP_ADDRESS = "127.0.0.1";
-
-    /**
      * <h3>空字符串 {@code }</h3>
      */
-    public static final String EMPTY_STRING = "";
+    public static final String STRING_EMPTY = "";
 
     /**
      * <h3>下划线 {@code _}</h3>
      */
-    public final static String UNDERLINE = "_";
+    public final static String STRING_UNDERLINE = "_";
 
     /**
      * <h3>半角空格 {@code  }</h3>
      */
-    public final static String SPACE = " ";
+    public final static String STRING_BLANK = " ";
 
     /**
      * <h3>半角逗号 {@code ,}</h3>
      */
-    public final static String COMMA = ",";
+    public final static String STRING_COMMA = ",";
 
     /**
      * <h3>半角冒号 {@code :}</h3>
      */
-    public final static String COLON = ":";
+    public final static String STRING_COLON = ":";
 
     /**
      * <h3>分号 {@code ;}</h3>
      */
-    public final static String SEMICOLON = ";";
-
-    /**
-     * <h3>竖线 {@code |}</h3>
-     */
-    public final static String VERTICAL_LINE = "|";
+    public final static String STRING_SEMICOLON = ";";
 
     /**
      * <h3>斜线 {@code /}</h3>
      */
-    public final static String SLASH = "/";
+    public final static String STRING_SLASH = "/";
 
     /**
      * <h3>横线 {@code -}</h3>
      */
-    public final static String LINE = "-";
+    public final static String STRING_LINE = "-";
 
     /**
      * <h3>等号 {@code =}</h3>
      */
-    public final static String EQUAL = "=";
+    public final static String STRING_EQUAL = "=";
 
     /**
      * <h3>点 {@code .}</h3>
      */
-    public final static String DOT = ".";
+    public final static String STRING_DOT = ".";
 
     /**
      * <h3>点的正则</h3>
      */
-    public static final String DOT_REGEX = "\\.";
+    public static final String REGEX_DOT = "\\.";
 
     /**
      * <h3>星号 {@code *}</h3>
      */
-    public final static String ASTERISK = "*";
-
-    /**
-     * <h3>问号 {@code ?}</h3>
-     */
-    public final static String QUESTION = "?";
-
-    /**
-     * <h3>井号 {@code #}</h3>
-     */
-    public final static String SHARP = "#";
+    public final static String STRING_ASTERISK = "*";
 
     /**
      * <h3>@ {@code @}</h3>
      */
-    public final static String AT = "@";
+    public final static String STRING_AT = "@";
 
     /**
      * <h3>{@code And &}</h3>
      */
-    public static final String AND = "&";
+    public static final String STRING_AND = "&";
 
     /**
      * <h3>百分号 {@code %}</h3>
      */
-    public static final String PERCENT = "%";
-
-    /**
-     * <h3>控制器后缀 {@code Controller}</h3>
-     */
-    public static final String CONTROLLER_SUFFIX = "Controller";
+    public static final String STRING_PERCENT = "%";
 
     /**
      * <h3>{@code get}</h3>
      */
-    public static final String GET = "get";
+    public static final String STRING_GET = "get";
 
     /**
      * <h3>{@code Key}</h3>
      */
-    public static final String KEY = "key";
+    public static final String STRING_KEY = "key";
 
     /**
      * <h3>{@code Label}</h3>
      */
-    public static final String LABEL = "label";
+    public static final String STRING_LABEL = "label";
 
     /**
      * <h3>{@code Error}</h3>
      */
-    public static final String ERROR = "error";
-
-    /**
-     * <h3>{@code Name}</h3>
-     */
-    public static final String NAME = "name";
+    public static final String STRING_ERROR = "error";
 
     /**
      * <h3>{@code Code}</h3>
      */
-    public static final String CODE = "code";
-
-    /**
-     * <h3>{@code Message}</h3>
-     */
-    public static final String MESSAGE = "message";
+    public static final String STRING_CODE = "code";
 
     /**
      * <h3>{@code Success}</h3>
      */
-    public static final String SUCCESS = "success";
+    public static final String STRING_SUCCESS = "success";
 
     /**
      * <h3>{@code Value}</h3>
      */
-    public static final String VALUE = "value";
+    public static final String STRING_VALUE = "value";
 
     /**
      * <h3>String {@code "0"}</h3>
      */
-    public static final String ZERO_STRING = "0";
+    public static final String STRING_ZERO = "0";
 
     /**
      * <h3>String {@code "1"}</h3>
      */
-    public static final String ONE_STRING = "1";
+    public static final String STRING_ONE = "1";
 
     /**
      * <h3>String {@code "true"}</h3>
      */
-    public static final String TRUE_STRING = "true";
+    public static final String STRING_TRUE = "true";
 
     /**
      * <h3>String {@code "false"}</h3>
      */
-    public static final String FALSE_STRING = "false";
-
-    /**
-     * <h3>{@code JSON} 成功状态码</h3>
-     */
-    public static final int JSON_SUCCESS_CODE = HttpStatus.OK.value();
-
-    /**
-     * <h3>{@code JSON} 成功信息</h3>
-     */
-    public static final String JSON_SUCCESS_MESSAGE = "操作成功";
-
-    /**
-     * <h3>{@code ContentType}</h3>
-     */
-    public static final String CONTENT_TYPE = "Content-Type";
-
-    /**
-     * <h3>{@code Cookie}</h3>
-     */
-    public static final String COOKIE = "Cookie";
+    public static final String STRING_FALSE = "false";
 
     /**
      * <h3>换行</h3>
      */
-    public static final String LINE_BREAK = "\n";
+    public static final String REGEX_LINE_BREAK = "\n";
 
     /**
      * <h3>{@code TAB}</h3>
      */
-    public static final String TAB = "\t";
+    public static final String REGEX_TAB = "\t";
 
     /**
      * <h3>{@code "是"}</h3>
      */
-    public static final String YES = "是";
+    public static final String STRING_YES = "是";
 
     /**
      * <h3>{@code "否"}</h3>
      */
-    public static final String NO = "否";
+    public static final String STRING_NO = "否";
 
     /**
      * <h3>{@code unknown}</h3>
      */
-    public static final String UNKNOWN = "unknown";
+    public static final String STRING_UNKNOWN = "unknown";
 
     /**
      * <h3>禁止外部实例化</h3>

@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CookieHelper {
+    /**
+     * <h3>{@code Cookie}</h3>
+     */
+    public static final String COOKIE = "Cookie";
     @Autowired
     private CookieConfig cookieConfig;
 

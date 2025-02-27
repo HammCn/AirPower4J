@@ -39,6 +39,10 @@ import static org.springframework.core.io.support.ResourcePatternResolver.CLASSP
 @Slf4j
 public class PermissionUtil {
     /**
+     * <h3>控制器后缀 {@code Controller}</h3>
+     */
+    public static final String CONTROLLER_SUFFIX = "Controller";
+    /**
      * <h3>控制器字节码文件路径</h3>
      */
     private static final String CONTROLLER_CLASS_PATH = "/**/*" + CONTROLLER_SUFFIX + ".class";
@@ -90,8 +94,8 @@ public class PermissionUtil {
      */
     public static @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
         return StringUtils.uncapitalize(clazz.getSimpleName()
-                .replaceAll(CONTROLLER_SUFFIX, EMPTY_STRING)) +
-                UNDERLINE + method.getName();
+                .replaceAll(CONTROLLER_SUFFIX, STRING_EMPTY)) +
+                STRING_UNDERLINE + method.getName();
     }
 
     /**
@@ -141,13 +145,13 @@ public class PermissionUtil {
                 }
 
                 String customClassName = ReflectUtil.getDescription(clazz);
-                String identity = clazz.getSimpleName().replaceAll(CONTROLLER_SUFFIX, EMPTY_STRING);
+                String identity = clazz.getSimpleName().replaceAll(CONTROLLER_SUFFIX, STRING_EMPTY);
                 P permission = permissionClass.getConstructor().newInstance();
 
                 permission.setName(customClassName).setIdentity(identity).setChildren(new ArrayList<>());
 
                 String apiPath = clazz.getSimpleName()
-                        .replaceAll(CONTROLLER_SUFFIX, EMPTY_STRING) + UNDERLINE;
+                        .replaceAll(CONTROLLER_SUFFIX, STRING_EMPTY) + STRING_UNDERLINE;
 
                 // 取出所有控制器方法
                 Method[] methods = clazz.getMethods();
@@ -176,7 +180,7 @@ public class PermissionUtil {
                         continue;
                     }
                     P subPermission = permissionClass.getConstructor().newInstance();
-                    subPermission.setIdentity(subIdentity).setName(customClassName + LINE + customMethodName);
+                    subPermission.setIdentity(subIdentity).setName(customClassName + STRING_LINE + customMethodName);
                     permission.getChildren().add(subPermission);
                 }
                 permissions.add(permission);

@@ -264,6 +264,6 @@ public class RedisHelper {
      * @return key
      */
     private @NotNull <E extends RootEntity<E>> String getCacheKey(@NotNull E entity) {
-        return entity.getClass().getSimpleName() + Constant.UNDERLINE + entity.getId().toString();
+        return entity.getClass().getSimpleName() + Constant.STRING_UNDERLINE + entity.getId().toString();
     }
 }

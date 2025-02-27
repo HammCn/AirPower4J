@@ -131,7 +131,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Json methodExceptionHandle(@NotNull HttpRequestMethodNotSupportedException exception) {
         log.error(exception.getMessage());
-        String supportedMethod = String.join(Constant.SLASH, Objects.requireNonNull(exception.getSupportedMethods()));
+        String supportedMethod = String.join(Constant.STRING_SLASH, Objects.requireNonNull(exception.getSupportedMethods()));
         return Json.error(REQUEST_METHOD_UNSUPPORTED, String.format(
                 "%s 不被支持，请使用 %s 方法请求", exception.getMethod(), supportedMethod
         ));

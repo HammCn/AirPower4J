@@ -65,6 +65,18 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h3>提交的数据不允许为空</h3>
      */
     public static final String DATA_REQUIRED = "提交的数据不允许为空";
+    /**
+     * <h3>创建时间字段名 {@code createTime}</h3>
+     */
+    public static final String STRING_CREATE_TIME = "createTime";
+    /**
+     * <h3>修改时间字段名 {@code updateTime}</h3>
+     */
+    public static final String STRING_UPDATE_TIME = "updateTime";
+    /**
+     * <h3>主键 {@code ID} 字段名</h3>
+     */
+    public static final String STRING_ID = "id";
 
     /**
      * <h3>导出文件夹前缀</h3>
@@ -161,7 +173,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
 
         List<String> rowList = new ArrayList<>();
         // 添加表头
-        rowList.add(String.join(COMMA, fieldList.stream().map(ReflectUtil::getDescription).toList()));
+        rowList.add(String.join(STRING_COMMA, fieldList.stream().map(ReflectUtil::getDescription).toList()));
 
         String json = Json.toString(exportList);
         List<Map<String, Object>> mapList = Json.parse2MapList(json);
@@ -172,12 +184,12 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 Object value = map.get(fieldName);
                 value = prepareExcelColumn(fieldName, value, fieldList);
                 columnList.add(value.toString()
-                        .replaceAll(COMMA, SPACE)
-                        .replaceAll(LINE_BREAK, SPACE));
+                        .replaceAll(STRING_COMMA, STRING_BLANK)
+                        .replaceAll(REGEX_LINE_BREAK, STRING_BLANK));
             });
-            rowList.add(String.join(COMMA, columnList));
+            rowList.add(String.join(STRING_COMMA, columnList));
         });
-        return new ByteArrayInputStream(String.join(LINE_BREAK, rowList).getBytes());
+        return new ByteArrayInputStream(String.join(REGEX_LINE_BREAK, rowList).getBytes());
     }
 
     /**
@@ -197,7 +209,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             // 追加今日文件夹 定时任务将按存储文件夹进行删除过时文件
             String todayDir = DateTimeUtil.format(milliSecond,
                     FULL_DATE.getValue()
-                            .replaceAll(LINE, EMPTY_STRING)
+                            .replaceAll(STRING_LINE, STRING_EMPTY)
             );
             String exportFilePath = EXPORT_DIR_PREFIX;
             exportFilePath += todayDir + File.separator;
@@ -207,10 +219,10 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             }
 
             // 存储的文件名
-            final String fileName = todayDir + UNDERLINE + DateTimeUtil.format(milliSecond,
+            final String fileName = todayDir + STRING_UNDERLINE + DateTimeUtil.format(milliSecond,
                     FULL_TIME.getValue()
-                            .replaceAll(COLON, EMPTY_STRING)
-            ) + UNDERLINE + RandomUtil.randomString() + EXPORT_FILE_CSV;
+                            .replaceAll(STRING_COLON, STRING_EMPTY)
+            ) + STRING_UNDERLINE + RandomUtil.randomString() + EXPORT_FILE_CSV;
 
             // 拼接最终存储路径
             exportFilePath += fileName;
@@ -746,7 +758,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     private @NotNull Object prepareExcelColumn(String fieldName, Object value, List<Field> fieldList) {
         if (Objects.isNull(value) || !StringUtils.hasText(value.toString())) {
-            value = LINE;
+            value = STRING_LINE;
         }
         try {
             Field field = fieldList.stream()
@@ -761,9 +773,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 return value;
             }
             return switch (excelColumn.value()) {
-                case DATETIME -> TAB + DateTimeUtil.format(Long.parseLong(value.toString()));
-                case TEXT -> TAB + value;
-                case BOOLEAN -> (boolean) value ? YES : NO;
+                case DATETIME -> REGEX_TAB + DateTimeUtil.format(Long.parseLong(value.toString()));
+                case TEXT -> REGEX_TAB + value;
+                case BOOLEAN -> (boolean) value ? STRING_YES : STRING_NO;
                 case DICTIONARY -> {
                     Dictionary dictionary = ReflectUtil.getAnnotation(Dictionary.class, field);
                     if (Objects.isNull(dictionary)) {
@@ -1112,7 +1124,7 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                     if (!isEqual) {
                         // 如果是模糊匹配
                         predicateList.add(
-                                builder.like(root.get(field.getName()), fieldValue + PERCENT)
+                                builder.like(root.get(field.getName()), fieldValue + STRING_PERCENT)
                         );
                         break;
                     }
@@ -1139,16 +1151,16 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
             @NotNull E search, @NotNull List<Predicate> predicateList
     ) {
         addPredicateNonNull(root, predicateList,
-                CREATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getCreateTimeFrom()
+                STRING_CREATE_TIME, builder::greaterThanOrEqualTo, search.getCreateTimeFrom()
         );
         addPredicateNonNull(root, predicateList,
-                CREATE_TIME_FIELD, builder::lessThan, search.getCreateTimeTo()
+                STRING_CREATE_TIME, builder::lessThan, search.getCreateTimeTo()
         );
         addPredicateNonNull(root, predicateList,
-                UPDATE_TIME_FIELD, builder::greaterThanOrEqualTo, search.getUpdateTimeFrom()
+                STRING_UPDATE_TIME, builder::greaterThanOrEqualTo, search.getUpdateTimeFrom()
         );
         addPredicateNonNull(root, predicateList,
-                UPDATE_TIME_FIELD, builder::lessThan, search.getUpdateTimeTo()
+                STRING_UPDATE_TIME, builder::lessThan, search.getUpdateTimeTo()
         );
     }
 
