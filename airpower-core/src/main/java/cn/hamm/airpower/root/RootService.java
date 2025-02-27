@@ -62,11 +62,6 @@ import static cn.hamm.airpower.exception.ServiceError.*;
 @Slf4j
 public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
-     * <h3>提交的数据不允许为空</h3>
-     */
-    private static final String DATA_REQUIRED = "提交的数据不允许为空";
-
-    /**
      * <h3>创建时间字段名 {@code createTime}</h3>
      */
     public static final String STRING_CREATE_TIME = "createTime";
@@ -80,6 +75,11 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h3>主键 {@code ID} 字段名</h3>
      */
     public static final String STRING_ID = "id";
+
+    /**
+     * <h3>提交的数据不允许为空</h3>
+     */
+    private static final String DATA_REQUIRED = "提交的数据不允许为空";
 
     /**
      * <h3>导出文件夹前缀</h3>

@@ -24,14 +24,14 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @Slf4j
 public class RequestUtil {
     /**
-     * <h3>获取IP地址异常</h3>
-     */
-    private static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
-
-    /**
      * <h3>本机 {@code IP} 地址</h3>
      */
     public static final String LOCAL_IP_ADDRESS = "127.0.0.1";
+
+    /**
+     * <h3>获取IP地址异常</h3>
+     */
+    private static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
 
     /**
      * <h3>常用IP反向代理Header头</h3>
