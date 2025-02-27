@@ -23,7 +23,7 @@ public class FileUtil {
     /**
      * <h3>文件单位</h3>
      */
-    private static final String[] UNITS = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+    public static final String[] UNITS = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
 
     /**
      * <h3>获取文件名后缀</h3>

@@ -18,7 +18,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Hamm.cn
  * @apiNote 请注意, 请自行做非空验证, 字典必须实现 {@link IDictionary} 接口
  */
-@Constraint(validatedBy = DictionaryAnnotationValidator.class)
+@Constraint(validatedBy = DictionaryValidator.class)
 @Target({FIELD, METHOD})
 @Retention(RUNTIME)
 @Documented

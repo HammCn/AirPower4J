@@ -33,17 +33,12 @@ public class AccessTokenUtil {
     /**
      * <h3>无效的令牌</h3>
      */
-    public static final String ACCESS_TOKEN_INVALID = "身份令牌无效，请重新获取身份令牌";
+    private static final String ACCESS_TOKEN_INVALID = "身份令牌无效，请重新获取身份令牌";
 
     /**
      * <h3>算法</h3>
      */
     private static final String HMAC_SHA_256 = "HmacSHA256";
-
-    /**
-     * <h3>缺少负载</h3>
-     */
-    private static final String PAYLOADS_IS_EMPTY = "没有任何负载数据";
 
     /**
      * <h3>{@code HMAC-SHA-256}错误</h3>
@@ -114,7 +109,7 @@ public class AccessTokenUtil {
         PARAM_INVALID.whenEquals(AIRPOWER, secret,
                 "身份令牌创建失败，请在环境变量配置 airpower.accessTokenSecret");
         if (verifiedToken.getPayloads().isEmpty()) {
-            throw new ServiceException(PAYLOADS_IS_EMPTY);
+            throw new ServiceException("没有任何负载数据");
         }
         String payloadBase = Base64.getUrlEncoder().encodeToString(
                 Json.toString(verifiedToken.getPayloads()).getBytes(UTF_8)
@@ -215,7 +210,7 @@ public class AccessTokenUtil {
             }
             return hexString.toString();
         } catch (Exception exception) {
-            log.error("hmacSha256 error", exception);
+            log.error(HMAC_SHA_256_ERROR, exception);
             throw new ServiceException(HMAC_SHA_256_ERROR);
         }
     }

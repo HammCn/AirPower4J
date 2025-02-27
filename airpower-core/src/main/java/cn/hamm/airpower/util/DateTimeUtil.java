@@ -28,30 +28,37 @@ public class DateTimeUtil {
      * <h3>毫秒转秒</h3>
      */
     public static final int MILLISECONDS_PER_SECOND = 1000;
+
     /**
      * <h3>一年 {@code 365} 天</h3>
      */
     public static final int DAY_PER_YEAR = 365;
+
     /**
      * <h3>一个月 {@code 30} 天</h3>
      */
     public static final int DAY_PER_MONTH = 30;
+
     /**
      * <h3>一周 {@code 7} 天</h3>
      */
     public static final int DAY_PER_WEEK = 7;
+
     /**
      * <h3>一分钟 {@code 60} 秒</h3>
      */
     public static final int SECOND_PER_MINUTE = 60;
+
     /**
      * <h3>一小时的秒数</h3>
      */
     public static final int SECOND_PER_HOUR = SECOND_PER_MINUTE * SECOND_PER_MINUTE;
+
     /**
      * <h3>一天的秒数</h3>
      */
     public static final int SECOND_PER_DAY = SECOND_PER_HOUR * HOUR_PER_DAY;
+
     /**
      * <h3>时间步长</h3>
      */

@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
  * @author Hamm.cn
  */
 @Component
-public class PhoneAnnotationValidator implements ConstraintValidator<Phone, String> {
+public class PhoneValidator implements ConstraintValidator<Phone, String> {
     /**
      * <h3>是否座机</h3>
      */

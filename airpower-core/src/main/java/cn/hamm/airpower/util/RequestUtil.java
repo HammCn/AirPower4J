@@ -26,7 +26,8 @@ public class RequestUtil {
     /**
      * <h3>获取IP地址异常</h3>
      */
-    public static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
+    private static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
+
     /**
      * <h3>本机 {@code IP} 地址</h3>
      */

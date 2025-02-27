@@ -20,7 +20,7 @@ public class RandomUtil {
     /**
      * <h3>默认长度</h3>
      */
-    public static final int DEFAULT_LENGTH = 32;
+    private static final int DEFAULT_LENGTH = 32;
 
     /**
      * <h3>小写字母</h3>

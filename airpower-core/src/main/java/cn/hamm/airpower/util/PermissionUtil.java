@@ -41,7 +41,8 @@ public class PermissionUtil {
     /**
      * <h3>控制器后缀 {@code Controller}</h3>
      */
-    public static final String CONTROLLER_SUFFIX = "Controller";
+    private static final String CONTROLLER_SUFFIX = "Controller";
+
     /**
      * <h3>控制器字节码文件路径</h3>
      */

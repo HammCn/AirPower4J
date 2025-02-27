@@ -32,6 +32,7 @@ public class HttpUtil {
      * <h3>{@code ContentType}</h3>
      */
     public static final String CONTENT_TYPE = "Content-Type";
+
     /**
      * <h3>请求头</h3>
      */

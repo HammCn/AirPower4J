@@ -64,15 +64,18 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     /**
      * <h3>提交的数据不允许为空</h3>
      */
-    public static final String DATA_REQUIRED = "提交的数据不允许为空";
+    private static final String DATA_REQUIRED = "提交的数据不允许为空";
+
     /**
      * <h3>创建时间字段名 {@code createTime}</h3>
      */
     public static final String STRING_CREATE_TIME = "createTime";
+
     /**
      * <h3>修改时间字段名 {@code updateTime}</h3>
      */
     public static final String STRING_UPDATE_TIME = "updateTime";
+
     /**
      * <h3>主键 {@code ID} 字段名</h3>
      */

@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Hamm.cn
  * @apiNote 请注意，请自行做非空验证
  */
-@Constraint(validatedBy = PhoneAnnotationValidator.class)
+@Constraint(validatedBy = PhoneValidator.class)
 @Target({FIELD, METHOD})
 @Retention(RUNTIME)
 @Documented
