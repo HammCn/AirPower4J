@@ -24,6 +24,9 @@ public class DateTimeUtil {
      */
     private static final String ASIA_CHONGQING = "Asia/Chongqing";
 
+    /**
+     * <h3>时间步长</h3>
+     */
     private static final long[] STEP_SECONDS = {
             0,
             SECOND_PER_MINUTE,
@@ -34,6 +37,9 @@ public class DateTimeUtil {
             SECOND_PER_DAY * DAY_PER_YEAR
     };
 
+    /**
+     * <h3>时间步长标签</h3>
+     */
     private static final String[] STEP_LABELS = {
             "秒",
             "分钟",
