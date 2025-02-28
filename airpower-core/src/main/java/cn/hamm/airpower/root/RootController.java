@@ -2,13 +2,14 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Permission;
 import cn.hamm.airpower.config.ServiceConfig;
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.interfaces.IAction;
 import cn.hamm.airpower.util.AccessTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static cn.hamm.airpower.exception.ServiceError.UNAUTHORIZED;
 
 /**
  * <h1>控制器根类</h1>
@@ -34,7 +35,7 @@ public class RootController implements IAction {
             String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
             return AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
         } catch (Exception exception) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED);
+            throw new ServiceException(UNAUTHORIZED);
         }
     }
 }

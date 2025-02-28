@@ -1,16 +1,11 @@
 package cn.hamm.airpower.open;
 
-import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.AirHelper;
 import cn.hamm.airpower.helper.RedisHelper;
 import cn.hamm.airpower.model.Json;
 import cn.hamm.airpower.root.RootModel;
-import cn.hamm.airpower.util.AesUtil;
-import cn.hamm.airpower.util.DictionaryUtil;
-import cn.hamm.airpower.util.RequestUtil;
-import cn.hamm.airpower.util.RsaUtil;
+import cn.hamm.airpower.util.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -20,6 +15,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+
+import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.exception.ServiceError.*;
 
 /**
  * <h1>{@code OpenApi} 请求体</h1>
@@ -92,7 +90,7 @@ public class OpenRequest {
         try {
             return Json.parse(json, clazz);
         } catch (Exception e) {
-            ServiceError.JSON_DECODE_FAIL.show();
+            JSON_DECODE_FAIL.show();
             throw new ServiceException(e);
         }
     }
@@ -130,7 +128,7 @@ public class OpenRequest {
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {
-            ServiceError.DECRYPT_DATA_FAIL.show();
+            DECRYPT_DATA_FAIL.show();
         }
         return request;
     }
@@ -140,8 +138,8 @@ public class OpenRequest {
      */
     private void checkTimestamp() {
         long currentTimeMillis = System.currentTimeMillis();
-        int nonceExpireMillisecond = NONCE_CACHE_SECOND * Constant.MILLISECONDS_PER_SECOND;
-        ServiceError.TIMESTAMP_INVALID.when(
+        int nonceExpireMillisecond = NONCE_CACHE_SECOND * DateTimeUtil.MILLISECONDS_PER_SECOND;
+        TIMESTAMP_INVALID.when(
                 timestamp > currentTimeMillis + nonceExpireMillisecond ||
                         timestamp < currentTimeMillis - nonceExpireMillisecond
         );
@@ -157,23 +155,23 @@ public class OpenRequest {
             return;
         }
         String[] ipList = ipStr
-                .replaceAll(Constant.SPACE, Constant.EMPTY_STRING)
-                .split(Constant.LINE_BREAK);
+                .replaceAll(STRING_BLANK, STRING_EMPTY)
+                .split(REGEX_LINE_BREAK);
         final String ip = RequestUtil.getIpAddress(AirHelper.getRequest());
         if (!StringUtils.hasText(ip)) {
-            ServiceError.MISSING_REQUEST_ADDRESS.show();
+            MISSING_REQUEST_ADDRESS.show();
         }
         if (Arrays.stream(ipList).toList().contains(ip)) {
             return;
         }
-        ServiceError.INVALID_REQUEST_ADDRESS.show();
+        INVALID_REQUEST_ADDRESS.show();
     }
 
     /**
      * <h3>签名验证结果</h3>
      */
     private void checkSignature() {
-        ServiceError.SIGNATURE_INVALID.whenNotEquals(signature, sign());
+        SIGNATURE_INVALID.whenNotEquals(signature, sign());
     }
 
     /**
@@ -182,7 +180,7 @@ public class OpenRequest {
     private void checkNonce() {
         RedisHelper redisHelper = AirHelper.getRedisHelper();
         Object savedNonce = redisHelper.get(NONCE_CACHE_PREFIX + nonce);
-        ServiceError.REPEAT_REQUEST.whenNotNull(savedNonce);
+        REPEAT_REQUEST.whenNotNull(savedNonce);
         redisHelper.set(NONCE_CACHE_PREFIX + nonce, 1, NONCE_CACHE_SECOND);
     }
 

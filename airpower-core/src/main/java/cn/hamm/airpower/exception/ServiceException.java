@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import static cn.hamm.airpower.exception.ServiceError.SERVICE_ERROR;
+
 /**
  * <h1>系统异常包装类</h1>
  *
@@ -17,12 +19,12 @@ public class ServiceException extends RuntimeException implements IException {
     /**
      * <h3>错误代码</h3>
      */
-    private int code = ServiceError.SERVICE_ERROR.getCode();
+    private int code = SERVICE_ERROR.getCode();
 
     /**
      * <h3>错误信息</h3>
      */
-    private String message = ServiceError.SERVICE_ERROR.getMessage();
+    private String message = SERVICE_ERROR.getMessage();
 
     /**
      * <h3>错误数据</h3>
@@ -35,7 +37,7 @@ public class ServiceException extends RuntimeException implements IException {
      * @param message 错误信息
      */
     public ServiceException(String message) {
-        setCode(ServiceError.SERVICE_ERROR.getCode()).setMessage(message);
+        setCode(SERVICE_ERROR.getCode()).setMessage(message);
     }
 
     /**
@@ -83,6 +85,6 @@ public class ServiceException extends RuntimeException implements IException {
      * @param exception 异常
      */
     public ServiceException(@NotNull Exception exception) {
-        setCode(ServiceError.SERVICE_ERROR.getCode()).setMessage(exception.getMessage());
+        setCode(SERVICE_ERROR.getCode()).setMessage(exception.getMessage());
     }
 }

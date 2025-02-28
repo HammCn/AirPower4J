@@ -2,9 +2,15 @@ package cn.hamm.airpower.annotation;
 
 import cn.hamm.airpower.util.ReflectUtil;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * <h1>类或属性的文案</h1>
@@ -15,8 +21,8 @@ import java.lang.reflect.Method;
  * @see ReflectUtil#getDescription(Field)
  * @see ReflectUtil#getDescription(Class)
  */
-@Target({ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
+@Target({FIELD, METHOD, TYPE})
+@Retention(RUNTIME)
 @Inherited
 @Documented
 public @interface Description {

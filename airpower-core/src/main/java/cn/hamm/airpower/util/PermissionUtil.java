@@ -3,7 +3,6 @@ package cn.hamm.airpower.util;
 import cn.hamm.airpower.annotation.ApiController;
 import cn.hamm.airpower.annotation.Extends;
 import cn.hamm.airpower.annotation.Permission;
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.enums.Api;
 import cn.hamm.airpower.interfaces.IPermission;
 import cn.hamm.airpower.model.Access;
@@ -29,6 +28,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static cn.hamm.airpower.config.Constant.*;
+import static org.springframework.core.io.support.ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
+
 /**
  * <h1>权限处理工具类</h1>
  *
@@ -37,9 +39,14 @@ import java.util.Objects;
 @Slf4j
 public class PermissionUtil {
     /**
+     * <h3>控制器后缀 {@code Controller}</h3>
+     */
+    private static final String CONTROLLER_SUFFIX = "Controller";
+
+    /**
      * <h3>控制器字节码文件路径</h3>
      */
-    private static final String CONTROLLER_CLASS_PATH = "/**/*" + Constant.CONTROLLER_SUFFIX + ".class";
+    private static final String CONTROLLER_CLASS_PATH = "/**/*" + CONTROLLER_SUFFIX + ".class";
 
     /**
      * <h3>禁止外部实例化</h3>
@@ -88,8 +95,8 @@ public class PermissionUtil {
      */
     public static @NotNull String getPermissionIdentity(@NotNull Class<?> clazz, @NotNull Method method) {
         return StringUtils.uncapitalize(clazz.getSimpleName()
-                .replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING)) +
-                Constant.UNDERLINE + method.getName();
+                .replaceAll(CONTROLLER_SUFFIX, STRING_EMPTY)) +
+                STRING_UNDERLINE + method.getName();
     }
 
     /**
@@ -120,7 +127,7 @@ public class PermissionUtil {
         List<P> permissions = new ArrayList<>();
         try {
             ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-            String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
+            String pattern = CLASSPATH_ALL_URL_PREFIX +
                     ClassUtils.convertClassNameToResourcePath(packageName) + CONTROLLER_CLASS_PATH;
             Resource[] resources = resourcePatternResolver.getResources(pattern);
             MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
@@ -139,13 +146,13 @@ public class PermissionUtil {
                 }
 
                 String customClassName = ReflectUtil.getDescription(clazz);
-                String identity = clazz.getSimpleName().replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING);
+                String identity = clazz.getSimpleName().replaceAll(CONTROLLER_SUFFIX, STRING_EMPTY);
                 P permission = permissionClass.getConstructor().newInstance();
 
                 permission.setName(customClassName).setIdentity(identity).setChildren(new ArrayList<>());
 
                 String apiPath = clazz.getSimpleName()
-                        .replaceAll(Constant.CONTROLLER_SUFFIX, Constant.EMPTY_STRING) + Constant.UNDERLINE;
+                        .replaceAll(CONTROLLER_SUFFIX, STRING_EMPTY) + STRING_UNDERLINE;
 
                 // 取出所有控制器方法
                 Method[] methods = clazz.getMethods();
@@ -174,7 +181,7 @@ public class PermissionUtil {
                         continue;
                     }
                     P subPermission = permissionClass.getConstructor().newInstance();
-                    subPermission.setIdentity(subIdentity).setName(customClassName + Constant.LINE + customMethodName);
+                    subPermission.setIdentity(subIdentity).setName(customClassName + STRING_LINE + customMethodName);
                     permission.getChildren().add(subPermission);
                 }
                 permissions.add(permission);

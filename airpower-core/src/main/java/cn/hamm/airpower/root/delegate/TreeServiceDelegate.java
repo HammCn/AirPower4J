@@ -1,6 +1,5 @@
 package cn.hamm.airpower.root.delegate;
 
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.interfaces.ITree;
 import cn.hamm.airpower.root.RootEntity;
 import cn.hamm.airpower.root.RootRepository;
@@ -9,6 +8,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import static cn.hamm.airpower.exception.ServiceError.FORBIDDEN_DELETE;
 
 /**
  * <h1>树结构的服务委托类</h1>
@@ -66,6 +67,6 @@ public class TreeServiceDelegate {
             S extends RootService<E, R>,
             R extends RootRepository<E>
             > void ensureNoChildrenBeforeDelete(S service, long id) {
-        ServiceError.FORBIDDEN_DELETE.when(!findByParentId(service, id).isEmpty(), "无法删除含有下级的数据，请先删除所有下级！");
+        FORBIDDEN_DELETE.when(!findByParentId(service, id).isEmpty(), "无法删除含有下级的数据，请先删除所有下级！");
     }
 }

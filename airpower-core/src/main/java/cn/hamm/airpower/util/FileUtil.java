@@ -1,10 +1,12 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+
+import static cn.hamm.airpower.config.Constant.STRING_DOT;
+import static cn.hamm.airpower.config.Constant.STRING_LINE;
 
 /**
  * <h1>文件工具类</h1>
@@ -14,9 +16,14 @@ import java.text.DecimalFormat;
 @Slf4j
 public class FileUtil {
     /**
+     * <h3>文件大小进制</h3>
+     */
+    public static final long FILE_SCALE = 1024L;
+
+    /**
      * <h3>文件单位</h3>
      */
-    private static final String[] UNITS = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+    public static final String[] UNITS = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
 
     /**
      * <h3>获取文件名后缀</h3>
@@ -25,7 +32,7 @@ public class FileUtil {
      * @return 后缀
      */
     public static @NotNull String getExtension(@NotNull String fileName) {
-        return fileName.substring(fileName.lastIndexOf(Constant.DOT) + 1).toLowerCase();
+        return fileName.substring(fileName.lastIndexOf(STRING_DOT) + 1).toLowerCase();
     }
 
     /**
@@ -37,16 +44,16 @@ public class FileUtil {
     public static String formatSize(long size) {
         if (size <= 0) {
             log.error("错误的文件大小: {}", size);
-            return Constant.LINE;
+            return STRING_LINE;
         }
         double fileSize = size;
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         for (String unit : UNITS) {
-            if (fileSize < Constant.FILE_SCALE) {
+            if (fileSize < FILE_SCALE) {
                 return decimalFormat.format(fileSize) + unit;
             }
-            fileSize /= Constant.FILE_SCALE;
+            fileSize /= FILE_SCALE;
         }
-        return Constant.LINE;
+        return STRING_LINE;
     }
 }

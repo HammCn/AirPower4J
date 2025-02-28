@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Objects;
 
+import static cn.hamm.airpower.interceptor.AbstractRequestInterceptor.REQUEST_METHOD_KEY;
+
 /**
  * <h1>全局拦截响应</h1>
  *
@@ -68,7 +70,7 @@ public class ResponseBodyInterceptor implements ResponseBodyAdvice<Object> {
             @NotNull ServerHttpRequest request,
             @NotNull ServerHttpResponse response
     ) {
-        Method method = (Method) getShareData(AbstractRequestInterceptor.REQUEST_METHOD_KEY);
+        Method method = (Method) getShareData(REQUEST_METHOD_KEY);
         if (Objects.isNull(method)) {
             return beforeResponseFinished(body, request, response);
         }

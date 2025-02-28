@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * <h1>任务流程工具类</h1>
@@ -26,7 +27,7 @@ public class TaskUtil {
             5,
             20,
             3600L,
-            TimeUnit.SECONDS,
+            SECONDS,
             new LinkedBlockingQueue<>()
     );
 

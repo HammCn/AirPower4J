@@ -1,11 +1,12 @@
 package cn.hamm.airpower.root;
 
-import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
+
+import static jakarta.persistence.LockModeType.PESSIMISTIC_WRITE;
 
 /**
  * <h1>数据源接口</h1>
@@ -22,6 +23,6 @@ public interface RootRepository<E extends RootEntity<E>> extends JpaRepository<E
      * @return 实体
      */
     @Transactional(rollbackFor = Exception.class)
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(PESSIMISTIC_WRITE)
     E getWidthLockById(Long id);
 }

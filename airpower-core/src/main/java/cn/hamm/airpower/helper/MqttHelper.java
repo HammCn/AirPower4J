@@ -41,7 +41,7 @@ public class MqttHelper {
      */
     public @NotNull MqttClient createClient(String id) throws MqttException {
         return new MqttClient(
-                "tcp://" + mqttConfig.getHost() + Constant.COLON + mqttConfig.getPort(),
+                "tcp://" + mqttConfig.getHost() + Constant.STRING_COLON + mqttConfig.getPort(),
                 id,
                 new MemoryPersistence()
         );

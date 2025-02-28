@@ -1,6 +1,5 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Constant;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
@@ -9,6 +8,8 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static cn.hamm.airpower.config.Constant.STRING_EMPTY;
 
 /**
  * <h1>随机生成工具类</h1>
@@ -19,7 +20,7 @@ public class RandomUtil {
     /**
      * <h3>默认长度</h3>
      */
-    public static final int DEFAULT_LENGTH = 32;
+    private static final int DEFAULT_LENGTH = 32;
 
     /**
      * <h3>小写字母</h3>
@@ -108,7 +109,7 @@ public class RandomUtil {
      */
     public static @NotNull String randomString(final String baseString, int length) {
         if (!StringUtils.hasText(baseString)) {
-            return Constant.EMPTY_STRING;
+            return STRING_EMPTY;
         }
         length = Math.max(length, 1);
         final int baseLength = baseString.length();

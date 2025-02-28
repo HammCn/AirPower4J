@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.enums.DateTimeFormatter.FULL_DATETIME;
 
 /**
  * <h1>时间日期格式化工具类</h1>
@@ -20,9 +20,44 @@ import static cn.hamm.airpower.config.Constant.*;
 @Slf4j
 public class DateTimeUtil {
     /**
-     * <h3>默认时区</h3>
+     * <h3>一天 {@code 24} 小时</h3>
      */
-    private static final String ASIA_CHONGQING = "Asia/Chongqing";
+    public static final int HOUR_PER_DAY = 24;
+
+    /**
+     * <h3>毫秒转秒</h3>
+     */
+    public static final int MILLISECONDS_PER_SECOND = 1000;
+
+    /**
+     * <h3>一年 {@code 365} 天</h3>
+     */
+    public static final int DAY_PER_YEAR = 365;
+
+    /**
+     * <h3>一个月 {@code 30} 天</h3>
+     */
+    public static final int DAY_PER_MONTH = 30;
+
+    /**
+     * <h3>一周 {@code 7} 天</h3>
+     */
+    public static final int DAY_PER_WEEK = 7;
+
+    /**
+     * <h3>一分钟 {@code 60} 秒</h3>
+     */
+    public static final int SECOND_PER_MINUTE = 60;
+
+    /**
+     * <h3>一小时的秒数</h3>
+     */
+    public static final int SECOND_PER_HOUR = SECOND_PER_MINUTE * SECOND_PER_MINUTE;
+
+    /**
+     * <h3>一天的秒数</h3>
+     */
+    public static final int SECOND_PER_DAY = SECOND_PER_HOUR * HOUR_PER_DAY;
 
     /**
      * <h3>时间步长</h3>
@@ -36,6 +71,10 @@ public class DateTimeUtil {
             SECOND_PER_DAY * DAY_PER_MONTH,
             SECOND_PER_DAY * DAY_PER_YEAR
     };
+    /**
+     * <h3>默认时区</h3>
+     */
+    private static final String ASIA_CHONGQING = "Asia/Chongqing";
 
     /**
      * <h3>时间步长标签</h3>
@@ -64,7 +103,7 @@ public class DateTimeUtil {
      * @return 格式化后的时间
      */
     public static @NotNull String format(long milliSecond) {
-        return format(milliSecond, DateTimeFormatter.FULL_DATETIME.getValue());
+        return format(milliSecond, FULL_DATETIME.getValue());
     }
 
     /**
@@ -110,7 +149,7 @@ public class DateTimeUtil {
      * @return 友好格式化后的时间
      */
     public static @NotNull String friendlyFormatMillisecond(long milliSecond) {
-        long second = milliSecond / Constant.MILLISECONDS_PER_SECOND;
+        long second = milliSecond / MILLISECONDS_PER_SECOND;
         return friendlyFormatSecond(second);
     }
 
@@ -121,11 +160,11 @@ public class DateTimeUtil {
      * @return 友好格式化后的时间
      */
     public static @NotNull String friendlyFormatSecond(long second) {
-        long currentSecond = System.currentTimeMillis() / Constant.MILLISECONDS_PER_SECOND;
+        long currentSecond = System.currentTimeMillis() / MILLISECONDS_PER_SECOND;
         long diff = Math.abs(currentSecond - second);
         if (second < 0) {
             log.error("时间戳错误：{}", second);
-            return Constant.LINE;
+            return Constant.STRING_LINE;
         }
         if (second < currentSecond && diff < SECOND_PER_MINUTE) {
             // 过去时间，且小于60s

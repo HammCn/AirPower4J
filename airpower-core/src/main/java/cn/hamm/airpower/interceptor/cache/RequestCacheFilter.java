@@ -10,9 +10,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
 import java.util.Objects;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * <h1>缓存请求的过滤器</h1>
@@ -61,7 +62,7 @@ public class RequestCacheFilter implements Filter {
 
         // 空ContentType或者非JSON不缓存
         String contentType = request.getContentType();
-        if (Objects.isNull(contentType) || !contentType.contains(MediaType.APPLICATION_JSON_VALUE)) {
+        if (Objects.isNull(contentType) || !contentType.contains(APPLICATION_JSON_VALUE)) {
             return false;
         }
         // 上传请求不缓存
