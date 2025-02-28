@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * <h1>标记为搜索字段</h1>
  *
  * @author Hamm.cn
- * @apiNote 默认为 {@code LIKE}，支持 {@code LIKE}, {@code JOIN}, {@code EQUALS}
+ * @apiNote 默认为 {@link Mode#LIKE}，支持 {@link Mode#LIKE}, {@link Mode#JOIN}, {@link Mode#EQUALS}
  */
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)
