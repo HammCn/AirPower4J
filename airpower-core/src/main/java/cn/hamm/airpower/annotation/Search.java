@@ -4,6 +4,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static cn.hamm.airpower.annotation.Search.Mode.LIKE;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -21,7 +22,7 @@ public @interface Search {
     /**
      * <h3>搜索方式</h3>
      */
-    Mode value() default Mode.LIKE;
+    Mode value() default LIKE;
 
     /**
      * <h3>搜索类型</h3>
