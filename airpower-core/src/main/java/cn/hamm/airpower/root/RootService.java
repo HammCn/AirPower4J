@@ -590,10 +590,9 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      */
     public final @NotNull E getWithEnable(long id) {
         E entity = get(id);
-        FORBIDDEN_DISABLED.when(entity.getIsDisabled(), String.format(
-                FORBIDDEN_DISABLED.getMessage(),
-                        id, ReflectUtil.getDescription(getEntityClass())
-                )
+        FORBIDDEN_DISABLED.when(
+                entity.getIsDisabled(),
+                String.format(FORBIDDEN_DISABLED.getMessage(), id, ReflectUtil.getDescription(getEntityClass()))
         );
         return entity;
     }
