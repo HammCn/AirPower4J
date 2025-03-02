@@ -1,9 +1,7 @@
 package cn.hamm.airpower.websocket;
 
 import cn.hamm.airpower.config.Configs;
-import cn.hamm.airpower.config.Constant;
 import cn.hamm.airpower.config.WebSocketConfig;
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.helper.MqttHelper;
 import cn.hamm.airpower.model.Json;
@@ -24,9 +22,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static cn.hamm.airpower.config.Constant.STRING_UNDERLINE;
+import static cn.hamm.airpower.exception.ServiceError.WEBSOCKET_ERROR;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * <h1>WebSocket Handler</h1>
@@ -183,11 +184,11 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
         redisConnectionHashMap.put(session.getId(), redisConnection);
         redisConnection.subscribe((message, pattern) -> {
                     synchronized (session) {
-                        onChannelMessage(new String(message.getBody(), StandardCharsets.UTF_8), session);
+                        onChannelMessage(new String(message.getBody(), UTF_8), session);
                     }
                 },
-                getRealChannel(CHANNEL_ALL).getBytes(StandardCharsets.UTF_8),
-                personalChannel.getBytes(StandardCharsets.UTF_8)
+                getRealChannel(CHANNEL_ALL).getBytes(UTF_8),
+                personalChannel.getBytes(UTF_8)
         );
     }
 
@@ -207,7 +208,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
                 @Override
                 public void messageArrived(String topic, MqttMessage mqttMessage) {
                     synchronized (session) {
-                        onChannelMessage(new String(mqttMessage.getPayload(), StandardCharsets.UTF_8), session);
+                        onChannelMessage(new String(mqttMessage.getPayload(), UTF_8), session);
                     }
                 }
 
@@ -283,7 +284,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      */
     protected final void redisSubscribe(@NotNull String channel, WebSocketSession session) {
         log.info("REDIS开始订阅频道: {}", getRealChannel(channel));
-        getRedisSubscription(session).subscribe(getRealChannel(channel).getBytes(StandardCharsets.UTF_8));
+        getRedisSubscription(session).subscribe(getRealChannel(channel).getBytes(UTF_8));
     }
 
     /**
@@ -309,7 +310,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      */
     @Contract(pure = true)
     protected final @NotNull String getRealChannel(String channel) {
-        return webSocketConfig.getChannelPrefix() + Constant.UNDERLINE + channel;
+        return webSocketConfig.getChannelPrefix() + STRING_UNDERLINE + channel;
     }
 
     /**
@@ -320,7 +321,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      */
     protected final void redisUnSubscribe(@NotNull String channel, WebSocketSession session) {
         log.info("REDIS取消订阅频道: {}", getRealChannel(channel));
-        getRedisSubscription(session).unsubscribe(getRealChannel(channel).getBytes(StandardCharsets.UTF_8));
+        getRedisSubscription(session).unsubscribe(getRealChannel(channel).getBytes(UTF_8));
     }
 
     /**
@@ -346,7 +347,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      */
     protected final MqttClient getMqttClient(@NotNull WebSocketSession session) {
         MqttClient mqttClient = mqttClientHashMap.get(session.getId());
-        ServiceError.WEBSOCKET_ERROR.whenNull(mqttClient, "mqttClient is null");
+        WEBSOCKET_ERROR.whenNull(mqttClient, "mqttClient is null");
         return mqttClient;
     }
 
@@ -358,9 +359,9 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
      */
     protected final Subscription getRedisSubscription(@NotNull WebSocketSession session) {
         RedisConnection redisConnection = redisConnectionHashMap.get(session.getId());
-        ServiceError.WEBSOCKET_ERROR.whenNull(redisConnection, "redisConnection is null");
+        WEBSOCKET_ERROR.whenNull(redisConnection, "redisConnection is null");
         Subscription subscription = redisConnection.getSubscription();
-        ServiceError.WEBSOCKET_ERROR.whenNull(subscription, "subscription is null");
+        WEBSOCKET_ERROR.whenNull(subscription, "subscription is null");
         return subscription;
     }
 

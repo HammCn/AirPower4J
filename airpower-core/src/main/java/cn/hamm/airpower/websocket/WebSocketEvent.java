@@ -1,7 +1,6 @@
 package cn.hamm.airpower.websocket;
 
 import cn.hamm.airpower.config.Configs;
-import cn.hamm.airpower.config.Constant;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
@@ -22,7 +21,7 @@ public class WebSocketEvent {
     /**
      * <h3>当前事件 {@code ID}</h3>
      */
-    private static final AtomicLong CURRENT_EVENT_ID = new AtomicLong(Constant.ZERO_LONG);
+    private static final AtomicLong CURRENT_EVENT_ID = new AtomicLong(0L);
 
     /**
      * <h3>事件 {@code ID}</h3>
@@ -32,12 +31,12 @@ public class WebSocketEvent {
     /**
      * <h3>发送方 {@code ID}</h3>
      */
-    private long from = Constant.ZERO_LONG;
+    private Long from;
 
     /**
      * <h3>接收方 {@code ID}</h3>
      */
-    private long to = Constant.ZERO_LONG;
+    private Long to;
 
     /**
      * <h3>事件时间戳</h3>

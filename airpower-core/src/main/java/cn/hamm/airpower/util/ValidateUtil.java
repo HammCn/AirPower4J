@@ -1,8 +1,5 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.config.PatternConstant;
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.root.RootModel;
 import jakarta.validation.ConstraintViolation;
@@ -16,6 +13,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+
+import static cn.hamm.airpower.config.PatternConstant.*;
+import static cn.hamm.airpower.exception.ServiceError.PARAM_INVALID;
 
 /**
  * <h1>验证器工具类</h1>
@@ -52,7 +52,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isNumber(String value) {
-        return validRegex(value, PatternConstant.NUMBER);
+        return validRegex(value, NUMBER);
     }
 
     /**
@@ -62,7 +62,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isInteger(String value) {
-        return validRegex(value, PatternConstant.INTEGER);
+        return validRegex(value, INTEGER);
     }
 
     /**
@@ -72,7 +72,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isEmail(String value) {
-        return validRegex(value, PatternConstant.EMAIL);
+        return validRegex(value, EMAIL);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isLetter(String value) {
-        return validRegex(value, PatternConstant.LETTER);
+        return validRegex(value, LETTER);
     }
 
     /**
@@ -92,7 +92,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isLetterOrNumber(String value) {
-        return validRegex(value, PatternConstant.LETTER_OR_NUMBER);
+        return validRegex(value, LETTER_OR_NUMBER);
     }
 
     /**
@@ -102,7 +102,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isChinese(String value) {
-        return validRegex(value, PatternConstant.CHINESE);
+        return validRegex(value, CHINESE);
     }
 
     /**
@@ -112,7 +112,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isMobilePhone(String value) {
-        return validRegex(value, PatternConstant.MOBILE_PHONE);
+        return validRegex(value, MOBILE_PHONE);
     }
 
     /**
@@ -122,7 +122,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isTelPhone(String value) {
-        return validRegex(value, PatternConstant.TEL_PHONE);
+        return validRegex(value, TEL_PHONE);
     }
 
     /**
@@ -136,7 +136,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isNormalCode(String value) {
-        return validRegex(value, PatternConstant.NORMAL_CODE);
+        return validRegex(value, NORMAL_CODE);
     }
 
     /**
@@ -146,7 +146,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isOnlyNumberAndLetter(String value) {
-        return validRegex(value, PatternConstant.NUMBER_OR_LETTER);
+        return validRegex(value, NUMBER_OR_LETTER);
     }
 
     /**
@@ -156,7 +156,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isNaturalNumber(String value) {
-        return validRegex(value, PatternConstant.NATURAL_NUMBER);
+        return validRegex(value, NATURAL_NUMBER);
     }
 
     /**
@@ -166,7 +166,7 @@ public class ValidateUtil {
      * @return 验证结果
      */
     public static boolean isNaturalInteger(String value) {
-        return validRegex(value, PatternConstant.NATURAL_INTEGER);
+        return validRegex(value, NATURAL_INTEGER);
     }
 
     /**
@@ -225,17 +225,17 @@ public class ValidateUtil {
             return;
         }
         initValidator();
-        if (actions.length == Constant.ZERO_INT) {
+        if (actions.length == 0) {
             Set<ConstraintViolation<M>> violations = validator.validate(model);
             if (violations.isEmpty()) {
                 return;
             }
-            ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
+            PARAM_INVALID.show(violations.iterator().next().getMessage());
         }
         Set<ConstraintViolation<M>> violations = validator.validate(model, actions);
         if (violations.isEmpty()) {
             return;
         }
-        ServiceError.PARAM_INVALID.show(violations.iterator().next().getMessage());
+        PARAM_INVALID.show(violations.iterator().next().getMessage());
     }
 }

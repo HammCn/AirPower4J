@@ -1,9 +1,8 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import cn.hamm.airpower.model.Json;
+import cn.hamm.airpower.root.RootService;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +13,15 @@ import org.springframework.util.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.exception.ServiceError.PARAM_INVALID;
+import static cn.hamm.airpower.exception.ServiceError.UNAUTHORIZED;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * <h1>{@code AccessToken} 工具类</h1>
@@ -30,17 +33,12 @@ public class AccessTokenUtil {
     /**
      * <h3>无效的令牌</h3>
      */
-    public static final String ACCESS_TOKEN_INVALID = "身份令牌无效，请重新获取身份令牌";
+    private static final String ACCESS_TOKEN_INVALID = "身份令牌无效，请重新获取身份令牌";
 
     /**
      * <h3>算法</h3>
      */
     private static final String HMAC_SHA_256 = "HmacSHA256";
-
-    /**
-     * <h3>缺少负载</h3>
-     */
-    private static final String PAYLOADS_IS_EMPTY = "没有任何负载数据";
 
     /**
      * <h3>{@code HMAC-SHA-256}错误</h3>
@@ -83,8 +81,8 @@ public class AccessTokenUtil {
      * @return {@code AccessTokenUtil}
      */
     public AccessTokenUtil setPayloadId(Long id, long expireSecond) {
-        return addPayload(Constant.ID, id)
-                .setExpireMillisecond(expireSecond * Constant.MILLISECONDS_PER_SECOND);
+        return addPayload(RootService.STRING_ID, id)
+                .setExpireMillisecond(expireSecond * DateTimeUtil.MILLISECONDS_PER_SECOND);
     }
 
     /**
@@ -95,9 +93,9 @@ public class AccessTokenUtil {
      * @return {@code ID}
      */
     public final long getPayloadId(String accessToken, String secret) {
-        ServiceError.UNAUTHORIZED.whenNull(accessToken);
-        Object userId = verify(accessToken, secret).getPayload(Constant.ID);
-        ServiceError.UNAUTHORIZED.whenNull(userId);
+        UNAUTHORIZED.whenNull(accessToken);
+        Object userId = verify(accessToken, secret).getPayload(RootService.STRING_ID);
+        UNAUTHORIZED.whenNull(userId);
         return Long.parseLong(userId.toString());
     }
 
@@ -108,20 +106,20 @@ public class AccessTokenUtil {
      * @return {@code AccessToken}
      */
     public final String build(String secret) {
-        ServiceError.PARAM_INVALID.whenEquals(Constant.AIRPOWER, secret,
+        PARAM_INVALID.whenEquals(AIRPOWER, secret,
                 "身份令牌创建失败，请在环境变量配置 airpower.accessTokenSecret");
         if (verifiedToken.getPayloads().isEmpty()) {
-            throw new ServiceException(PAYLOADS_IS_EMPTY);
+            throw new ServiceException("没有任何负载数据");
         }
         String payloadBase = Base64.getUrlEncoder().encodeToString(
-                Json.toString(verifiedToken.getPayloads()).getBytes(StandardCharsets.UTF_8)
+                Json.toString(verifiedToken.getPayloads()).getBytes(UTF_8)
         );
         String content = verifiedToken.getExpireTimestamps() +
-                Constant.DOT +
-                hmacSha256(secret, verifiedToken.getExpireTimestamps() + Constant.DOT + payloadBase) +
-                Constant.DOT +
+                STRING_DOT +
+                hmacSha256(secret, verifiedToken.getExpireTimestamps() + STRING_DOT + payloadBase) +
+                STRING_DOT +
                 payloadBase;
-        return Base64.getUrlEncoder().encodeToString(content.getBytes(StandardCharsets.UTF_8));
+        return Base64.getUrlEncoder().encodeToString(content.getBytes(UTF_8));
     }
 
     /**
@@ -157,9 +155,7 @@ public class AccessTokenUtil {
      */
     @Contract("_ -> this")
     public final AccessTokenUtil setExpireMillisecond(long millisecond) {
-        if (millisecond <= 0) {
-            throw new ServiceException(ServiceError.PARAM_INVALID, "过期毫秒数必须大于0");
-        }
+        PARAM_INVALID.when(millisecond <= 0, "过期毫秒数必须大于0");
         verifiedToken.setExpireTimestamps(System.currentTimeMillis() + millisecond);
         return this;
     }
@@ -174,26 +170,24 @@ public class AccessTokenUtil {
     public final VerifiedToken verify(@NotNull String accessToken, String secret) {
         String source;
         try {
-            source = new String(Base64.getUrlDecoder().decode(accessToken.getBytes(StandardCharsets.UTF_8)));
+            source = new String(Base64.getUrlDecoder().decode(accessToken.getBytes(UTF_8)));
         } catch (Exception exception) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
+            throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
-        if (!StringUtils.hasText(source)) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
-        }
-        String[] list = source.split(Constant.DOT_REGEX);
+        UNAUTHORIZED.when(!StringUtils.hasText(source), ACCESS_TOKEN_INVALID);
+        String[] list = source.split(REGEX_DOT);
         if (list.length != TOKEN_PART_COUNT) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED);
+            throw new ServiceException(UNAUTHORIZED);
         }
         //noinspection AlibabaUndefineMagicConstant
-        if (!Objects.equals(hmacSha256(secret, list[0] + Constant.DOT + list[2]), list[1])) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
+        if (!Objects.equals(hmacSha256(secret, list[0] + STRING_DOT + list[2]), list[1])) {
+            throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         if (Long.parseLong(list[0]) < System.currentTimeMillis() && Long.parseLong(list[0]) != 0) {
-            throw new ServiceException(ServiceError.UNAUTHORIZED, ACCESS_TOKEN_INVALID);
+            throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         Map<String, Object> payloads = Json.parse2Map(new String(
-                Base64.getUrlDecoder().decode(list[2].getBytes(StandardCharsets.UTF_8)))
+                Base64.getUrlDecoder().decode(list[2].getBytes(UTF_8)))
         );
         return new VerifiedToken().setExpireTimestamps(Long.parseLong(list[0])).setPayloads(payloads);
     }
@@ -208,15 +202,15 @@ public class AccessTokenUtil {
     private @NotNull String hmacSha256(@NotNull String secret, @NotNull String content) {
         try {
             Mac mac = Mac.getInstance(HMAC_SHA_256);
-            SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), HMAC_SHA_256);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(UTF_8), HMAC_SHA_256);
             mac.init(secretKeySpec);
             StringBuilder hexString = new StringBuilder();
-            for (byte b : mac.doFinal(content.getBytes(StandardCharsets.UTF_8))) {
+            for (byte b : mac.doFinal(content.getBytes(UTF_8))) {
                 hexString.append(String.format("%02x", b & 0xff));
             }
             return hexString.toString();
         } catch (Exception exception) {
-            log.error("hmacSha256 error", exception);
+            log.error(HMAC_SHA_256_ERROR, exception);
             throw new ServiceException(HMAC_SHA_256_ERROR);
         }
     }

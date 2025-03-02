@@ -2,10 +2,11 @@ package cn.hamm.airpower.annotation;
 
 import cn.hamm.airpower.enums.Api;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * <h1>继承的接口 {@code 白名单优先}</h1>
@@ -17,8 +18,8 @@ import java.lang.annotation.Target;
  * @author Hamm.cn
  * @see Api
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
+@Target(TYPE)
+@Retention(RUNTIME)
 public @interface Extends {
     /**
      * <h3>排除父类接口但需要继承这些接口</h3>
