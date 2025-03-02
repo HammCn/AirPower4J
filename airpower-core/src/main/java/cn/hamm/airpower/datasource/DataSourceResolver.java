@@ -93,7 +93,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      * @return 数据源地址
      */
     private static @NotNull String getDataSourceUrl(DataSource dataSource) {
-        return getServerUrl(dataSource) + Constant.SLASH +
+        return getServerUrl(dataSource) + Constant.STRING_SLASH +
                 Configs.getServiceConfig().getDatabasePrefix() + dataSource.getDatabase() +
                 DATASOURCE_CONFIG;
     }
@@ -105,7 +105,7 @@ public class DataSourceResolver extends AbstractRoutingDataSource {
      * @return 数据源地址
      */
     private static @NotNull String getServerUrl(@NotNull DataSource dataSource) {
-        return DATASOURCE_SCHEME + dataSource.getHost() + Constant.COLON + dataSource.getPort();
+        return DATASOURCE_SCHEME + dataSource.getHost() + Constant.STRING_COLON + dataSource.getPort();
     }
 
     /**

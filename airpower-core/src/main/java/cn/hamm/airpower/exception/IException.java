@@ -266,7 +266,7 @@ public interface IException {
      * @param message 返回信息
      */
     default void whenEmpty(Object obj, String message) {
-        when(Objects.isNull(obj) || Constant.EMPTY_STRING.equalsIgnoreCase(obj.toString()), message);
+        when(Objects.isNull(obj) || Constant.STRING_EMPTY.equalsIgnoreCase(obj.toString()), message);
     }
 
     /**

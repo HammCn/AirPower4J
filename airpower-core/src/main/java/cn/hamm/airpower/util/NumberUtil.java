@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import static java.math.RoundingMode.*;
+
 /**
  * <h1>数字工具类</h1>
  *
@@ -24,7 +26,7 @@ public class NumberUtil {
     /**
      * <h3>默认除法的保留方式</h3>
      */
-    private static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
+    private static final RoundingMode DEFAULT_ROUNDING_MODE = HALF_UP;
 
     /**
      * <h3>禁止外部实例化</h3>
@@ -241,7 +243,7 @@ public class NumberUtil {
      * @return 省略后的数字
      */
     public static @NotNull BigDecimal floor(double value, int scale) {
-        return round(value, scale, RoundingMode.DOWN);
+        return round(value, scale, DOWN);
     }
 
     /**
@@ -252,7 +254,7 @@ public class NumberUtil {
      * @return 省略后的数字
      */
     public static @NotNull BigDecimal ceil(double value, int scale) {
-        return round(value, scale, RoundingMode.UP);
+        return round(value, scale, UP);
     }
 
     /**

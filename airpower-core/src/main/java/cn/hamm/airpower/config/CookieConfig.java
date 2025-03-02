@@ -1,6 +1,7 @@
 package cn.hamm.airpower.config;
 
 import cn.hamm.airpower.helper.CookieHelper;
+import cn.hamm.airpower.util.DateTimeUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -22,7 +23,7 @@ public class CookieConfig {
     /**
      * <h3>{@code Cookie} 的路径</h3>
      */
-    private String cookiePath = Constant.SLASH;
+    private String cookiePath = Constant.STRING_SLASH;
 
     /**
      * <h3>身份验证的 {@code Cookie} 名称</h3>
@@ -37,7 +38,7 @@ public class CookieConfig {
     /**
      * <h3>{@code Cookie} 有效期</h3>
      */
-    private int cookieMaxAge = Constant.SECOND_PER_DAY;
+    private int cookieMaxAge = DateTimeUtil.SECOND_PER_DAY;
 
     /**
      * <h3>使用 {@code Https} 方式的安全 {@code Cookie}</h3>

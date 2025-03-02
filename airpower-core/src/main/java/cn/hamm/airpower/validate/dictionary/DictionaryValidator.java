@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @author Hamm.cn
  */
 @Component
-public class DictionaryAnnotationValidator implements ConstraintValidator<Dictionary, Integer> {
+public class DictionaryValidator implements ConstraintValidator<Dictionary, Integer> {
     /**
      * <h3>标记的枚举类</h3>
      */

@@ -9,10 +9,13 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static javax.crypto.Cipher.DECRYPT_MODE;
+import static javax.crypto.Cipher.ENCRYPT_MODE;
 
 /**
  * <h1>{@code AES} 工具类</h1>
@@ -43,7 +46,7 @@ public class AesUtil {
     /**
      * <h3>偏移向量</h3>
      */
-    private byte[] iv = "0000000000000000".getBytes(StandardCharsets.UTF_8);
+    private byte[] iv = "0000000000000000".getBytes(UTF_8);
 
     /**
      * <h3>算法</h3>
@@ -147,8 +150,8 @@ public class AesUtil {
      */
     public final String encrypt(String source) {
         try {
-            return Base64.getEncoder().encodeToString(getCipher(Cipher.ENCRYPT_MODE)
-                    .doFinal(source.getBytes(StandardCharsets.UTF_8)));
+            return Base64.getEncoder().encodeToString(getCipher(ENCRYPT_MODE)
+                    .doFinal(source.getBytes(UTF_8)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -163,8 +166,8 @@ public class AesUtil {
     @Contract("_ -> new")
     public final @NotNull String decrypt(String content) {
         try {
-            return new String(getCipher(Cipher.DECRYPT_MODE)
-                    .doFinal(Base64.getDecoder().decode(content)), StandardCharsets.UTF_8);
+            return new String(getCipher(DECRYPT_MODE)
+                    .doFinal(Base64.getDecoder().decode(content)), UTF_8);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

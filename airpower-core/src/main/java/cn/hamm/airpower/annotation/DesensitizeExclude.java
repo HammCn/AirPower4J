@@ -1,6 +1,11 @@
 package cn.hamm.airpower.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * <h1>此接口返回数据不脱敏</h1>
@@ -8,8 +13,8 @@ import java.lang.annotation.*;
  * @author Hamm.cn
  * @see Desensitize
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
+@Target(METHOD)
+@Retention(RUNTIME)
 @Inherited
 public @interface DesensitizeExclude {
 }

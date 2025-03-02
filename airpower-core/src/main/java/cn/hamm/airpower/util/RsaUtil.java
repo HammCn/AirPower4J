@@ -1,6 +1,5 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.exception.ServiceError;
 import cn.hamm.airpower.exception.ServiceException;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -14,6 +13,8 @@ import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+
+import static cn.hamm.airpower.exception.ServiceError.SERVICE_ERROR;
 
 /**
  * <h1>{@code RSA} 加解密工具类</h1>
@@ -249,7 +250,7 @@ public class RsaUtil {
      * @throws Exception 加解密异常
      */
     private byte @NotNull [] rsaDoFinal(Cipher cipher, byte @NotNull [] sourceBytes, int blockSize) throws Exception {
-        ServiceError.SERVICE_ERROR.when(blockSize <= 0, "分段大小必须大于0");
+        SERVICE_ERROR.when(blockSize <= 0, "分段大小必须大于0");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int inputLength = sourceBytes.length;
         int currentOffSet = 0;

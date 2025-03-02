@@ -1,6 +1,5 @@
 package cn.hamm.airpower.helper;
 
-import cn.hamm.airpower.exception.ServiceError;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+
+import static cn.hamm.airpower.exception.ServiceError.EMAIL_ERROR;
 
 /**
  * <h1>邮件助手类</h1>
@@ -64,7 +65,7 @@ public class EmailHelper {
     public final void sendEmail(
             @NotNull String email, @NotNull String title, @NotNull String content
     ) throws MessagingException {
-        ServiceError.EMAIL_ERROR.whenNull(javaMailSender, "未配置邮件服务的信息");
+        EMAIL_ERROR.whenNull(javaMailSender, "未配置邮件服务的信息");
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(email);

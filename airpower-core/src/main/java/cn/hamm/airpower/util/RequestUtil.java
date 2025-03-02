@@ -1,18 +1,20 @@
 package cn.hamm.airpower.util;
 
-import cn.hamm.airpower.config.Constant;
-import cn.hamm.airpower.exception.ServiceError;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Objects;
+
+import static cn.hamm.airpower.config.Constant.STRING_COMMA;
+import static cn.hamm.airpower.config.Constant.STRING_UNKNOWN;
+import static cn.hamm.airpower.exception.ServiceError.FORBIDDEN;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 /**
  * <h1>请求工具类</h1>
@@ -22,9 +24,14 @@ import java.util.Objects;
 @Slf4j
 public class RequestUtil {
     /**
+     * <h3>本机 {@code IP} 地址</h3>
+     */
+    public static final String LOCAL_IP_ADDRESS = "127.0.0.1";
+
+    /**
      * <h3>获取IP地址异常</h3>
      */
-    public static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
+    private static final String IP_ADDRESS_EXCEPTION = "获取IP地址异常";
 
     /**
      * <h3>常用IP反向代理Header头</h3>
@@ -71,7 +78,7 @@ public class RequestUtil {
         try {
             for (String ipHeader : PROXY_IP_HEADERS) {
                 ipAddress = request.getHeader(ipHeader);
-                if (Objects.equals(ipAddress, Constant.UNKNOWN)) {
+                if (Objects.equals(ipAddress, STRING_UNKNOWN)) {
                     continue;
                 }
                 if (isValidAddress(ipAddress)) {
@@ -80,7 +87,7 @@ public class RequestUtil {
             }
 
             ipAddress = request.getRemoteAddr();
-            if (!Objects.equals(Constant.LOCAL_IP_ADDRESS, ipAddress)) {
+            if (!Objects.equals(LOCAL_IP_ADDRESS, ipAddress)) {
                 return ipAddress;
             }
             // 根据网卡取本机配置的IP
@@ -92,9 +99,9 @@ public class RequestUtil {
             }
             return ipAddress;
         } catch (Exception exception) {
-            ServiceError.FORBIDDEN.show(IP_ADDRESS_EXCEPTION);
+            FORBIDDEN.show(IP_ADDRESS_EXCEPTION);
         }
-        return Constant.LOCAL_IP_ADDRESS;
+        return LOCAL_IP_ADDRESS;
     }
 
     /**
@@ -105,7 +112,7 @@ public class RequestUtil {
      */
     @Contract(value = "null -> false", pure = true)
     private static boolean isUploadFileContentType(String contentType) {
-        return contentType != null && contentType.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE);
+        return contentType != null && contentType.startsWith(MULTIPART_FORM_DATA_VALUE);
     }
 
     /**
@@ -117,7 +124,7 @@ public class RequestUtil {
     private static boolean isValidAddress(String ipAddress) {
         return Objects.nonNull(ipAddress)
                 && StringUtils.hasText(ipAddress)
-                && !Constant.LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
+                && !LOCAL_IP_ADDRESS.equalsIgnoreCase(ipAddress);
     }
 
     /**
@@ -127,8 +134,8 @@ public class RequestUtil {
      * @return 处理之后的真实IP
      */
     private static @NotNull String getIpAddressFromMultiIp(@NotNull String ipAddress) {
-        if (ipAddress.indexOf(Constant.COMMA) > 0) {
-            ipAddress = ipAddress.substring(0, ipAddress.indexOf(Constant.COMMA));
+        if (ipAddress.indexOf(STRING_COMMA) > 0) {
+            ipAddress = ipAddress.substring(0, ipAddress.indexOf(STRING_COMMA));
         }
         return ipAddress;
     }
