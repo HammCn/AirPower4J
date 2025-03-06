@@ -7,7 +7,10 @@ import cn.hamm.airpower.root.RootService;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static cn.hamm.airpower.exception.ServiceError.FORBIDDEN_DELETE;
 
@@ -68,5 +71,51 @@ public class TreeServiceDelegate {
             R extends RootRepository<E>
             > void ensureNoChildrenBeforeDelete(S service, long id) {
         FORBIDDEN_DELETE.when(!findByParentId(service, id).isEmpty(), "无法删除含有下级的数据，请先删除所有下级！");
+    }
+
+    /**
+     * <h3>获取指定父ID下的所有子ID</h3>
+     *
+     * @param parentId    父ID
+     * @param service     服务类
+     * @param entityClass 实体类
+     * @param <T>         实体类型
+     * @return ID集合
+     */
+    public static <T extends RootEntity<T> & ITree<T>> @NotNull Set<Long> getChildrenIdList(
+            long parentId,
+            @NotNull RootService<T, ?> service,
+            @NotNull Class<T> entityClass
+    ) {
+        Set<Long> list = new HashSet<>();
+        getChildrenIdList(parentId, service, entityClass, list);
+        return list;
+    }
+
+    /**
+     * <h3>获取指定父ID下的所有子ID</h3>
+     *
+     * @param parentId    父ID
+     * @param service     服务类
+     * @param entityClass 实体类型
+     * @param list        集合
+     * @param <T>         实体类型
+     */
+    public static <T extends RootEntity<T> & ITree<T>> void getChildrenIdList(
+            long parentId,
+            @NotNull RootService<T, ?> service,
+            @NotNull Class<T> entityClass,
+            @NotNull Set<Long> list
+    ) {
+        T parent = service.get(parentId);
+        list.add(parent.getId());
+        List<T> children;
+        try {
+            children = service.filter(entityClass.getConstructor().newInstance().setParentId(parent.getId()));
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        children.forEach(child -> getChildrenIdList(child.getId(), service, entityClass, list));
     }
 }
