@@ -2,6 +2,7 @@ package cn.hamm.airpower.root;
 
 import cn.hamm.airpower.annotation.Desensitize;
 import cn.hamm.airpower.annotation.ExcelColumn;
+import cn.hamm.airpower.annotation.NullEnable;
 import cn.hamm.airpower.annotation.Search;
 import cn.hamm.airpower.config.ServiceConfig;
 import cn.hamm.airpower.exception.ServiceException;
@@ -922,13 +923,24 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
      * <h3>获取用于更新的实体</h3>
      *
      * @param sourceEntity 来源实体
-     * @param existEntity  已存在实体
+     * @param exist        已存在实体
      * @return 目标实体
      */
     @Contract("_, _ -> param2")
-    protected final @NotNull E getEntityForUpdate(@NotNull E sourceEntity, @NotNull E existEntity) {
-        String[] nullProperties = getNullProperties(sourceEntity);
-        BeanUtils.copyProperties(sourceEntity, existEntity, nullProperties);
+    protected final @NotNull E getEntityForUpdate(@NotNull E sourceEntity, @NotNull E exist) {
+        String[] updateFieldNames = getUpdateFieldNames(sourceEntity);
+        BeanUtils.copyProperties(sourceEntity, exist, updateFieldNames);
+        return desensitize(exist);
+    }
+
+    /**
+     * <h3>脱敏</h3>
+     *
+     * @param exist 待脱敏实体
+     * @return 脱敏后的实体
+     */
+    @Contract("_ -> param1")
+    private E desensitize(@NotNull E exist) {
         List<Field> fieldList = ReflectUtil.getFieldList(getEntityClass());
         fieldList.forEach(field -> {
             Desensitize desensitize = ReflectUtil.getAnnotation(Desensitize.class, field);
@@ -937,21 +949,21 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
                 return;
             }
             // 脱敏字段
-            Object fieldValue = ReflectUtil.getFieldValue(existEntity, field);
+            Object fieldValue = ReflectUtil.getFieldValue(exist, field);
             if (Objects.isNull(fieldValue)) {
                 // 值本身是空的
                 return;
             }
             if (desensitize.replace() && Objects.equals(desensitize.symbol(), fieldValue.toString())) {
                 // 如果是替换 且没有修改内容
-                ReflectUtil.setFieldValue(existEntity, field, null);
+                ReflectUtil.setFieldValue(exist, field, null);
             }
             if (!desensitize.replace() && fieldValue.toString().contains(desensitize.symbol())) {
                 // 如果值包含脱敏字符
-                ReflectUtil.setFieldValue(existEntity, field, null);
+                ReflectUtil.setFieldValue(exist, field, null);
             }
         });
-        return existEntity;
+        return exist;
     }
 
     /**
@@ -1019,18 +1031,32 @@ public class RootService<E extends RootEntity<E>, R extends RootRepository<E>> {
     }
 
     /**
-     * <h3>获取值为{@code null}的属性</h3>
+     * <h3>获取需要更新实体的字段名称列表</h3>
      *
-     * @param sourceEntity 来源对象
-     * @return 非空属性列表
+     * @param source 来源对象
+     * @return 需要更新的属性列表
      */
-    private String @NotNull [] getNullProperties(@NotNull E sourceEntity) {
+    private String @NotNull [] getUpdateFieldNames(@NotNull E source) {
         // 获取Bean
-        BeanWrapper srcBean = new BeanWrapperImpl(sourceEntity);
-        return Arrays.stream(srcBean.getPropertyDescriptors())
-                .map(PropertyDescriptor::getName)
-                .filter(name -> Objects.isNull(srcBean.getPropertyValue(name)))
-                .toArray(String[]::new);
+        BeanWrapper srcBean = new BeanWrapperImpl(source);
+        List<String> list = new ArrayList<>();
+        Arrays.stream(srcBean.getPropertyDescriptors()).map(PropertyDescriptor::getName).forEach(name -> {
+            // 获取属性的Field
+            Field field = ReflectUtil.getField(name, source.getClass());
+            if (Objects.isNull(field)) {
+                // 为空 则忽略 不更新
+                return;
+            }
+            NullEnable nullEnable = ReflectUtil.getAnnotation(NullEnable.class, field);
+            if (Objects.nonNull(nullEnable) && nullEnable.value()) {
+                // 标记了可以允许null更新，则跳过 不忽略
+                return;
+            }
+            if (Objects.isNull(srcBean.getPropertyValue(name))) {
+                list.add(name);
+            }
+        });
+        return list.toArray(new String[0]);
     }
 
     /**

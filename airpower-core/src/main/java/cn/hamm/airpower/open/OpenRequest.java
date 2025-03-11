@@ -179,9 +179,10 @@ public class OpenRequest {
      */
     private void checkNonce() {
         RedisHelper redisHelper = AirHelper.getRedisHelper();
-        Object savedNonce = redisHelper.get(NONCE_CACHE_PREFIX + nonce);
+        String cacheKey = NONCE_CACHE_PREFIX + nonce;
+        Object savedNonce = redisHelper.get(cacheKey);
         REPEAT_REQUEST.whenNotNull(savedNonce);
-        redisHelper.set(NONCE_CACHE_PREFIX + nonce, 1, NONCE_CACHE_SECOND);
+        redisHelper.set(cacheKey, 1, NONCE_CACHE_SECOND);
     }
 
     /**
