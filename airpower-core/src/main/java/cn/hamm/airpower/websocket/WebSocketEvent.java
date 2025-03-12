@@ -1,6 +1,6 @@
 package cn.hamm.airpower.websocket;
 
-import cn.hamm.airpower.config.Configs;
+import cn.hamm.airpower.util.RandomUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * <h1>{@code WebSocket} 事件</h1>
@@ -18,11 +17,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @Data
 @Accessors(chain = true)
 public class WebSocketEvent {
-    /**
-     * <h3>当前事件 {@code ID}</h3>
-     */
-    private static final AtomicLong CURRENT_EVENT_ID = new AtomicLong(0L);
-
     /**
      * <h3>事件 {@code ID}</h3>
      */
@@ -75,10 +69,9 @@ public class WebSocketEvent {
     protected final WebSocketEvent resetEvent() {
         time = System.currentTimeMillis();
         id = Base64.getEncoder().encodeToString((String.format(
-                "%s-%s-%s",
-                Configs.getServiceConfig().getServiceId(),
-                CURRENT_EVENT_ID.incrementAndGet(),
-                time
+                "%s-%s",
+                time,
+                RandomUtil.randomString(6)
         )).getBytes(StandardCharsets.UTF_8));
         return this;
     }

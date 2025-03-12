@@ -18,7 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static cn.hamm.airpower.config.Constant.*;
+import static cn.hamm.airpower.config.Constant.REGEX_DOT;
+import static cn.hamm.airpower.config.Constant.STRING_DOT;
 import static cn.hamm.airpower.exception.ServiceError.PARAM_INVALID;
 import static cn.hamm.airpower.exception.ServiceError.UNAUTHORIZED;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -34,6 +35,11 @@ public class AccessTokenUtil {
      * <h3>无效的令牌</h3>
      */
     private static final String ACCESS_TOKEN_INVALID = "身份令牌无效，请重新获取身份令牌";
+
+    /**
+     * <h3>请先设置密钥环境变量</h3>
+     */
+    private static final String SET_ENV_TOKEN_SECRET_FIRST = "请在环境变量配置 airpower.accessTokenSecret";
 
     /**
      * <h3>算法</h3>
@@ -106,8 +112,8 @@ public class AccessTokenUtil {
      * @return {@code AccessToken}
      */
     public final String build(String secret) {
-        PARAM_INVALID.whenEquals(AIRPOWER, secret,
-                "身份令牌创建失败，请在环境变量配置 airpower.accessTokenSecret");
+        PARAM_INVALID.whenEmpty(secret,
+                "身份令牌创建失败，" + SET_ENV_TOKEN_SECRET_FIRST);
         if (verifiedToken.getPayloads().isEmpty()) {
             throw new ServiceException("没有任何负载数据");
         }
@@ -168,6 +174,8 @@ public class AccessTokenUtil {
      * @return {@code VerifiedToken}
      */
     public final VerifiedToken verify(@NotNull String accessToken, String secret) {
+        PARAM_INVALID.whenEmpty(secret,
+                "身份令牌验证失败，" + SET_ENV_TOKEN_SECRET_FIRST);
         String source;
         try {
             source = new String(Base64.getUrlDecoder().decode(accessToken.getBytes(UTF_8)));
