@@ -21,7 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @see ReflectUtil#getDescription(Field)
  * @see ReflectUtil#getDescription(Class)
  */
-@Target({FIELD, METHOD, TYPE})
+@Target({FIELD, METHOD, TYPE, PARAMETER})
 @Retention(RUNTIME)
 @Inherited
 @Documented
