@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import static cn.hamm.airpower.config.Constant.AIRPOWER;
 import static cn.hamm.airpower.root.RootService.STRING_CREATE_TIME;
 
 /**
@@ -28,14 +27,9 @@ public class ServiceConfig {
     private String databasePrefix = "tenant_";
 
     /**
-     * <h3>默认服务 {@code ID}</h3>
-     */
-    private int serviceId = 0;
-
-    /**
      * <h3>{@code AccessToken} 的密钥</h3>
      */
-    private String accessTokenSecret = AIRPOWER;
+    private String accessTokenSecret;
 
     /**
      * <h3>默认分页条数</h3>

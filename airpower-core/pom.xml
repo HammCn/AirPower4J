@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.hamm</groupId>
         <artifactId>airpower</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.2</version>
     </parent>
     <artifactId>airpower-core</artifactId>
-    <version>3.2.1</version>
+    <version>3.2.2</version>
     <name>airpower-core</name>
     <description>AirPower is a fast backend development tool based on SpringBoot3 and JPA. It's the core of AirPower.
     </description>
@@ -80,6 +80,11 @@
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -118,6 +123,15 @@
                 </executions>
                 <configuration>
                     <doclint>none</doclint>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
