@@ -17,6 +17,7 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -189,6 +190,17 @@ public class ReflectUtil {
     public static String getDescription(Field field) {
         Description description = getAnnotation(Description.class, field);
         return Objects.isNull(description) ? field.getName() : description.value();
+    }
+
+    /**
+     * <h3>获取参数描述</h3>
+     *
+     * @param parameter 参数
+     * @return 描述
+     */
+    public static String getDescription(@NotNull Parameter parameter) {
+        Description description = parameter.getAnnotation(Description.class);
+        return Objects.isNull(description) ? parameter.getName() : description.value();
     }
 
     /**
