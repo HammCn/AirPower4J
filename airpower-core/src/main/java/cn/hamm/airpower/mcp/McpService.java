@@ -11,6 +11,7 @@ import cn.hamm.airpower.mcp.model.McpRequest;
 import cn.hamm.airpower.mcp.model.McpResponse;
 import cn.hamm.airpower.mcp.model.McpTool;
 import cn.hamm.airpower.model.Json;
+import cn.hamm.airpower.util.DateTimeUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -49,10 +50,12 @@ public class McpService {
      * <h3>工具列表</h3>
      */
     public static List<McpTool> tools = new ArrayList<>();
+
     /**
      * <h3>方法列表</h3>
      */
     public static ConcurrentMap<String, Method> methodMap = new ConcurrentHashMap<>();
+
     @Autowired
     private BeanFactory beanFactory;
 
@@ -128,11 +131,12 @@ public class McpService {
     /**
      * <h3>获取SseEmitter</h3>
      *
-     * @param uuid uuid
+     * @param uuid         uuid
+     * @param expireSecond 超时时间 默认 {@code 秒}
      * @return SseEmitter
      */
-    public static @NotNull SseEmitter getSseEmitter(String uuid) {
-        SseEmitter emitter = new SseEmitter();
+    public static @NotNull SseEmitter getSseEmitter(String uuid, long expireSecond) {
+        SseEmitter emitter = new SseEmitter(expireSecond * DateTimeUtil.MILLISECONDS_PER_SECOND);
         McpService.EMITTERS.put(uuid, emitter);
 
         // 每3s 发送ping
@@ -151,6 +155,16 @@ public class McpService {
         emitter.onCompletion(() -> McpService.EMITTERS.remove(uuid));
         emitter.onTimeout(() -> McpService.EMITTERS.remove(uuid));
         return emitter;
+    }
+
+    /**
+     * <h3>获取SseEmitter</h3>
+     *
+     * @param uuid uuid
+     * @return SseEmitter
+     */
+    public static @NotNull SseEmitter getSseEmitter(String uuid) {
+        return getSseEmitter(uuid, 300);
     }
 
     /**
