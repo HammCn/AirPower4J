@@ -15,6 +15,7 @@ import cn.hamm.airpower.util.DateTimeUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +34,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 
 /**
  * <h1>McpService</h1>
@@ -70,10 +72,13 @@ public class McpService {
         for (String pack : packages) {
             reflections = new Reflections(pack, Scanners.MethodsAnnotated);
             Set<Method> methods = reflections.getMethodsAnnotatedWith(McpMethod.class);
-            methods.stream()
-                    .map(McpService::getTool)
-                    .filter(Objects::nonNull)
-                    .forEach(mcpTool -> tools.add(mcpTool));
+            for (Method method : methods) {
+                McpTool mcpTool = getTool(method);
+                if (mcpTool != null) {
+                    tools.add(mcpTool);
+                    methodMap.put(mcpTool.getName(), method);
+                }
+            }
         }
         log.info("扫描到 {} 个Mcp方法", tools.size());
     }
@@ -124,7 +129,6 @@ public class McpService {
         mcpTool.setName(mcpToolName)
                 .setDescription(ReflectUtil.getDescription(method))
                 .setInputSchema(inputSchema);
-        methodMap.put(mcpToolName, method);
         return mcpTool;
     }
 
@@ -252,15 +256,26 @@ public class McpService {
     }
 
     /**
+     * <h3>获取访问指定工具需要的权限</h3>
+     *
+     * @param mcpTool 工具
+     * @return 权限标识
+     */
+    public static @NotNull String getPermissionIdentity(@NotNull McpTool mcpTool) {
+        return DigestUtils.sha1Hex(mcpTool.getName() + mcpTool.getDescription());
+    }
+
+    /**
      * <h3>运行方法</h3>
      *
-     * @param uuid       uuid
-     * @param mcpMethods 方法
-     * @param mcpRequest 请求
+     * @param uuid            uuid
+     * @param mcpMethods      方法
+     * @param mcpRequest      请求
+     * @param checkPermission 权限验证方法
      * @return 响应
      * @throws McpException 异常
      */
-    public McpResponse run(String uuid, @NotNull McpMethods mcpMethods, McpRequest mcpRequest) throws McpException {
+    public McpResponse run(String uuid, @NotNull McpMethods mcpMethods, McpRequest mcpRequest, Consumer<McpTool> checkPermission) throws McpException {
         McpResponse responseData;
         switch (mcpMethods) {
             case INITIALIZE:
@@ -269,12 +284,18 @@ public class McpService {
             case TOOLS_CALL:
                 @SuppressWarnings("unchecked")
                 Map<String, Object> params = (Map<String, Object>) mcpRequest.getParams();
-                Method method = methodMap.get(params.get("name").toString());
+                String methodName = params.get("name").toString();
+                Method method = methodMap.get(methodName);
                 if (Objects.isNull(method)) {
                     throw new McpException().setCode(McpErrorCode.MethodNotFound.getKey()).setMessage("Method not found");
                 }
+                McpTool mcpTool = getTool(method);
+                if (Objects.isNull(mcpTool)) {
+                    throw new McpException().setCode(McpErrorCode.MethodNotFound.getKey()).setMessage("McpTool not found");
+                }
                 Object callResult;
                 try {
+                    checkPermission.accept(mcpTool);
                     Class<?> declaringClass = method.getDeclaringClass();
                     Object bean = beanFactory.getBean(declaringClass);
                     @SuppressWarnings("unchecked")

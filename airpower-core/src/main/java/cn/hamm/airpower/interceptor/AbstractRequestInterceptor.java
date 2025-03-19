@@ -115,7 +115,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param request            请求对象
      * @apiNote 抛出异常则为拦截
      */
-    protected void checkUserPermission(
+    public void checkUserPermission(
             long userId, String permissionIdentity, HttpServletRequest request
     ) {
     }
