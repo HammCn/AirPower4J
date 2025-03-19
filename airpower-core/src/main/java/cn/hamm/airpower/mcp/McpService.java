@@ -35,6 +35,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * <h1>McpService</h1>
@@ -48,6 +50,7 @@ public class McpService {
      * <h3>SseEmitters</h3>
      */
     public final static ConcurrentHashMap<String, SseEmitter> EMITTERS = new ConcurrentHashMap<>();
+
     /**
      * <h3>工具列表</h3>
      */
@@ -72,13 +75,13 @@ public class McpService {
         for (String pack : packages) {
             reflections = new Reflections(pack, Scanners.MethodsAnnotated);
             Set<Method> methods = reflections.getMethodsAnnotatedWith(McpMethod.class);
-            for (Method method : methods) {
+            methods.forEach(method -> {
                 McpTool mcpTool = getTool(method);
                 if (mcpTool != null) {
                     tools.add(mcpTool);
                     methodMap.put(mcpTool.getName(), method);
                 }
-            }
+            });
         }
         log.info("扫描到 {} 个Mcp方法", tools.size());
     }
@@ -102,21 +105,22 @@ public class McpService {
         McpTool.InputSchema inputSchema = new McpTool.InputSchema();
         // 获取Method的形参列表
         Class<?>[] parameterTypes = method.getParameterTypes();
-        for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> parameterType = parameterTypes[i];
+        IntStream.range(0, parameterTypes.length).forEach(index -> {
+            Class<?> parameterType = parameterTypes[index];
 
-            // 判断方法的类型是否为 String 数字 布尔
-            String paramName = method.getParameters()[i].getName();
+            String paramName = method.getParameters()[index].getName();
 
             // 添加为必须
             inputSchema.getRequired().add(paramName);
 
             // 参数的描述
-            String paramDesc = ReflectUtil.getDescription(method.getParameters()[i]);
+            String paramDesc = ReflectUtil.getDescription(method.getParameters()[index]);
             Map<String, McpTool.InputSchema.Property> properties = inputSchema.getProperties();
 
             // 初始化一条
             McpTool.InputSchema.Property item = new McpTool.InputSchema.Property().setDescription(paramDesc);
+
+            // 判断方法的类型是否为 String 数字 布尔
             if (parameterType.equals(String.class)) {
                 properties.put(paramName, item.setType("string"));
             } else if (parameterType.equals(Boolean.class) || parameterType.equals(boolean.class)) {
@@ -125,7 +129,7 @@ public class McpService {
                 properties.put(paramName, item.setType("number"));
             }
             inputSchema.setProperties(properties);
-        }
+        });
         mcpTool.setName(mcpToolName)
                 .setDescription(ReflectUtil.getDescription(method))
                 .setInputSchema(inputSchema);
@@ -304,10 +308,12 @@ public class McpService {
                     List<String> keys = new ArrayList<>(arguments.keySet());
                     Collections.sort(keys);
 
-                    Map<String, Object> sortedArguments = new LinkedHashMap<>();
-                    for (String key : keys) {
-                        sortedArguments.put(key, arguments.get(key));
-                    }
+                    Map<String, Object> sortedArguments = keys.stream().collect(
+                            Collectors.toMap(
+                                    key -> key, arguments::get,
+                                    (a, b) -> b, LinkedHashMap::new
+                            )
+                    );
                     Object[] args = sortedArguments.values().toArray();
                     callResult = method.invoke(bean, args);
                 } catch (Exception e) {
