@@ -37,6 +37,11 @@ public class AccessTokenUtil {
     private static final String ACCESS_TOKEN_INVALID = "身份令牌无效，请重新获取身份令牌";
 
     /**
+     * <h3>令牌已过期</h3>
+     */
+    private static final String ACCESS_TOKEN_EXPIRED = "身份令牌已过期，请重新获取身份令牌";
+
+    /**
      * <h3>请先设置密钥环境变量</h3>
      */
     private static final String SET_ENV_TOKEN_SECRET_FIRST = "请在环境变量配置 airpower.accessTokenSecret";
@@ -92,17 +97,14 @@ public class AccessTokenUtil {
     }
 
     /**
-     * <h3>从 {@code AccessToken} 中获取 {@code ID}</h3>
+     * <h3>创建一个 {@code AccessToken}</h3>
      *
-     * @param accessToken {@code AccessToken}
-     * @param secret      {@code AccessToken} 密钥
-     * @return {@code ID}
+     * @param id {@code TokenID}
+     * @return {@code AccessTokenUtil}
+     * @apiNote 不设置令牌过期时间
      */
-    public final long getPayloadId(String accessToken, String secret) {
-        UNAUTHORIZED.whenNull(accessToken);
-        Object userId = verify(accessToken, secret).getPayload(RootService.STRING_ID);
-        UNAUTHORIZED.whenNull(userId);
-        return Long.parseLong(userId.toString());
+    public AccessTokenUtil setPayloadId(Long id) {
+        return addPayload(RootService.STRING_ID, id);
     }
 
     /**
@@ -174,8 +176,7 @@ public class AccessTokenUtil {
      * @return {@code VerifiedToken}
      */
     public final VerifiedToken verify(@NotNull String accessToken, String secret) {
-        PARAM_INVALID.whenEmpty(secret,
-                "身份令牌验证失败，" + SET_ENV_TOKEN_SECRET_FIRST);
+        PARAM_INVALID.whenEmpty(secret, SET_ENV_TOKEN_SECRET_FIRST);
         String source;
         try {
             source = new String(Base64.getUrlDecoder().decode(accessToken.getBytes(UTF_8)));
@@ -185,14 +186,14 @@ public class AccessTokenUtil {
         UNAUTHORIZED.when(!StringUtils.hasText(source), ACCESS_TOKEN_INVALID);
         String[] list = source.split(REGEX_DOT);
         if (list.length != TOKEN_PART_COUNT) {
-            throw new ServiceException(UNAUTHORIZED);
+            throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         //noinspection AlibabaUndefineMagicConstant
         if (!Objects.equals(hmacSha256(secret, list[0] + STRING_DOT + list[2]), list[1])) {
             throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_INVALID);
         }
         if (Long.parseLong(list[0]) < System.currentTimeMillis() && Long.parseLong(list[0]) != 0) {
-            throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_INVALID);
+            throw new ServiceException(UNAUTHORIZED, ACCESS_TOKEN_EXPIRED);
         }
         Map<String, Object> payloads = Json.parse2Map(new String(
                 Base64.getUrlDecoder().decode(list[2].getBytes(UTF_8)))
@@ -249,6 +250,17 @@ public class AccessTokenUtil {
          */
         public final @Nullable Object getPayload(String key) {
             return payloads.get(key);
+        }
+
+        /**
+         * <h3>获取负载的 {@code ID}</h3>
+         *
+         * @return {@code ID}
+         */
+        public final long getPayloadId() {
+            Object userId = getPayload(RootService.STRING_ID);
+            UNAUTHORIZED.whenNull(userId);
+            return Long.parseLong(userId.toString());
         }
     }
 }

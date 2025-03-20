@@ -33,7 +33,8 @@ public class RootController implements IAction {
     protected final long getCurrentUserId() {
         try {
             String accessToken = request.getHeader(serviceConfig.getAuthorizeHeader());
-            return AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
+            AccessTokenUtil.VerifiedToken verifiedToken = AccessTokenUtil.create().verify(accessToken, serviceConfig.getAccessTokenSecret());
+            return verifiedToken.getPayloadId();
         } catch (Exception exception) {
             throw new ServiceException(UNAUTHORIZED);
         }

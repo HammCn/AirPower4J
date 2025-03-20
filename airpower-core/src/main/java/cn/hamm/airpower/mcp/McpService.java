@@ -11,9 +11,11 @@ import cn.hamm.airpower.mcp.model.McpRequest;
 import cn.hamm.airpower.mcp.model.McpResponse;
 import cn.hamm.airpower.mcp.model.McpTool;
 import cn.hamm.airpower.model.Json;
+import cn.hamm.airpower.util.DateTimeUtil;
 import cn.hamm.airpower.util.ReflectUtil;
 import cn.hamm.airpower.util.TaskUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +34,9 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * <h1>McpService</h1>
@@ -45,14 +50,17 @@ public class McpService {
      * <h3>SseEmitters</h3>
      */
     public final static ConcurrentHashMap<String, SseEmitter> EMITTERS = new ConcurrentHashMap<>();
+
     /**
      * <h3>工具列表</h3>
      */
     public static List<McpTool> tools = new ArrayList<>();
+
     /**
      * <h3>方法列表</h3>
      */
     public static ConcurrentMap<String, Method> methodMap = new ConcurrentHashMap<>();
+
     @Autowired
     private BeanFactory beanFactory;
 
@@ -67,10 +75,13 @@ public class McpService {
         for (String pack : packages) {
             reflections = new Reflections(pack, Scanners.MethodsAnnotated);
             Set<Method> methods = reflections.getMethodsAnnotatedWith(McpMethod.class);
-            methods.stream()
-                    .map(McpService::getTool)
-                    .filter(Objects::nonNull)
-                    .forEach(mcpTool -> tools.add(mcpTool));
+            methods.forEach(method -> {
+                McpTool mcpTool = getTool(method);
+                if (mcpTool != null) {
+                    tools.add(mcpTool);
+                    methodMap.put(mcpTool.getName(), method);
+                }
+            });
         }
         log.info("扫描到 {} 个Mcp方法", tools.size());
     }
@@ -94,21 +105,22 @@ public class McpService {
         McpTool.InputSchema inputSchema = new McpTool.InputSchema();
         // 获取Method的形参列表
         Class<?>[] parameterTypes = method.getParameterTypes();
-        for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> parameterType = parameterTypes[i];
+        IntStream.range(0, parameterTypes.length).forEach(index -> {
+            Class<?> parameterType = parameterTypes[index];
 
-            // 判断方法的类型是否为 String 数字 布尔
-            String paramName = method.getParameters()[i].getName();
+            String paramName = method.getParameters()[index].getName();
 
             // 添加为必须
             inputSchema.getRequired().add(paramName);
 
             // 参数的描述
-            String paramDesc = ReflectUtil.getDescription(method.getParameters()[i]);
+            String paramDesc = ReflectUtil.getDescription(method.getParameters()[index]);
             Map<String, McpTool.InputSchema.Property> properties = inputSchema.getProperties();
 
             // 初始化一条
             McpTool.InputSchema.Property item = new McpTool.InputSchema.Property().setDescription(paramDesc);
+
+            // 判断方法的类型是否为 String 数字 布尔
             if (parameterType.equals(String.class)) {
                 properties.put(paramName, item.setType("string"));
             } else if (parameterType.equals(Boolean.class) || parameterType.equals(boolean.class)) {
@@ -117,22 +129,22 @@ public class McpService {
                 properties.put(paramName, item.setType("number"));
             }
             inputSchema.setProperties(properties);
-        }
+        });
         mcpTool.setName(mcpToolName)
                 .setDescription(ReflectUtil.getDescription(method))
                 .setInputSchema(inputSchema);
-        methodMap.put(mcpToolName, method);
         return mcpTool;
     }
 
     /**
      * <h3>获取SseEmitter</h3>
      *
-     * @param uuid uuid
+     * @param uuid         uuid
+     * @param expireSecond 超时时间 默认 {@code 秒}
      * @return SseEmitter
      */
-    public static @NotNull SseEmitter getSseEmitter(String uuid) {
-        SseEmitter emitter = new SseEmitter();
+    public static @NotNull SseEmitter getSseEmitter(String uuid, long expireSecond) {
+        SseEmitter emitter = new SseEmitter(expireSecond * DateTimeUtil.MILLISECONDS_PER_SECOND);
         McpService.EMITTERS.put(uuid, emitter);
 
         // 每3s 发送ping
@@ -151,6 +163,16 @@ public class McpService {
         emitter.onCompletion(() -> McpService.EMITTERS.remove(uuid));
         emitter.onTimeout(() -> McpService.EMITTERS.remove(uuid));
         return emitter;
+    }
+
+    /**
+     * <h3>获取SseEmitter</h3>
+     *
+     * @param uuid uuid
+     * @return SseEmitter
+     */
+    public static @NotNull SseEmitter getSseEmitter(String uuid) {
+        return getSseEmitter(uuid, 300);
     }
 
     /**
@@ -238,15 +260,26 @@ public class McpService {
     }
 
     /**
+     * <h3>获取访问指定工具需要的权限</h3>
+     *
+     * @param mcpTool 工具
+     * @return 权限标识
+     */
+    public static @NotNull String getPermissionIdentity(@NotNull McpTool mcpTool) {
+        return DigestUtils.sha1Hex(mcpTool.getName() + mcpTool.getDescription());
+    }
+
+    /**
      * <h3>运行方法</h3>
      *
-     * @param uuid       uuid
-     * @param mcpMethods 方法
-     * @param mcpRequest 请求
+     * @param uuid            uuid
+     * @param mcpMethods      方法
+     * @param mcpRequest      请求
+     * @param checkPermission 权限验证方法
      * @return 响应
      * @throws McpException 异常
      */
-    public McpResponse run(String uuid, @NotNull McpMethods mcpMethods, McpRequest mcpRequest) throws McpException {
+    public McpResponse run(String uuid, @NotNull McpMethods mcpMethods, McpRequest mcpRequest, Consumer<McpTool> checkPermission) throws McpException {
         McpResponse responseData;
         switch (mcpMethods) {
             case INITIALIZE:
@@ -255,12 +288,18 @@ public class McpService {
             case TOOLS_CALL:
                 @SuppressWarnings("unchecked")
                 Map<String, Object> params = (Map<String, Object>) mcpRequest.getParams();
-                Method method = methodMap.get(params.get("name").toString());
+                String methodName = params.get("name").toString();
+                Method method = methodMap.get(methodName);
                 if (Objects.isNull(method)) {
                     throw new McpException().setCode(McpErrorCode.MethodNotFound.getKey()).setMessage("Method not found");
                 }
+                McpTool mcpTool = getTool(method);
+                if (Objects.isNull(mcpTool)) {
+                    throw new McpException().setCode(McpErrorCode.MethodNotFound.getKey()).setMessage("McpTool not found");
+                }
                 Object callResult;
                 try {
+                    checkPermission.accept(mcpTool);
                     Class<?> declaringClass = method.getDeclaringClass();
                     Object bean = beanFactory.getBean(declaringClass);
                     @SuppressWarnings("unchecked")
@@ -269,10 +308,12 @@ public class McpService {
                     List<String> keys = new ArrayList<>(arguments.keySet());
                     Collections.sort(keys);
 
-                    Map<String, Object> sortedArguments = new LinkedHashMap<>();
-                    for (String key : keys) {
-                        sortedArguments.put(key, arguments.get(key));
-                    }
+                    Map<String, Object> sortedArguments = keys.stream().collect(
+                            Collectors.toMap(
+                                    key -> key, arguments::get,
+                                    (a, b) -> b, LinkedHashMap::new
+                            )
+                    );
                     Object[] args = sortedArguments.values().toArray();
                     callResult = method.invoke(bean, args);
                 } catch (Exception e) {

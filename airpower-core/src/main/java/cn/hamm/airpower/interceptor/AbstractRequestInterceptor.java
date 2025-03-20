@@ -99,12 +99,25 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
             accessToken = accessTokenFromParam;
         }
         UNAUTHORIZED.whenEmpty(accessToken);
-        long userId = AccessTokenUtil.create().getPayloadId(accessToken, serviceConfig.getAccessTokenSecret());
+        AccessTokenUtil.VerifiedToken verifiedToken = getVerifiedToken(accessToken);
+
+        long userId = verifiedToken.getPayloadId();
         //需要RBAC
         if (access.isAuthorize()) {
             //验证用户是否有接口的访问权限
             checkUserPermission(userId, PermissionUtil.getPermissionIdentity(clazz, method), request);
         }
+    }
+
+    /**
+     * <h3>获取验证后的令牌</h3>
+     *
+     * @param accessToken 访问令牌
+     * @return 验证后的令牌
+     * @apiNote 如需前置验证令牌，可重写此方法
+     */
+    public AccessTokenUtil.VerifiedToken getVerifiedToken(String accessToken) {
+        return AccessTokenUtil.create().verify(accessToken, serviceConfig.getAccessTokenSecret());
     }
 
     /**
@@ -115,7 +128,7 @@ public abstract class AbstractRequestInterceptor implements HandlerInterceptor {
      * @param request            请求对象
      * @apiNote 抛出异常则为拦截
      */
-    protected void checkUserPermission(
+    public void checkUserPermission(
             long userId, String permissionIdentity, HttpServletRequest request
     ) {
     }
