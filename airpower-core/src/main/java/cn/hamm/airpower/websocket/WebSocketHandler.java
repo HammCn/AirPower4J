@@ -136,8 +136,9 @@ public class WebSocketHandler extends TextWebSocketHandler implements MessageLis
             closeConnection(session);
             return;
         }
-        long userId = AccessTokenUtil.create()
-                .getPayloadId(accessToken, Configs.getServiceConfig().getAccessTokenSecret());
+        AccessTokenUtil.VerifiedToken verifiedToken = AccessTokenUtil.create()
+                .verify(accessToken, Configs.getServiceConfig().getAccessTokenSecret());
+        long userId = verifiedToken.getPayloadId();
         switch (webSocketConfig.getSupport()) {
             case REDIS -> startRedisListener(session, userId);
             case MQTT -> startMqttListener(session, userId);
