@@ -22,7 +22,6 @@ import static cn.hamm.airpower.core.exception.ServiceError.FORBIDDEN;
  */
 @Slf4j
 public class RequestUtil {
-    public static final String MULTIPART_FORM_DATA_VALUE = "multipart/form-data";
     /**
      * <h3>本机 {@code IP} 地址</h3>
      */
@@ -112,7 +111,7 @@ public class RequestUtil {
      */
     @Contract(value = "null -> false", pure = true)
     private static boolean isUploadFileContentType(String contentType) {
-        return contentType != null && contentType.startsWith(MULTIPART_FORM_DATA_VALUE);
+        return contentType != null && contentType.startsWith(ContentType.MULTIPART_FORM_DATA.getValue());
     }
 
     /**
