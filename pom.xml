@@ -2,13 +2,13 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.hamm</groupId>
-    <artifactId>airpower</artifactId>
-    <version>3.2.3</version>
-    <name>airpower</name>
+    <groupId>cn.hamm.airpower</groupId>
+    <artifactId>airpower-parent</artifactId>
+    <version>0.0.1</version>
+    <name>airpower-parent</name>
     <description>AirPower is a fast backend development tool based on SpringBoot3 and JPA.</description>
     <properties>
-        <airpower.version>3.2.3</airpower.version>
+        <airpower.version>0.0.1</airpower.version>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -30,14 +30,14 @@
     <packaging>pom</packaging>
     <modules>
         <module>airpower-core</module>
+        <module>airpower-web</module>
+        <module>airpower-websocket</module>
+        <module>airpower-mqtt</module>
+        <module>airpower-redis</module>
+        <module>airpower-mcp</module>
     </modules>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>cn.hamm</groupId>
-                <artifactId>airpower-core</artifactId>
-                <version>${airpower.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -71,11 +71,6 @@
                 <groupId>org.springframework.integration</groupId>
                 <artifactId>spring-integration-mqtt</artifactId>
                 <version>${spring.integration.mqtt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-integration</artifactId>
-                <version>${springboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
